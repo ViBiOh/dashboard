@@ -1,0 +1,12 @@
+language: go
+sudo: required
+services:
+- docker
+go:
+- 1.7
+after_success: |
+  if [ "${TRAVIS_BRANCH}" == "master" ]; then
+    docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && docker push ${DOCKER_USER}/deploy
+  fi
+notifications:
+  email: false
