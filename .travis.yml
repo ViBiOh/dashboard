@@ -5,11 +5,15 @@ services:
 go:
 - 1.7
 install: make
-script: |
-  docker build -t ${DOCKER_USER}/deploy .
+script: 'docker build -t ${DOCKER_USER}/deploy .
+
+'
 after_success: |
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && docker push ${DOCKER_USER}/deploy
   fi
 notifications:
   email: false
+before_install:
+- openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv
+  -in deploy_rsa.enc -out deploy_rsa -d
