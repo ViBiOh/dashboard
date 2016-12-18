@@ -4,6 +4,7 @@ services:
 - docker
 go:
 - 1.7
+install: make
 script: |
   docker build -t ${DOCKER_USER}/deploy .
 after_success: |
