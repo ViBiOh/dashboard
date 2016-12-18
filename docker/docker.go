@@ -13,6 +13,10 @@ import (
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
 
+type results struct {
+	Results interface{} `json:"results"`
+}
+
 var docker *client.Client
 
 func init() {
@@ -25,12 +29,13 @@ func init() {
 }
 
 func listContainers() []types.Container {
-	if containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{}); err == nil {
-		return containers
-	} else {
+	containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{})
+	if err != nil {
 		log.Fatal(err)
 		return nil
 	}
+
+	return containers
 }
 
 // Handler for Hello request. Should be use with net/http
@@ -43,5 +48,5 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`Access-Control-Allow-Methods`, `GET`)
 	w.Header().Add(`X-Content-Type-Options`, `nosniff`)
 
-	jsonHttp.ResponseJSON(w, listContainers())
+	jsonHttp.ResponseJSON(w, results{listContainers()})
 }
