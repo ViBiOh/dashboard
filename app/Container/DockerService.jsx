@@ -5,6 +5,10 @@ const API = 'https://docker-api.vibioh.fr/';
 let auth;
 
 export default class DockerService {
+  static isLogged() {
+    return !!auth;
+  }
+
   static login(login, password) {
     const hash = `Basic ${btoa(`${login}:${password}`)}`;
 
