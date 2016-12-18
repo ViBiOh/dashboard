@@ -1,13 +1,13 @@
 package main
 
 import (
-	"context"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
+	"github.com/ViBiOh/docker-deploy/docker"
 	"log"
-	"os"
+	"net/http"
 	"runtime"
 )
+
+const port = `1080`
 
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
@@ -15,17 +15,8 @@ const version = `DOCKER_VERSION`
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	docker, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	http.Handle(`/`, docker.Handler{})
 
-	containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, container := range containers {
-		log.Printf(`%s %s\n`, container.ID[:10], container.Image)
-	}
+	log.Print(`Starting server on port ` + port)
+	log.Fatal(http.ListenAndServe(`:`+port, nil))
 }
