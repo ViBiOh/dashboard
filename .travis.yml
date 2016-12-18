@@ -1,17 +1,28 @@
-language: go
+language:
+- go
+- node_js
 sudo: required
 services:
 - docker
 go:
 - 1.7
+node_js:
+- 6.7.0
+cache:
+  directories:
+  - .node_modules/
 before_install:
 - openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv -in deploy_rsa.enc -out deploy_rsa -d
-install: make
+install:
+- make
+- npm i
 script: |
-  docker build -t ${DOCKER_USER}/deploy .
+  npm run build &&
+  docker build -t ${DOCKER_USER}/docker-front Dockerfile_front &&
+  docker build -t ${DOCKER_USER}/docker-api -f Dockerfile_api .
 after_success: |
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
-    docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && docker push ${DOCKER_USER}/deploy
+    docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && docker push ${DOCKER_USER}/docker-front && docker push ${DOCKER_USER}/docker-api
   fi
 notifications:
   email: false
@@ -22,6 +33,6 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "bash -s" -- < ./deploy.sh docker https://github.com/ViBiOh/docker-deploy.git vibioh.fr
+  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "bash -s" 2>/dev/null -- < ./deploy.sh docker https://github.com/ViBiOh/docker-deploy.git vibioh.fr
   on:
     branch: master

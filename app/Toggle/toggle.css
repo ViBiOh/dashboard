@@ -1,0 +1,33 @@
+@media screen and (min-width: 670px) {
+  .toggle {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 669px) {
+  .hidden {
+    display: none;
+  }
+
+  .displayed {
+    display: block;
+    position: fixed;
+    bottom: 80px;
+    right: 10px;
+  }
+
+  .toggle {
+    background-color: #3A3A3A;
+    color: #F8F8F8;
+    padding: 10px;
+    font-size: 2em;
+    display: block;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    text-align: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+  }
+}

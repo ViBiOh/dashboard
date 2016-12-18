@@ -21,5 +21,13 @@ Desktop.ini
 *.iml
 *.iws
 
+# Node Package Manager
+node_modules/
+**/npm-debug.log
+coverage/
+tmp/
+dist/
+.nyc_output
+
 # Go binary
 server
