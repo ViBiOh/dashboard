@@ -1,1 +1,6 @@
+app/
+test/
+web/
+node_modules/
+
 **/*.go
