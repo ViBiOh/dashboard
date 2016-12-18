@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  api:
+    image: vibioh/deploy
+    environment:
+      DOCKER_HOST: 'unix:///var/run/docker.sock'
+      DOCKER_VERSION: '1.23'
+    labels:
+      traefik.frontend.passHostHeader: 'true'
+      traefik.frontend.rule: 'Host: docker.${DOMAIN}'
+      traefik.port: '1080'
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    logging:
+      driver: json-file
+      options:
+        max-size: '50m'
+    restart: on-failure:5
+    read_only: true
+    cpu_shares: 128
+    mem_limit: 134217728
+    security_opt:
+    - no-new-privileges
+
+networks:
+  default:
+    external:
+      name: traefik
+
