@@ -4,6 +4,8 @@ services:
 - docker
 go:
 - 1.7
+script: |
+  docker build -t ${DOCKER_USER}/deploy .
 after_success: |
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && docker push ${DOCKER_USER}/deploy
