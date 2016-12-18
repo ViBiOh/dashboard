@@ -51,7 +51,7 @@ func isAuthenticated(r *http.Request) bool {
 }
 
 func authHandler(w http.ResponseWriter) {
-	http.Error(w, `Authentication required`, 401)
+	http.Error(w, `Authentication required`, http.StatusUnauthorized)
 }
 
 // Handler for Hello request. Should be use with net/http
@@ -65,6 +65,11 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`X-Content-Type-Options`, `nosniff`)
 
 	urlPath := []byte(r.URL.Path)
+
+	if r.Method == http.MethodOptions {
+		w.Write(nil)
+		return
+	}
 
 	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
 		containersHandler(w)

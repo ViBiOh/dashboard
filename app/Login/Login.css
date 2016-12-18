@@ -1,0 +1,24 @@
+.login {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 10px;
+}
+
+.login > * {
+  width: 100%;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 50%;
+  padding: 20px;
+}
+
+@media screen and (max-width: 1023px) {
+  input[type="text"],
+  input[type="password"] {
+    width: 90%;
+  }
+}

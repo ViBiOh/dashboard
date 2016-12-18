@@ -15,6 +15,8 @@ const Main = ({ children }) => (
         <ul>
           <li><Link to="/">Containers</Link></li>
           <li><hr /></li>
+          <li><Link to="/login">Login</Link></li>
+          <li><hr /></li>
           <li>&copy; ViBiOh 2016</li>
         </ul>
       </nav>
