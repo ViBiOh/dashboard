@@ -64,6 +64,11 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`Access-Control-Allow-Methods`, `GET, POST`)
 	w.Header().Add(`X-Content-Type-Options`, `nosniff`)
 
+	if r.Method == http.MethodOptions {
+		w.Write(nil)
+		return
+	}
+
 	urlPath := []byte(r.URL.Path)
 
 	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
