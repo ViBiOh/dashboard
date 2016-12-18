@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
 import DockerService from '../Container/DockerService';
 import onValueChange from '../ChangeHandler/ChangeHandler';
 import style from './Login.css';
@@ -13,7 +14,11 @@ export default class Login extends Component {
   }
 
   login() {
-    DockerService.login(this.state.login, this.state.password);
+    return DockerService.login(this.state.login, this.state.password)
+      .then((data) => {
+        browserHistory.push(this.props.redirect || '/');
+        return data;
+      });
   }
 
   render() {
@@ -46,3 +51,8 @@ export default class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  redirect: React.PropTypes.string,
+};
+
