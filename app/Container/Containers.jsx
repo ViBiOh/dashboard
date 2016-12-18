@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import DockerService from './DockerService';
+import ContainerRow from './ContainerRow';
 import Throbber from '../Throbber/Throbber';
+import style from './Containers.css';
 
 export default class Containers extends Component {
   constructor(props) {
@@ -25,31 +27,23 @@ export default class Containers extends Component {
 
   renderContainers() {
     if (this.state.loaded) {
-      const containers = this.state.containers.map(container => (
-        <tr>
-          <td>{container.Id}</td>
-          <td>{container.Image}</td>
-          <td>{container.Created}</td>
-          <td>{container.Status}</td>
-          <td>{container.Names}</td>
-        </tr>
-      ));
+      const header = {
+        Id: 'Id',
+        Image: 'Image',
+        Created: 'Created',
+        Status: 'Status',
+        Names: ['Names'],
+      };
 
       return (
-        <table>
-          <thead>
-            <tr>
-              <td>Id</td>
-              <td>Image</td>
-              <td>Created</td>
-              <td>Status</td>
-              <td>Names</td>
-            </tr>
-          </thead>
-          <tbody>
-            {containers}
-          </tbody>
-        </table>
+        <div key="list" className={style.list}>
+          <ContainerRow key={'header'} container={header} />
+          {
+            this.state.containers.map(container => (
+              <ContainerRow key={container.Id} container={container} />
+            ))
+          }
+        </div>
       );
     }
     return <Throbber label="Loading containers" />;

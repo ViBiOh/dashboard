@@ -1,0 +1,96 @@
+$dark: #3a3a3a;
+$grey: #e1e1e8;
+$clear: #f8f8f8;
+
+$iconSize: 50px;
+
+@mixin darkBox {
+  background-color: $dark;
+  color: $clear;
+}
+
+@mixin smallPadding {
+  padding: 5px;
+}
+
+@mixin flexWrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@mixin roundBorder {
+  width: auto;
+  border: 1px solid;
+  border-radius: 5px;
+  margin: 2px;
+}
+
+article {
+  text-align: center;
+}
+
+.list {
+  width: 100%;
+  @include flexWrap;
+}
+
+.row,
+.id,
+.image,
+.created,
+.status,
+.names {
+  @include smallPadding;
+}
+
+.hidden {
+  display: none;
+}
+
+.displayed {
+  display: block;
+}
+
+.row {
+  width: 100%;
+  @include flexWrap;
+}
+
+.row:nth-child(even) {
+  background-color: $grey;
+}
+
+.id,
+.status,
+.names {
+  width: 160px;
+}
+
+.image {
+ flex: 1;
+}
+
+.created {
+  width: 250px;
+}
+
+@media screen and (max-width: 1023px) {
+  .row:first-child {
+    display: none;
+  }
+
+  .id,
+  .status,
+  .names,
+  .image,
+  .created {
+    @include roundBorder;
+    flex: none;
+    max-width: 100%;
+    order: 2;
+  }
+
+  .isin::before {
+    content: "ISIN | ";
+  }
+}

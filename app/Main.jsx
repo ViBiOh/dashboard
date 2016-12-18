@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import Toggle from './Toggle/Toggle';
+import style from './Main.css';
 
 const toggleProps = {
   idle: <span>&#x2715;</span>,
@@ -8,7 +9,7 @@ const toggleProps = {
 };
 
 const Main = ({ children }) => (
-  <span id="mainLayout">
+  <span className={style.mainLayout}>
     <Toggle {...toggleProps}>
       <nav>
         <ul>

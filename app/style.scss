@@ -12,14 +12,6 @@
 $dark: #3A3A3A;
 $clear: #F8F8F8;
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  font-family: 'Open Sans', sans-serif;
-}
-
 @mixin darkBox {
   background-color: $dark;
   color: $clear;
@@ -29,11 +21,12 @@ html {
   padding: 10px;
 }
 
-#mainLayout {
-  height: 100%;
-  width: 100%;
-  display: inline-flex;
-  flex-wrap: wrap;
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Open Sans', sans-serif;
 }
 
 header {
@@ -48,40 +41,8 @@ h1 {
   @include smallPadding;
 }
 
-nav > ul {
-  @include darkBox;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
-
-li {
-  @include smallPadding;
-}
-
-a, a:hover, a:visited, a:active, a:focus {
-  text-decoration: none;
-  color: inherit;
-}
-
-article {
-  text-align: center;
-  flex: 1;
-}
-
-@media screen and (min-width: 670px) {
-  section {
-    @include smallPadding;
-  }
-}
-
 @media screen and (max-width: 669px) {
   h1 {
     font-size: 1em;
-  }
-
-  article {
-    flex-basis: auto;
   }
 }

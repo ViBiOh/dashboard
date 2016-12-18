@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -x
 
 function readVariableIfRequired() {
   if [ -z "${!1}" ]; then
