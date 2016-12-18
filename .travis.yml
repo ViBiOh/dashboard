@@ -31,6 +31,6 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "bash -s" 2>/dev/null -- < ./deploy.sh docker https://github.com/ViBiOh/docker-deploy.git vibioh.fr
+  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "bash -s" 2>/dev/null -- < ./deploy.sh manager https://github.com/ViBiOh/docker-deploy.git vibioh.fr
   on:
     branch: master
