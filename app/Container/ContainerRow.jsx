@@ -17,7 +17,7 @@ const ContainerRow = ({ container }) => (
     <span 
       className={style.status}
       style={{
-        color: GREEN_STATUS.test(container.Status) ? '#d43f3a' : '#4cae4c'
+        color: GREEN_STATUS.test(container.Status) ? '#4cae4c' : '#d43f3a' 
       }}
     >{container.Status}</span>
     <span className={style.names}>{container.Names.join(', ')}</span>
