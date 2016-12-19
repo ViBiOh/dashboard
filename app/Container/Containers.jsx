@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DockerService from './DockerService';
+import DockerService from '../Service/DockerService';
 import ContainerRow from './ContainerRow';
 import Throbber from '../Throbber/Throbber';
 import style from './Containers.css';
