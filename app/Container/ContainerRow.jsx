@@ -1,6 +1,8 @@
 import React from 'react';
 import style from './Containers.css';
 
+const GREEN_STATUS = /up/i;
+
 const ContainerRow = ({ container }) => (
   <span className={style.row}>
     <span className={style.id}>{container.Id.substring(0, 10)}</span>
@@ -12,7 +14,12 @@ const ContainerRow = ({ container }) => (
         : new Date(container.Created * 1000).toUTCString()
       }
     </span>
-    <span className={style.status}>{container.Status}</span>
+    <span 
+      className={style.status}
+      style={{
+        color: GREEN_STATUS.test(container.Status) ? '#d43f3a' : '#4cae4c'
+      }}
+    >{container.Status}</span>
     <span className={style.names}>{container.Names.join(', ')}</span>
   </span>
 );
