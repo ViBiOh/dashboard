@@ -80,6 +80,9 @@ func containersHandler(w http.ResponseWriter) {
 func isAuthenticated(r *http.Request) bool {
 	username, password, ok := r.BasicAuth()
 
+	log.Print(username)
+	log.Print(password)
+
 	if ok {
 		user, ok := users[username]
 
