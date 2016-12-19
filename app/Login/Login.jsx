@@ -29,7 +29,7 @@ export default class Login extends Component {
             name="login"
             type="text"
             placeholder="login"
-            onChange={onValueChange(this, 'login')}
+            onChange={e => onValueChange(this, 'login')(e.target.value)}
           />
         </span>
         <span>
@@ -37,7 +37,7 @@ export default class Login extends Component {
             name="password"
             type="password"
             placeholder="password"
-            onChange={onValueChange(this, 'password')}
+            onChange={e => onValueChange(this, 'password')(e.target.value)}
           />
         </span>
         <span>
