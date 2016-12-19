@@ -1,6 +1,8 @@
 package docker
 
 import (
+	"bufio"
+	"bytes"
 	"context"
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
@@ -14,15 +16,45 @@ import (
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
 
+var commaByte = []byte(`,`)
 var containersRequest = regexp.MustCompile(`^/containers$`)
 
 type results struct {
 	Results interface{} `json:"results"`
 }
 
+type user struct {
+	username string
+	password string
+}
+
 var docker *client.Client
+var users map[string]*user
+
+func readConfiguration(path string) map[string]*user {
+	configFile, err := os.Open(path)
+	defer configFile.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	users := make(map[string]*user)
+
+	scanner := bufio.NewScanner(configFile)
+	for scanner.Scan() {
+		parts := bytes.Split(scanner.Bytes(), commaByte)
+		user := user{string(parts[0]), string(parts[1])}
+
+		users[user.username] = &user
+	}
+
+	return users
+}
 
 func init() {
+	users = readConfiguration(`./users`)
+
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -46,8 +78,17 @@ func containersHandler(w http.ResponseWriter) {
 }
 
 func isAuthenticated(r *http.Request) bool {
-	_, _, ok := r.BasicAuth()
-	return ok
+	username, password, ok := r.BasicAuth()
+
+	if ok {
+		user, ok := users[username]
+
+		if ok && user.password == password {
+			return ok
+		}
+	}
+
+	return false
 }
 
 func authHandler(w http.ResponseWriter) {
