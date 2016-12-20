@@ -1,7 +1,6 @@
 FROM scratch
 
 VOLUME /var/run/docker.sock
-VOLUME /conf/users
 
 EXPOSE 1080
 ENTRYPOINT [ "/server" ]
