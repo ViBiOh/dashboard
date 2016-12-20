@@ -4,7 +4,6 @@ import ContainerStatus from './ContainerStatus';
 
 const ContainerRow = ({ container }) => (
   <span className={style.row}>
-    <span className={style.id}>{container.Id.substring(0, 10)}</span>
     <span className={style.image}>{container.Image}</span>
     <span className={style.created}>
       {
@@ -22,7 +21,6 @@ ContainerRow.displayName = 'ContainerRow';
 
 ContainerRow.propTypes = {
   container: React.PropTypes.shape({
-    Id: React.PropTypes.string.isRequired,
     Image: React.PropTypes.string.isRequired,
     Created: React.PropTypes.oneOfType([
       React.PropTypes.string,
