@@ -11,7 +11,7 @@ services:
       traefik.frontend.rule: 'Host: docker-api.${DOMAIN}'
       traefik.port: '1080'
     volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
+    - /var/run/docker.sock:/var/run/docker.sock:ro
     logging:
       driver: json-file
       options:
