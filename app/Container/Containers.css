@@ -35,7 +35,6 @@ article {
 }
 
 .row,
-.id,
 .image,
 .created,
 .status,
@@ -60,7 +59,6 @@ article {
   background-color: $grey;
 }
 
-.id,
 .status,
 .names {
   width: 160px;
@@ -79,7 +77,6 @@ article {
     display: none;
   }
 
-  .id,
   .status,
   .names,
   .image,
