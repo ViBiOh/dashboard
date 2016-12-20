@@ -92,6 +92,5 @@ button {
     @include roundBorder;
     flex: none;
     max-width: 100%;
-    order: 2;
   }
 }
