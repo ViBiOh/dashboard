@@ -1,29 +1,50 @@
 import React from 'react';
+import FaPlay from 'react-icons/lib/fa/play';
+import FaStop from 'react-icons/lib/fa/stop';
 import FaRefresh from 'react-icons/lib/fa/refresh';
 import DockerService from '../Service/DockerService';
 import style from './Containers.css';
-import ContainerStatus from './ContainerStatus';
 
-const ContainerRow = ({ container }) => (
-  <span className={style.row}>
-    <span className={style.created}>
+const GREEN_STATUS = /up/i;
+
+const ContainerRow = ({ container }) => {
+  const isUp = GREEN_STATUS.test(container.Status);
+
+  return (
+    <span className={style.row}>
+      <pre>{JSON.stringify(DockerService.isLogged(), null, 2)}</pre>
+      <pre>{JSON.stringify(isUp, null, 2)}</pre>
+      <span className={style.created}>
+        {
+          typeof container.Created === 'string'
+          ? container.Created
+          : new Date(container.Created * 1000).toLocaleString()
+        }
+      </span>
+      <span className={style.image}>{container.Image}</span>
+      <span className={style.status} style={{ color: isUp ? '#4cae4c' : '#d43f3a' }}>
+        {container.Status}
+      </span>
+      <span className={style.names}>{container.Names.join(', ')}</span>
       {
-        typeof container.Created === 'string'
-        ? container.Created
-        : new Date(container.Created * 1000).toLocaleString()
+        DockerService.isLogged() && isUp && [
+          <button className={style.icon} onClick={() => DockerService.restart(container.Id)}>
+            <FaRefresh />
+          </button>,
+          <button className={style.icon} onClick={() => DockerService.stop(container.Id)}>
+            <FaStop />
+          </button>,
+        ]
+      }
+      {
+        DockerService.isLogged() && !isUp &&
+          <button className={style.icon} onClick={() => DockerService.start(container.Id)}>
+            <FaPlay />
+          </button>
       }
     </span>
-    <span className={style.image}>{container.Image}</span>
-    <ContainerStatus status={container.Status} />
-    <span className={style.names}>{container.Names.join(', ')}</span>
-    {
-      DockerService.isLogged() &&
-      <button className={style.icon} onClick={() => DockerService.restart(container.Id)}>
-        <FaRefresh />
-      </button>
-    }
-  </span>
-);
+  );
+};
 
 ContainerRow.displayName = 'ContainerRow';
 

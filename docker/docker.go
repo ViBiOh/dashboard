@@ -49,7 +49,7 @@ func readConfiguration(path string) map[string]*user {
 	scanner := bufio.NewScanner(configFile)
 	for scanner.Scan() {
 		parts := bytes.Split(scanner.Bytes(), commaByte)
-		user := user{string(parts[1]), string(parts[2])}
+		user := user{string(parts[0]), string(parts[1])}
 
 		users[user.username] = &user
 	}
