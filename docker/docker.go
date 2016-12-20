@@ -15,10 +15,13 @@ import (
 
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
-const configurationFile = `./conf/users`
+const configurationFile = `./users`
 
 var commaByte = []byte(`,`)
-var containersRequest = regexp.MustCompile(`^/containers$`)
+var listRequest = regexp.MustCompile(`/containers`)
+var startRequest = regexp.MustCompile(`/containers/(\S*)/start`)
+var stopRequest = regexp.MustCompile(`/containers/(\S*)/stop`)
+var restartRequest = regexp.MustCompile(`/containers/(\S*)/restart`)
 
 type results struct {
 	Results interface{} `json:"results"`
@@ -65,18 +68,43 @@ func init() {
 	}
 }
 
-func listContainers() []types.Container {
-	containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{})
+func startContainer(w http.ResponseWriter, containerID []byte) {
+	err := docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
 	if err != nil {
-		log.Fatal(err)
-		return nil
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	return containers
+	w.Write(nil)
 }
 
-func containersHandler(w http.ResponseWriter) {
-	jsonHttp.ResponseJSON(w, results{listContainers()})
+func stopContainer(w http.ResponseWriter, containerID []byte) {
+	err := docker.ContainerStop(context.Background(), string(containerID), nil)
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Write(nil)
+}
+
+func restartContainer(w http.ResponseWriter, containerID []byte) {
+	err := docker.ContainerRestart(context.Background(), string(containerID), nil)
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Write(nil)
+}
+
+func listContainers(w http.ResponseWriter) {
+	if containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{}); err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	} else {
+		jsonHttp.ResponseJSON(w, results{containers})
+	}
 }
 
 func isAuthenticated(r *http.Request) bool {
@@ -86,14 +114,14 @@ func isAuthenticated(r *http.Request) bool {
 		user, ok := users[username]
 
 		if ok && user.password == password {
-			return ok
+			return true
 		}
 	}
 
 	return false
 }
 
-func authHandler(w http.ResponseWriter) {
+func unauthorized(w http.ResponseWriter) {
 	http.Error(w, `Authentication required`, http.StatusUnauthorized)
 }
 
@@ -114,11 +142,17 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	urlPath := []byte(r.URL.Path)
 
-	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
-		containersHandler(w)
+	if listRequest.Match(urlPath) && r.Method == http.MethodGet {
+		listContainers(w)
 	} else if isAuthenticated(r) {
-		jsonHttp.ResponseJSON(w, results{listContainers()})
+		if startRequest.Match(urlPath) && r.Method == http.MethodPost {
+			restartContainer(w, startRequest.FindSubmatch(urlPath)[1])
+		} else if stopRequest.Match(urlPath) && r.Method == http.MethodPost {
+			restartContainer(w, stopRequest.FindSubmatch(urlPath)[1])
+		} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
+			restartContainer(w, restartRequest.FindSubmatch(urlPath)[1])
+		}
 	} else {
-		authHandler(w)
+		unauthorized(w)
 	}
 }
