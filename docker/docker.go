@@ -15,6 +15,7 @@ import (
 
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
+const configurationFile = `./conf/users`
 
 var commaByte = []byte(`,`)
 var containersRequest = regexp.MustCompile(`^/containers$`)
@@ -36,7 +37,8 @@ func readConfiguration(path string) map[string]*user {
 	defer configFile.Close()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return nil
 	}
 
 	users := make(map[string]*user)
@@ -53,7 +55,7 @@ func readConfiguration(path string) map[string]*user {
 }
 
 func init() {
-	users = readConfiguration(`./users`)
+	users = readConfiguration(configurationFile)
 
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
 	if err != nil {
