@@ -64,6 +64,7 @@
     "js-fetch": "git+https://github.com/ViBiOh/js-fetch.git",
     "react": "latest",
     "react-dom": "latest",
+    "react-icons": "latest",
     "react-router": "latest"
   }
 }

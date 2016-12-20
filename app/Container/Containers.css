@@ -29,6 +29,11 @@ article {
   text-align: center;
 }
 
+button {
+  background-color: transparent;
+  border: 0;
+}
+
 .list {
   width: 100%;
   @include flexWrap;
@@ -53,23 +58,26 @@ article {
 .row {
   width: 100%;
   @include flexWrap;
+  text-align: left;
 }
 
 .row:nth-child(even) {
   background-color: $grey;
 }
 
+.image,
 .status,
 .names {
-  width: 160px;
-}
-
-.image {
  flex: 1;
 }
 
 .created {
-  width: 250px;
+  width: 200px;
+}
+
+.icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 @media screen and (max-width: 1023px) {
