@@ -12,8 +12,6 @@ const ContainerRow = ({ container }) => {
 
   return (
     <span className={style.row}>
-      <pre>{JSON.stringify(DockerService.isLogged(), null, 2)}</pre>
-      <pre>{JSON.stringify(isUp, null, 2)}</pre>
       <span className={style.created}>
         {
           typeof container.Created === 'string'
