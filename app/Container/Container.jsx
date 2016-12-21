@@ -20,7 +20,7 @@ export default class Containers extends Component {
   fetchLogs() {
     this.setState({ loaded: false });
 
-    return DockerService.logs()
+    return DockerService.logs(this.props.params.containerId)
       .then(logs => this.setState({
         loaded: true,
         logs,
@@ -39,3 +39,9 @@ export default class Containers extends Component {
     return <Throbber label="Loading logs" />;
   }
 }
+
+Containers.propTypes = {
+  params: React.PropTypes.shape({
+    containerId: React.PropTypes.string.isRequired,
+  }).isRequired,
+};

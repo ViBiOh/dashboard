@@ -102,7 +102,7 @@ func restartContainer(w http.ResponseWriter, containerID []byte) {
 }
 
 func logContainer(w http.ResponseWriter, containerID []byte) {
-	log.Print(`logContainer`)
+	log.Print(`arrivage ici`)
 	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Timestamps: true})
 	if err != nil {
 		log.Print(err)
@@ -116,7 +116,7 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	log.Print(logsBytes)
+	log.Print(string(logsBytes))
 	w.Write(logsBytes)
 }
 
@@ -164,9 +164,6 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	urlPath := []byte(r.URL.Path)
 
-	log.Print(string(urlPath))
-	log.Print(r.Method)
-
 	if listRequest.Match(urlPath) && r.Method == http.MethodGet {
 		listContainers(w)
 	} else if isAuthenticated(r) {
@@ -177,6 +174,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
 			restartContainer(w, restartRequest.FindSubmatch(urlPath)[1])
 		} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
+			log.Print(`passage ici`)
 			logContainer(w, logRequest.FindSubmatch(urlPath)[1])
 		}
 	} else {
