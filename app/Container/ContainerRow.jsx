@@ -31,7 +31,7 @@ const ContainerRow = ({ container, action }) => {
           <button
             key="logs"
             className={style.icon}
-            onClick={() => browserHistory.push(`/${container.Id}`)}
+            onClick={() => browserHistory.push(`/containers/${container.Id}`)}
           >
             <FaEye />
           </button>

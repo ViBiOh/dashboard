@@ -11,8 +11,8 @@ ReactDOM.render(
   <Router history={browserHistory}>
     <Route path="/" component={Main}>
       <IndexRoute component={Containers} />
-      <Route path=":containerId" component={Container} />
-      <Route path="login" component={Login} />
+      <Route path="/login" component={Login} />
+      <Route path="/containers/:containerId" component={Container} />
     </Route>
   </Router>,
   document.getElementById('root'),
