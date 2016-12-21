@@ -35,7 +35,7 @@ const ContainerRow = ({ container, action }) => {
           </button>,
           <button
             key="stop"
-            className={style.icon}
+            className={`${style.icon} ${style.stop}`}
             onClick={() => action(DockerService.stop(container.Id))}
           >
             <FaStop />
