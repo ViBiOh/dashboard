@@ -2,6 +2,7 @@ $dark: #3a3a3a;
 $grey: #e1e1e8;
 $clear: #f8f8f8;
 
+$primary: #337ab7;
 $success: #5cb85c;
 $info: #5bc0de;
 $warning: #f0ad4e;
@@ -85,8 +86,12 @@ button {
   height: 20px;
 }
 
-.icon.stop svg {
+.stop svg {
   color: $danger;
+}
+
+.primary svg {
+  color: $primary;
 }
 
 @media screen and (max-width: 1023px) {
