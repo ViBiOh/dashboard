@@ -20,7 +20,7 @@ const version = `DOCKER_VERSION`
 const configurationFile = `./users`
 
 var commaByte = []byte(`,`)
-var listRequest = regexp.MustCompile(`/containers/?^`)
+var listRequest = regexp.MustCompile(`/containers/?$`)
 var startRequest = regexp.MustCompile(`/containers/(\S*)/start`)
 var stopRequest = regexp.MustCompile(`/containers/(\S*)/stop`)
 var restartRequest = regexp.MustCompile(`/containers/(\S*)/restart`)
