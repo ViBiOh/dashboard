@@ -1,7 +1,9 @@
 import React from 'react';
+import { browserHistory } from 'react-router';
 import FaPlay from 'react-icons/lib/fa/play';
 import FaStop from 'react-icons/lib/fa/stop';
 import FaRefresh from 'react-icons/lib/fa/refresh';
+import FaEye from 'react-icons/lib/fa/eye';
 import DockerService from '../Service/DockerService';
 import style from './Containers.css';
 
@@ -25,10 +27,20 @@ const ContainerRow = ({ container, action }) => {
       </span>
       <span className={style.names}>{container.Names.join(', ')}</span>
       {
-        isUp && typeof container.Created !== 'string' && DockerService.isLogged() && [
+        DockerService.isLogged() &&
+          <button
+            key="logs"
+            className={style.icon}
+            onClick={() => browserHistory.push(`/${container.Id}`)}
+          >
+            <FaEye />
+          </button>
+      }
+      {
+        isUp && DockerService.isLogged() && [
           <button
             key="restart"
-            className={style.icon}
+            className={`${style.icon} ${style.primary}`}
             onClick={() => action(DockerService.restart(container.Id))}
           >
             <FaRefresh />
@@ -43,7 +55,7 @@ const ContainerRow = ({ container, action }) => {
         ]
       }
       {
-        !isUp && typeof container.Created !== 'string' && DockerService.isLogged() &&
+        !isUp && DockerService.isLogged() &&
           <button
             key="start"
             className={style.icon}

@@ -115,7 +115,7 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	w.Write(logsBytes)
+	log.Print(logsBytes)
 	w.Write(logsBytes)
 }
 
