@@ -16,7 +16,7 @@ const ContainerRow = ({ container, action }) => {
         {
           typeof container.Created === 'string'
           ? container.Created
-          : new Date(container.Created * 1000).toLocaleString()
+          : new Date(container.Created * 1000).toString()
         }
       </span>
       <span className={style.image}>{container.Image}</span>
