@@ -62,10 +62,7 @@ ContainerRow.propTypes = {
   action: React.PropTypes.func,
   container: React.PropTypes.shape({
     Image: React.PropTypes.string.isRequired,
-    Created: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number,
-    ]).isRequired,
+    Created: React.PropTypes.number.isRequired,
     Status: React.PropTypes.string.isRequired,
     Names: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   }).isRequired,
