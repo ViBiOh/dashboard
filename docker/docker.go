@@ -38,7 +38,7 @@ type user struct {
 var docker *client.Client
 var users map[string]*user
 
-func handleError(err error) {
+func handleError(w http.ResponseWriter, err error) {
 	log.Print(err)
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
@@ -79,7 +79,7 @@ func init() {
 func startContainer(w http.ResponseWriter, containerID []byte) {
 	err := docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
 	if err != nil {
-		handleError(err)
+		handleError(w, err)
 		return
 	}
 
@@ -89,7 +89,7 @@ func startContainer(w http.ResponseWriter, containerID []byte) {
 func stopContainer(w http.ResponseWriter, containerID []byte) {
 	err := docker.ContainerStop(context.Background(), string(containerID), nil)
 	if err != nil {
-		handleError(err)
+		handleError(w, err)
 		return
 	}
 
@@ -99,7 +99,7 @@ func stopContainer(w http.ResponseWriter, containerID []byte) {
 func restartContainer(w http.ResponseWriter, containerID []byte) {
 	err := docker.ContainerRestart(context.Background(), string(containerID), nil)
 	if err != nil {
-		handleError(err)
+		handleError(w, err)
 		return
 	}
 
@@ -109,14 +109,14 @@ func restartContainer(w http.ResponseWriter, containerID []byte) {
 func logContainer(w http.ResponseWriter, containerID []byte) {
 	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Timestamps: true})
 	if err != nil {
-		handleError(err)
+		handleError(w, err)
 		return
 	}
 
 	defer logs.Close()
 	logsBytes, err := ioutil.ReadAll(logs)
 	if err != nil {
-		handleError(err)
+		handleError(w, err)
 		return
 	}
 
@@ -125,7 +125,7 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 
 func listContainers(w http.ResponseWriter) {
 	if containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{}); err != nil {
-		handleError(err)
+		handleError(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{containers})
 	}
