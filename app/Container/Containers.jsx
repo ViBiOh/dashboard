@@ -28,7 +28,6 @@ export default class Containers extends Component {
   renderContainers() {
     if (this.state.loaded) {
       const header = {
-        Id: 'Id',
         Image: 'Image',
         Created: 'Created',
         Status: 'Status',

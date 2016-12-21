@@ -25,18 +25,30 @@ const ContainerRow = ({ container }) => {
       </span>
       <span className={style.names}>{container.Names.join(', ')}</span>
       {
-        DockerService.isLogged() && isUp && [
-          <button className={style.icon} onClick={() => DockerService.restart(container.Id)}>
+        isUp && typeof container.Created !== 'string' && DockerService.isLogged() && [
+          <button
+            key="restart"
+            className={style.icon}
+            onClick={() => DockerService.restart(container.Id)}
+          >
             <FaRefresh />
           </button>,
-          <button className={style.icon} onClick={() => DockerService.stop(container.Id)}>
+          <button
+            key="stop"
+            className={style.icon}
+            onClick={() => DockerService.stop(container.Id)}
+          >
             <FaStop />
           </button>,
         ]
       }
       {
-        DockerService.isLogged() && !isUp &&
-          <button className={style.icon} onClick={() => DockerService.start(container.Id)}>
+        !isUp && typeof container.Created !== 'string' && DockerService.isLogged() &&
+          <button
+            key="start"
+            className={style.icon}
+            onClick={() => DockerService.start(container.Id)}
+          >
             <FaPlay />
           </button>
       }

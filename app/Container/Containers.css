@@ -40,8 +40,8 @@ button {
 }
 
 .row,
-.image,
 .created,
+.image,
 .status,
 .names {
   @include smallPadding;

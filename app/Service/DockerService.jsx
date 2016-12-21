@@ -2,11 +2,9 @@ import Fetch from 'js-fetch';
 
 const API = 'https://docker-api.vibioh.fr/';
 
-let auth;
-
 export default class DockerService {
   static isLogged() {
-    return !!auth;
+    return !!localStorage.getItem('auth');
   }
 
   static login(login, password) {
@@ -16,32 +14,32 @@ export default class DockerService {
       .auth(hash)
       .get()
       .then(() => {
-        auth = hash;
+        localStorage.setItem('auth', hash);
       });
   }
 
   static containers() {
     return Fetch.url(`${API}containers`)
-      .auth(auth)
+      .auth(localStorage.getItem('auth'))
       .get()
       .then(({ results }) => results);
   }
 
   static start(containerId) {
     return Fetch.url(`${API}containers/${containerId}/start`)
-      .auth(auth)
+      .auth(localStorage.getItem('auth'))
       .post();
   }
 
   static stop(containerId) {
     return Fetch.url(`${API}containers/${containerId}/stop`)
-      .auth(auth)
+      .auth(localStorage.getItem('auth'))
       .post();
   }
 
   static restart(containerId) {
     return Fetch.url(`${API}containers/${containerId}/restart`)
-      .auth(auth)
+      .auth(localStorage.getItem('auth'))
       .post();
   }
 }

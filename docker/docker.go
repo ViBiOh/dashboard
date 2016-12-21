@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 )
 
 const host = `DOCKER_HOST`
@@ -51,7 +52,7 @@ func readConfiguration(path string) map[string]*user {
 		parts := bytes.Split(scanner.Bytes(), commaByte)
 		user := user{string(parts[0]), string(parts[1])}
 
-		users[user.username] = &user
+		users[strings.ToLower(user.username)] = &user
 	}
 
 	return users
@@ -111,7 +112,7 @@ func isAuthenticated(r *http.Request) bool {
 	username, password, ok := r.BasicAuth()
 
 	if ok {
-		user, ok := users[username]
+		user, ok := users[strings.ToLower(username)]
 
 		if ok && user.password == password {
 			return true
