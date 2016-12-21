@@ -96,7 +96,7 @@ button {
 
 .code {
   width: 100%;
-  word-wrap: break-word;
+  white-space: pre-wrap;
   text-align: left;
   background: $dark;
   color: $grey;
