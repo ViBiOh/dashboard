@@ -55,6 +55,6 @@ export default class Containers extends Component {
   }
 
   render() {
-    return {this.renderContainers()};
+    return this.renderContainers();
   }
 }
