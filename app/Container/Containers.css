@@ -2,6 +2,11 @@ $dark: #3a3a3a;
 $grey: #e1e1e8;
 $clear: #f8f8f8;
 
+$success: #5cb85c;
+$info: #5bc0de;
+$warning: #f0ad4e;
+$danger: #d9534f;
+
 $iconSize: 50px;
 
 @mixin darkBox {
@@ -78,6 +83,10 @@ button {
 .icon svg {
   width: 20px;
   height: 20px;
+}
+
+.icon.stop svg {
+  color: $danger;
 }
 
 @media screen and (max-width: 1023px) {
