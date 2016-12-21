@@ -31,8 +31,8 @@ export default class Containers extends Component {
   }
   
   actionContainer(promise) {
-    promise.then(this.fetchContainers);
-  )
+    return promise.then(this.fetchContainers);
+  }
 
   renderContainers() {
     if (this.state.loaded) {
