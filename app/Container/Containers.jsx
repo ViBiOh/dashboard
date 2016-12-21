@@ -36,16 +36,8 @@ export default class Containers extends Component {
 
   renderContainers() {
     if (this.state.loaded) {
-      const header = {
-        Image: 'Image',
-        Created: 'Created',
-        Status: 'Status',
-        Names: ['Names'],
-      };
-
       return (
         <div key="list" className={style.list}>
-          <ContainerRow key={'header'} container={header} />
           {
             this.state.containers.map(container => (
               <ContainerRow
@@ -58,15 +50,11 @@ export default class Containers extends Component {
         </div>
       );
     }
+
     return <Throbber label="Loading containers" />;
   }
 
   render() {
-    return (
-      <span>
-        <h2>Containers</h2>
-        {this.renderContainers()}
-      </span>
-    );
+    return {this.renderContainers()};
   }
 }
