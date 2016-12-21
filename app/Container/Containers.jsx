@@ -11,7 +11,7 @@ export default class Containers extends Component {
     this.state = {
       loaded: false,
     };
-    
+
     this.fetchContainers = this.fetchContainers.bind(this);
     this.actionContainer = this.actionContainer.bind(this);
   }
@@ -29,7 +29,7 @@ export default class Containers extends Component {
         containers,
       }));
   }
-  
+
   actionContainer(promise) {
     return promise.then(this.fetchContainers);
   }
@@ -48,7 +48,11 @@ export default class Containers extends Component {
           <ContainerRow key={'header'} container={header} />
           {
             this.state.containers.map(container => (
-              <ContainerRow key={container.Id} container={container} action={this.actionContainer} />
+              <ContainerRow
+                key={container.Id}
+                container={container}
+                action={this.actionContainer}
+              />
             ))
           }
         </div>
