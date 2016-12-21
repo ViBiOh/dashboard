@@ -94,6 +94,16 @@ button {
   color: $primary;
 }
 
+.code {
+  width: 100%;
+  word-wrap: break-word;
+  text-align: left;
+  background: $dark;
+  color: $grey;
+  font-size: 12px;
+  @include smallPadding;
+}
+
 @media screen and (max-width: 1023px) {
   .row:first-child {
     display: none;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DockerService from '../Service/DockerService';
 import Throbber from '../Throbber/Throbber';
+import style from './Containers.css';
 
 export default class Containers extends Component {
   constructor(props) {
@@ -30,9 +31,12 @@ export default class Containers extends Component {
   render() {
     if (this.state.loaded) {
       return (
-        <div>
-          {this.state.logs}
-        </div>
+        <span>
+          <h2>Logs</h2>
+          <pre className={style.code}>
+            {this.state.logs}
+          </pre>
+        </span>
       );
     }
 
