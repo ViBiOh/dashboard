@@ -7,6 +7,7 @@ import (
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -23,6 +24,7 @@ var listRequest = regexp.MustCompile(`/containers`)
 var startRequest = regexp.MustCompile(`/containers/(\S*)/start`)
 var stopRequest = regexp.MustCompile(`/containers/(\S*)/stop`)
 var restartRequest = regexp.MustCompile(`/containers/(\S*)/restart`)
+var logRequest = regexp.MustCompile(`/containers/(\S*)/logs`)
 
 type results struct {
 	Results interface{} `json:"results"`
@@ -99,6 +101,24 @@ func restartContainer(w http.ResponseWriter, containerID []byte) {
 	w.Write(nil)
 }
 
+func logContainer(w http.ResponseWriter, containerID []byte) {
+	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Timestamps: true})
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	defer logs.Close()
+	logsBytes, err := ioutil.ReadAll(logs)
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	w.Write(logsBytes)
+	w.Write(logsBytes)
+}
+
 func listContainers(w http.ResponseWriter) {
 	if containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{}); err != nil {
 		log.Print(err)
@@ -152,6 +172,8 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			restartContainer(w, stopRequest.FindSubmatch(urlPath)[1])
 		} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
 			restartContainer(w, restartRequest.FindSubmatch(urlPath)[1])
+		} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
+			logContainer(w, logRequest.FindSubmatch(urlPath)[1])
 		}
 	} else {
 		unauthorized(w)
