@@ -11,6 +11,9 @@ export default class Containers extends Component {
     this.state = {
       loaded: false,
     };
+    
+    this.fetchContainers = this.fetchContainers.bind(this);
+    this.actionContainer = this.actionContainer.bind(this);
   }
 
   componentDidMount() {
@@ -18,12 +21,18 @@ export default class Containers extends Component {
   }
 
   fetchContainers() {
+    this.setState({ loaded: false });
+
     return DockerService.containers()
       .then(containers => this.setState({
         loaded: true,
         containers,
       }));
   }
+  
+  actionContainer(promise) {
+    promise.then(this.fetchContainers);
+  )
 
   renderContainers() {
     if (this.state.loaded) {
@@ -39,7 +48,7 @@ export default class Containers extends Component {
           <ContainerRow key={'header'} container={header} />
           {
             this.state.containers.map(container => (
-              <ContainerRow key={container.Id} container={container} />
+              <ContainerRow key={container.Id} container={container} action={this.actionContainer} />
             ))
           }
         </div>
