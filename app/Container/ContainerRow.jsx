@@ -7,7 +7,7 @@ import style from './Containers.css';
 
 const GREEN_STATUS = /up/i;
 
-const ContainerRow = ({ container }) => {
+const ContainerRow = ({ container, action }) => {
   const isUp = GREEN_STATUS.test(container.Status);
 
   return (
@@ -29,14 +29,14 @@ const ContainerRow = ({ container }) => {
           <button
             key="restart"
             className={style.icon}
-            onClick={() => DockerService.restart(container.Id)}
+            onClick={() => action(DockerService.restart(container.Id))}
           >
             <FaRefresh />
           </button>,
           <button
             key="stop"
             className={style.icon}
-            onClick={() => DockerService.stop(container.Id)}
+            onClick={() => action(DockerService.stop(container.Id))}
           >
             <FaStop />
           </button>,
@@ -47,7 +47,7 @@ const ContainerRow = ({ container }) => {
           <button
             key="start"
             className={style.icon}
-            onClick={() => DockerService.start(container.Id)}
+            onClick={() => action(DockerService.start(container.Id))}
           >
             <FaPlay />
           </button>
@@ -59,6 +59,7 @@ const ContainerRow = ({ container }) => {
 ContainerRow.displayName = 'ContainerRow';
 
 ContainerRow.propTypes = {
+  action: React.PropTypes.func,
   container: React.PropTypes.shape({
     Image: React.PropTypes.string.isRequired,
     Created: React.PropTypes.oneOfType([
