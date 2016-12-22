@@ -41,7 +41,37 @@ export default class Containers extends Component {
       return (
         <span>
           <h2>{container.name}</h2>
-          <span>Image: {container.Config.Image}</span>
+          <span key="id" className={style.info}>
+            <span className={style.label}>Id</span>
+            <span>{container.Id.substring(0, 10)}</span>
+          </span>
+          <span key="status" className={style.info}>
+            <span className={style.label}>Status</span>
+            <span>{container.State.Status}</span>
+          </span>
+          <span key="image" className={style.info}>
+            <span className={style.label}>Image</span>
+            <span>{container.Config.Image}</span>
+          </span>
+          <h2>Volumes</h2>
+          {
+            container.Mounts.map((mount, index) => (
+              <span key={`volumes${index}`} className={style.info}>
+                <span key="source" className={style.info}>
+                  <span className={style.label}>Source</span>
+                  <span>{mount.Source}</span>
+                </span>
+                <span key="destination" className={style.info}>
+                  <span className={style.label}>Destination</span>
+                  <span>{mount.Destination}</span>
+                </span>
+                <span key="mode" className={style.info}>
+                  <span className={style.label}>Mode</span>
+                  <span>{mount.Mode}</span>
+                </span>
+              </span>
+            ))
+          }
           <h2>Logs</h2>
           <pre className={style.code}>
             {logs}
