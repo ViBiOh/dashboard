@@ -20,7 +20,7 @@ const version = `DOCKER_VERSION`
 const configurationFile = `./users`
 
 var commaByte = []byte(`,`)
-var splitLogs = regexp.MustCompile(`.(.*?\n)`)
+var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
 
 var listRequest = regexp.MustCompile(`/containers/?$`)
 var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
