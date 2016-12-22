@@ -116,9 +116,15 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 		return
 	}
 
-	if _, err := io.Copy(w, logs); err != nil && err != io.EOF {
-		handleError(w, err)
+	logReader := bufio.NewReader(logs)
+	logLines := make([][]byte)
+	logLine, err := logReader.ReadBytes([]byte(`\n`))
+	for err != nil {
+		logLines = append(logLines, logLine[8:])
+		logLine, err = logReader.ReadBytes([]byte(`\n`))
 	}
+	
+	w.Write(logLines)
 }
 
 func listContainers(w http.ResponseWriter) {
