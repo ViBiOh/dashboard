@@ -40,7 +40,7 @@ export default class Containers extends Component {
 
       return (
         <span>
-          <h2>{container.name}</h2>
+          <h2>{container.Name}</h2>
           <span key="id" className={style.info}>
             <span className={style.label}>Id</span>
             <span>{container.Id.substring(0, 10)}</span>
