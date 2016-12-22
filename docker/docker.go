@@ -124,9 +124,9 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 		handleError(w, err)
 	} else {
 		matches := splitLogs.FindAllSubmatch(logLines, -1)
-		cleanLogs := make([][]byte, 0, len(matches))
+		cleanLogs := make([]string, 0, len(matches))
 		for _, match := range matches {
-			cleanLogs = append(cleanLogs, match[1])
+			cleanLogs = append(cleanLogs, string(match[1]))
 		}
 
 		jsonHttp.ResponseJSON(w, results{cleanLogs})
