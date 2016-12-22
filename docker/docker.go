@@ -119,11 +119,11 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 	}
 
 	defer logs.Close()
-	logsLines, err := ioutil.ReadAll(logs)
-	if err != nil {
+	
+	if logLines, err := ioutil.ReadAll(logs); err != nil {
 		handleError(w, err)
 	} else {
-		matches := splitLogs.FindAllSubmatch(logsLine, -1)
+		matches := splitLogs.FindAllSubmatch(logLines, -1)
 		cleanLogs := make([]byte, 0, len(matches))
 		for _, match := range matches {
 			cleanLogs = append(cleanLogs, match[1])
