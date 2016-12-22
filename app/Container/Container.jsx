@@ -17,7 +17,7 @@ export default class Containers extends Component {
 
   componentDidMount() {
     Promise.all([this.fetchInfos(), this.fetchLogs()])
-      .then(() => this.setState({ loaded: true });
+      .then(() => this.setState({ loaded: true }));
   }
 
   fetchInfos() {
