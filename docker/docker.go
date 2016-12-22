@@ -21,11 +21,11 @@ const configurationFile = `./users`
 
 var commaByte = []byte(`,`)
 var listRequest = regexp.MustCompile(`/containers/?$`)
-var containerRequest = regexp.MustCompile(`/containers/(\S+)$`)
-var startRequest = regexp.MustCompile(`/containers/(\S+)/start`)
-var stopRequest = regexp.MustCompile(`/containers/(\S+)/stop`)
-var restartRequest = regexp.MustCompile(`/containers/(\S+)/restart`)
-var logRequest = regexp.MustCompile(`/containers/(\S+)/logs`)
+var containerRequest = regexp.MustCompile(`/containers/([^/]+)$`)
+var startRequest = regexp.MustCompile(`/containers/([^/]+)/start`)
+var stopRequest = regexp.MustCompile(`/containers/([^/]+)/stop`)
+var restartRequest = regexp.MustCompile(`/containers/([^/]+)/restart`)
+var logRequest = regexp.MustCompile(`/containers/([^/]+)/logs`)
 
 type results struct {
 	Results interface{} `json:"results"`
