@@ -11,30 +11,40 @@ export default class Containers extends Component {
       loaded: false,
     };
 
+    this.fetchInfos = this.fetchInfos.bind(this);
     this.fetchLogs = this.fetchLogs.bind(this);
   }
 
   componentDidMount() {
-    this.fetchLogs();
+    Promise.all([this.fetchInfos(), this.fetchLogs()])
+      .then(() => this.setState({ loaded: true });
+  }
+
+  fetchInfos() {
+    return DockerService.infos(this.props.params.containerId)
+      .then(container => this.setState({
+        container,
+      }));
   }
 
   fetchLogs() {
-    this.setState({ loaded: false });
-
     return DockerService.logs(this.props.params.containerId)
       .then(logs => this.setState({
-        loaded: true,
         logs,
       }));
   }
 
   render() {
     if (this.state.loaded) {
+      const { container, logs } = this.state;
+
       return (
         <span>
+          <h2>{container.name}</h2>
+          <span>Image: {container.Config.Image}</span>
           <h2>Logs</h2>
           <pre className={style.code}>
-            {this.state.logs}
+            {logs}
           </pre>
         </span>
       );
