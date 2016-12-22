@@ -74,7 +74,7 @@ export default class Containers extends Component {
           }
           <h2>Logs</h2>
           <pre className={style.code}>
-            {logs}
+            {logs.join('\n')}
           </pre>
         </span>
       );
