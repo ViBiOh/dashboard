@@ -7,8 +7,8 @@ import (
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"io"
 	"log"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"regexp"
@@ -19,9 +19,9 @@ const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
 const configurationFile = `./users`
 
-const carriageReturn = []byte(`\n`)[0]
-
 var commaByte = []byte(`,`)
+var splitLogs = regexp.MustCompile(`.(.*?\n)`)
+
 var listRequest = regexp.MustCompile(`/containers/?$`)
 var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
 var startRequest = regexp.MustCompile(`/containers/([^/]+)/start`)
@@ -118,15 +118,19 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 		return
 	}
 
-	logReader := bufio.NewReader(logs)
-	logLines := make([][]byte)
-	logLine, err := logReader.ReadBytes(carriageReturn)
-	for err != nil {
-		logLines = append(logLines, logLine[8:])
-		logLine, err = logReader.ReadBytes(carriageReturn)
+	defer logs.Close()
+	logsLines, err := ioutil.ReadAll(logs)
+	if err != nil {
+		handleError(w, err)
+	} else {
+		matches := splitLogs.FindAllSubmatch(logsLine, -1)
+		cleanLogs := make([]byte, 0, len(matches))
+		for _, match := range matches {
+			cleanLogs = append(cleanLogs, match[1])
+		}
+
+		w.Write(cleanLogs)
 	}
-	
-	w.Write(logLines)
 }
 
 func listContainers(w http.ResponseWriter) {
