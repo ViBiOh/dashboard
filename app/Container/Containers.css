@@ -96,6 +96,8 @@ button {
 
 .info {
   display: inline-block;
+  text-align: left;
+  @include smallPadding;
   width: 100%;
 }
 
