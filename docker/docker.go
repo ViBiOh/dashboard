@@ -21,7 +21,7 @@ const configurationFile = `./users`
 
 var commaByte = []byte(`,`)
 var listRequest = regexp.MustCompile(`/containers/?$`)
-var containerRequest = regexp.MustCompile(`/containers/([^/]+)$`)
+var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
 var startRequest = regexp.MustCompile(`/containers/([^/]+)/start`)
 var stopRequest = regexp.MustCompile(`/containers/([^/]+)/stop`)
 var restartRequest = regexp.MustCompile(`/containers/([^/]+)/restart`)
