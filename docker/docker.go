@@ -118,10 +118,10 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 
 	logReader := bufio.NewReader(logs)
 	logLines := make([][]byte)
-	logLine, err := logReader.ReadBytes([]byte(`\n`))
+	logLine, err := logReader.ReadBytes(byte(`\n`))
 	for err != nil {
 		logLines = append(logLines, logLine[8:])
-		logLine, err = logReader.ReadBytes([]byte(`\n`))
+		logLine, err = logReader.ReadBytes(byte(`\n`))
 	}
 	
 	w.Write(logLines)
