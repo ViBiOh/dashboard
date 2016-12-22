@@ -81,7 +81,7 @@ func inspectContainer(w http.ResponseWriter, containerID []byte) {
 	if container, err := docker.ContainerInspect(context.Background(), string(containerID)); err != nil {
 		handleError(w, err)
 	} else {
-		w.Write(container)
+		jsonHttp.ResponseJSON(w, container)
 	}
 }
 
