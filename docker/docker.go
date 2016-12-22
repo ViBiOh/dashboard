@@ -7,7 +7,7 @@ import (
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -116,11 +116,8 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 		return
 	}
 
-	defer logs.Close()
-	if logsBytes, err := ioutil.ReadAll(logs); err != nil {
+	if _, err := io.Copy(w, logs); err != nil && err != io.EOF {
 		handleError(w, err)
-	} else {
-		w.Write(logsBytes)
 	}
 }
 
