@@ -110,7 +110,7 @@ func restartContainer(w http.ResponseWriter, containerID []byte) {
 }
 
 func logContainer(w http.ResponseWriter, containerID []byte) {
-	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{})
+	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true})
 	if err != nil {
 		handleError(w, err)
 		return
