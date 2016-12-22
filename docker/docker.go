@@ -19,6 +19,8 @@ const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
 const configurationFile = `./users`
 
+const carriageReturn = []byte(`\n`)[0]
+
 var commaByte = []byte(`,`)
 var listRequest = regexp.MustCompile(`/containers/?$`)
 var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
@@ -118,10 +120,10 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 
 	logReader := bufio.NewReader(logs)
 	logLines := make([][]byte)
-	logLine, err := logReader.ReadBytes(byte(`\n`))
+	logLine, err := logReader.ReadBytes(carriageReturn)
 	for err != nil {
 		logLines = append(logLines, logLine[8:])
-		logLine, err = logReader.ReadBytes(byte(`\n`))
+		logLine, err = logReader.ReadBytes(carriageReturn)
 	}
 	
 	w.Write(logLines)
