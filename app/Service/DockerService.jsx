@@ -25,6 +25,13 @@ export default class DockerService {
       .then(({ results }) => results);
   }
 
+
+  static infos(containerId) {
+    return Fetch.url(`${API}containers/${containerId}/`)
+      .auth(localStorage.getItem('auth'))
+      .get();
+  }
+
   static start(containerId) {
     return Fetch.url(`${API}containers/${containerId}/start`)
       .auth(localStorage.getItem('auth'))
