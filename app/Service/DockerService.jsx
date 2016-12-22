@@ -53,6 +53,7 @@ export default class DockerService {
   static logs(containerId) {
     return Fetch.url(`${API}containers/${containerId}/logs`)
       .auth(localStorage.getItem('auth'))
-      .get();
+      .get()
+      .then(({ results }) => results);
   }
 }
