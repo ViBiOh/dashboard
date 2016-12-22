@@ -40,7 +40,7 @@ export default function onValueChange(instance, key, stateKey, previousValue, di
 
     if (stateKeyDefined) {
       const innerObj = {};
-      innerObj[stateKey] = Object.assign(instance.state[stateKey], obj);
+      innerObj[stateKey] = Object.assign({}, instance.state[stateKey], obj);
       obj = innerObj;
     }
 
