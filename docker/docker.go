@@ -21,10 +21,11 @@ const configurationFile = `./users`
 
 var commaByte = []byte(`,`)
 var listRequest = regexp.MustCompile(`/containers/?$`)
-var startRequest = regexp.MustCompile(`/containers/(\S*)/start`)
-var stopRequest = regexp.MustCompile(`/containers/(\S*)/stop`)
-var restartRequest = regexp.MustCompile(`/containers/(\S*)/restart`)
-var logRequest = regexp.MustCompile(`/containers/(\S*)/logs`)
+var containerRequest = regexp.MustCompile(`/containers/(\S+)$`)
+var startRequest = regexp.MustCompile(`/containers/(\S+)/start`)
+var stopRequest = regexp.MustCompile(`/containers/(\S+)/stop`)
+var restartRequest = regexp.MustCompile(`/containers/(\S+)/restart`)
+var logRequest = regexp.MustCompile(`/containers/(\S+)/logs`)
 
 type results struct {
 	Results interface{} `json:"results"`
@@ -76,34 +77,36 @@ func init() {
 	}
 }
 
-func startContainer(w http.ResponseWriter, containerID []byte) {
-	err := docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
-	if err != nil {
+func inspectContainer(w http.ResponseWriter, containerID []byte) {
+	if container, err := docker.ContainerInspect(context.Background(), string(containerID)); err != nil {
 		handleError(w, err)
-		return
+	} else {
+		w.Write(container)
 	}
+}
 
-	w.Write(nil)
+func startContainer(w http.ResponseWriter, containerID []byte) {
+	if err := docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{}); err != nil {
+		handleError(w, err)
+	} else {
+		w.Write(nil)
+	}
 }
 
 func stopContainer(w http.ResponseWriter, containerID []byte) {
-	err := docker.ContainerStop(context.Background(), string(containerID), nil)
-	if err != nil {
+	if err := docker.ContainerStop(context.Background(), string(containerID), nil); err != nil {
 		handleError(w, err)
-		return
+	} else {
+		w.Write(nil)
 	}
-
-	w.Write(nil)
 }
 
 func restartContainer(w http.ResponseWriter, containerID []byte) {
-	err := docker.ContainerRestart(context.Background(), string(containerID), nil)
-	if err != nil {
+	if err := docker.ContainerRestart(context.Background(), string(containerID), nil); err != nil {
 		handleError(w, err)
-		return
+	} else {
+		w.Write(nil)
 	}
-
-	w.Write(nil)
 }
 
 func logContainer(w http.ResponseWriter, containerID []byte) {
@@ -114,13 +117,11 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 	}
 
 	defer logs.Close()
-	logsBytes, err := ioutil.ReadAll(logs)
-	if err != nil {
+	if logsBytes, err := ioutil.ReadAll(logs); err != nil {
 		handleError(w, err)
-		return
+	} else {
+		w.Write(logsBytes)
 	}
-
-	w.Write(logsBytes)
 }
 
 func listContainers(w http.ResponseWriter) {
@@ -169,7 +170,9 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if listRequest.Match(urlPath) && r.Method == http.MethodGet {
 		listContainers(w)
 	} else if isAuthenticated(r) {
-		if startRequest.Match(urlPath) && r.Method == http.MethodPost {
+		if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
+			inspectContainer(w, containerRequest.FindSubmatch(urlPath)[1])
+		} else if startRequest.Match(urlPath) && r.Method == http.MethodPost {
 			startContainer(w, startRequest.FindSubmatch(urlPath)[1])
 		} else if stopRequest.Match(urlPath) && r.Method == http.MethodPost {
 			stopContainer(w, stopRequest.FindSubmatch(urlPath)[1])
