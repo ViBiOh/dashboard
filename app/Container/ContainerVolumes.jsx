@@ -4,24 +4,15 @@ import style from './Containers.css';
 const ContainerVolumes = ({ container }) => (
   <span className={style.container}>
     <h3>Volumes</h3>
-    {
-      container.Mounts.map((mount, index) => (
-        <span key={`volumes${index}`} className={style.info}>
-          <span key="source" className={style.info}>
-            <span className={style.label}>Source</span>
-            <span>{mount.Source}</span>
+    <span className={style.labelsContainer}>
+      {
+        container.Mounts.map((mount, index) => (
+          <span key={`mount${index}`} className={style.labelItem}>
+            <em>{mount.Source}</em> : {mount.Destination} : <strong>{mount.Mode}</strong>
           </span>
-          <span key="destination" className={style.info}>
-            <span className={style.label}>Destination</span>
-            <span>{mount.Destination}</span>
-          </span>
-          <span key="mode" className={style.info}>
-            <span className={style.label}>Mode</span>
-            <span>{mount.Mode}</span>
-          </span>
-        </span>
-      ))
-    }
+        ))
+      }
+    </span>
   </span>
 );
 
