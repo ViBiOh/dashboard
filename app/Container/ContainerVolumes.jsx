@@ -2,7 +2,7 @@ import React from 'react';
 import style from './Containers.css';
 
 const ContainerVolumes = ({ container }) => (
-  <span>
+  <span className={style.container}>
     <h2>Volumes</h2>
     {
       container.Mounts.map((mount, index) => (

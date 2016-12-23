@@ -39,7 +39,7 @@ $iconSize: 50px;
 }
 
 article {
-  text-align: center;
+  text-align: left;
 }
 
 button {
@@ -69,7 +69,6 @@ button {
 .row {
   width: 100%;
   @include flexWrap;
-  text-align: left;
 }
 
 .row:nth-child(even) {
@@ -104,9 +103,13 @@ button {
 
 .info {
   display: inline-block;
-  text-align: left;
   @include smallPadding;
   width: 100%;
+}
+
+.container {
+  display: inline-block;
+  @include smallPadding;
 }
 
 .label {
@@ -118,7 +121,6 @@ button {
   width: 100%;
   white-space: pre-wrap;
   word-break: break-all;
-  text-align: left;
   background: $dark;
   color: $grey;
   font-size: 12px;

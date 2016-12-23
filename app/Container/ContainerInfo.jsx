@@ -4,7 +4,7 @@ import style from './Containers.css';
 const dockerComposeLabel = /^com\.docker\.compose/;
 
 const ContainerInfo = ({ container }) => (
-  <span>
+  <span className={style.container}>
     <h2>{container.Name}</h2>
     <span key="id" className={style.info}>
       <span className={style.label}>Id</span>

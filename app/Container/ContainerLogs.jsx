@@ -14,9 +14,14 @@ export default class ContainerLogs extends Component {
     this.fetchLogs = this.fetchLogs.bind(this);
   }
 
+  componentDidMount() {
+    this.fetchLogs();
+  }
+
   fetchLogs() {
     return DockerService.logs(this.props.containerId)
       .then(logs => this.setState({
+        loaded: true,
         logs,
       }));
   }
@@ -35,7 +40,7 @@ export default class ContainerLogs extends Component {
 
     return (
       <span>
-        <h2>Logs</h2>
+        <h2 className={style.container}>Logs</h2>
         {content}
       </span>
     );
