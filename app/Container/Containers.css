@@ -76,7 +76,7 @@ button {
 }
 
 .fluid {
- flex: 1 1 0%;
+ flex: 1;
  @include ellipsis;
 }
 
