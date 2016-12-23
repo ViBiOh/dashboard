@@ -31,6 +31,12 @@ $iconSize: 50px;
   margin: 2px;
 }
 
+@mixin ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 article {
   text-align: center;
 }
@@ -47,9 +53,7 @@ button {
 
 .row,
 .created,
-.image,
-.status,
-.names {
+.fluid {
   @include smallPadding;
 }
 
@@ -71,10 +75,9 @@ button {
   background-color: $grey;
 }
 
-.image,
-.status,
-.names {
- flex: 1;
+.fluid {
+ flex: 1 1 0%;
+ @include ellipsis;
 }
 
 .created {
@@ -86,12 +89,16 @@ button {
   height: 20px;
 }
 
-.stop svg {
-  color: $danger;
+.success svg {
+  color: $success;
 }
 
 .primary svg {
   color: $primary;
+}
+
+.stop svg {
+  color: $danger;
 }
 
 .info {
@@ -118,9 +125,7 @@ button {
 }
 
 @media screen and (max-width: 1023px) {
-  .status,
-  .names,
-  .image,
+  .fluid,
   .created {
     @include roundBorder;
     flex: none;

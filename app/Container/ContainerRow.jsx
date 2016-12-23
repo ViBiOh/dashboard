@@ -14,6 +14,8 @@ const ContainerRow = ({ container, action }) => {
 
   return (
     <span className={style.row}>
+      <span className={style.fluid}>{container.Image}</span>
+      <span className={style.fluid}>{container.Command}</span>
       <span className={style.created}>
         {
           typeof container.Created === 'string'
@@ -21,16 +23,15 @@ const ContainerRow = ({ container, action }) => {
           : new Date(container.Created * 1000).toString()
         }
       </span>
-      <span className={style.image}>{container.Image}</span>
-      <span className={style.status} style={{ color: isUp ? '#4cae4c' : '#d43f3a' }}>
+      <span className={style.fluid} style={{ color: isUp ? '#4cae4c' : '#d43f3a' }}>
         {container.Status}
       </span>
-      <span className={style.names}>{container.Names.join(', ')}</span>
+      <span className={style.fluid}>{container.Names.join(', ')}</span>
       {
         DockerService.isLogged() &&
           <button
             key="logs"
-            className={style.icon}
+            className={`${style.icon} ${style.success}`}
             onClick={() => browserHistory.push(`/containers/${container.Id}`)}
           >
             <FaEye />
