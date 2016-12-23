@@ -25,6 +25,7 @@ $iconSize: 50px;
 }
 
 @mixin roundBorder {
+  @include smallPadding;
   width: auto;
   border: 1px solid;
   border-radius: 5px;
@@ -76,7 +77,7 @@ button {
 }
 
 .fluid {
- flex: 1 1 0%;
+ flex: 1;
  @include ellipsis;
 }
 
@@ -124,10 +125,15 @@ button {
   @include smallPadding;
 }
 
+.containerLabel {
+  @include roundBorder;
+}
+
 @media screen and (max-width: 1023px) {
   .fluid,
   .created {
     @include roundBorder;
+    white-space: normal;
     flex: none;
     max-width: 100%;
   }

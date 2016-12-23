@@ -7,8 +7,8 @@ import (
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"log"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -119,7 +119,7 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 	}
 
 	defer logs.Close()
-	
+
 	if logLines, err := ioutil.ReadAll(logs); err != nil {
 		handleError(w, err)
 	} else {

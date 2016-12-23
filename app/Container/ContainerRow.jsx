@@ -17,11 +17,7 @@ const ContainerRow = ({ container, action }) => {
       <span className={style.fluid}>{container.Image}</span>
       <span className={style.fluid}>{container.Command}</span>
       <span className={style.created}>
-        {
-          typeof container.Created === 'string'
-          ? container.Created
-          : new Date(container.Created * 1000).toString()
-        }
+        {new Date(container.Created * 1000).toString()}
       </span>
       <span className={style.fluid} style={{ color: isUp ? '#4cae4c' : '#d43f3a' }}>
         {container.Status}
