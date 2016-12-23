@@ -3,40 +3,55 @@ import style from './Containers.css';
 
 const dockerComposeLabel = /^com\.docker\.compose/;
 
-const ContainerInfo = ({ container }) => (
-  <span className={style.container}>
-    <h2>{container.Name}</h2>
-    <span key="id" className={style.info}>
-      <span className={style.label}>Id</span>
-      <span>{container.Id.substring(0, 12)}</span>
+const ContainerInfo = ({ container }) => {
+  const labels = Object.keys(container.Config.Labels)
+    .filter(label => !dockerComposeLabel.test(label));
+
+  let labelContent = null;
+  if (labels.length > 0) {
+    labelContent = [
+      <h3>Labels</h3>,
+      <span className={style.labelsContainer}>
+        {
+          Object.keys(container.Config.Labels)
+            .filter(label => !dockerComposeLabel.test(label))
+            .map(label => (
+              <span key={label} className={style.labelItem}>
+                {label} | {container.Config.Labels[label]}
+              </span>
+            ))
+        }
+      </span>,
+    ];
+  }
+
+  return (
+    <span className={style.container}>
+      <h2>{container.Name}</h2>
+      <span key="id" className={style.info}>
+        <span className={style.label}>Id</span>
+        <span>{container.Id.substring(0, 12)}</span>
+      </span>
+      <span key="created" className={style.info}>
+        <span className={style.label}>Created</span>
+        <span>{container.Created}</span>
+      </span>
+      <span key="status" className={style.info}>
+        <span className={style.label}>Status</span>
+        <span>{container.State.Status}</span>
+      </span>
+      <span key="image" className={style.info}>
+        <span className={style.label}>Image</span>
+        <span>{container.Config.Image}</span>
+      </span>
+      <span key="read-only" className={style.info}>
+        <span className={style.label}>read-only</span>
+        <span>{String(container.HostConfig.ReadonlyRootfs)}</span>
+      </span>
+      {labelContent}
     </span>
-    <span key="created" className={style.info}>
-      <span className={style.label}>Created</span>
-      <span>{container.Created}</span>
-    </span>
-    <span key="status" className={style.info}>
-      <span className={style.label}>Status</span>
-      <span>{container.State.Status}</span>
-    </span>
-    <span key="image" className={style.info}>
-      <span className={style.label}>Image</span>
-      <span>{container.Config.Image}</span>
-    </span>
-    <span key="read-only" className={style.info}>
-      <span className={style.label}>read-only</span>
-      <span>{String(container.HostConfig.ReadonlyRootfs)}</span>
-    </span>
-    {
-      Object.keys(container.Config.Labels)
-        .filter(label => !dockerComposeLabel.test(label))
-        .map(label => (
-          <span key={label} className={style.containerLabel}>
-            {label} | {container.Config.Labels[label]}
-          </span>
-        ))
-    }
-  </span>
-);
+  );
+};
 
 ContainerInfo.displayName = 'ContainerInfo';
 

@@ -3,7 +3,7 @@ import style from './Containers.css';
 
 const ContainerVolumes = ({ container }) => (
   <span className={style.container}>
-    <h2>Volumes</h2>
+    <h3>Volumes</h3>
     {
       container.Mounts.map((mount, index) => (
         <span key={`volumes${index}`} className={style.info}>
