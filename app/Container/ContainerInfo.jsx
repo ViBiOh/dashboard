@@ -13,13 +13,11 @@ const ContainerInfo = ({ container }) => {
       <h3>Labels</h3>,
       <span className={style.labelsContainer}>
         {
-          Object.keys(container.Config.Labels)
-            .filter(label => !dockerComposeLabel.test(label))
-            .map(label => (
-              <span key={label} className={style.labelItem}>
-                {label} | {container.Config.Labels[label]}
-              </span>
-            ))
+          labels.map(label => (
+            <span key={label} className={style.labelItem}>
+              {label} | {container.Config.Labels[label]}
+            </span>
+          ))
         }
       </span>,
     ];
