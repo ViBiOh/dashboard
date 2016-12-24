@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { browserHistory } from 'react-router';
 import FaPlay from 'react-icons/lib/fa/play';
 import FaStop from 'react-icons/lib/fa/stop';
@@ -14,10 +15,11 @@ const ContainerRow = ({ container, action }) => {
 
   return (
     <span className={style.row}>
+      <pre>{container.Id.substring(0, 12)}</pre>
       <span className={style.fluid}>{container.Image}</span>
       <span className={style.fluid}>{container.Command}</span>
       <span className={style.created}>
-        {new Date(container.Created * 1000).toString()}
+        {moment.unix(container.Created).fromNow()}
       </span>
       <span className={style.fluid} style={{ color: isUp ? '#4cae4c' : '#d43f3a' }}>
         {container.Status}

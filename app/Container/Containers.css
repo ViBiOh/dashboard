@@ -75,13 +75,20 @@ button {
   background-color: $grey;
 }
 
+.row pre {
+  display: inline-block;
+  width: 150px;
+  @include smallPadding;
+  margin: 0;
+}
+
 .fluid {
  flex: 1;
  @include ellipsis;
 }
 
 .created {
-  width: 350px;
+  width: 150px;
 }
 
 .icon svg {
@@ -137,6 +144,7 @@ button {
 }
 
 @media screen and (max-width: 1023px) {
+  .row pre,
   .fluid,
   .created {
     @include roundBorder;

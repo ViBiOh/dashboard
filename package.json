@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "js-fetch": "git+https://github.com/ViBiOh/js-fetch.git",
+    "moment": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-icons": "latest",
