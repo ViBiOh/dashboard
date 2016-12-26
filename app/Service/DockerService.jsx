@@ -1,6 +1,20 @@
-import Fetch from 'js-fetch';
+import { browserHistory } from 'react-router';
+import Fetch, { errorHandler } from 'js-fetch';
 
 const API = 'https://docker-api.vibioh.fr/';
+
+function authRedirect(response) {
+  if (response.status === 401) {
+    browserHistory.push('/login');
+  }
+  return errorHandler(response);
+}
+
+function auth(url) {
+  return Fetch.url(url)
+    .auth(localStorage.getItem('auth'))
+    .error(authRedirect);
+}
 
 export default class DockerService {
   static isLogged() {
@@ -19,40 +33,34 @@ export default class DockerService {
   }
 
   static containers() {
-    return Fetch.url(`${API}containers`)
-      .auth(localStorage.getItem('auth'))
+    return auth(`${API}containers`)
       .get()
       .then(({ results }) => results);
   }
 
 
   static infos(containerId) {
-    return Fetch.url(`${API}containers/${containerId}/`)
-      .auth(localStorage.getItem('auth'))
+    return auth(`${API}containers/${containerId}/`)
       .get();
   }
 
   static start(containerId) {
-    return Fetch.url(`${API}containers/${containerId}/start`)
-      .auth(localStorage.getItem('auth'))
+    return auth(`${API}containers/${containerId}/start`)
       .post();
   }
 
   static stop(containerId) {
-    return Fetch.url(`${API}containers/${containerId}/stop`)
-      .auth(localStorage.getItem('auth'))
+    return auth(`${API}containers/${containerId}/stop`)
       .post();
   }
 
   static restart(containerId) {
-    return Fetch.url(`${API}containers/${containerId}/restart`)
-      .auth(localStorage.getItem('auth'))
+    return auth(`${API}containers/${containerId}/restart`)
       .post();
   }
 
   static logs(containerId) {
-    return Fetch.url(`${API}containers/${containerId}/logs`)
-      .auth(localStorage.getItem('auth'))
+    return auth(`${API}containers/${containerId}/logs`)
       .get()
       .then(({ results }) => results);
   }

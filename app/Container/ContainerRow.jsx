@@ -25,16 +25,13 @@ const ContainerRow = ({ container, action }) => {
         {container.Status}
       </span>
       <span className={style.fluid}>{container.Names.join(', ')}</span>
-      {
-        DockerService.isLogged() &&
-          <button
-            key="logs"
-            className={`${style.icon} ${style.success}`}
-            onClick={() => browserHistory.push(`/containers/${container.Id}`)}
-          >
-            <FaEye />
-          </button>
-      }
+      <button
+        key="logs"
+        className={`${style.icon} ${style.success}`}
+        onClick={() => browserHistory.push(`/containers/${container.Id}`)}
+      >
+        <FaEye />
+      </button>
       {
         isUp && DockerService.isLogged() && [
           <button
