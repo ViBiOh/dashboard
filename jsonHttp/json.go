@@ -13,6 +13,6 @@ func ResponseJSON(w http.ResponseWriter, obj interface{}) {
 		w.Header().Set(`Access-Control-Allow-Origin`, `*`)
 		w.Write(objJSON)
 	} else {
-		http.Error(w, `Error while marshalling JSON response`, 500)
+		http.Error(w, `Error while marshalling JSON response`, http.StatusInternalServerError)
 	}
 }
