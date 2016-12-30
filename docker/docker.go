@@ -152,6 +152,7 @@ func runCompose(w http.ResponseWriter, composeFile []byte) {
 	compose := make(map[interface{}]interface{})
 
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
+		log.Print(composeFile)
 		handleError(w, err)
 	} else {
 		log.Print(compose)
