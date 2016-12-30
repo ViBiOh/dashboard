@@ -6,6 +6,10 @@ import (
 	"context"
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/api/types/strslice"
 	"github.com/docker/docker/client"
 	"gopkg.in/yaml.v2"
 	"io"
@@ -47,7 +51,6 @@ type dockerCompose struct {
 		Command     string
 		Environment map[string]string
 		Labels      map[string]string
-		ReadOnly    bool
 	}
 }
 
@@ -147,7 +150,7 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 }
 
 func listContainers(w http.ResponseWriter) {
-	if containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{}); err != nil {
+	if containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{All: true}); err != nil {
 		handleError(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{containers})
@@ -159,15 +162,70 @@ func readBody(body io.ReadCloser) ([]byte, error) {
 	return ioutil.ReadAll(body)
 }
 
-func runCompose(w http.ResponseWriter, composeFile []byte) {
+func getTraefikNetwork() (*types.NetworkResource, error) {
+	args := filters.NewArgs()
+	args.Add(`name`, `traefik`)
+
+	networks, err := docker.NetworkList(context.Background(), types.NetworkListOptions{Filters: args})
+	if err != nil {
+		return nil, err
+	}
+	return &networks[0], nil
+}
+
+func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 	compose := dockerCompose{}
 
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
 		handleError(w, err)
-	} else {
-		log.Print(compose)
-		w.Write([]byte(`done`))
+		return
 	}
+
+	traefikNetwork, err := getTraefikNetwork()
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+
+	ids := make([]string, len(compose.Services))
+	for serviceName, service := range compose.Services {
+		id, err := docker.ContainerCreate(
+			context.Background(),
+			&container.Config{
+				Image:  service.Image,
+				Cmd:    strslice.StrSlice([]string{service.Command}),
+				Labels: service.Labels,
+			},
+			&container.HostConfig{
+				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
+					`max-size`: `50m`,
+				}},
+				RestartPolicy:  container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
+				ReadonlyRootfs: true,
+				Resources: container.Resources{
+					CPUShares: 128,
+					Memory:    134217728,
+				},
+				SecurityOpt: []string{`no-new-privileges`},
+			},
+			&network.NetworkingConfig{
+				EndpointsConfig: map[string]*network.EndpointSettings{
+					"default": &network.EndpointSettings{
+						NetworkID: traefikNetwork.ID,
+					},
+				},
+			},
+			string(name)+`_`+serviceName,
+		)
+
+		if err != nil {
+			handleError(w, err)
+			return
+		}
+		ids := append(ids, id.ID)
+	}
+
+	jsonHttp.ResponseJSON(w, results{ids})
 }
 
 func isAuthenticated(r *http.Request) bool {
@@ -212,7 +270,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			if composeBody, err := readBody(r.Body); err != nil {
 				handleError(w, err)
 			} else {
-				runCompose(w, composeBody)
+				runCompose(w, containersRequest.FindSubmatch(urlPath)[1], composeBody)
 			}
 		} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 			inspectContainer(w, containerRequest.FindSubmatch(urlPath)[1])
