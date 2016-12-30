@@ -189,12 +189,18 @@ func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 
 	ids := make([]string, len(compose.Services))
 	for serviceName, service := range compose.Services {
+		environments := make([]string, len(service.Environment))
+		for key, value := range service.Environment {
+			environments = append(environments, key+`=`+value)
+		}
+
 		id, err := docker.ContainerCreate(
 			context.Background(),
 			&container.Config{
 				Image:  service.Image,
 				Cmd:    strslice.StrSlice([]string{service.Command}),
 				Labels: service.Labels,
+				Env:    environments,
 			},
 			&container.HostConfig{
 				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
@@ -222,7 +228,8 @@ func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 			handleError(w, err)
 			return
 		}
-		ids := append(ids, id.ID)
+
+		ids = append(ids, id.ID)
 	}
 
 	jsonHttp.ResponseJSON(w, results{ids})
@@ -266,11 +273,11 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
 		listContainers(w)
 	} else if isAuthenticated(r) {
-		if containersRequest.Match(urlPath) && r.Method == http.MethodPost {
+		if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
 			if composeBody, err := readBody(r.Body); err != nil {
 				handleError(w, err)
 			} else {
-				runCompose(w, containersRequest.FindSubmatch(urlPath)[1], composeBody)
+				runCompose(w, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 			}
 		} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 			inspectContainer(w, containerRequest.FindSubmatch(urlPath)[1])
