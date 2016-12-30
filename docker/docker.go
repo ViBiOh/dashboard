@@ -7,7 +7,6 @@ import (
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/strslice"
 	"github.com/docker/docker/client"
@@ -162,27 +161,10 @@ func readBody(body io.ReadCloser) ([]byte, error) {
 	return ioutil.ReadAll(body)
 }
 
-func getTraefikNetwork() (*types.NetworkResource, error) {
-	args := filters.NewArgs()
-	args.Add(`name`, `traefik`)
-
-	networks, err := docker.NetworkList(context.Background(), types.NetworkListOptions{Filters: args})
-	if err != nil {
-		return nil, err
-	}
-	return &networks[0], nil
-}
-
 func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 	compose := dockerCompose{}
 
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		handleError(w, err)
-		return
-	}
-
-	traefikNetwork, err := getTraefikNetwork()
-	if err != nil {
 		handleError(w, err)
 		return
 	}
@@ -194,14 +176,19 @@ func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 			environments = append(environments, key+`=`+value)
 		}
 
+		config := container.Config{
+			Image:  service.Image,
+			Labels: service.Labels,
+			Env:    environments,
+		}
+
+		if service.Command != `` {
+			config.Cmd = strslice.StrSlice([]string{service.Command})
+		}
+
 		id, err := docker.ContainerCreate(
 			context.Background(),
-			&container.Config{
-				Image:  service.Image,
-				Cmd:    strslice.StrSlice([]string{service.Command}),
-				Labels: service.Labels,
-				Env:    environments,
-			},
+			&config,
 			&container.HostConfig{
 				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 					`max-size`: `50m`,
@@ -216,9 +203,7 @@ func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 			},
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
-					"traefik": &network.EndpointSettings{
-						NetworkID: traefikNetwork.ID,
-					},
+					`traefik`: &network.EndpointSettings{},
 				},
 			},
 			string(name)+`_`+serviceName,
