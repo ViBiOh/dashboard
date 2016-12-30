@@ -40,6 +40,13 @@ type user struct {
 	password string
 }
 
+type dockerCompose struct {
+	version  string
+	services []struct {
+		Image string
+	}
+}
+
 var docker *client.Client
 var users map[string]*user
 
@@ -149,13 +156,12 @@ func readBody(body io.ReadCloser) ([]byte, error) {
 }
 
 func runCompose(w http.ResponseWriter, composeFile []byte) {
-	compose := make(map[interface{}]interface{})
+	compose := dockerCompose{}
 
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		log.Print(string(composeFile))
 		handleError(w, err)
 	} else {
-		log.Print(compose)
+		log.Print(compose.services[0].Image)
 		w.Write([]byte(`done`))
 	}
 }
