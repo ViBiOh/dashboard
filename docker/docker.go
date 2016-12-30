@@ -41,9 +41,13 @@ type user struct {
 }
 
 type dockerCompose struct {
-	version  string
-	services []struct {
-		Image string
+	Version  string
+	Services map[string]struct {
+		Image       string
+		Command     string
+		Environment map[string]string
+		Labels      map[string]string
+		ReadOnly    bool
 	}
 }
 
@@ -161,7 +165,7 @@ func runCompose(w http.ResponseWriter, composeFile []byte) {
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
 		handleError(w, err)
 	} else {
-		log.Print(compose.services[0].Image)
+		log.Print(compose)
 		w.Write([]byte(`done`))
 	}
 }
