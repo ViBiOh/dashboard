@@ -4,6 +4,7 @@ deps:
 	go get -u github.com/golang/lint/golint
 	go get -u github.com/docker/docker/api/types
 	go get -u github.com/docker/docker/client
+	go get -u gopkg.in/yaml.v2
 
 lint:
 	golint ./...

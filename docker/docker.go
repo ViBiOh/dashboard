@@ -7,6 +7,8 @@ import (
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	"gopkg.in/yaml.v2"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -22,7 +24,7 @@ const configurationFile = `./users`
 var commaByte = []byte(`,`)
 var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
 
-var listRequest = regexp.MustCompile(`/containers/?$`)
+var containersRequest = regexp.MustCompile(`/containers/?$`)
 var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
 var startRequest = regexp.MustCompile(`/containers/([^/]+)/start`)
 var stopRequest = regexp.MustCompile(`/containers/([^/]+)/stop`)
@@ -141,6 +143,22 @@ func listContainers(w http.ResponseWriter) {
 	}
 }
 
+func readBody(body io.ReadCloser) ([]byte, error) {
+	defer body.Close()
+	return ioutil.ReadAll(body)
+}
+
+func runCompose(w http.ResponseWriter, composeFile []byte) {
+	compose := make(map[interface{}]interface{})
+
+	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
+		handleError(w, err)
+	} else {
+		log.Print(compose)
+		w.Write([]byte(`done`))
+	}
+}
+
 func isAuthenticated(r *http.Request) bool {
 	username, password, ok := r.BasicAuth()
 
@@ -176,10 +194,16 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	urlPath := []byte(r.URL.Path)
 
-	if listRequest.Match(urlPath) && r.Method == http.MethodGet {
+	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
 		listContainers(w)
 	} else if isAuthenticated(r) {
-		if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
+		if containersRequest.Match(urlPath) && r.Method == http.MethodPost {
+			if composeBody, err := readBody(r.Body); err != nil {
+				handleError(w, err)
+			} else {
+				runCompose(w, composeBody)
+			}
+		} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 			inspectContainer(w, containerRequest.FindSubmatch(urlPath)[1])
 		} else if startRequest.Match(urlPath) && r.Method == http.MethodPost {
 			startContainer(w, startRequest.FindSubmatch(urlPath)[1])
