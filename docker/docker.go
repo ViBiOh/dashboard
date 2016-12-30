@@ -27,6 +27,15 @@ const configurationFile = `./users`
 var commaByte = []byte(`,`)
 var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
 
+const cpuShare = 128
+const memoryLimit = 134217728
+const securityOptions = []string{`no-new-privileges`}
+
+var jsonLogging = container.LogConfig{Type: `json-file`, Config: map[string]string{
+	`max-size`: `50m`,
+}}
+var onFailureRestart = container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5}
+
 var containersRequest = regexp.MustCompile(`/containers/?$`)
 var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
 var startRequest = regexp.MustCompile(`/containers/([^/]+)/start`)
@@ -190,16 +199,14 @@ func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 			context.Background(),
 			&config,
 			&container.HostConfig{
-				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-					`max-size`: `50m`,
-				}},
-				RestartPolicy:  container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
+				LogConfig:      jsonLogging,
+				RestartPolicy:  onFailureRestart,
 				ReadonlyRootfs: true,
 				Resources: container.Resources{
-					CPUShares: 128,
-					Memory:    134217728,
+					CPUShares: cpuShare,
+					Memory:    memoryLimit,
 				},
-				SecurityOpt: []string{`no-new-privileges`},
+				SecurityOpt: securityOptions,
 			},
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
