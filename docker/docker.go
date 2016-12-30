@@ -216,7 +216,7 @@ func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 			},
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
-					"default": &network.EndpointSettings{
+					"traefik": &network.EndpointSettings{
 						NetworkID: traefikNetwork.ID,
 					},
 				},
