@@ -27,14 +27,22 @@ const configurationFile = `./users`
 var commaByte = []byte(`,`)
 var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
 
-const cpuShare = 128
-const memoryLimit = 134217728
-const securityOptions = []string{`no-new-privileges`}
-
-var jsonLogging = container.LogConfig{Type: `json-file`, Config: map[string]string{
-	`max-size`: `50m`,
-}}
-var onFailureRestart = container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5}
+var hostConfig = container.HostConfig{
+	LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
+		`max-size`: `50m`,
+	}},
+	RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
+	Resources: container.Resources{
+		CPUShares: 128,
+		Memory:    134217728,
+	},
+	SecurityOpt: []string{`no-new-privileges`},
+}
+var networkConfig = network.NetworkingConfig{
+	EndpointsConfig: map[string]*network.EndpointSettings{
+		`traefik`: &network.EndpointSettings{},
+	},
+}
 
 var containersRequest = regexp.MustCompile(`/containers/?$`)
 var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
@@ -195,26 +203,7 @@ func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 			config.Cmd = strslice.StrSlice([]string{service.Command})
 		}
 
-		id, err := docker.ContainerCreate(
-			context.Background(),
-			&config,
-			&container.HostConfig{
-				LogConfig:      jsonLogging,
-				RestartPolicy:  onFailureRestart,
-				ReadonlyRootfs: true,
-				Resources: container.Resources{
-					CPUShares: cpuShare,
-					Memory:    memoryLimit,
-				},
-				SecurityOpt: securityOptions,
-			},
-			&network.NetworkingConfig{
-				EndpointsConfig: map[string]*network.EndpointSettings{
-					`traefik`: &network.EndpointSettings{},
-				},
-			},
-			string(name)+`_`+serviceName,
-		)
+		id, err := docker.ContainerCreate(context.Background(), &config, &hostConfig, &networkConfig, string(name)+`_`+serviceName)
 
 		if err != nil {
 			handleError(w, err)
