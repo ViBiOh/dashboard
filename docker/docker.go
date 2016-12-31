@@ -49,17 +49,19 @@ type user struct {
 	password string
 }
 
+type dockerComposeService struct {
+	Image       string
+	Command     string
+	Environment map[string]string
+	Labels      map[string]string
+	ReadOnly    bool  `yaml:"read_only"`
+	CPUShares   int64 `yaml:"cpu_shares"`
+	MemoryLimit int64 `yaml:"mem_limit"`
+}
+
 type dockerCompose struct {
 	Version  string
-	Services map[string]struct {
-		Image       string
-		Command     string
-		Environment map[string]string
-		Labels      map[string]string
-		ReadOnly    bool  `yaml:"read_only"`
-		CPUShares   int64 `yaml:"cpu_shares"`
-		MemoryLimit int64 `yaml:"mem_limit"`
-	}
+	Services map[string]dockerComposeService
 }
 
 var docker *client.Client
@@ -174,6 +176,53 @@ func readBody(body io.ReadCloser) ([]byte, error) {
 	return ioutil.ReadAll(body)
 }
 
+func getConfig(service *dockerComposeService) *container.Config {
+	environments := make([]string, len(service.Environment))
+	for key, value := range service.Environment {
+		environments = append(environments, key+`=`+value)
+	}
+
+	config := container.Config{
+		Image:  service.Image,
+		Labels: service.Labels,
+		Env:    environments,
+	}
+
+	if service.Command != `` {
+		config.Cmd = strslice.StrSlice([]string{service.Command})
+	}
+
+	return &config
+}
+
+func getHostConfig(service *dockerComposeService) *container.HostConfig {
+	hostConfig := container.HostConfig{
+		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
+			`max-size`: `50m`,
+		}},
+		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
+		Resources: container.Resources{
+			CPUShares: 128,
+			Memory:    134217728,
+		},
+		SecurityOpt: []string{`no-new-privileges`},
+	}
+
+	if service.ReadOnly {
+		hostConfig.ReadonlyRootfs = service.ReadOnly
+	}
+
+	if service.CPUShares != 0 {
+		hostConfig.Resources.CPUShares = service.CPUShares
+	}
+
+	if service.MemoryLimit != 0 {
+		hostConfig.Resources.Memory = service.MemoryLimit
+	}
+
+	return &hostConfig
+}
+
 func runComposeHandler(w http.ResponseWriter, name []byte, composeFile []byte) {
 	compose := dockerCompose{}
 
@@ -189,46 +238,7 @@ func runComposeHandler(w http.ResponseWriter, name []byte, composeFile []byte) {
 			return
 		}
 
-		environments := make([]string, len(service.Environment))
-		for key, value := range service.Environment {
-			environments = append(environments, key+`=`+value)
-		}
-
-		config := container.Config{
-			Image:  service.Image,
-			Labels: service.Labels,
-			Env:    environments,
-		}
-
-		if service.Command != `` {
-			config.Cmd = strslice.StrSlice([]string{service.Command})
-		}
-
-		var hostConfig = container.HostConfig{
-			LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-				`max-size`: `50m`,
-			}},
-			RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
-			Resources: container.Resources{
-				CPUShares: 128,
-				Memory:    134217728,
-			},
-			SecurityOpt: []string{`no-new-privileges`},
-		}
-
-		if service.ReadOnly {
-			hostConfig.ReadonlyRootfs = service.ReadOnly
-		}
-
-		if service.CPUShares != 0 {
-			hostConfig.Resources.CPUShares = service.CPUShares
-		}
-
-		if service.MemoryLimit != 0 {
-			hostConfig.Resources.Memory = service.MemoryLimit
-		}
-
-		id, err := docker.ContainerCreate(context.Background(), &config, &hostConfig, &networkConfig, string(name)+`_`+serviceName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service), getHostConfig(&service), &networkConfig, string(name)+`_`+serviceName)
 		if err != nil {
 			errorHandler(w, err)
 			return
