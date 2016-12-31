@@ -34,7 +34,7 @@ var hostConfig = container.HostConfig{
 	RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 	Resources: container.Resources{
 		CPUShares: 128,
-		Memory:    134217728,
+		Memory:    536870912,
 	},
 	SecurityOpt: []string{`no-new-privileges`},
 }
