@@ -27,17 +27,6 @@ const configurationFile = `./users`
 var commaByte = []byte(`,`)
 var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
 
-var hostConfig = container.HostConfig{
-	LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-		`max-size`: `50m`,
-	}},
-	RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
-	Resources: container.Resources{
-		CPUShares: 128,
-		Memory:    536870912,
-	},
-	SecurityOpt: []string{`no-new-privileges`},
-}
 var networkConfig = network.NetworkingConfig{
 	EndpointsConfig: map[string]*network.EndpointSettings{
 		`traefik`: &network.EndpointSettings{},
@@ -67,13 +56,16 @@ type dockerCompose struct {
 		Command     string
 		Environment map[string]string
 		Labels      map[string]string
+		ReadOnly    bool  `yaml:"read_only"`
+		CPUShares   int64 `yaml:"cpu_shares"`
+		MemoryLimit int64 `yaml:"mem_limit"`
 	}
 }
 
 var docker *client.Client
 var users map[string]*user
 
-func handleError(w http.ResponseWriter, err error) {
+func errorHandler(w http.ResponseWriter, err error) {
 	log.Print(err)
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
@@ -111,49 +103,53 @@ func init() {
 	}
 }
 
-func inspectContainer(w http.ResponseWriter, containerID []byte) {
+func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
 	if container, err := docker.ContainerInspect(context.Background(), string(containerID)); err != nil {
-		handleError(w, err)
+		errorHandler(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, container)
 	}
 }
 
-func startContainer(w http.ResponseWriter, containerID []byte) {
-	if err := docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{}); err != nil {
-		handleError(w, err)
+func startContainer(containerID string) error {
+	return docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
+}
+
+func startContainerHandler(w http.ResponseWriter, containerID []byte) {
+	if err := startContainer(string(containerID)); err != nil {
+		errorHandler(w, err)
 	} else {
 		w.Write(nil)
 	}
 }
 
-func stopContainer(w http.ResponseWriter, containerID []byte) {
+func stopContainerHandler(w http.ResponseWriter, containerID []byte) {
 	if err := docker.ContainerStop(context.Background(), string(containerID), nil); err != nil {
-		handleError(w, err)
+		errorHandler(w, err)
 	} else {
 		w.Write(nil)
 	}
 }
 
-func restartContainer(w http.ResponseWriter, containerID []byte) {
+func restartContainerHandler(w http.ResponseWriter, containerID []byte) {
 	if err := docker.ContainerRestart(context.Background(), string(containerID), nil); err != nil {
-		handleError(w, err)
+		errorHandler(w, err)
 	} else {
 		w.Write(nil)
 	}
 }
 
-func logContainer(w http.ResponseWriter, containerID []byte) {
+func logContainerHandler(w http.ResponseWriter, containerID []byte) {
 	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
 	if err != nil {
-		handleError(w, err)
+		errorHandler(w, err)
 		return
 	}
 
 	defer logs.Close()
 
 	if logLines, err := ioutil.ReadAll(logs); err != nil {
-		handleError(w, err)
+		errorHandler(w, err)
 	} else {
 		matches := splitLogs.FindAllSubmatch(logLines, -1)
 		cleanLogs := make([]string, 0, len(matches))
@@ -165,9 +161,9 @@ func logContainer(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
-func listContainers(w http.ResponseWriter) {
+func listContainersHandler(w http.ResponseWriter) {
 	if containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{All: true}); err != nil {
-		handleError(w, err)
+		errorHandler(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{containers})
 	}
@@ -178,16 +174,21 @@ func readBody(body io.ReadCloser) ([]byte, error) {
 	return ioutil.ReadAll(body)
 }
 
-func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
+func runComposeHandler(w http.ResponseWriter, name []byte, composeFile []byte) {
 	compose := dockerCompose{}
 
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		handleError(w, err)
+		errorHandler(w, err)
 		return
 	}
 
 	ids := make([]string, len(compose.Services))
 	for serviceName, service := range compose.Services {
+		if _, err := docker.ImagePull(context.Background(), service.Image, types.ImagePullOptions{}); err != nil {
+			errorHandler(w, err)
+			return
+		}
+
 		environments := make([]string, len(service.Environment))
 		for key, value := range service.Environment {
 			environments = append(environments, key+`=`+value)
@@ -203,13 +204,37 @@ func runCompose(w http.ResponseWriter, name []byte, composeFile []byte) {
 			config.Cmd = strslice.StrSlice([]string{service.Command})
 		}
 
-		id, err := docker.ContainerCreate(context.Background(), &config, &hostConfig, &networkConfig, string(name)+`_`+serviceName)
+		var hostConfig = container.HostConfig{
+			LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
+				`max-size`: `50m`,
+			}},
+			RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
+			Resources: container.Resources{
+				CPUShares: 128,
+				Memory:    134217728,
+			},
+			SecurityOpt: []string{`no-new-privileges`},
+		}
 
+		if service.ReadOnly {
+			hostConfig.ReadonlyRootfs = service.ReadOnly
+		}
+
+		if service.CPUShares != 0 {
+			hostConfig.Resources.CPUShares = service.CPUShares
+		}
+
+		if service.MemoryLimit != 0 {
+			hostConfig.Resources.Memory = service.MemoryLimit
+		}
+
+		id, err := docker.ContainerCreate(context.Background(), &config, &hostConfig, &networkConfig, string(name)+`_`+serviceName)
 		if err != nil {
-			handleError(w, err)
+			errorHandler(w, err)
 			return
 		}
 
+		startContainer(id.ID)
 		ids = append(ids, id.ID)
 	}
 
@@ -252,24 +277,24 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	urlPath := []byte(r.URL.Path)
 
 	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
-		listContainers(w)
+		listContainersHandler(w)
 	} else if isAuthenticated(r) {
 		if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
 			if composeBody, err := readBody(r.Body); err != nil {
-				handleError(w, err)
+				errorHandler(w, err)
 			} else {
-				runCompose(w, containerRequest.FindSubmatch(urlPath)[1], composeBody)
+				runComposeHandler(w, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 			}
 		} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
-			inspectContainer(w, containerRequest.FindSubmatch(urlPath)[1])
+			inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
 		} else if startRequest.Match(urlPath) && r.Method == http.MethodPost {
-			startContainer(w, startRequest.FindSubmatch(urlPath)[1])
+			startContainerHandler(w, startRequest.FindSubmatch(urlPath)[1])
 		} else if stopRequest.Match(urlPath) && r.Method == http.MethodPost {
-			stopContainer(w, stopRequest.FindSubmatch(urlPath)[1])
+			stopContainerHandler(w, stopRequest.FindSubmatch(urlPath)[1])
 		} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
-			restartContainer(w, restartRequest.FindSubmatch(urlPath)[1])
+			restartContainerHandler(w, restartRequest.FindSubmatch(urlPath)[1])
 		} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
-			logContainer(w, logRequest.FindSubmatch(urlPath)[1])
+			logContainerHandler(w, logRequest.FindSubmatch(urlPath)[1])
 		}
 	} else {
 		unauthorized(w)
