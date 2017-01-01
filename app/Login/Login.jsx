@@ -11,6 +11,14 @@ export default class Login extends Component {
     this.state = {};
 
     this.login = this.login.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+  }
+
+  onKeyDown(event) {
+    if (event.keyCode === 13) {
+      return this.login();
+    }
+    return undefined;
   }
 
   login() {
@@ -23,12 +31,13 @@ export default class Login extends Component {
 
   render() {
     return (
-      <form className={style.login}>
+      <div className={style.login}>
         <span>
           <input
             name="login"
             type="text"
             placeholder="login"
+            onKeyDown={this.onKeyDown}
             onChange={e => onValueChange(this, 'login')(e.target.value)}
           />
         </span>
@@ -37,17 +46,16 @@ export default class Login extends Component {
             name="password"
             type="password"
             placeholder="password"
+            onKeyDown={this.onKeyDown}
             onChange={e => onValueChange(this, 'password')(e.target.value)}
           />
         </span>
         <span>
-          <input
-            type="button"
-            value="Login"
-            onClick={this.login}
-          />
+          <button className={style.styledButton} onClick={this.login}>
+            Login
+          </button>
         </span>
-      </form>
+      </div>
     );
   }
 }

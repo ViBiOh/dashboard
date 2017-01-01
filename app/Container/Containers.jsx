@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import FaPlus from 'react-icons/lib/fa/plus';
 import DockerService from '../Service/DockerService';
 import ContainerRow from './ContainerRow';
 import Throbber from '../Throbber/Throbber';
@@ -37,17 +38,22 @@ export default class Containers extends Component {
   renderContainers() {
     if (this.state.loaded) {
       return (
-        <div key="list" className={style.list}>
-          {
-            this.state.containers.map(container => (
-              <ContainerRow
-                key={container.Id}
-                container={container}
-                action={this.actionContainer}
-              />
-            ))
-          }
-        </div>
+        <span>
+          <button className={style.styledButton}>
+            <FaPlus /> Add a container
+          </button>
+          <div key="list" className={style.list}>
+            {
+              this.state.containers.map(container => (
+                <ContainerRow
+                  key={container.Id}
+                  container={container}
+                  action={this.actionContainer}
+                />
+              ))
+            }
+          </div>
+        </span>
       );
     }
 

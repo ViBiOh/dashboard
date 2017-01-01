@@ -47,6 +47,14 @@ button {
   border: 0;
 }
 
+.styledButton {
+  margin: 2px;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  background-color: $primary;
+}
+
 .list {
   width: 100%;
   @include flexWrap;
