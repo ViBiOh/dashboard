@@ -1,6 +1,6 @@
 $primary: #337ab7;
 
-.login {
+.form {
   width: 100%;
   display: flex;
   text-align: center;
@@ -9,14 +9,19 @@ $primary: #337ab7;
   padding-top: 10px;
 }
 
-.login > * {
+.form > * {
   width: 100%;
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+textarea {
   width: 50%;
   padding: 20px;
+}
+
+textarea {
+  font-family: monospace;
 }
 
 .styledButton {
@@ -29,7 +34,8 @@ input[type="password"] {
 
 @media screen and (max-width: 1023px) {
   input[type="text"],
-  input[type="password"] {
+  input[type="password"],
+  textarea {
     width: 90%;
   }
 }

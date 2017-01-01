@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import DockerService from '../Service/DockerService';
 import onValueChange from '../ChangeHandler/ChangeHandler';
-import style from './Login.css';
+import style from '../Form.css';
 
 export default class Login extends Component {
   constructor(props) {
@@ -31,7 +31,7 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div className={style.login}>
+      <div className={style.form}>
         <span>
           <input
             name="login"

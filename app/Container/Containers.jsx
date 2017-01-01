@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
 import FaPlus from 'react-icons/lib/fa/plus';
 import DockerService from '../Service/DockerService';
 import ContainerRow from './ContainerRow';
@@ -39,8 +40,11 @@ export default class Containers extends Component {
     if (this.state.loaded) {
       return (
         <span>
-          <button className={style.styledButton}>
-            <FaPlus /> Add a container
+          <button
+            className={style.styledButton}
+            onClick={() => browserHistory.push('/containers/New')}
+          >
+            <FaPlus /> Add a compose
           </button>
           <div key="list" className={style.list}>
             {

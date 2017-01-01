@@ -10,8 +10,8 @@ const ContainerInfo = ({ container }) => {
   let labelContent = null;
   if (labels.length > 0) {
     labelContent = [
-      <h3>Labels</h3>,
-      <span className={style.labelsContainer}>
+      <h3 key="labelsHeader">Labels</h3>,
+      <span key="labels" className={style.labelsContainer}>
         {
           labels.map(label => (
             <span key={label} className={style.labelItem}>

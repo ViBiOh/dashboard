@@ -55,6 +55,15 @@ button {
   background-color: $primary;
 }
 
+.form {
+  width: 100%;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 10px;
+}
+
 .list {
   width: 100%;
   @include flexWrap;

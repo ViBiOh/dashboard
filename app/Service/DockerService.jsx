@@ -64,4 +64,9 @@ export default class DockerService {
       .get()
       .then(({ results }) => results);
   }
+
+  static create(name, composeFile) {
+    return auth(`${API}containers/${name}/`)
+      .post(composeFile);
+  }
 }
