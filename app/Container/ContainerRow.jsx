@@ -5,6 +5,7 @@ import FaPlay from 'react-icons/lib/fa/play';
 import FaStop from 'react-icons/lib/fa/stop';
 import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaEye from 'react-icons/lib/fa/eye';
+import FaTrashO from 'react-icons/lib/fa/trash-o';
 import DockerService from '../Service/DockerService';
 import style from './Containers.css';
 
@@ -51,14 +52,22 @@ const ContainerRow = ({ container, action }) => {
         ]
       }
       {
-        !isUp && DockerService.isLogged() &&
+        !isUp && DockerService.isLogged() && [
           <button
             key="start"
             className={style.icon}
             onClick={() => action(DockerService.start(container.Id))}
           >
             <FaPlay />
+          </button>,
+          <button
+            key="delete"
+            className={style.icon}
+            onClick={() => action(DockerService.delete(container.Id))}
+          >
+            <FaTrash />
           </button>
+        ]
       }
     </span>
   );
