@@ -127,8 +127,12 @@ func startContainerHandler(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
+func stopContainer(containerID string) error {
+	return docker.ContainerStop(context.Background(), , nil)
+}
+
 func stopContainerHandler(w http.ResponseWriter, containerID []byte) {
-	if err := docker.ContainerStop(context.Background(), string(containerID), nil); err != nil {
+	if err := stopContainer(string(containerID)); err != nil {
 		errorHandler(w, err)
 	} else {
 		w.Write(nil)
@@ -247,12 +251,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	}
 
 	return &hostConfig
-}
-
-func getUserContainers(loggedUser *user) {
-	
-}
-	
+}	
 
 func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, composeFile []byte) {
 	compose := dockerCompose{}
@@ -260,6 +259,15 @@ func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, com
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
 		errorHandler(w, err)
 		return
+	}
+	
+	ownerContainers, err := listContainers(loggedUser)
+	if err != nil {
+		errorHandler(w, err)
+		return
+	}
+	for container := range ownerContainers {
+		stopContainer(container.ID)
 	}
 
 	ids := make([]string, len(compose.Services))
