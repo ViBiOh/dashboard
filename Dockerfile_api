@@ -5,5 +5,4 @@ VOLUME /var/run/docker.sock
 EXPOSE 1080
 ENTRYPOINT [ "/server" ]
 
-ENV DOCKER_CONTENT_TRUST 0
 COPY server /
