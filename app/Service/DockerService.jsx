@@ -44,6 +44,11 @@ export default class DockerService {
       .get();
   }
 
+  static create(name, composeFile) {
+    return auth(`${API}containers/${name}/`)
+      .post(composeFile);
+  }
+
   static start(containerId) {
     return auth(`${API}containers/${containerId}/start`)
       .post();
@@ -59,14 +64,13 @@ export default class DockerService {
       .post();
   }
 
+  static delete(containerId) {
+    return auth(`${API}containers/${containerId}/`).delete();
+  }
+
   static logs(containerId) {
     return auth(`${API}containers/${containerId}/logs`)
       .get()
       .then(({ results }) => results);
-  }
-
-  static create(name, composeFile) {
-    return auth(`${API}containers/${name}/`)
-      .post(composeFile);
   }
 }
