@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaRefresh from 'react-icons/lib/fa/refresh';
+import FaUser from 'react-icons/lib/fa/user';
+import FaUserTimes from 'react-icons/lib/fa/user-times';
 import DockerService from '../Service/DockerService';
 import ContainerRow from './ContainerRow';
 import Throbber from '../Throbber/Throbber';
@@ -58,6 +60,26 @@ export default class Containers extends Component {
                 onClick={() => browserHistory.push('/containers/New')}
               >
                 <FaPlus /> Add a compose
+              </button>
+            )
+          }
+          {
+            !DockerService.isLogged() && (
+              <button
+                className={style.styledButton}
+                onClick={() => browserHistory.push('/login')}
+              >
+                <FaUser />
+              </button>
+            )
+          }
+          {
+            DockerService.isLogged() && (
+              <button
+                className={style.styledButton}
+                onClick={DockerService.logout}
+              >
+                <FaUserTimes />
               </button>
             )
           }
