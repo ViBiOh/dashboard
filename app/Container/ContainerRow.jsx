@@ -62,7 +62,7 @@ const ContainerRow = ({ container, action }) => {
           </button>,
           <button
             key="delete"
-            className={style.icon}
+            className={`${style.icon} ${style.stop}`}
             onClick={() => action(DockerService.delete(container.Id))}
           >
             <FaTrash />
