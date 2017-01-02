@@ -51,12 +51,16 @@ export default class Containers extends Component {
           >
             <FaRefresh />
           </button>
-          <button
-            className={style.styledButton}
-            onClick={() => browserHistory.push('/containers/New')}
-          >
-            <FaPlus /> Add a compose
-          </button>
+          {
+            DockerService.isLogged() && (
+              <button
+                className={style.styledButton}
+                onClick={() => browserHistory.push('/containers/New')}
+              >
+                <FaPlus /> Add a compose
+              </button>
+            )
+          }
           <div key="list" className={style.list}>
             {
               this.state.containers.map(container => (
