@@ -107,16 +107,38 @@ func readConfiguration(path string) map[string]*user {
 	return users
 }
 
-func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
-	if container, err := docker.ContainerInspect(context.Background(), string(containerID)); err != nil {
-		errorHandler(w, err)
-	} else {
-		jsonHttp.ResponseJSON(w, container)
+func listContainers(loggedUser *user) ([]types.Container, error) {
+	options := types.ContainerListOptions{All: true}
+	
+	if loggedUser != nil {
+		args, err := filters.ParseFlag(`label=owner=`+loggedUser.username, filters.NewArgs())
+		if err != nil {
+			return nil, err
+		}
+		options.Filters = args
 	}
+	
+	return docker.ContainerList(context.Background(), options)
+}
+
+func inspectContainer(containerID string) (types.ContainerJSON, error) {
+	return docker.ContainerInspect(context.Background(), containerID)
 }
 
 func startContainer(containerID string) error {
 	return docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
+}
+
+func stopContainer(containerID string) error {
+	return docker.ContainerStop(context.Background(), containerID, nil)
+}
+
+func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
+	if container, err := inspectContainer(string(containerID)); err != nil {
+		errorHandler(w, err)
+	} else {
+		jsonHttp.ResponseJSON(w, container)
+	}
 }
 
 func startContainerHandler(w http.ResponseWriter, containerID []byte) {
@@ -125,10 +147,6 @@ func startContainerHandler(w http.ResponseWriter, containerID []byte) {
 	} else {
 		w.Write(nil)
 	}
-}
-
-func stopContainer(containerID string) error {
-	return docker.ContainerStop(context.Background(), containerID, nil)
 }
 
 func stopContainerHandler(w http.ResponseWriter, containerID []byte) {
@@ -175,20 +193,6 @@ func logContainerHandler(w http.ResponseWriter, containerID []byte) {
 
 		jsonHttp.ResponseJSON(w, results{cleanLogs})
 	}
-}
-
-func listContainers(loggedUser *user) ([]types.Container, error) {
-	options := types.ContainerListOptions{All: true}
-	
-	if loggedUser != nil {
-		args, err := filters.ParseFlag(`label=owner=`+loggedUser.username, filters.NewArgs())
-		if err != nil {
-			return nil, err
-		}
-		options.Filters = args
-	}
-	
-	return docker.ContainerList(context.Background(), options)
 }
 
 func listContainersHandler(w http.ResponseWriter) {
