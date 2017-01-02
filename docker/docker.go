@@ -177,13 +177,13 @@ func readBody(body io.ReadCloser) ([]byte, error) {
 	return ioutil.ReadAll(body)
 }
 
-func getConfig(loggedUser *user, service *dockerComposeService) *container.Config {
+func getConfig(service *dockerComposeService, loggedUser *user) *container.Config {
 	environments := make([]string, len(service.Environment))
 	for key, value := range service.Environment {
 		environments = append(environments, key+`=`+value)
 	}
 	
-	service.Labels[`owner`] = user.username
+	service.Labels[`owner`] = loggedUser.username
 
 	config := container.Config{
 		Image:  service.Image,
@@ -261,7 +261,7 @@ func isAuthenticated(r *http.Request) *user {
 		user, ok := users[strings.ToLower(username)]
 
 		if ok && user.password == password {
-			return &user
+			return user
 		}
 	}
 
