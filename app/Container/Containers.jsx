@@ -47,7 +47,7 @@ export default class Containers extends Component {
         <span>
           <button
             className={style.styledButton}
-            onClick={this.fetchContainers()}
+            onClick={this.fetchContainers}
           >
             <FaRefresh />
           </button>
