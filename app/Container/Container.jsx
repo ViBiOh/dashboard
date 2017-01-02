@@ -22,6 +22,7 @@ export default class Container extends Component {
     };
 
     this.fetchInfos = this.fetchInfos.bind(this);
+    this.action = this.action.bind(this);
   }
 
   componentDidMount() {
@@ -34,6 +35,10 @@ export default class Container extends Component {
         loaded: true,
         container,
       }));
+  }
+
+  action(promise) {
+    return promise.then(this.fetchInfos);
   }
 
   render() {
@@ -58,14 +63,14 @@ export default class Container extends Component {
               <button
                 key="restart"
                 className={style.styledButton}
-                onClick={() => action(DockerService.restart(container.Id))}
+                onClick={() => this.action(DockerService.restart(container.Id))}
               >
                 <FaRefresh />
               </button>,
               <button
                 key="stop"
                 className={style.dangerButton}
-                onClick={() => action(DockerService.stop(container.Id))}
+                onClick={() => this.action(DockerService.stop(container.Id))}
               >
                 <FaStopCircle />
               </button>,
@@ -76,14 +81,14 @@ export default class Container extends Component {
               <button
                 key="start"
                 className={style.styledButton}
-                onClick={() => action(DockerService.start(container.Id))}
+                onClick={() => this.action(DockerService.start(container.Id))}
               >
                 <FaPlay />
               </button>,
               <button
                 key="delete"
                 className={style.dangerButton}
-                onClick={() => action(DockerService.delete(container.Id))}
+                onClick={() => this.action(DockerService.delete(container.Id))}
               >
                 <FaTrash />
               </button>,
