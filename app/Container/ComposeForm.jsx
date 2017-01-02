@@ -25,12 +25,14 @@ export default class ComposeForm extends Component {
   render() {
     return (
       <div className={style.form}>
-        <button
-          className={style.styledButton}
-          onClick={() => browserHistory.push('/')}
-        >
-          <FaArrowLeft /> Back
-        </button>
+        <span>
+          <button
+            className={style.styledButton}
+            onClick={() => browserHistory.push('/')}
+          >
+            <FaArrowLeft /> Back
+          </button>
+        </span>
         <span>
           <input
             name="name"
