@@ -65,8 +65,8 @@ const ContainerRow = ({ container, action }) => {
             className={`${style.icon} ${style.stop}`}
             onClick={() => action(DockerService.delete(container.Id))}
           >
-            <FaTrash />
-          </button>
+            <FaTrashO />
+          </button>,
         ]
       }
     </span>
