@@ -236,7 +236,9 @@ func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, com
 
 	ids := make([]string, len(compose.Services))
 	for serviceName, service := range compose.Services {
-		if _, err := docker.ImagePull(context.Background(), service.Image, types.ImagePullOptions{}); err != nil {
+		pull, err := docker.ImagePull(context.Background(), service.Image, types.ImagePullOptions{})
+		defer pull.Close();
+		if err != nil {
 			errorHandler(w, err)
 			return
 		}
