@@ -109,20 +109,20 @@ func readConfiguration(path string) map[string]*user {
 	return users
 }
 
-func isAllowed(loggedUser *user, containerID string) bool {
+func isAllowed(loggedUser *user, containerID string) (bool, error) {
 	if loggedUser.role != admin {
 		container, err := inspectContainer(string(containerID))
 		if err != nil {
-			errorHandler(w, err)
-			return
+			return false, err
 		}
+
 		owner, ok := container.Config.Labels[ownerLabel]
 		if !ok || owner != loggedUser.username {
-			return false
+			return false, nil
 		}
 	}
 	
-	return true
+	return true, nil
 }
 
 func listContainers(loggedUser *user) ([]types.Container, error) {
@@ -151,8 +151,8 @@ func stopContainer(containerID string) error {
 	return docker.ContainerStop(context.Background(), containerID, nil)
 }
 
-func rmContainer(containerID string) (bool, error) {
-	if !isAllowed(loggedUser, string(containerID)) {
+func rmContainer(loggedUser *user, containerID string) (bool, error) {
+	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed {
 		return false, nil
 	}
 	return true, docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
@@ -380,7 +380,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
 			restartContainerHandler(w, restartRequest.FindSubmatch(urlPath)[1])
 		} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
-			deleteContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
+			deleteContainerHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1])
 		} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
 			logContainerHandler(w, logRequest.FindSubmatch(urlPath)[1])
 		}
