@@ -176,8 +176,12 @@ func logContainerHandler(w http.ResponseWriter, containerID []byte) {
 func listContainers(loggedUser *user) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 	
-	if user != nil {
-		options.Filters = filters.ParseFlag(`label=owner=`+loggedUser.username)
+	if loggedUser != nil {
+		args, err := filters.ParseFlag(`label=owner=`+loggedUser.username, nil)
+		if err != nil {
+			return nil, err
+		}
+		options.Filters = args
 	}
 	
 	return docker.ContainerList(context.Background(), options)
