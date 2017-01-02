@@ -47,44 +47,46 @@ export default class Containers extends Component {
     if (this.state.loaded) {
       return (
         <span>
+          <span className={style.flex}>
           <button
-            className={style.styledButton}
-            onClick={this.fetchContainers}
-          >
-            <FaRefresh />
-          </button>
-          {
-            DockerService.isLogged() && (
-              <button
-                className={style.styledButton}
-                onClick={() => browserHistory.push('/containers/New')}
-              >
-                <FaPlus /> Add a compose
-              </button>
-            )
-          }
-          <span className={style.growing} />
-          {
-            !DockerService.isLogged() && (
-              <button
-                className={style.styledButton}
-                onClick={() => browserHistory.push('/login')}
-              >
-                <FaUser />
-              </button>
-            )
-          }
-          {
-            DockerService.isLogged() && (
-              <button
-                className={`${style.icon} ${style.stop}`}
-                onClick={() => this.actionContainer(DockerService.logout())}
-              >
-                <FaUserTimes />
-              </button>
-            )
-          }
-          <div key="list" className={style.list}>
+              className={style.styledButton}
+              onClick={this.fetchContainers}
+            >
+              <FaRefresh />
+            </button>
+            {
+              DockerService.isLogged() && (
+                <button
+                  className={style.styledButton}
+                  onClick={() => browserHistory.push('/containers/New')}
+                >
+                  <FaPlus /> Add a compose
+                </button>
+              )
+            }
+            <span className={style.growingFlex} />
+            {
+              !DockerService.isLogged() && (
+                <button
+                  className={style.styledButton}
+                  onClick={() => browserHistory.push('/login')}
+                >
+                  <FaUser />
+                </button>
+              )
+            }
+            {
+              DockerService.isLogged() && (
+                <button
+                  className={`${style.icon} ${style.stop}`}
+                  onClick={() => this.actionContainer(DockerService.logout())}
+                >
+                  <FaUserTimes />
+                </button>
+              )
+            }
+          </span>
+          <div key="list" className={style.flex}>
             {
               this.state.containers.map(container => (
                 <ContainerRow
