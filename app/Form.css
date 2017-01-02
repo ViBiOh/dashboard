@@ -20,8 +20,8 @@ textarea {
   padding: 20px;
 }
 
-textarea {
-  font-family: monospace;
+.code {
+  font-family: monospace; 
 }
 
 .styledButton {
