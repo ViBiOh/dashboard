@@ -32,9 +32,9 @@ export default class Containers extends Component {
           loaded: true,
           containers,
         });
-      
+
         return containers;
-    });
+      });
   }
 
   actionContainer(promise) {
