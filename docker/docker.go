@@ -266,7 +266,7 @@ func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, com
 		errorHandler(w, err)
 		return
 	}
-	for container := range ownerContainers {
+	for _, container := range ownerContainers {
 		stopContainer(container.ID)
 	}
 
