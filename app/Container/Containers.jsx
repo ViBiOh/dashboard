@@ -48,7 +48,7 @@ export default class Containers extends Component {
       return (
         <span>
           <span className={style.flex}>
-          <button
+            <button
               className={style.styledButton}
               onClick={this.fetchContainers}
             >
