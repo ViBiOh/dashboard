@@ -47,6 +47,7 @@ type results struct {
 type user struct {
 	username string
 	password string
+	role     string
 }
 
 type dockerComposeService struct {
@@ -72,6 +73,17 @@ func errorHandler(w http.ResponseWriter, err error) {
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 
+func init() {
+	users = readConfiguration(configurationFile)
+
+	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		docker = client
+	}
+}
+
 func readConfiguration(path string) map[string]*user {
 	configFile, err := os.Open(path)
 	defer configFile.Close()
@@ -86,23 +98,12 @@ func readConfiguration(path string) map[string]*user {
 	scanner := bufio.NewScanner(configFile)
 	for scanner.Scan() {
 		parts := bytes.Split(scanner.Bytes(), commaByte)
-		user := user{string(parts[0]), string(parts[1])}
+		user := user{string(parts[0]), string(parts[1]), string(parts[2])}
 
 		users[strings.ToLower(user.username)] = &user
 	}
 
 	return users
-}
-
-func init() {
-	users = readConfiguration(configurationFile)
-
-	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		docker = client
-	}
 }
 
 func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
@@ -176,11 +177,13 @@ func readBody(body io.ReadCloser) ([]byte, error) {
 	return ioutil.ReadAll(body)
 }
 
-func getConfig(service *dockerComposeService) *container.Config {
+func getConfig(loggedUser *user, service *dockerComposeService) *container.Config {
 	environments := make([]string, len(service.Environment))
 	for key, value := range service.Environment {
 		environments = append(environments, key+`=`+value)
 	}
+	
+	service.Labels[`owner`] = user.username
 
 	config := container.Config{
 		Image:  service.Image,
@@ -223,7 +226,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	return &hostConfig
 }
 
-func runComposeHandler(w http.ResponseWriter, name []byte, composeFile []byte) {
+func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, composeFile []byte) {
 	compose := dockerCompose{}
 
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
@@ -238,7 +241,7 @@ func runComposeHandler(w http.ResponseWriter, name []byte, composeFile []byte) {
 			return
 		}
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service), getHostConfig(&service), &networkConfig, string(name)+`_`+serviceName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser), getHostConfig(&service), &networkConfig, string(name)+`_`+serviceName)
 		if err != nil {
 			errorHandler(w, err)
 			return
@@ -251,18 +254,18 @@ func runComposeHandler(w http.ResponseWriter, name []byte, composeFile []byte) {
 	jsonHttp.ResponseJSON(w, results{ids})
 }
 
-func isAuthenticated(r *http.Request) bool {
+func isAuthenticated(r *http.Request) *user {
 	username, password, ok := r.BasicAuth()
 
 	if ok {
 		user, ok := users[strings.ToLower(username)]
 
 		if ok && user.password == password {
-			return true
+			return &user
 		}
 	}
 
-	return false
+	return nil
 }
 
 func unauthorized(w http.ResponseWriter) {
@@ -288,12 +291,12 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
 		listContainersHandler(w)
-	} else if isAuthenticated(r) {
+	} else if loggedUser := isAuthenticated(r); loggedUser!= nil {
 		if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
 			if composeBody, err := readBody(r.Body); err != nil {
 				errorHandler(w, err)
 			} else {
-				runComposeHandler(w, containerRequest.FindSubmatch(urlPath)[1], composeBody)
+				runComposeHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 			}
 		} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 			inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
