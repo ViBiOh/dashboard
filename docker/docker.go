@@ -142,8 +142,16 @@ func restartContainerHandler(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
+func deleteContainerHandler(w http.ResponseWriter, containerID []byte) {
+	if err := docker.ContainerStop(context.Background(), string(containerID), types.ContainerRemoveOptions{RemoveVolumes: true, RemoveLinks: true, Force: true}); err != nil {
+		errorHandler(w, err)
+	} else {
+		w.Write(nil)
+	}
+}
+
 func logContainerHandler(w http.ResponseWriter, containerID []byte) {
-	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
+	logs, err := docker.ContainerRemove(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
 	if err != nil {
 		errorHandler(w, err)
 		return
@@ -308,6 +316,8 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			stopContainerHandler(w, stopRequest.FindSubmatch(urlPath)[1])
 		} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
 			restartContainerHandler(w, restartRequest.FindSubmatch(urlPath)[1])
+		} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
+			deleteContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
 		} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
 			logContainerHandler(w, logRequest.FindSubmatch(urlPath)[1])
 		}
