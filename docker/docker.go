@@ -133,6 +133,10 @@ func stopContainer(containerID string) error {
 	return docker.ContainerStop(context.Background(), containerID, nil)
 }
 
+func rmContainer(containerID string) error {
+	return docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
+}
+
 func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
 	if container, err := inspectContainer(string(containerID)); err != nil {
 		errorHandler(w, err)
@@ -165,8 +169,21 @@ func restartContainerHandler(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
-func deleteContainerHandler(w http.ResponseWriter, containerID []byte) {
-	if err := docker.ContainerRemove(context.Background(), string(containerID), types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
+func deleteContainerHandler(w http.ResponseWriter, loggedUser *user, containerID []byte) {
+	if loggedUser.role != `admin` {
+		container, err := inspectContainer(string(containerID))
+		if err != nil {
+			errorHandler(w, err)
+			return
+		}
+		ok, owner := container.Config.Labels[`owner`]
+		if ok && owner != loggedUser.username {
+			forbidden(w)
+			return
+		}
+	}
+	
+	if err := rmContainer(string(containerID)); err != nil {
 		errorHandler(w, err)
 	} else {
 		w.Write(nil)
@@ -312,6 +329,10 @@ func isAuthenticated(r *http.Request) *user {
 
 func unauthorized(w http.ResponseWriter) {
 	http.Error(w, `Authentication required`, http.StatusUnauthorized)
+}
+
+func forbidden(w http.ResponseWriter) {
+	http.Error(w, `Forbidden`, http.StatusForbidden)
 }
 
 // Handler for Hello request. Should be use with net/http
