@@ -311,13 +311,6 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		}
 
 		defer pull.Close()
-		load, err := docker.ImageLoad(context.Background(), pull, true)
-		if err != nil {
-			errorHandler(w, err)
-			return
-		}
-
-		defer load.Body.Close()
 
 		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, appNameStr+`_`+serviceName)
 		if err != nil {
