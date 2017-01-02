@@ -128,7 +128,7 @@ func startContainerHandler(w http.ResponseWriter, containerID []byte) {
 }
 
 func stopContainer(containerID string) error {
-	return docker.ContainerStop(context.Background(), , nil)
+	return docker.ContainerStop(context.Background(), containerID, nil)
 }
 
 func stopContainerHandler(w http.ResponseWriter, containerID []byte) {
