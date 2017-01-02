@@ -282,7 +282,7 @@ func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, com
 		return
 	}
 	for _, container := range ownerContainers {
-		stopContainer(loggedUser, container.ID)
+		stopContainer(container.ID)
 	}
 
 	ids := make([]string, len(compose.Services))
@@ -300,7 +300,7 @@ func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, com
 			return
 		}
 
-		startContainer(loggedUser, id.ID)
+		startContainer(id.ID)
 		ids = append(ids, id.ID)
 	}
 
