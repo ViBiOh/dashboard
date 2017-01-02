@@ -78,7 +78,7 @@ export default class Containers extends Component {
             {
               DockerService.isLogged() && (
                 <button
-                  className={`${style.icon} ${style.stop}`}
+                  className={style.dangerButton}
                   onClick={() => this.actionContainer(DockerService.logout())}
                 >
                   <FaUserTimes />
