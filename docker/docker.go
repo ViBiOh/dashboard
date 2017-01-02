@@ -143,12 +143,25 @@ func inspectContainer(containerID string) (types.ContainerJSON, error) {
 	return docker.ContainerInspect(context.Background(), containerID)
 }
 
-func startContainer(containerID string) error {
-	return docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
+func startContainer(loggedUser *user, containerID string) (bool, error) {
+	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed || err != nil {
+		return allowed, err
+	}
+	return true, docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
 }
 
-func stopContainer(containerID string) error {
-	return docker.ContainerStop(context.Background(), containerID, nil)
+func stopContainer(loggedUser *user, containerID string) (bool, error) {
+	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed || err != nil {
+		return allowed, err
+	}
+	return true, docker.ContainerStop(context.Background(), containerID, nil)
+}
+
+func restartContainer(loggedUser *user, containerID string) (bool, error) {
+	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed || err != nil {
+		return allowed, err
+	}
+	return true, docker.ContainerRestart(context.Background(), containerID, nil)
 }
 
 func rmContainer(loggedUser *user, containerID string) (bool, error) {
@@ -166,24 +179,30 @@ func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
-func startContainerHandler(w http.ResponseWriter, containerID []byte) {
-	if err := startContainer(string(containerID)); err != nil {
+func startContainerHandler(w http.ResponseWriter, loggedUser *user, containerID []byte) {
+	if allowed, err := startContainer(loggedUser, string(containerID)); !allowed {
+		forbidden(w)
+	} else if err != nil {
 		errorHandler(w, err)
 	} else {
 		w.Write(nil)
 	}
 }
 
-func stopContainerHandler(w http.ResponseWriter, containerID []byte) {
-	if err := stopContainer(string(containerID)); err != nil {
+func stopContainerHandler(w http.ResponseWriter, loggedUser *user, containerID []byte) {
+	if allowed, err := stopContainer(loggedUser, string(containerID)); !allowed {
+		forbidden(w)
+	} else if err != nil {
 		errorHandler(w, err)
 	} else {
 		w.Write(nil)
 	}
 }
 
-func restartContainerHandler(w http.ResponseWriter, containerID []byte) {
-	if err := docker.ContainerRestart(context.Background(), string(containerID), nil); err != nil {
+func restartContainerHandler(w http.ResponseWriter, loggedUser *user, containerID []byte) {
+	if allowed, err := restartContainer(loggedUser, string(containerID)); !allowed {
+		forbidden(w)
+	} else if err != nil {
 		errorHandler(w, err)
 	} else {
 		w.Write(nil)
@@ -374,11 +393,11 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 			inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
 		} else if startRequest.Match(urlPath) && r.Method == http.MethodPost {
-			startContainerHandler(w, startRequest.FindSubmatch(urlPath)[1])
+			startContainerHandler(w, loggedUser, startRequest.FindSubmatch(urlPath)[1])
 		} else if stopRequest.Match(urlPath) && r.Method == http.MethodPost {
-			stopContainerHandler(w, stopRequest.FindSubmatch(urlPath)[1])
+			stopContainerHandler(w, loggedUser, stopRequest.FindSubmatch(urlPath)[1])
 		} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
-			restartContainerHandler(w, restartRequest.FindSubmatch(urlPath)[1])
+			restartContainerHandler(w, loggedUser, restartRequest.FindSubmatch(urlPath)[1])
 		} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
 			deleteContainerHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1])
 		} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
