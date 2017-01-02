@@ -177,7 +177,7 @@ func listContainers(loggedUser *user) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 	
 	if user != nil {
-		options.Filters := filters.ParseFlag(`label=owner=`+loggedUser.username)
+		options.Filters = filters.ParseFlag(`label=owner=`+loggedUser.username)
 	}
 	
 	return docker.ContainerList(context.Background(), options)
