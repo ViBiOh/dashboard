@@ -4,7 +4,7 @@ import { browserHistory } from 'react-router';
 import FaEye from 'react-icons/lib/fa/eye';
 import style from './Containers.css';
 
-const ContainerRow = ({ container, action }) => (
+const ContainerRow = ({ container }) => (
   <span className={style.row}>
     <pre>{container.Id.substring(0, 12)}</pre>
     <span className={style.fluid}>{container.Image}</span>
@@ -12,7 +12,7 @@ const ContainerRow = ({ container, action }) => (
     <span className={style.created}>
       {moment.unix(container.Created).fromNow()}
     </span>
-    <span className={style.fluid} style={{ color: isUp ? '#4cae4c' : '#d43f3a' }}>
+    <span className={style.fluid}>
       {container.Status}
     </span>
     <span className={style.fluid}>{container.Names.join(', ')}</span>
@@ -29,7 +29,6 @@ const ContainerRow = ({ container, action }) => (
 ContainerRow.displayName = 'ContainerRow';
 
 ContainerRow.propTypes = {
-  action: React.PropTypes.func,
   container: React.PropTypes.shape({
     Image: React.PropTypes.string.isRequired,
     Created: React.PropTypes.number.isRequired,

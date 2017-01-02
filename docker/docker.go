@@ -131,14 +131,14 @@ func listContainers(loggedUser *user, appName *string) ([]types.Container, error
 
 	options.Filters = filters.NewArgs()
 
-	if loggedUser != nil || loggedUser.role != admin {
-		_, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, options.Filters)
-		if err != nil {
+	if loggedUser != nil && loggedUser.role != admin {
+		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, options.Filters); err != nil {
 			return nil, err
 		}
-	} else if *appName != `` {
-		_, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, options.Filters)
-		if err != nil {
+	}
+
+	if appName != nil && *appName != `` {
+		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, options.Filters); err != nil {
 			return nil, err
 		}
 	}
