@@ -41,6 +41,7 @@ export default class ComposeForm extends Component {
         </span>
         <span>
           <textarea
+            className={style.code}
             placeholder="compose file yaml"
             onKeyDown={this.onKeyDown}
             rows={20}
