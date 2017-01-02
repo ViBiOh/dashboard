@@ -48,7 +48,7 @@ export default class ComposeForm extends Component {
         <span>
           <textarea
             className={style.code}
-            placeholder="compose file yaml"
+            placeholder="compose file yaml v2"
             onKeyDown={this.onKeyDown}
             rows={20}
             onChange={e => onValueChange(this, 'compose')(e.target.value)}
