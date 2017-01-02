@@ -24,6 +24,8 @@ import (
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
 const configurationFile = `./users`
+const admin = `admin`
+const ownerLabel = `owner`
 
 var commaByte = []byte(`,`)
 var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
@@ -107,11 +109,27 @@ func readConfiguration(path string) map[string]*user {
 	return users
 }
 
+func isAllowed(loggedUser *user, containerID string) bool {
+	if loggedUser.role != admin {
+		container, err := inspectContainer(string(containerID))
+		if err != nil {
+			errorHandler(w, err)
+			return
+		}
+		owner, ok := container.Config.Labels[ownerLabel]
+		if !ok || owner != loggedUser.username {
+			return false
+		}
+	}
+	
+	return true
+}
+
 func listContainers(loggedUser *user) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 	
 	if loggedUser != nil {
-		args, err := filters.ParseFlag(`label=owner=`+loggedUser.username, filters.NewArgs())
+		args, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, filters.NewArgs())
 		if err != nil {
 			return nil, err
 		}
@@ -133,8 +151,11 @@ func stopContainer(containerID string) error {
 	return docker.ContainerStop(context.Background(), containerID, nil)
 }
 
-func rmContainer(containerID string) error {
-	return docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
+func rmContainer(containerID string) (bool, error) {
+	if !isAllowed(loggedUser, string(containerID)) {
+		return false, nil
+	}
+	return true, docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
 }
 
 func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
@@ -170,20 +191,9 @@ func restartContainerHandler(w http.ResponseWriter, containerID []byte) {
 }
 
 func deleteContainerHandler(w http.ResponseWriter, loggedUser *user, containerID []byte) {
-	if loggedUser.role != `admin` {
-		container, err := inspectContainer(string(containerID))
-		if err != nil {
-			errorHandler(w, err)
-			return
-		}
-		ok, owner := container.Config.Labels[`owner`]
-		if ok && owner != loggedUser.username {
-			forbidden(w)
-			return
-		}
-	}
-	
-	if err := rmContainer(string(containerID)); err != nil {
+	if allowed, err := rmContainer(loggedUser, string(containerID)); !allowed {
+		forbidden(w)
+	} else if err != nil {
 		errorHandler(w, err)
 	} else {
 		w.Write(nil)
@@ -231,7 +241,7 @@ func getConfig(service *dockerComposeService, loggedUser *user) *container.Confi
 		environments = append(environments, key+`=`+value)
 	}
 	
-	service.Labels[`owner`] = loggedUser.username
+	service.Labels[ownerLabel] = loggedUser.username
 
 	config := container.Config{
 		Image:  service.Image,
