@@ -42,8 +42,6 @@ export default class Container extends Component {
     }
 
     const { container } = this.state;
-    
-    const isUp = GREEN_STATUS.test(container.Status)
 
     return (
       <span>
@@ -56,7 +54,7 @@ export default class Container extends Component {
           </button>
           <span className={style.growingFlex} />
           {
-            isUp && DockerService.isLogged() && [
+            container.State.Running && DockerService.isLogged() && [
               <button
                 key="restart"
                 className={style.styledButton}
@@ -74,7 +72,7 @@ export default class Container extends Component {
             ]
           }
           {
-            !isUp && DockerService.isLogged() && [
+            !container.State.Running && DockerService.isLogged() && [
               <button
                 key="start"
                 className={style.styledButton}
