@@ -232,6 +232,10 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 		environments = append(environments, key+`=`+value)
 	}
 
+	if service.Labels == nil {
+		service.Labels = make(map[string]string)
+	}
+
 	service.Labels[ownerLabel] = loggedUser.username
 	service.Labels[appLabel] = appName
 
