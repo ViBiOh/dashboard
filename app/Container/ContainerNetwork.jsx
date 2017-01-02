@@ -2,8 +2,10 @@ import React from 'react';
 import style from './Containers.css';
 
 const ContainerNetwork = ({ container }) => {
-  if ((container.NetworkSettings.Networks && Object.keys(container.NetworkSettings.Networks).length === 0) &&
-    (container.NetworkSettings.Ports && Object.keys(container.NetworkSettings.Ports).length === 0)) {
+  if ((container.NetworkSettings.Networks &&
+       Object.keys(container.NetworkSettings.Networks).length === 0) &&
+    (container.NetworkSettings.Ports &&
+     Object.keys(container.NetworkSettings.Ports).length === 0)) {
     return null;
   }
 
