@@ -35,6 +35,7 @@ export default class DockerService {
 
   static logout() {
     localStorage.removeItem(authStorage);
+    return Promise.resolve();
   }
 
   static containers() {
