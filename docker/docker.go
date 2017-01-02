@@ -152,8 +152,8 @@ func stopContainer(containerID string) error {
 }
 
 func rmContainer(loggedUser *user, containerID string) (bool, error) {
-	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed {
-		return false, nil
+	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed || err != nil {
+		return allowed, err
 	}
 	return true, docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
 }
