@@ -143,7 +143,7 @@ func restartContainerHandler(w http.ResponseWriter, containerID []byte) {
 }
 
 func deleteContainerHandler(w http.ResponseWriter, containerID []byte) {
-	if err := docker.ContainerStop(context.Background(), string(containerID), types.ContainerRemoveOptions{RemoveVolumes: true, RemoveLinks: true, Force: true}); err != nil {
+	if err := docker.ContainerRemove(context.Background(), string(containerID), types.ContainerRemoveOptions{RemoveVolumes: true, RemoveLinks: true, Force: true}); err != nil {
 		errorHandler(w, err)
 	} else {
 		w.Write(nil)
@@ -151,7 +151,7 @@ func deleteContainerHandler(w http.ResponseWriter, containerID []byte) {
 }
 
 func logContainerHandler(w http.ResponseWriter, containerID []byte) {
-	logs, err := docker.ContainerRemove(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
+	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
 	if err != nil {
 		errorHandler(w, err)
 		return
