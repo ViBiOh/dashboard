@@ -26,6 +26,7 @@ const version = `DOCKER_VERSION`
 const configurationFile = `./users`
 const admin = `admin`
 const ownerLabel = `owner`
+const appLabel = `app`
 
 var commaByte = []byte(`,`)
 var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
@@ -125,15 +126,21 @@ func isAllowed(loggedUser *user, containerID string) (bool, error) {
 	return true, nil
 }
 
-func listContainers(loggedUser *user) ([]types.Container, error) {
+func listContainers(loggedUser *user, appName *string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
-	if loggedUser != nil {
-		args, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, filters.NewArgs())
+	options.Filters = filters.NewArgs()
+
+	if loggedUser != nil || loggedUser.role != admin {
+		_, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, options.Filters)
 		if err != nil {
 			return nil, err
 		}
-		options.Filters = args
+	} else if *appName != `` {
+		_, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, options.Filters)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return docker.ContainerList(context.Background(), options)
@@ -206,8 +213,8 @@ func logContainerHandler(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
-func listContainersHandler(w http.ResponseWriter) {
-	if containers, err := listContainers(nil); err != nil {
+func listContainersHandler(w http.ResponseWriter, loggerUser *user) {
+	if containers, err := listContainers(loggerUser, nil); err != nil {
 		errorHandler(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{containers})
@@ -219,13 +226,14 @@ func readBody(body io.ReadCloser) ([]byte, error) {
 	return ioutil.ReadAll(body)
 }
 
-func getConfig(service *dockerComposeService, loggedUser *user) *container.Config {
+func getConfig(service *dockerComposeService, loggedUser *user, appName string) *container.Config {
 	environments := make([]string, len(service.Environment))
 	for key, value := range service.Environment {
 		environments = append(environments, key+`=`+value)
 	}
 
 	service.Labels[ownerLabel] = loggedUser.username
+	service.Labels[appLabel] = appName
 
 	config := container.Config{
 		Image:  service.Image,
@@ -268,7 +276,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	return &hostConfig
 }
 
-func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, composeFile []byte) {
+func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, composeFile []byte) {
 	compose := dockerCompose{}
 
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
@@ -276,7 +284,8 @@ func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, com
 		return
 	}
 
-	ownerContainers, err := listContainers(loggedUser)
+	appNameStr := string(appName)
+	ownerContainers, err := listContainers(loggedUser, &appNameStr)
 	if err != nil {
 		errorHandler(w, err)
 		return
@@ -294,7 +303,7 @@ func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, com
 			return
 		}
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser), getHostConfig(&service), &networkConfig, string(name)+`_`+serviceName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, appNameStr+`_`+serviceName)
 		if err != nil {
 			errorHandler(w, err)
 			return
@@ -346,29 +355,31 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	urlPath := []byte(r.URL.Path)
 
-	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
-		listContainersHandler(w)
-	} else if loggedUser := isAuthenticated(r); loggedUser != nil {
-		if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
-			if composeBody, err := readBody(r.Body); err != nil {
-				errorHandler(w, err)
-			} else {
-				runComposeHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], composeBody)
-			}
-		} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
-			inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
-		} else if startRequest.Match(urlPath) && r.Method == http.MethodPost {
-			basicActionHandler(w, loggedUser, startRequest.FindSubmatch(urlPath)[1], startContainer)
-		} else if stopRequest.Match(urlPath) && r.Method == http.MethodPost {
-			basicActionHandler(w, loggedUser, stopRequest.FindSubmatch(urlPath)[1], stopContainer)
-		} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
-			basicActionHandler(w, loggedUser, restartRequest.FindSubmatch(urlPath)[1], restartContainer)
-		} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
-			basicActionHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], rmContainer)
-		} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
-			logContainerHandler(w, logRequest.FindSubmatch(urlPath)[1])
-		}
-	} else {
+	loggedUser := isAuthenticated(r)
+	if loggedUser == nil {
 		unauthorized(w)
+		return
+	}
+
+	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
+		listContainersHandler(w, loggedUser)
+	} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
+		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
+	} else if startRequest.Match(urlPath) && r.Method == http.MethodPost {
+		basicActionHandler(w, loggedUser, startRequest.FindSubmatch(urlPath)[1], startContainer)
+	} else if stopRequest.Match(urlPath) && r.Method == http.MethodPost {
+		basicActionHandler(w, loggedUser, stopRequest.FindSubmatch(urlPath)[1], stopContainer)
+	} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
+		basicActionHandler(w, loggedUser, restartRequest.FindSubmatch(urlPath)[1], restartContainer)
+	} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
+		basicActionHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], rmContainer)
+	} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
+		logContainerHandler(w, logRequest.FindSubmatch(urlPath)[1])
+	} else if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
+		if composeBody, err := readBody(r.Body); err != nil {
+			errorHandler(w, err)
+		} else {
+			createAppHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], composeBody)
+		}
 	}
 }
