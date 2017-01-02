@@ -32,6 +32,14 @@ $iconSize: 50px;
   margin: 2px;
 }
 
+@mixin button {
+  margin: 2px;
+  border-radius: 5px;
+  padding: 10px;
+  width: auto;
+  color: white;
+}
+
 @mixin ellipsis {
   white-space: nowrap;
   overflow: hidden;
@@ -57,11 +65,13 @@ button {
 }
 
 .styledButton {
-  margin: 2px;
-  padding: 10px;
-  border-radius: 5px;
-  color: white;
+  @include button;
   background-color: $primary;
+}
+
+.dangerButton {
+  @include button;
+  background-color: $danger;
 }
 
 .form {
