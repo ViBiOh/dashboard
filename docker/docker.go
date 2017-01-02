@@ -15,7 +15,6 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"math"
 	"net/http"
 	"os"
 	"regexp"
@@ -271,7 +270,11 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	}
 
 	if service.MemoryLimit != 0 {
-		hostConfig.Resources.Memory = math.Min(service.MemoryLimit, maxMemory)
+		if service.MemoryLimit < maxMemory {
+			hostConfig.Resources.Memory = service.MemoryLimit
+		} else {
+			hostConfig.Resources.Memory = maxMemory
+		}
 	}
 
 	return &hostConfig
