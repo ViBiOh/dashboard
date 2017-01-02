@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import FaPlus from 'react-icons/lib/fa/plus';
+import FaRefresh from 'react-icons/lib/fa/refresh';
 import DockerService from '../Service/DockerService';
 import ContainerRow from './ContainerRow';
 import Throbber from '../Throbber/Throbber';
@@ -26,10 +27,14 @@ export default class Containers extends Component {
     this.setState({ loaded: false });
 
     return DockerService.containers()
-      .then(containers => this.setState({
-        loaded: true,
-        containers,
-      }));
+      .then((containers) => {
+        this.setState({
+          loaded: true,
+          containers,
+        });
+      
+        return containers;
+    });
   }
 
   actionContainer(promise) {
@@ -40,6 +45,12 @@ export default class Containers extends Component {
     if (this.state.loaded) {
       return (
         <span>
+          <button
+            className={style.styledButton}
+            onClick={this.fetchContainers()}
+          >
+            <FaRefresh />
+          </button>
           <button
             className={style.styledButton}
             onClick={() => browserHistory.push('/containers/New')}
