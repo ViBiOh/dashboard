@@ -4,6 +4,7 @@ deps:
 	go get -u github.com/golang/lint/golint
 	go get -u github.com/docker/docker/api/types
 	go get -u github.com/docker/docker/api/types/container
+	go get -u github.com/docker/docker/api/types/filters
 	go get -u github.com/docker/docker/api/types/network
 	go get -u github.com/docker/docker/api/types/strslice
 	go get -u github.com/docker/docker/client
