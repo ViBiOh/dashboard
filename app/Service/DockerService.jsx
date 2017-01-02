@@ -2,6 +2,7 @@ import { browserHistory } from 'react-router';
 import Fetch, { errorHandler } from 'js-fetch';
 
 const API = 'https://docker-api.vibioh.fr/';
+const authStorage = 'auth';
 
 function authRedirect(response) {
   if (response.status === 401) {
@@ -12,13 +13,13 @@ function authRedirect(response) {
 
 function auth(url) {
   return Fetch.url(url)
-    .auth(localStorage.getItem('auth'))
+    .auth(localStorage.getItem(authStorage))
     .error(authRedirect);
 }
 
 export default class DockerService {
   static isLogged() {
-    return !!localStorage.getItem('auth');
+    return !!localStorage.getItem(authStorage);
   }
 
   static login(login, password) {
@@ -28,8 +29,12 @@ export default class DockerService {
       .auth(hash)
       .get()
       .then(() => {
-        localStorage.setItem('auth', hash);
+        localStorage.setItem(authStorage, hash);
       });
+  }
+
+  static logout() {
+    localStorage.removeItem(authStorage);
   }
 
   static containers() {
