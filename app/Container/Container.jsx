@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
+import { browserHistory } from 'react-router';
 import DockerService from '../Service/DockerService';
 import Throbber from '../Throbber/Throbber';
 import ContainerInfo from './ContainerInfo';
@@ -38,6 +40,12 @@ export default class Container extends Component {
 
     return (
       <span>
+        <button
+          className={style.styledButton}
+          onClick={() => browserHistory.push('/')}
+        >
+          <FaArrowLeft /> Back
+        </button>
         <ContainerInfo container={container} />
         <ContainerNetwork container={container} />
         <ContainerVolumes container={container} />
