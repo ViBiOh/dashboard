@@ -5,7 +5,7 @@ import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaUser from 'react-icons/lib/fa/user';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
 import DockerService from '../Service/DockerService';
-import ContainerRow from './ContainerRow';
+import ContainerCard from './ContainerCard';
 import Throbber from '../Throbber/Throbber';
 import style from './Containers.css';
 
@@ -18,7 +18,6 @@ export default class Containers extends Component {
     };
 
     this.fetchContainers = this.fetchContainers.bind(this);
-    this.actionContainer = this.actionContainer.bind(this);
   }
 
   componentDidMount() {
@@ -36,11 +35,11 @@ export default class Containers extends Component {
         });
 
         return containers;
+      })
+      .catch((error) => {
+        this.setState({ error: error.content });
+        return error;
       });
-  }
-
-  actionContainer(promise) {
-    return promise.then(this.fetchContainers);
   }
 
   renderContainers() {
@@ -60,7 +59,7 @@ export default class Containers extends Component {
                   className={style.styledButton}
                   onClick={() => browserHistory.push('/containers/New')}
                 >
-                  <FaPlus /> Add a compose
+                  <FaPlus /> Add an app
                 </button>
               )
             }
@@ -79,7 +78,7 @@ export default class Containers extends Component {
               DockerService.isLogged() && (
                 <button
                   className={style.dangerButton}
-                  onClick={() => this.actionContainer(DockerService.logout())}
+                  onClick={() => DockerService.logout().then(this.fetchContainers)}
                 >
                   <FaUserTimes />
                 </button>
@@ -89,11 +88,7 @@ export default class Containers extends Component {
           <div key="list" className={style.flex}>
             {
               this.state.containers.map(container => (
-                <ContainerRow
-                  key={container.Id}
-                  container={container}
-                  action={this.actionContainer}
-                />
+                <ContainerCard key={container.Id} container={container} />
               ))
             }
           </div>
@@ -101,7 +96,7 @@ export default class Containers extends Component {
       );
     }
 
-    return <Throbber label="Loading containers" />;
+    return <Throbber label="Loading containers" error={this.state.error} />;
   }
 
   render() {

@@ -4,7 +4,7 @@ import { browserHistory } from 'react-router';
 import FaEye from 'react-icons/lib/fa/eye';
 import style from './Containers.css';
 
-const ContainerRow = ({ container }) => (
+const ContainerCard = ({ container }) => (
   <span className={style.row}>
     <pre>{container.Id.substring(0, 12)}</pre>
     <span className={style.fluid}>{container.Image}</span>
@@ -26,9 +26,9 @@ const ContainerRow = ({ container }) => (
   </span>
 );
 
-ContainerRow.displayName = 'ContainerRow';
+ContainerCard.displayName = 'ContainerCard';
 
-ContainerRow.propTypes = {
+ContainerCard.propTypes = {
   container: React.PropTypes.shape({
     Image: React.PropTypes.string.isRequired,
     Created: React.PropTypes.number.isRequired,
@@ -37,4 +37,4 @@ ContainerRow.propTypes = {
   }).isRequired,
 };
 
-export default ContainerRow;
+export default ContainerCard;

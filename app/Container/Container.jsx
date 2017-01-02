@@ -31,25 +31,77 @@ export default class Container extends Component {
 
   fetchInfos() {
     return DockerService.infos(this.props.params.containerId)
-      .then(container => this.setState({
-        loaded: true,
-        container,
-      }));
+      .then((container) => {
+        this.setState({
+          loaded: true,
+          container,
+        });
+
+        return container;
+      })
+      .catch((error) => {
+        this.setState({ error: error.content });
+        return error;
+      });
   }
 
   action(promise) {
-    return promise.then(this.fetchInfos);
+    return promise
+      .then(this.fetchInfos)
+      .catch((error) => {
+        this.setState({ error: error.content });
+        return error;
+      });
+  }
+
+  renderActions(container) {
+    if (container.State.Running) {
+      return [
+        <button
+          key="restart"
+          className={style.styledButton}
+          onClick={() => this.action(DockerService.restart(container.Id))}
+        >
+          <FaRefresh />
+        </button>,
+        <button
+          key="stop"
+          className={style.dangerButton}
+          onClick={() => this.action(DockerService.stop(container.Id))}
+        >
+          <FaStopCircle />
+        </button>,
+      ];
+    }
+    return [
+      <button
+        key="start"
+        className={style.styledButton}
+        onClick={() => this.action(DockerService.start(container.Id))}
+      >
+        <FaPlay />
+      </button>,
+      <button
+        key="delete"
+        className={style.dangerButton}
+        onClick={() => this.action(DockerService.delete(container.Id)).then(() =>
+          browserHistory.push('/'))}
+      >
+        <FaTrash />
+      </button>,
+    ];
   }
 
   render() {
     if (!this.state.loaded) {
-      return <Throbber label="Loading informations" />;
+      return <Throbber label="Loading informations" error={this.state.error} />;
     }
 
     const { container } = this.state;
 
     return (
       <span>
+        <div className={style.error}>{this.state.error}</div>
         <span className={style.flex}>
           <button
             className={style.styledButton}
@@ -58,42 +110,7 @@ export default class Container extends Component {
             <FaArrowLeft /> Back
           </button>
           <span className={style.growingFlex} />
-          {
-            container.State.Running && DockerService.isLogged() && [
-              <button
-                key="restart"
-                className={style.styledButton}
-                onClick={() => this.action(DockerService.restart(container.Id))}
-              >
-                <FaRefresh />
-              </button>,
-              <button
-                key="stop"
-                className={style.dangerButton}
-                onClick={() => this.action(DockerService.stop(container.Id))}
-              >
-                <FaStopCircle />
-              </button>,
-            ]
-          }
-          {
-            !container.State.Running && DockerService.isLogged() && [
-              <button
-                key="start"
-                className={style.styledButton}
-                onClick={() => this.action(DockerService.start(container.Id))}
-              >
-                <FaPlay />
-              </button>,
-              <button
-                key="delete"
-                className={style.dangerButton}
-                onClick={() => this.action(DockerService.delete(container.Id))}
-              >
-                <FaTrash />
-              </button>,
-            ]
-          }
+          {this.renderActions(container)}
         </span>
         <ContainerInfo container={container} />
         <ContainerNetwork container={container} />

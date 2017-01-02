@@ -20,10 +20,18 @@ export default class ContainerLogs extends Component {
 
   fetchLogs() {
     return DockerService.logs(this.props.containerId)
-      .then(logs => this.setState({
-        loaded: true,
-        logs,
-      }));
+      .then((logs) => {
+        this.setState({
+          loaded: true,
+          logs,
+        });
+
+        return logs;
+      })
+      .catch((error) => {
+        this.setState({ error: error.content });
+        return error;
+      });
   }
 
   render() {
@@ -35,7 +43,7 @@ export default class ContainerLogs extends Component {
         </pre>
       );
     } else {
-      content = <Throbber label="Loading logs" />;
+      content = <Throbber label="Loading logs" error={this.state.error} />;
     }
 
     return (

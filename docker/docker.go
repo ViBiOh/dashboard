@@ -15,6 +15,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"regexp"
@@ -27,6 +28,8 @@ const configurationFile = `./users`
 const admin = `admin`
 const ownerLabel = `owner`
 const appLabel = `app`
+const minMemory = 67108864
+const maxMemory = 536870912
 
 var commaByte = []byte(`,`)
 var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
@@ -135,9 +138,7 @@ func listContainers(loggedUser *user, appName *string) ([]types.Container, error
 		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, options.Filters); err != nil {
 			return nil, err
 		}
-	}
-
-	if appName != nil && *appName != `` {
+	} else if appName != nil && *appName != `` {
 		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, options.Filters); err != nil {
 			return nil, err
 		}
@@ -256,7 +257,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 		Resources: container.Resources{
 			CPUShares: 128,
-			Memory:    134217728,
+			Memory:    134217728134217728,
 		},
 		SecurityOpt: []string{`no-new-privileges`},
 	}
@@ -270,7 +271,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	}
 
 	if service.MemoryLimit != 0 {
-		hostConfig.Resources.Memory = service.MemoryLimit
+		hostConfig.Resources.Memory = math.Min(service.MemoryLimit, maxMemory)
 	}
 
 	return &hostConfig

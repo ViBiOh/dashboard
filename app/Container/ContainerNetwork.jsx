@@ -40,8 +40,8 @@ ContainerNetwork.displayName = 'ContainerNetwork';
 ContainerNetwork.propTypes = {
   container: React.PropTypes.shape({
     NetworkSettings: React.PropTypes.shape({
-      Ports: React.PropTypes.shape({}).isRequired,
-      Networks: React.PropTypes.shape({}).isRequired,
+      Ports: React.PropTypes.shape({}),
+      Networks: React.PropTypes.shape({}),
     }).isRequired,
   }).isRequired,
 };

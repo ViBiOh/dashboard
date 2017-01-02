@@ -19,6 +19,10 @@ export default class ComposeForm extends Component {
       .then((data) => {
         browserHistory.push('/');
         return data;
+      })
+      .catch((error) => {
+        this.setState({ error: error.content });
+        return error;
       });
   }
 
@@ -55,6 +59,9 @@ export default class ComposeForm extends Component {
             Create
           </button>
         </span>
+        <div className={style.error}>
+          {this.state.error}
+        </div>
       </div>
     );
   }
