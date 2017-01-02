@@ -121,13 +121,13 @@ func isAllowed(loggedUser *user, containerID string) (bool, error) {
 			return false, nil
 		}
 	}
-	
+
 	return true, nil
 }
 
 func listContainers(loggedUser *user) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
-	
+
 	if loggedUser != nil {
 		args, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, filters.NewArgs())
 		if err != nil {
@@ -135,7 +135,7 @@ func listContainers(loggedUser *user) ([]types.Container, error) {
 		}
 		options.Filters = args
 	}
-	
+
 	return docker.ContainerList(context.Background(), options)
 }
 
@@ -143,32 +143,20 @@ func inspectContainer(containerID string) (types.ContainerJSON, error) {
 	return docker.ContainerInspect(context.Background(), containerID)
 }
 
-func startContainer(loggedUser *user, containerID string) (bool, error) {
-	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed || err != nil {
-		return allowed, err
-	}
-	return true, docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
+func startContainer(containerID string) error {
+	return docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
 }
 
-func stopContainer(loggedUser *user, containerID string) (bool, error) {
-	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed || err != nil {
-		return allowed, err
-	}
-	return true, docker.ContainerStop(context.Background(), containerID, nil)
+func stopContainer(containerID string) error {
+	return docker.ContainerStop(context.Background(), containerID, nil)
 }
 
-func restartContainer(loggedUser *user, containerID string) (bool, error) {
-	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed || err != nil {
-		return allowed, err
-	}
-	return true, docker.ContainerRestart(context.Background(), containerID, nil)
+func restartContainer(containerID string) error {
+	return docker.ContainerRestart(context.Background(), containerID, nil)
 }
 
-func rmContainer(loggedUser *user, containerID string) (bool, error) {
-	if allowed, err := isAllowed(loggedUser, string(containerID)); !allowed || err != nil {
-		return allowed, err
-	}
-	return true, docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
+func rmContainer(containerID string) error {
+	return docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
 }
 
 func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
@@ -179,43 +167,20 @@ func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
-func startContainerHandler(w http.ResponseWriter, loggedUser *user, containerID []byte) {
-	if allowed, err := startContainer(loggedUser, string(containerID)); !allowed {
-		forbidden(w)
-	} else if err != nil {
-		errorHandler(w, err)
-	} else {
-		w.Write(nil)
-	}
-}
+func basicActionHandler(w http.ResponseWriter, loggedUser *user, containerID []byte, handle func(string) error) {
+	id := string(containerID)
 
-func stopContainerHandler(w http.ResponseWriter, loggedUser *user, containerID []byte) {
-	if allowed, err := stopContainer(loggedUser, string(containerID)); !allowed {
+	allowed, err := isAllowed(loggedUser, id)
+	if !allowed {
 		forbidden(w)
 	} else if err != nil {
 		errorHandler(w, err)
 	} else {
-		w.Write(nil)
-	}
-}
-
-func restartContainerHandler(w http.ResponseWriter, loggedUser *user, containerID []byte) {
-	if allowed, err := restartContainer(loggedUser, string(containerID)); !allowed {
-		forbidden(w)
-	} else if err != nil {
-		errorHandler(w, err)
-	} else {
-		w.Write(nil)
-	}
-}
-
-func deleteContainerHandler(w http.ResponseWriter, loggedUser *user, containerID []byte) {
-	if allowed, err := rmContainer(loggedUser, string(containerID)); !allowed {
-		forbidden(w)
-	} else if err != nil {
-		errorHandler(w, err)
-	} else {
-		w.Write(nil)
+		if err = handle(id); err != nil {
+			errorHandler(w, err)
+		} else {
+			w.Write(nil)
+		}
 	}
 }
 
@@ -259,7 +224,7 @@ func getConfig(service *dockerComposeService, loggedUser *user) *container.Confi
 	for key, value := range service.Environment {
 		environments = append(environments, key+`=`+value)
 	}
-	
+
 	service.Labels[ownerLabel] = loggedUser.username
 
 	config := container.Config{
@@ -301,7 +266,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	}
 
 	return &hostConfig
-}	
+}
 
 func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, composeFile []byte) {
 	compose := dockerCompose{}
@@ -310,20 +275,20 @@ func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, com
 		errorHandler(w, err)
 		return
 	}
-	
+
 	ownerContainers, err := listContainers(loggedUser)
 	if err != nil {
 		errorHandler(w, err)
 		return
 	}
 	for _, container := range ownerContainers {
-		stopContainer(loggedUser, container.ID)
+		stopContainer(container.ID)
 	}
 
 	ids := make([]string, len(compose.Services))
 	for serviceName, service := range compose.Services {
 		pull, err := docker.ImagePull(context.Background(), service.Image, types.ImagePullOptions{})
-		defer pull.Close();
+		defer pull.Close()
 		if err != nil {
 			errorHandler(w, err)
 			return
@@ -335,7 +300,7 @@ func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, com
 			return
 		}
 
-		startContainer(loggedUser, id.ID)
+		startContainer(id.ID)
 		ids = append(ids, id.ID)
 	}
 
@@ -383,7 +348,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
 		listContainersHandler(w)
-	} else if loggedUser := isAuthenticated(r); loggedUser!= nil {
+	} else if loggedUser := isAuthenticated(r); loggedUser != nil {
 		if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
 			if composeBody, err := readBody(r.Body); err != nil {
 				errorHandler(w, err)
@@ -393,13 +358,13 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 			inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
 		} else if startRequest.Match(urlPath) && r.Method == http.MethodPost {
-			startContainerHandler(w, loggedUser, startRequest.FindSubmatch(urlPath)[1])
+			basicActionHandler(w, loggedUser, startRequest.FindSubmatch(urlPath)[1], startContainer)
 		} else if stopRequest.Match(urlPath) && r.Method == http.MethodPost {
-			stopContainerHandler(w, loggedUser, stopRequest.FindSubmatch(urlPath)[1])
+			basicActionHandler(w, loggedUser, stopRequest.FindSubmatch(urlPath)[1], stopContainer)
 		} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
-			restartContainerHandler(w, loggedUser, restartRequest.FindSubmatch(urlPath)[1])
+			basicActionHandler(w, loggedUser, restartRequest.FindSubmatch(urlPath)[1], restartContainer)
 		} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
-			deleteContainerHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1])
+			basicActionHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], rmContainer)
 		} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
 			logContainerHandler(w, logRequest.FindSubmatch(urlPath)[1])
 		}
