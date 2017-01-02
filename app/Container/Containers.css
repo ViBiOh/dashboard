@@ -47,6 +47,15 @@ button {
   border: 0;
 }
 
+.flex {
+  @include flexWrap;
+  width: 100%;
+}
+
+.growingFlex {
+  flex: 1 1 auto;
+}
+
 .styledButton {
   margin: 2px;
   padding: 10px;
@@ -56,17 +65,11 @@ button {
 }
 
 .form {
+  @include flexWrap;
   width: 100%;
-  display: flex;
   text-align: center;
   align-items: center;
-  flex-wrap: wrap;
   padding-top: 10px;
-}
-
-.list {
-  width: 100%;
-  @include flexWrap;
 }
 
 .row,
