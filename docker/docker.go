@@ -172,8 +172,18 @@ func logContainerHandler(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
+func listContainers(loggedUser *user) ([]types.Container, error) {
+	options := types.ContainerListOptions{All: true}
+	
+	if user != nil {
+		options.Filters := filters.ParseFlag(`label=owner=`+loggedUser.username)
+	}
+	
+	return docker.ContainerList(context.Background(), options)
+}
+
 func listContainersHandler(w http.ResponseWriter) {
-	if containers, err := docker.ContainerList(context.Background(), types.ContainerListOptions{All: true}); err != nil {
+	if containers, err := listContainers(nil); err != nil {
 		errorHandler(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{containers})
@@ -233,6 +243,11 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 
 	return &hostConfig
 }
+
+func getUserContainers(loggedUser *user) {
+	
+}
+	
 
 func runComposeHandler(w http.ResponseWriter, loggedUser *user, name []byte, composeFile []byte) {
 	compose := dockerCompose{}
