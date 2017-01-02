@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
+import FaPlay from 'react-icons/lib/fa/play';
+import FaStopCircle from 'react-icons/lib/fa/stop-circle';
+import FaTrash from 'react-icons/lib/fa/trash';
+import FaRefresh from 'react-icons/lib/fa/refresh';
 import { browserHistory } from 'react-router';
 import DockerService from '../Service/DockerService';
 import Throbber from '../Throbber/Throbber';
@@ -38,15 +42,56 @@ export default class Container extends Component {
     }
 
     const { container } = this.state;
+    
+    const isUp = GREEN_STATUS.test(container.Status)
 
     return (
       <span>
-        <button
-          className={style.styledButton}
-          onClick={() => browserHistory.push('/')}
-        >
-          <FaArrowLeft /> Back
-        </button>
+        <span className={style.flex}>
+          <button
+            className={style.styledButton}
+            onClick={() => browserHistory.push('/')}
+          >
+            <FaArrowLeft /> Back
+          </button>
+          <span className={style.growingFlex} />
+          {
+            isUp && DockerService.isLogged() && [
+              <button
+                key="restart"
+                className={style.styledButton}
+                onClick={() => action(DockerService.restart(container.Id))}
+              >
+                <FaRefresh />
+              </button>,
+              <button
+                key="stop"
+                className={style.dangerButton}
+                onClick={() => action(DockerService.stop(container.Id))}
+              >
+                <FaStopCircle />
+              </button>,
+            ]
+          }
+          {
+            !isUp && DockerService.isLogged() && [
+              <button
+                key="start"
+                className={style.styledButton}
+                onClick={() => action(DockerService.start(container.Id))}
+              >
+                <FaPlay />
+              </button>,
+              <button
+                key="delete"
+                className={style.dangerButton}
+                onClick={() => action(DockerService.delete(container.Id))}
+              >
+                <FaTrash />
+              </button>,
+            ]
+          }
+        </span>
         <ContainerInfo container={container} />
         <ContainerNetwork container={container} />
         <ContainerVolumes container={container} />
