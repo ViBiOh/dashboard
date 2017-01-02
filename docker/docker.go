@@ -177,7 +177,7 @@ func listContainers(loggedUser *user) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 	
 	if loggedUser != nil {
-		args, err := filters.ParseFlag(`label=owner=`+loggedUser.username, nil)
+		args, err := filters.ParseFlag(`label=owner=`+loggedUser.username, filters.NewArgs())
 		if err != nil {
 			return nil, err
 		}
