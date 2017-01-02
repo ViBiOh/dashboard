@@ -63,6 +63,7 @@ export default class Containers extends Component {
               </button>
             )
           }
+          <span className={style.growing} />
           {
             !DockerService.isLogged() && (
               <button
@@ -76,7 +77,7 @@ export default class Containers extends Component {
           {
             DockerService.isLogged() && (
               <button
-                className={style.styledButton}
+                className={`${style.icon} ${style.stop}`}
                 onClick={() => this.actionContainer(DockerService.logout())}
               >
                 <FaUserTimes />
