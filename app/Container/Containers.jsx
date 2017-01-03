@@ -70,7 +70,7 @@ export default class Containers extends Component {
               DockerService.isLogged() && (
                 <Button
                   onClick={() => DockerService.logout().then(this.fetchContainers)}
-                  danger
+                  type="danger"
                 >
                   <FaUserTimes />
                 </Button>
