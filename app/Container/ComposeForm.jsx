@@ -54,7 +54,7 @@ export default class ComposeForm extends Component {
           />
         </span>
         <span>
-          <ThrobberButton className={style.styledButton} onClick={this.create}>
+          <ThrobberButton onClick={this.create}>
             Create
           </ThrobberButton>
         </span>
