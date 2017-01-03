@@ -1,5 +1,3 @@
-$primary: #337ab7;
-
 .form {
   width: 100%;
   display: flex;
@@ -22,18 +20,6 @@ textarea {
 
 .code {
   font-family: monospace; 
-}
-
-.styledButton {
-  margin: 2px;
-  padding: 10px;
-  border-radius: 5px;
-  color: white;
-  background-color: $primary;
-}
-
-.styledButton svg {
-  color: white;
 }
 
 .error {
