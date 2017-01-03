@@ -260,7 +260,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 		Resources: container.Resources{
 			CPUShares: 128,
-			Memory:    134217728134217728,
+			Memory:    minMemory,
 		},
 		SecurityOpt: []string{`no-new-privileges`},
 	}
@@ -293,26 +293,30 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 	}
 
 	appNameStr := string(appName)
+	log.Print(loggedUser.username+` deploys `+appName)
+
 	ownerContainers, err := listContainers(loggedUser, &appNameStr)
 	if err != nil {
 		errorHandler(w, err)
 		return
 	}
 	for _, container := range ownerContainers {
+		log.Print(loggedUser.username+` stops `+container.Name)
 		stopContainer(container.ID)
 	}
 
 	ids := make([]string, len(compose.Services))
 	for serviceName, service := range compose.Services {
+		log.Print(loggedUser.username+` pulls `+service.Image)
 		pull, err := docker.ImagePull(context.Background(), service.Image, types.ImagePullOptions{})
 		if err != nil {
 			errorHandler(w, err)
 			return
 		}
+	
+		readBody(pull)
 
-		defer pull.Close()
-		ioutil.ReadAll(pull)
-
+		log.Print(loggedUser.username+` starts `+serviceName)
 		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, appNameStr+`_`+serviceName)
 		if err != nil {
 			errorHandler(w, err)
