@@ -6,7 +6,7 @@ import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import onValueChange from '../ChangeHandler/ChangeHandler';
-import style from '../Form.css';
+import style from './Compose.css';
 
 export default class ComposeForm extends Component {
   constructor(props) {
@@ -31,7 +31,7 @@ export default class ComposeForm extends Component {
 
   render() {
     return (
-      <div className={style.form}>
+      <div className={style.flex}>
         <Toolbar>
           <Button onClick={() => browserHistory.push('/')}>
             <FaArrowLeft /> Back

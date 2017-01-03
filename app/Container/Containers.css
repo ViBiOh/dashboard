@@ -3,9 +3,6 @@ $grey: #e1e1e8;
 $clear: #f8f8f8;
 
 $primary: #337ab7;
-$success: #5cb85c;
-$info: #5bc0de;
-$warning: #f0ad4e;
 $danger: #d9534f;
 
 $iconSize: 50px;
@@ -114,18 +111,6 @@ button {
 .icon svg {
   width: 20px;
   height: 20px;
-}
-
-.success svg {
-  color: $success;
-}
-
-.primary svg {
-  color: $primary;
-}
-
-.stop svg {
-  color: $danger;
 }
 
 .info {

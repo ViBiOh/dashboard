@@ -32,6 +32,8 @@ export default class Container extends Component {
   }
 
   fetchInfos() {
+    this.setState({ loaded: false });
+
     return DockerService.infos(this.props.params.containerId)
       .then((container) => {
         this.setState({
@@ -93,11 +95,19 @@ export default class Container extends Component {
   }
 
   render() {
-    if (!this.state.loaded) {
-      return <Throbber label="Loading informations" error={this.state.error} />;
-    }
+    const { container, loaded } = this.state;
 
-    const { container } = this.state;
+    let content;
+    if (loaded) {
+      content = [
+        <ContainerInfo container={container} />,
+        <ContainerNetwork container={container} />,
+        <ContainerVolumes container={container} />,
+        <ContainerLogs containerId={this.props.params.containerId} />,
+      ];
+    } else {
+      content = <Throbber label="Loading informations" error={this.state.error} />;
+    }
 
     return (
       <span>
@@ -107,12 +117,9 @@ export default class Container extends Component {
             <FaArrowLeft /> Back
           </Button>
           <span className={style.growingFlex} />
-          {this.renderActions(container)}
+          {loaded && this.renderActions(container)}
         </Toolbar>
-        <ContainerInfo container={container} />
-        <ContainerNetwork container={container} />
-        <ContainerVolumes container={container} />
-        <ContainerLogs containerId={this.props.params.containerId} />
+        {content}
       </span>
     );
   }

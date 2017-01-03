@@ -1,4 +1,7 @@
-.form {
+$grey: #e1e1e8;
+$danger: #d9534f;
+
+.flex {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -6,16 +9,17 @@
   align-items: center;
 }
 
-.form > * {
+.flex > * {
   width: 100%;
 }
 
-input[type="text"],
-input[type="password"],
-textarea {
+.flex input[type="text"],
+.flex textarea {
   width: 50%;
   padding: 10px;
   margin-bottom: 5px;
+  border-radius: 2px;
+  border: 1px solid $grey;
 }
 
 .code {
@@ -23,12 +27,11 @@ textarea {
 }
 
 .error {
-  color: #d9534f;
+  color: $danger;
 }
 
 @media screen and (max-width: 1023px) {
   input[type="text"],
-  input[type="password"],
   textarea {
     width: 90%;
   }
