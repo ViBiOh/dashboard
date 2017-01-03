@@ -293,7 +293,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 	}
 
 	appNameStr := string(appName)
-	log.Print(loggedUser.username+` deploys `+appName)
+	log.Print(loggedUser.username+` deploys `+appNameStr)
 
 	ownerContainers, err := listContainers(loggedUser, &appNameStr)
 	if err != nil {
@@ -301,7 +301,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		return
 	}
 	for _, container := range ownerContainers {
-		log.Print(loggedUser.username+` stops `+container.Name)
+		log.Print(loggedUser.username+` stops `+container.Names)
 		stopContainer(container.ID)
 	}
 
