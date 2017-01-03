@@ -1,0 +1,36 @@
+$primary: #337ab7;
+$success: #5cb85c;
+$info: #5bc0de;
+$warning: #f0ad4e;
+$danger: #d9534f;
+
+.styledButton {
+  margin: 2px;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+}
+
+.styledButton svg {
+  color: white;
+}
+
+.primary {
+  background-color: $primary;
+}
+
+.success {
+  background-color: $success;
+}
+
+.info {
+  background-color: $info;
+}
+
+.warning {
+  background-color: $warning;
+}
+
+.danger {
+  background-color: $danger;
+}

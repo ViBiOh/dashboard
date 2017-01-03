@@ -5,6 +5,7 @@ import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaUser from 'react-icons/lib/fa/user';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
 import DockerService from '../Service/DockerService';
+import Button from '../Button/Button';
 import ContainerCard from './ContainerCard';
 import Throbber from '../Throbber/Throbber';
 import style from './Containers.css';
@@ -47,41 +48,32 @@ export default class Containers extends Component {
       return (
         <span>
           <span className={style.flex}>
-            <button
-              className={style.styledButton}
-              onClick={this.fetchContainers}
-            >
+            <Button onClick={this.fetchContainers}>
               <FaRefresh />
-            </button>
+            </Button>
             {
               DockerService.isLogged() && (
-                <button
-                  className={style.styledButton}
-                  onClick={() => browserHistory.push('/containers/New')}
-                >
+                <Button onClick={() => browserHistory.push('/containers/New')}>
                   <FaPlus /> Add an app
-                </button>
+                </Button>
               )
             }
             <span className={style.growingFlex} />
             {
               !DockerService.isLogged() && (
-                <button
-                  className={style.styledButton}
-                  onClick={() => browserHistory.push('/login')}
-                >
+                <Button onClick={() => browserHistory.push('/login')}>
                   <FaUser />
-                </button>
+                </Button>
               )
             }
             {
               DockerService.isLogged() && (
-                <button
-                  className={style.dangerButton}
+                <Button
                   onClick={() => DockerService.logout().then(this.fetchContainers)}
+                  danger
                 >
                   <FaUserTimes />
-                </button>
+                </Button>
               )
             }
           </span>

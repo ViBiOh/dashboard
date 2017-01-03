@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from '../Button/Button';
 import Throbber from './Throbber';
 
 export default class ThrobberButton extends Component {
@@ -44,9 +45,9 @@ export default class ThrobberButton extends Component {
     }
 
     return (
-      <button {...this.props} onClick={this.onClick}>
+      <Button {...this.props} onClick={this.onClick}>
         {content}
-      </button>
+      </Button>
     );
   }
 }
