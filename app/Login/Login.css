@@ -23,8 +23,8 @@ $grey: #e1e1e8;
 }
 
 @media screen and (max-width: 1023px) {
-  input[type="text"],
-  input[type="password"] {
+  .flex input[type="text"],
+  .flex input[type="password"] {
     width: 90%;
   }
 }
