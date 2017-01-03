@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { browserHistory } from 'react-router';
 import FaEye from 'react-icons/lib/fa/eye';
+import Button from '../Button/Button';
 import style from './Containers.css';
 
 const ContainerCard = ({ container }) => (
@@ -16,13 +17,9 @@ const ContainerCard = ({ container }) => (
       {container.Status}
     </span>
     <span className={style.fluid}>{container.Names.join(', ')}</span>
-    <button
-      key="logs"
-      className={`${style.icon} ${style.primary}`}
-      onClick={() => browserHistory.push(`/containers/${container.Id}`)}
-    >
+    <Button onClick={() => browserHistory.push(`/containers/${container.Id}`)}>
       <FaEye />
-    </button>
+    </Button>
   </span>
 );
 
