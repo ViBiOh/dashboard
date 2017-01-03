@@ -1,0 +1,58 @@
+$dark: #3a3a3a;
+$grey: #e1e1e8;
+
+@mixin smallPadding {
+  padding: 5px;
+}
+
+@mixin flexWrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@mixin roundBorder {
+  @include smallPadding;
+  width: auto;
+  border: 1px solid;
+  border-radius: 2px;
+  margin: 2px;
+}
+
+.flex {
+  @include flexWrap;
+  width: 100%;
+}
+
+.growingFlex {
+  flex: 1 1 auto;
+}
+
+.info {
+  display: inline-block;
+  @include smallPadding;
+  width: 100%;
+}
+
+.container {
+  display: inline-block;
+  width: 100%;
+  @include smallPadding;
+}
+
+.code {
+  width: 100%;
+  white-space: pre-wrap;
+  word-break: break-all;
+  background: $dark;
+  color: $grey;
+  font-size: 12px;
+  @include smallPadding;
+}
+
+.labelsContainer {
+  @include flexWrap;
+}
+
+.labelItem {
+  @include roundBorder;
+}

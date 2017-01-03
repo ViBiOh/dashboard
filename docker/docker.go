@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"fmt"
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -285,8 +286,11 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 }
 
 func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, composeFile []byte) {
-	compose := dockerCompose{}
+	if len(appName) == 0 || len(composeFile) == 0 {
+		http.Error(w, `An application name and a compose file are required`, http.StatusBadRequest)
+	}
 
+	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
 		errorHandler(w, err)
 		return
@@ -330,22 +334,24 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 	jsonHttp.ResponseJSON(w, results{ids})
 }
 
-func isAuthenticated(r *http.Request) *user {
+func isAuthenticated(r *http.Request) (*user, error) {
 	username, password, ok := r.BasicAuth()
 
 	if ok {
 		user, ok := users[strings.ToLower(username)]
 
 		if ok && user.password == password {
-			return user
+			return user, nil
+		} else {
+			return nil, fmt.Errorf(`Invalid credentials for ` + user.password)
 		}
 	}
 
-	return nil
+	return nil, fmt.Errorf(`Unable to read basic authentication`)
 }
 
-func unauthorized(w http.ResponseWriter) {
-	http.Error(w, `Authentication required`, http.StatusUnauthorized)
+func unauthorized(w http.ResponseWriter, err error) {
+	http.Error(w, err.Error(), http.StatusUnauthorized)
 }
 
 func forbidden(w http.ResponseWriter) {
@@ -367,13 +373,13 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	urlPath := []byte(r.URL.Path)
-
-	loggedUser := isAuthenticated(r)
-	if loggedUser == nil {
-		unauthorized(w)
+	loggedUser, err := isAuthenticated(r)
+	if err != nil {
+		unauthorized(w, err)
 		return
 	}
+
+	urlPath := []byte(r.URL.Path)
 
 	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
 		listContainersHandler(w, loggedUser)

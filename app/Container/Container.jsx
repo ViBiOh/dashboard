@@ -15,7 +15,7 @@ import ContainerInfo from './ContainerInfo';
 import ContainerNetwork from './ContainerNetwork';
 import ContainerVolumes from './ContainerVolumes';
 import ContainerLogs from './ContainerLogs';
-import style from './Containers.css';
+import style from './Container.css';
 
 export default class Container extends Component {
   constructor(props) {

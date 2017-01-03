@@ -1,0 +1,17 @@
+.mainLayout {
+  height: 100%;
+  width: 100%;
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+article {
+  text-align: left;
+  flex: 1;
+}
+
+@media screen and (max-width: 669px) {
+  article {
+    flex-basis: auto;
+  }
+}

@@ -10,8 +10,13 @@ $danger: #d9534f;
   align-items: center;
   justify-content: center;
   margin: 2px;
+  border: 0;
+  border-radius: 2px;
   padding: 10px;
-  border-radius: 5px;
+  color: white;
+}
+
+.styledButton svg {
   color: white;
 }
 
@@ -21,10 +26,6 @@ $danger: #d9534f;
 
 .styledButton > *:first-child {
   margin-left: 0;
-}
-
-.styledButton svg {
-  color: white;
 }
 
 .primary {

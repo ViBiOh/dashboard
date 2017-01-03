@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DockerService from '../Service/DockerService';
 import Throbber from '../Throbber/Throbber';
-import style from './Containers.css';
+import style from './Container.css';
 
 export default class ContainerLogs extends Component {
   constructor(props) {

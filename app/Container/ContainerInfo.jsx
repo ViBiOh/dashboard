@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './Containers.css';
+import style from './Container.css';
 
 const ContainerInfo = ({ container }) => {
   let labelContent = null;

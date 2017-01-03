@@ -36,9 +36,9 @@ header {
 }
 
 h1 {
+  @include smallPadding;
   font-size: 2em;
   margin: 0;
-  @include smallPadding;
 }
 
 @media screen and (max-width: 669px) {

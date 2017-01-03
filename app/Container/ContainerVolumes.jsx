@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './Containers.css';
+import style from './Container.css';
 
 const ContainerVolumes = ({ container }) => {
   if (container.Mounts.length === 0) {

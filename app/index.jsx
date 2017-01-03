@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
-import Main from './Main';
+import Main from './Main/Main';
 import Login from './Login/Login';
 import Containers from './Containers/Containers';
 import Container from './Container/Container';
