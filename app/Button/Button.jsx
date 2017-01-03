@@ -5,7 +5,7 @@ const Button = (props) => {
   const {children, ...buttonProps} = props;
 
   return (
-    <button {...buttonProps}>
+    <button className={style.styledButton} {...buttonProps}>
       {children}
     </button>
   )
