@@ -58,38 +58,36 @@ export default class Container extends Component {
   renderActions(container) {
     if (container.State.Running) {
       return [
-        <button
+        <Button
           key="restart"
-          className={style.styledButton}
           onClick={() => this.action(DockerService.restart(container.Id))}
         >
           <FaRefresh />
-        </button>,
-        <button
+        </Button>,
+        <Button
           key="stop"
-          className={style.dangerButton}
+          type="danger"
           onClick={() => this.action(DockerService.stop(container.Id))}
         >
           <FaStopCircle />
-        </button>,
+        </Button>,
       ];
     }
     return [
-      <button
+      <Button
         key="start"
-        className={style.styledButton}
         onClick={() => this.action(DockerService.start(container.Id))}
       >
         <FaPlay />
-      </button>,
-      <button
+      </Button>,
+      <Button
         key="delete"
-        className={style.dangerButton}
+        type="danger"
         onClick={() => this.action(DockerService.delete(container.Id)).then(() =>
           browserHistory.push('/'))}
       >
         <FaTrash />
-      </button>,
+      </Button>,
     ];
   }
 
