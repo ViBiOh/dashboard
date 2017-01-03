@@ -293,7 +293,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 	}
 
 	appNameStr := string(appName)
-	log.Print(loggedUser.username+` deploys `+appNameStr)
+	log.Print(loggedUser.username + ` deploys ` + appNameStr)
 
 	ownerContainers, err := listContainers(loggedUser, &appNameStr)
 	if err != nil {
@@ -301,22 +301,22 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		return
 	}
 	for _, container := range ownerContainers {
-		log.Print(loggedUser.username+` stops `+container.Names)
+		log.Print(loggedUser.username + ` stops ` + strings.Join(container.Names, `, `))
 		stopContainer(container.ID)
 	}
 
 	ids := make([]string, len(compose.Services))
 	for serviceName, service := range compose.Services {
-		log.Print(loggedUser.username+` pulls `+service.Image)
+		log.Print(loggedUser.username + ` pulls ` + service.Image)
 		pull, err := docker.ImagePull(context.Background(), service.Image, types.ImagePullOptions{})
 		if err != nil {
 			errorHandler(w, err)
 			return
 		}
-	
+
 		readBody(pull)
 
-		log.Print(loggedUser.username+` starts `+serviceName)
+		log.Print(loggedUser.username + ` starts ` + serviceName)
 		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, appNameStr+`_`+serviceName)
 		if err != nil {
 			errorHandler(w, err)
