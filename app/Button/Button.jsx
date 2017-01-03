@@ -6,7 +6,7 @@ const Button = (props) => {
   const buttonProps = Object.keys(props)
     .filter(e => e !== 'children' && e !== 'danger')
     .reduce((previous, current) => {
-      previous[current] = props[current]; // eslint-disable-ligne no-param-reassign
+      previous[current] = props[current]; // eslint-disable-line no-param-reassign
       return previous;
     }, {});
 
