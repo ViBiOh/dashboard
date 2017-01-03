@@ -2,10 +2,13 @@ import React from 'react';
 import style from './Button.css';
 
 const Button = (props) => {
-  const {children, ...buttonProps} = props;
+  const {children, danger, ...buttonProps} = props;
 
   return (
-    <button className={style.styledButton} {...buttonProps}>
+    <button
+      className={`${style.styledButton} ${danger ? style.danger : ''}`}
+      {...buttonProps}
+    >
       {children}
     </button>
   )
@@ -14,6 +17,7 @@ const Button = (props) => {
 Button.displayName = 'Button';
 
 Button.propTypes = {
+  danger: React.PropTypes.bool,
   children: React.PropTypes.oneOfType([
     React.PropTypes.arrayOf(React.PropTypes.node),
     React.PropTypes.node,
