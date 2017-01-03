@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
 import { browserHistory } from 'react-router';
-import Button from '../Button/Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import DockerService from '../Service/DockerService';
 import onValueChange from '../ChangeHandler/ChangeHandler';
@@ -35,11 +33,6 @@ export default class Login extends Component {
   render() {
     return (
       <div className={style.form}>
-        <span>
-          <Button onClick={() => browserHistory.push('/')}>
-            <FaArrowLeft /> Back
-          </Button>
-        </span>
         <span>
           <input
             name="login"
