@@ -6,7 +6,7 @@ $grey: #e1e1e8;
 }
 
 @mixin flexWrap {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
 }
 
@@ -47,6 +47,11 @@ $grey: #e1e1e8;
   color: $grey;
   font-size: 12px;
   @include smallPadding;
+}
+
+.label {
+  display: inline-block;
+  width: 200px;
 }
 
 .labelsContainer {

@@ -1,25 +1,25 @@
 import React from 'react';
 import moment from 'moment';
 import { browserHistory } from 'react-router';
-import FaEye from 'react-icons/lib/fa/eye';
 import Button from '../Button/Button';
 import style from './Containers.css';
 
+const GREEN_STATUS = /up/i;
+
 const ContainerCard = ({ container }) => (
-  <span className={style.row}>
-    <pre>{container.Id.substring(0, 12)}</pre>
-    <span className={style.fluid}>{container.Image}</span>
-    <span className={style.fluid}>{container.Command}</span>
-    <span className={style.created}>
+  <span className={style.card}>
+    <Button type="transparent" onClick={() => browserHistory.push(`/containers/${container.Id}`)}>
+      <div
+        className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`}
+      />
+    </Button>
+    <span className={style.column}>
+      <span>Image: <em>{container.Image}</em></span>
+      <span>Names: <strong>{container.Names.join(', ')}</strong></span>
+    </span>
+    <span>
       {moment.unix(container.Created).fromNow()}
     </span>
-    <span className={style.fluid}>
-      {container.Status}
-    </span>
-    <span className={style.fluid}>{container.Names.join(', ')}</span>
-    <Button onClick={() => browserHistory.push(`/containers/${container.Id}`)}>
-      <FaEye />
-    </Button>
   </span>
 );
 

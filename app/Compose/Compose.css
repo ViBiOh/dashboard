@@ -3,7 +3,7 @@ $danger: #d9534f;
 
 .flex {
   width: 100%;
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   text-align: center;
   align-items: center;

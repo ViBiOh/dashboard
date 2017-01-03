@@ -1,6 +1,8 @@
 $dark: #3a3a3a;
 $grey: #e1e1e8;
 $clear: #f8f8f8;
+$success: #5cb85c;
+$danger: #d9534f;
 
 $iconSize: 50px;
 
@@ -9,16 +11,8 @@ $iconSize: 50px;
 }
 
 @mixin flexWrap {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
-}
-
-@mixin roundBorder {
-  @include smallPadding;
-  width: auto;
-  border: 1px solid;
-  border-radius: 2px;
-  margin: 2px;
 }
 
 @mixin ellipsis {
@@ -27,63 +21,64 @@ $iconSize: 50px;
   text-overflow: ellipsis;
 }
 
+@mixin pastille {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
 .flex {
   @include flexWrap;
-  width: 100%;
 }
 
 .growingFlex {
   flex: 1 1 auto;
 }
 
-.row,
-.created,
-.fluid {
-  @include smallPadding;
-}
-
-.row {
-  width: 100%;
+.card {
   @include flexWrap;
-}
-
-.row:nth-child(even) {
-  background-color: $grey;
-}
-
-.row pre {
-  display: inline-block;
-  width: 150px;
   @include smallPadding;
-  margin: 0;
+  align-items: center;
+  width: 33%;
+  margin: 2px;
+  border: 1px solid $dark;
+  border-radius: 2px;
 }
 
-.fluid {
- flex: 1;
- @include ellipsis;
+.green {
+  @include pastille;
+  background-color: $success;
 }
 
-.created {
-  width: 150px;
+.red {
+  @include pastille;
+  background-color: $danger;
 }
 
-.icon svg {
-  width: 20px;
-  height: 20px;
+.column {
+  @include flexWrap;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 
-.label {
-  display: inline-block;
-  width: 200px;
+.column > span {
+  @include ellipsis;
 }
 
-@media screen and (max-width: 1023px) {
-  .row pre,
-  .fluid,
-  .created {
-    @include roundBorder;
-    white-space: normal;
-    flex: none;
-    max-width: 100%;
+.column > * {
+  @include smallPadding;
+}
+
+@media screen and (min-width: 900px) and (max-width: 1249px) {
+  .card {
+    width: 49.5%;
+  }
+}
+
+@media screen and (max-width: 899px) {
+  .card {
+    width: 100%;
   }
 }

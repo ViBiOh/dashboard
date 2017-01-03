@@ -288,6 +288,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
 		http.Error(w, `An application name and a compose file are required`, http.StatusBadRequest)
+		return
 	}
 
 	compose := dockerCompose{}

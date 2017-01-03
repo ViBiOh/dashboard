@@ -2,7 +2,7 @@ $grey: #e1e1e8;
 
 .flex {
   width: 100%;
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   text-align: center;
   align-items: center;

@@ -25,6 +25,7 @@ Button.displayName = 'Button';
 
 Button.propTypes = {
   type: React.PropTypes.oneOf([
+    'transparent',
     'primary',
     'success',
     'info',

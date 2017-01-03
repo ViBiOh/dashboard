@@ -28,6 +28,10 @@ $danger: #d9534f;
   margin-left: 0;
 }
 
+.transparent {
+  background-color: transparent;
+}
+
 .primary {
   background-color: $primary;
 }
