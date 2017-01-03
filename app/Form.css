@@ -32,6 +32,10 @@ textarea {
   background-color: $primary;
 }
 
+.styledButton svg {
+  color: white;
+}
+
 .error {
   color: #d9534f;
 }
