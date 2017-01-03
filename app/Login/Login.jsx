@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
 import { browserHistory } from 'react-router';
+import Button from '../Button/Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import DockerService from '../Service/DockerService';
 import onValueChange from '../ChangeHandler/ChangeHandler';
@@ -35,12 +36,9 @@ export default class Login extends Component {
     return (
       <div className={style.form}>
         <span>
-          <button
-            className={style.styledButton}
-            onClick={() => browserHistory.push('/')}
-          >
+          <Button onClick={() => browserHistory.push('/')}>
             <FaArrowLeft /> Back
-          </button>
+          </Button>
         </span>
         <span>
           <input
@@ -61,7 +59,7 @@ export default class Login extends Component {
           />
         </span>
         <span>
-          <ThrobberButton className={style.styledButton} onClick={this.login}>
+          <ThrobberButton onClick={this.login}>
             Login
           </ThrobberButton>
         </span>
