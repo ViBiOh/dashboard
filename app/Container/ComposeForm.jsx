@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
 import { browserHistory } from 'react-router';
 import DockerService from '../Service/DockerService';
+import ThrobberButton from '../Throbber/ThrobberButton';
 import onValueChange from '../ChangeHandler/ChangeHandler';
 import style from '../Form.css';
 
@@ -55,9 +56,9 @@ export default class ComposeForm extends Component {
           />
         </span>
         <span>
-          <button className={style.styledButton} onClick={this.create}>
+          <ThrobberButton className={style.styledButton} onClick={this.create}>
             Create
-          </button>
+          </ThrobberButton>
         </span>
         <div className={style.error}>
           {this.state.error}
