@@ -343,7 +343,7 @@ func isAuthenticated(r *http.Request) (*user, error) {
 		if ok && user.password == password {
 			return user, nil
 		} else {
-			return nil, fmt.Errorf(`Invalid credentials for ` + user.password)
+			return nil, fmt.Errorf(`Invalid credentials for ` + username)
 		}
 	}
 
