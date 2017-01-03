@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
 import { browserHistory } from 'react-router';
 import DockerService from '../Service/DockerService';
+import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import onValueChange from '../ChangeHandler/ChangeHandler';
@@ -31,11 +32,11 @@ export default class ComposeForm extends Component {
   render() {
     return (
       <div className={style.form}>
-        <span>
+        <Toolbar>
           <Button onClick={() => browserHistory.push('/')}>
             <FaArrowLeft /> Back
           </Button>
-        </span>
+        </Toolbar>
         <span>
           <input
             name="name"

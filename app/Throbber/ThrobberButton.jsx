@@ -59,4 +59,3 @@ ThrobberButton.propTypes = {
     React.PropTypes.node,
   ]),
 };
-

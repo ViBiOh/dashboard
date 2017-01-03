@@ -1,0 +1,6 @@
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: left;
+  width: 100%;
+}

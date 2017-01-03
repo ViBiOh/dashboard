@@ -5,9 +5,10 @@ import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaUser from 'react-icons/lib/fa/user';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
 import DockerService from '../Service/DockerService';
+import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
-import ContainerCard from './ContainerCard';
 import Throbber from '../Throbber/Throbber';
+import ContainerCard from './ContainerCard';
 import style from './Containers.css';
 
 export default class Containers extends Component {
@@ -21,8 +22,16 @@ export default class Containers extends Component {
     this.fetchContainers = this.fetchContainers.bind(this);
   }
 
+  componentWillMount() {
+    this.mounted = true;
+  }
+
   componentDidMount() {
     this.fetchContainers();
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   fetchContainers() {
@@ -30,15 +39,20 @@ export default class Containers extends Component {
 
     return DockerService.containers()
       .then((containers) => {
-        this.setState({
-          loaded: true,
-          containers,
-        });
+        if (this.mounted) {
+          this.setState({
+            loaded: true,
+            containers,
+          });
+        }
 
         return containers;
       })
       .catch((error) => {
-        this.setState({ error: error.content });
+        if (this.mounted) {
+          this.setState({ error: error.content });
+        }
+
         return error;
       });
   }
@@ -57,12 +71,12 @@ export default class Containers extends Component {
         </div>
       );
     } else {
-      content = <Throbber label="Loading containers" error={this.state.error} />
+      content = <Throbber label="Loading containers" error={this.state.error} />;
     }
 
     return (
       <span>
-        <span className={style.flex}>
+        <Toolbar>
           <Button onClick={this.fetchContainers}>
             <FaRefresh />
           </Button>
@@ -91,7 +105,7 @@ export default class Containers extends Component {
               </Button>
             )
           }
-        </span>
+        </Toolbar>
         {content}
       </span>
     );

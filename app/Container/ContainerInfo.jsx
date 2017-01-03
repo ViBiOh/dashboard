@@ -1,19 +1,14 @@
 import React from 'react';
 import style from './Containers.css';
 
-const dockerComposeLabel = /^com\.docker\.compose/;
-
 const ContainerInfo = ({ container }) => {
-  const labels = Object.keys(container.Config.Labels)
-    .filter(label => !dockerComposeLabel.test(label));
-
   let labelContent = null;
-  if (labels.length > 0) {
+  if (Object.keys(container.Config.Labels).length > 0) {
     labelContent = [
       <h3 key="labelsHeader">Labels</h3>,
       <span key="labels" className={style.labelsContainer}>
         {
-          labels.map(label => (
+          Object.keys(container.Config.Labels).map(label => (
             <span key={label} className={style.labelItem}>
               {label} | {container.Config.Labels[label]}
             </span>

@@ -4,9 +4,9 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 import Main from './Main';
 import Login from './Login/Login';
-import Containers from './Container/Containers';
+import Containers from './Containers/Containers';
 import Container from './Container/Container';
-import ComposeForm from './Container/ComposeForm';
+import ComposeForm from './Compose/ComposeForm';
 
 ReactDOM.render(
   <Router history={browserHistory}>

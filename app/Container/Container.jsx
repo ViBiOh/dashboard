@@ -6,6 +6,7 @@ import FaTrash from 'react-icons/lib/fa/trash';
 import FaRefresh from 'react-icons/lib/fa/refresh';
 import { browserHistory } from 'react-router';
 import DockerService from '../Service/DockerService';
+import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
 import Throbber from '../Throbber/Throbber';
 import ContainerInfo from './ContainerInfo';
@@ -101,13 +102,13 @@ export default class Container extends Component {
     return (
       <span>
         <div className={style.error}>{this.state.error}</div>
-        <span className={style.flex}>
+        <Toolbar className={style.flex}>
           <Button onClick={() => browserHistory.push('/')}>
             <FaArrowLeft /> Back
           </Button>
           <span className={style.growingFlex} />
           {this.renderActions(container)}
-        </span>
+        </Toolbar>
         <ContainerInfo container={container} />
         <ContainerNetwork container={container} />
         <ContainerVolumes container={container} />
