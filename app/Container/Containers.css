@@ -64,16 +64,6 @@ button {
   flex: 1 1 auto;
 }
 
-.styledButton {
-  @include button;
-  background-color: $primary;
-}
-
-.dangerButton {
-  @include button;
-  background-color: $danger;
-}
-
 .form {
   @include flexWrap;
   width: 100%;
