@@ -2,7 +2,7 @@ import React from 'react';
 import style from './Button.css';
 
 const Button = (props) => {
-  const {children, danger, ...buttonProps} = props;
+  const { children, danger, ...buttonProps } = props;
 
   return (
     <button
@@ -11,7 +11,7 @@ const Button = (props) => {
     >
       {children}
     </button>
-  )
+  );
 };
 
 Button.displayName = 'Button';
