@@ -44,51 +44,57 @@ export default class Containers extends Component {
   }
 
   renderContainers() {
+    let content;
+
     if (this.state.loaded) {
-      return (
-        <span>
-          <span className={style.flex}>
-            <Button onClick={this.fetchContainers}>
-              <FaRefresh />
-            </Button>
-            {
-              DockerService.isLogged() && (
-                <Button onClick={() => browserHistory.push('/containers/New')}>
-                  <FaPlus /> Add an app
-                </Button>
-              )
-            }
-            <span className={style.growingFlex} />
-            {
-              !DockerService.isLogged() && (
-                <Button onClick={() => browserHistory.push('/login')}>
-                  <FaUser />
-                </Button>
-              )
-            }
-            {
-              DockerService.isLogged() && (
-                <Button
-                  onClick={() => DockerService.logout().then(this.fetchContainers)}
-                  type="danger"
-                >
-                  <FaUserTimes />
-                </Button>
-              )
-            }
-          </span>
-          <div key="list" className={style.flex}>
-            {
-              this.state.containers.map(container => (
-                <ContainerCard key={container.Id} container={container} />
-              ))
-            }
-          </div>
-        </span>
+      content = (
+        <div key="list" className={style.flex}>
+          {
+            this.state.containers.map(container => (
+              <ContainerCard key={container.Id} container={container} />
+            ))
+          }
+        </div>
       );
+    } else {
+      content = <Throbber label="Loading containers" error={this.state.error} />
     }
 
-    return <Throbber label="Loading containers" error={this.state.error} />;
+    return (
+      <span>
+        <span className={style.flex}>
+          <Button onClick={this.fetchContainers}>
+            <FaRefresh />
+          </Button>
+          {
+            DockerService.isLogged() && (
+              <Button onClick={() => browserHistory.push('/containers/New')}>
+                <FaPlus /> Add an app
+              </Button>
+            )
+          }
+          <span className={style.growingFlex} />
+          {
+            !DockerService.isLogged() && (
+              <Button onClick={() => browserHistory.push('/login')}>
+                <FaUser />
+              </Button>
+            )
+          }
+          {
+            DockerService.isLogged() && (
+              <Button
+                onClick={() => DockerService.logout().then(this.fetchContainers)}
+                type="danger"
+              >
+                <FaUserTimes />
+              </Button>
+            )
+          }
+        </span>
+        {content}
+      </span>
+    );
   }
 
   render() {
