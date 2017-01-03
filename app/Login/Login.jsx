@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
 import { browserHistory } from 'react-router';
+import ThrobberButton from '../Throbber/ThrobberButton';
 import DockerService from '../Service/DockerService';
 import onValueChange from '../ChangeHandler/ChangeHandler';
 import style from '../Form.css';
@@ -60,9 +61,9 @@ export default class Login extends Component {
           />
         </span>
         <span>
-          <button className={style.styledButton} onClick={this.login}>
+          <ThrobberButton className={style.styledButton} onClick={this.login}>
             Login
-          </button>
+          </ThrobberButton>
         </span>
       </div>
     );
