@@ -1,3 +1,5 @@
+$dark: #3a3a3a;
+
 .throbberContainer {
   margin: auto;
   text-align: center;
@@ -12,12 +14,18 @@
 .throbber > div {
   width: 18px;
   height: 18px;
-  background-color: #333;
+  background-color: $dark;
 
   border-radius: 100%;
   display: inline-block;
   -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
   animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.button > div {
+  background-color: white;
+  width: 14px;
+  height: 14px;
 }
 
 .throbber .bounce1 {

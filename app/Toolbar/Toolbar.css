@@ -1,6 +1,20 @@
+$danger: #d9534f;
+
 .flex {
   display: flex;
   flex-wrap: wrap;
-  align-items: left;
+  align-items: center;
   width: 100%;
+}
+
+.center {
+  justify-content: center;
+}
+
+.error {
+  background-color: $danger;
+  width: 100%;
+  color: white;
+  padding: 20px;
+  margin-bottom: 2px;
 }

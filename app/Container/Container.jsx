@@ -4,11 +4,13 @@ import FaPlay from 'react-icons/lib/fa/play';
 import FaStopCircle from 'react-icons/lib/fa/stop-circle';
 import FaTrash from 'react-icons/lib/fa/trash';
 import FaRefresh from 'react-icons/lib/fa/refresh';
+import FaRetweet from 'react-icons/lib/fa/retweet';
 import { browserHistory } from 'react-router';
 import DockerService from '../Service/DockerService';
 import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
 import Throbber from '../Throbber/Throbber';
+import ThrobberButton from '../Throbber/ThrobberButton';
 import ContainerInfo from './ContainerInfo';
 import ContainerNetwork from './ContainerNetwork';
 import ContainerVolumes from './ContainerVolumes';
@@ -32,7 +34,7 @@ export default class Container extends Component {
   }
 
   fetchInfos() {
-    this.setState({ loaded: false });
+    this.setState({ loaded: false, error: undefined });
 
     return DockerService.infos(this.props.params.containerId)
       .then((container) => {
@@ -50,6 +52,8 @@ export default class Container extends Component {
   }
 
   action(promise) {
+    this.setState({ error: undefined });
+
     return promise
       .then(this.fetchInfos)
       .catch((error) => {
@@ -61,36 +65,40 @@ export default class Container extends Component {
   renderActions(container) {
     if (container.State.Running) {
       return [
-        <Button
+        <ThrobberButton
           key="restart"
           onClick={() => this.action(DockerService.restart(container.Id))}
         >
-          <FaRefresh />
-        </Button>,
-        <Button
+          <FaRetweet />
+          <span>Restart</span>
+        </ThrobberButton>,
+        <ThrobberButton
           key="stop"
           type="danger"
           onClick={() => this.action(DockerService.stop(container.Id))}
         >
           <FaStopCircle />
-        </Button>,
+          <span>Stop</span>
+        </ThrobberButton>,
       ];
     }
     return [
-      <Button
+      <ThrobberButton
         key="start"
         onClick={() => this.action(DockerService.start(container.Id))}
       >
         <FaPlay />
-      </Button>,
-      <Button
+        <span>Start</span>
+      </ThrobberButton>,
+      <ThrobberButton
         key="delete"
         type="danger"
         onClick={() => this.action(DockerService.delete(container.Id)).then(() =>
           browserHistory.push('/'))}
       >
         <FaTrash />
-      </Button>,
+        <span>Delete</span>
+      </ThrobberButton>,
     ];
   }
 
@@ -111,10 +119,14 @@ export default class Container extends Component {
 
     return (
       <span>
-        <div className={style.error}>{this.state.error}</div>
-        <Toolbar className={style.flex}>
+        <Toolbar error={this.state.error}>
           <Button onClick={() => browserHistory.push('/')}>
-            <FaArrowLeft /> Back
+            <FaArrowLeft />
+            <span>Back</span>
+          </Button>
+          <Button onClick={this.fetchInfos}>
+            <FaRefresh />
+            <span>Refresh</span>
           </Button>
           <span className={style.growingFlex} />
           {loaded && this.renderActions(container)}

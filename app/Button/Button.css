@@ -5,10 +5,22 @@ $warning: #f0ad4e;
 $danger: #d9534f;
 
 .styledButton {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
   margin: 2px;
   padding: 10px;
   border-radius: 5px;
   color: white;
+}
+
+.styledButton > * {
+  margin-left: 5px;
+}
+
+.styledButton > *:first-child {
+  margin-left: 0;
 }
 
 .styledButton svg {

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
+import Toolbar from '../Toolbar/Toolbar';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import DockerService from '../Service/DockerService';
 import onValueChange from '../ChangeHandler/ChangeHandler';
-import style from '../Form.css';
+import style from './Login.css';
 
 export default class Login extends Component {
   constructor(props) {
@@ -23,16 +24,22 @@ export default class Login extends Component {
   }
 
   login() {
+    this.setState({ error: undefined });
+
     return DockerService.login(this.state.login, this.state.password)
       .then((data) => {
         browserHistory.push(this.props.redirect || '/');
         return data;
+      })
+      .catch((error) => {
+        this.setState({ error: error.content });
+        return error;
       });
   }
 
   render() {
     return (
-      <div className={style.form}>
+      <span className={style.flex}>
         <span>
           <input
             name="login"
@@ -51,12 +58,12 @@ export default class Login extends Component {
             onChange={e => onValueChange(this, 'password')(e.target.value)}
           />
         </span>
-        <span>
+        <Toolbar center error={this.state.error}>
           <ThrobberButton onClick={this.login}>
             Login
           </ThrobberButton>
-        </span>
-      </div>
+        </Toolbar>
+      </span>
     );
   }
 }

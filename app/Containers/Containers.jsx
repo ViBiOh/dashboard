@@ -35,7 +35,7 @@ export default class Containers extends Component {
   }
 
   fetchContainers() {
-    this.setState({ loaded: false });
+    this.setState({ loaded: false, error: undefined });
 
     return DockerService.containers()
       .then((containers) => {
@@ -76,14 +76,16 @@ export default class Containers extends Component {
 
     return (
       <span>
-        <Toolbar>
+        <Toolbar error={this.state.error}>
           <Button onClick={this.fetchContainers}>
             <FaRefresh />
+            <span>Refresh</span>
           </Button>
           {
             DockerService.isLogged() && (
               <Button onClick={() => browserHistory.push('/containers/New')}>
-                <FaPlus /> Add an app
+                <FaPlus />
+                <span>Add an app</span>
               </Button>
             )
           }
@@ -102,6 +104,7 @@ export default class Containers extends Component {
                 type="danger"
               >
                 <FaUserTimes />
+                <span>Disconnect</span>
               </Button>
             )
           }

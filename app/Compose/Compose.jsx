@@ -18,6 +18,8 @@ export default class ComposeForm extends Component {
   }
 
   create() {
+    this.setState({ error: undefined });
+
     return DockerService.create(this.state.name, this.state.compose)
       .then((data) => {
         browserHistory.push('/');
@@ -32,9 +34,10 @@ export default class ComposeForm extends Component {
   render() {
     return (
       <div className={style.flex}>
-        <Toolbar>
+        <Toolbar error={this.state.error}>
           <Button onClick={() => browserHistory.push('/')}>
-            <FaArrowLeft /> Back
+            <FaArrowLeft />
+            <span>Back</span>
           </Button>
         </Toolbar>
         <span>
@@ -59,9 +62,6 @@ export default class ComposeForm extends Component {
             Create
           </ThrobberButton>
         </span>
-        <div className={style.error}>
-          {this.state.error}
-        </div>
       </div>
     );
   }

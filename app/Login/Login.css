@@ -1,5 +1,4 @@
 $grey: #e1e1e8;
-$danger: #d9534f;
 
 .flex {
   width: 100%;
@@ -14,21 +13,18 @@ $danger: #d9534f;
 }
 
 .flex input[type="text"],
-.flex textarea {
+.flex input[type="password"] {
+  text-align: center;
   width: 50%;
   padding: 20px;
-  margin-bottom: 5px;
+  margin: 5px;
   border-radius: 2px;
   border: 1px solid $grey;
 }
 
-.code {
-  font-family: monospace; 
-}
-
 @media screen and (max-width: 1023px) {
   input[type="text"],
-  textarea {
+  input[type="password"] {
     width: 90%;
   }
 }

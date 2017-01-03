@@ -39,7 +39,7 @@ export default class ThrobberButton extends Component {
     let content;
 
     if (this.state.loading) {
-      content = <Throbber />;
+      content = <Throbber button />;
     } else {
       content = this.props.children;
     }
