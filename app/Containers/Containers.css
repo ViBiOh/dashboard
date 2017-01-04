@@ -59,7 +59,7 @@ $iconSize: 50px;
   @include flexWrap;
   flex-wrap: nowrap;
   flex-direction: column;
-  min-width: 0;
+  min-width: 400px;
   flex: 1;
 }
 
