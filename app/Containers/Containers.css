@@ -39,7 +39,6 @@ $iconSize: 50px;
   @include flexWrap;
   @include smallPadding;
   flex: 0 0 33%;
-  max-width: calc((100% - 12px) / 3);
   align-items: center;
   margin: 2px;
   border: 1px solid $dark;
@@ -60,7 +59,7 @@ $iconSize: 50px;
   display: inline-flex;
   flex-wrap: nowrap;
   flex-direction: column;
-  flex: 0, 0 50%;
+  flex: 1;
   min-width: 0;
 }
 
@@ -75,13 +74,11 @@ $iconSize: 50px;
 @media screen and (min-width: 800px) and (max-width: 1199px) {
   .card {
     flex: 0 0 49.5%;
-    max-width: calc((100% - 8px) / 2);
   }
 }
 
 @media screen and (max-width: 799px) {
   .card {
     flex: 0 0 99%;
-    max-width: calc(100% - 8px);
   }
 }
