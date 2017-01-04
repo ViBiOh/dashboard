@@ -60,4 +60,6 @@ $grey: #e1e1e8;
 
 .labelItem {
   @include roundBorder;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
