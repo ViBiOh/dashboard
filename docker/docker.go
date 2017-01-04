@@ -308,6 +308,8 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 	for _, container := range ownerContainers {
 		log.Print(loggedUser.username + ` stops ` + strings.Join(container.Names, `, `))
 		stopContainer(container.ID)
+		log.Print(loggedUser.username + ` rm ` + strings.Join(container.Names, `, `))
+		rmContainer(container.ID)
 	}
 
 	ids := make([]string, len(compose.Services))
