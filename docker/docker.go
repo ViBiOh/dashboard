@@ -319,10 +319,10 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 	for serviceName, service := range compose.Services {
 		image := service.Image
 		if !imageTag.MatchString(image) {
-			image = image + defaultTag
+			image = image + `:` + defaultTag
 		}
 
-		log.Print(loggedUser.username + ` pulls ` + image)
+		log.Print(loggedUser.username + ` starts pulling for ` + image)
 		pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
 		if err != nil {
 			errorHandler(w, err)
@@ -330,10 +330,11 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		}
 
 		readBody(pull)
-		log.Print(loggedUser.username + ` pulls ended for ` + image)
+		log.Print(loggedUser.username + ` ends pulling for ` + image)
 
-		log.Print(loggedUser.username + ` starts ` + serviceName)
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, appNameStr+`_`+serviceName)
+		serviceFullName := appNameStr+`_`+serviceName
+		log.Print(loggedUser.username + ` starts ` + serviceFullName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, serviceFullName)
 		if err != nil {
 			errorHandler(w, err)
 			return
