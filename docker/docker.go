@@ -167,7 +167,23 @@ func restartContainer(containerID string) error {
 }
 
 func rmContainer(containerID string) error {
-	return docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
+	container, err := inspectContainer(containerID)
+	if err != nil {
+		return err
+	}
+
+	err = docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
+	if err != nil {
+		return err
+	}
+
+	return rmImages(container.Image)
+}
+
+func rmImages(imageID string) error {
+	_, err := docker.ImageRemove(context.Background(), imageID, types.ImageRemoveOptions{})
+
+	return err
 }
 
 func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
@@ -332,7 +348,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		readBody(pull)
 		log.Print(loggedUser.username + ` ends pulling for ` + image)
 
-		serviceFullName := appNameStr+`_`+serviceName
+		serviceFullName := appNameStr + `_` + serviceName
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, serviceFullName)
 		if err != nil {
@@ -355,9 +371,8 @@ func isAuthenticated(r *http.Request) (*user, error) {
 
 		if ok && user.password == password {
 			return user, nil
-		} else {
-			return nil, fmt.Errorf(`Invalid credentials for ` + username)
 		}
+		return nil, fmt.Errorf(`Invalid credentials for ` + username)
 	}
 
 	return nil, fmt.Errorf(`Unable to read basic authentication`)
