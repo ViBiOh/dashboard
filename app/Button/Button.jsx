@@ -11,12 +11,14 @@ const Button = (props) => {
       return previous;
     }, {});
 
+  // div-wrapper is needed for Firefox compatibility http://stackoverflow.com/a/32119435
   return (
-    <button
-      className={`${style.styledButton} ${style[type]}`}
-      {...buttonProps}
-    >
-      {children}
+    <button {...buttonProps}>
+      <div
+        className={`${style.styledButton} ${style[type]}`}
+      >
+        {children}
+      </div>
     </button>
   );
 };
