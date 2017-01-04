@@ -318,7 +318,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 	ids := make([]string, len(compose.Services))
 	for serviceName, service := range compose.Services {
 		image := service.Image
-		if !imageTag.Match(image) {
+		if !imageTag.MatchString(image) {
 			image = image + defaultTag
 		}
 
