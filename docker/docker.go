@@ -30,6 +30,7 @@ const ownerLabel = `owner`
 const appLabel = `app`
 const minMemory = 67108864
 const maxMemory = 536870912
+const defaultTag = `latest`
 
 var commaByte = []byte(`,`)
 var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
@@ -39,6 +40,8 @@ var networkConfig = network.NetworkingConfig{
 		`traefik`: &network.EndpointSettings{},
 	},
 }
+
+var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
 var containersRequest = regexp.MustCompile(`/containers/?$`)
 var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
@@ -314,14 +317,20 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 
 	ids := make([]string, len(compose.Services))
 	for serviceName, service := range compose.Services {
-		log.Print(loggedUser.username + ` pulls ` + service.Image)
-		pull, err := docker.ImagePull(context.Background(), service.Image, types.ImagePullOptions{})
+		image := service.Image
+		if !imageTag.Match(image) {
+			image = image + defaultTag
+		}
+
+		log.Print(loggedUser.username + ` pulls ` + image)
+		pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
 		if err != nil {
 			errorHandler(w, err)
 			return
 		}
 
 		readBody(pull)
+		log.Print(loggedUser.username + ` pulls ended for ` + image)
 
 		log.Print(loggedUser.username + ` starts ` + serviceName)
 		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, appNameStr+`_`+serviceName)
