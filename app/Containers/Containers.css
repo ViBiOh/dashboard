@@ -40,6 +40,7 @@ $iconSize: 50px;
   @include smallPadding;
   align-items: center;
   width: 33%;
+  min-width: 400px;
   margin: 2px;
   border: 1px solid $dark;
   border-radius: 2px;
@@ -59,7 +60,7 @@ $iconSize: 50px;
   @include flexWrap;
   flex-wrap: nowrap;
   flex-direction: column;
-  min-width: 400px;
+  min-width: 0;
   flex: 1;
 }
 
