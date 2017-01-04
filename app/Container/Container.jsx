@@ -114,7 +114,7 @@ export default class Container extends Component {
         <ContainerLogs containerId={this.props.params.containerId} />,
       ];
     } else {
-      content = <Throbber label="Loading informations" error={this.state.error} />;
+      content = <Throbber label="Loading informations" />;
     }
 
     return (
