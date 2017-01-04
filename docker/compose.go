@@ -17,6 +17,7 @@ import (
 const minMemory = 67108864
 const maxMemory = 536870912
 const defaultTag = `:latest`
+const deploySuffix = `_deploy`
 
 var networkConfig = network.NetworkingConfig{
 	EndpointsConfig: map[string]*network.EndpointSettings{
@@ -119,14 +120,8 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		errorHandler(w, err)
 		return
 	}
-	for _, container := range ownerContainers {
-		log.Print(loggedUser.username + ` stops ` + strings.Join(container.Names, `, `))
-		stopContainer(container.ID)
-		log.Print(loggedUser.username + ` rm ` + strings.Join(container.Names, `, `))
-		rmContainer(container.ID)
-	}
 
-	ids := make([]string, len(compose.Services))
+	ids := make(map[string]string)
 	for serviceName, service := range compose.Services {
 		image := service.Image
 		if !imageTag.MatchString(image) {
@@ -143,7 +138,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		readBody(pull)
 		log.Print(loggedUser.username + ` ends pulling for ` + image)
 
-		serviceFullName := appNameStr + `_` + serviceName
+		serviceFullName := appNameStr + `_` + serviceName + deploySuffix
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, serviceFullName)
 		if err != nil {
@@ -152,7 +147,21 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		}
 
 		startContainer(id.ID)
-		ids = append(ids, id.ID)
+		ids[id.ID] = serviceFullName
+	}
+
+	for _, container := range ownerContainers {
+		log.Print(loggedUser.username + ` stops ` + strings.Join(container.Names, `, `))
+		stopContainer(container.ID)
+		log.Print(loggedUser.username + ` rm ` + strings.Join(container.Names, `, `))
+		rmContainer(container.ID)
+	}
+
+	for id, name := range ids {
+		if err := docker.ContainerRename(context.Background(), id, strings.TrimSuffix(name, deploySuffix)); err != nil {
+			errorHandler(w, err)
+			return
+		}
 	}
 
 	jsonHttp.ResponseJSON(w, results{ids})
