@@ -58,11 +58,11 @@ $iconSize: 50px;
 }
 
 .column {
-  @include flexWrap;
+  @include growingFlex;
+  display: inline-flex;
   flex-wrap: nowrap;
   flex-direction: column;
   min-width: 0;
-  flex: 1;
 }
 
 .column > span {
