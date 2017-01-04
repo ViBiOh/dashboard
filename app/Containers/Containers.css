@@ -60,7 +60,7 @@ $iconSize: 50px;
   display: inline-flex;
   flex-wrap: nowrap;
   flex-direction: column;
-  flex: 1;
+  flex: 0, 0 50%;
   min-width: 0;
 }
 
