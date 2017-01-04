@@ -3,45 +3,13 @@ package docker
 import (
 	"bufio"
 	"bytes"
-	"context"
 	"fmt"
-	"github.com/ViBiOh/docker-deploy/jsonHttp"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/api/types/network"
-	"github.com/docker/docker/api/types/strslice"
-	"github.com/docker/docker/client"
-	"gopkg.in/yaml.v2"
-	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
 )
-
-const host = `DOCKER_HOST`
-const version = `DOCKER_VERSION`
-const configurationFile = `./users`
-const admin = `admin`
-const ownerLabel = `owner`
-const appLabel = `app`
-const minMemory = 67108864
-const maxMemory = 536870912
-const defaultTag = `latest`
-
-var commaByte = []byte(`,`)
-var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
-
-var networkConfig = network.NetworkingConfig{
-	EndpointsConfig: map[string]*network.EndpointSettings{
-		`traefik`: &network.EndpointSettings{},
-	},
-}
-
-var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
 var containersRequest = regexp.MustCompile(`/containers/?$`)
 var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
@@ -50,48 +18,16 @@ var stopRequest = regexp.MustCompile(`/containers/([^/]+)/stop`)
 var restartRequest = regexp.MustCompile(`/containers/([^/]+)/restart`)
 var logRequest = regexp.MustCompile(`/containers/([^/]+)/logs`)
 
-type results struct {
-	Results interface{} `json:"results"`
-}
-
 type user struct {
 	username string
 	password string
 	role     string
 }
 
-type dockerComposeService struct {
-	Image       string
-	Command     string
-	Environment map[string]string
-	Labels      map[string]string
-	ReadOnly    bool  `yaml:"read_only"`
-	CPUShares   int64 `yaml:"cpu_shares"`
-	MemoryLimit int64 `yaml:"mem_limit"`
-}
-
-type dockerCompose struct {
-	Version  string
-	Services map[string]dockerComposeService
-}
-
-var docker *client.Client
 var users map[string]*user
-
-func errorHandler(w http.ResponseWriter, err error) {
-	log.Print(err)
-	http.Error(w, err.Error(), http.StatusInternalServerError)
-}
 
 func init() {
 	users = readConfiguration(configurationFile)
-
-	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		docker = client
-	}
 }
 
 func readConfiguration(path string) map[string]*user {
@@ -132,237 +68,6 @@ func isAllowed(loggedUser *user, containerID string) (bool, error) {
 	return true, nil
 }
 
-func listContainers(loggedUser *user, appName *string) ([]types.Container, error) {
-	options := types.ContainerListOptions{All: true}
-
-	options.Filters = filters.NewArgs()
-
-	if loggedUser != nil && loggedUser.role != admin {
-		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, options.Filters); err != nil {
-			return nil, err
-		}
-	} else if appName != nil && *appName != `` {
-		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, options.Filters); err != nil {
-			return nil, err
-		}
-	}
-
-	return docker.ContainerList(context.Background(), options)
-}
-
-func inspectContainer(containerID string) (types.ContainerJSON, error) {
-	return docker.ContainerInspect(context.Background(), containerID)
-}
-
-func startContainer(containerID string) error {
-	return docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
-}
-
-func stopContainer(containerID string) error {
-	return docker.ContainerStop(context.Background(), containerID, nil)
-}
-
-func restartContainer(containerID string) error {
-	return docker.ContainerRestart(context.Background(), containerID, nil)
-}
-
-func rmContainer(containerID string) error {
-	container, err := inspectContainer(containerID)
-	if err != nil {
-		return err
-	}
-
-	err = docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
-	if err != nil {
-		return err
-	}
-
-	return rmImages(container.Image)
-}
-
-func rmImages(imageID string) error {
-	_, err := docker.ImageRemove(context.Background(), imageID, types.ImageRemoveOptions{})
-
-	return err
-}
-
-func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
-	if container, err := inspectContainer(string(containerID)); err != nil {
-		errorHandler(w, err)
-	} else {
-		jsonHttp.ResponseJSON(w, container)
-	}
-}
-
-func basicActionHandler(w http.ResponseWriter, loggedUser *user, containerID []byte, handle func(string) error) {
-	id := string(containerID)
-
-	allowed, err := isAllowed(loggedUser, id)
-	if !allowed {
-		forbidden(w)
-	} else if err != nil {
-		errorHandler(w, err)
-	} else {
-		if err = handle(id); err != nil {
-			errorHandler(w, err)
-		} else {
-			w.Write(nil)
-		}
-	}
-}
-
-func logContainerHandler(w http.ResponseWriter, containerID []byte) {
-	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
-	if err != nil {
-		errorHandler(w, err)
-		return
-	}
-
-	defer logs.Close()
-
-	if logLines, err := ioutil.ReadAll(logs); err != nil {
-		errorHandler(w, err)
-	} else {
-		matches := splitLogs.FindAllSubmatch(logLines, -1)
-		cleanLogs := make([]string, 0, len(matches))
-		for _, match := range matches {
-			cleanLogs = append(cleanLogs, string(match[1]))
-		}
-
-		jsonHttp.ResponseJSON(w, results{cleanLogs})
-	}
-}
-
-func listContainersHandler(w http.ResponseWriter, loggerUser *user) {
-	if containers, err := listContainers(loggerUser, nil); err != nil {
-		errorHandler(w, err)
-	} else {
-		jsonHttp.ResponseJSON(w, results{containers})
-	}
-}
-
-func readBody(body io.ReadCloser) ([]byte, error) {
-	defer body.Close()
-	return ioutil.ReadAll(body)
-}
-
-func getConfig(service *dockerComposeService, loggedUser *user, appName string) *container.Config {
-	environments := make([]string, len(service.Environment))
-	for key, value := range service.Environment {
-		environments = append(environments, key+`=`+value)
-	}
-
-	if service.Labels == nil {
-		service.Labels = make(map[string]string)
-	}
-
-	service.Labels[ownerLabel] = loggedUser.username
-	service.Labels[appLabel] = appName
-
-	config := container.Config{
-		Image:  service.Image,
-		Labels: service.Labels,
-		Env:    environments,
-	}
-
-	if service.Command != `` {
-		config.Cmd = strslice.StrSlice([]string{service.Command})
-	}
-
-	return &config
-}
-
-func getHostConfig(service *dockerComposeService) *container.HostConfig {
-	hostConfig := container.HostConfig{
-		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-			`max-size`: `50m`,
-		}},
-		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
-		Resources: container.Resources{
-			CPUShares: 128,
-			Memory:    minMemory,
-		},
-		SecurityOpt: []string{`no-new-privileges`},
-	}
-
-	if service.ReadOnly {
-		hostConfig.ReadonlyRootfs = service.ReadOnly
-	}
-
-	if service.CPUShares != 0 {
-		hostConfig.Resources.CPUShares = service.CPUShares
-	}
-
-	if service.MemoryLimit != 0 {
-		if service.MemoryLimit < maxMemory {
-			hostConfig.Resources.Memory = service.MemoryLimit
-		} else {
-			hostConfig.Resources.Memory = maxMemory
-		}
-	}
-
-	return &hostConfig
-}
-
-func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, composeFile []byte) {
-	if len(appName) == 0 || len(composeFile) == 0 {
-		http.Error(w, `An application name and a compose file are required`, http.StatusBadRequest)
-		return
-	}
-
-	compose := dockerCompose{}
-	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		errorHandler(w, err)
-		return
-	}
-
-	appNameStr := string(appName)
-	log.Print(loggedUser.username + ` deploys ` + appNameStr)
-
-	ownerContainers, err := listContainers(loggedUser, &appNameStr)
-	if err != nil {
-		errorHandler(w, err)
-		return
-	}
-	for _, container := range ownerContainers {
-		log.Print(loggedUser.username + ` stops ` + strings.Join(container.Names, `, `))
-		stopContainer(container.ID)
-		log.Print(loggedUser.username + ` rm ` + strings.Join(container.Names, `, `))
-		rmContainer(container.ID)
-	}
-
-	ids := make([]string, len(compose.Services))
-	for serviceName, service := range compose.Services {
-		image := service.Image
-		if !imageTag.MatchString(image) {
-			image = image + `:` + defaultTag
-		}
-
-		log.Print(loggedUser.username + ` starts pulling for ` + image)
-		pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
-		if err != nil {
-			errorHandler(w, err)
-			return
-		}
-
-		readBody(pull)
-		log.Print(loggedUser.username + ` ends pulling for ` + image)
-
-		serviceFullName := appNameStr + `_` + serviceName
-		log.Print(loggedUser.username + ` starts ` + serviceFullName)
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, serviceFullName)
-		if err != nil {
-			errorHandler(w, err)
-			return
-		}
-
-		startContainer(id.ID)
-		ids = append(ids, id.ID)
-	}
-
-	jsonHttp.ResponseJSON(w, results{ids})
-}
-
 func isAuthenticated(r *http.Request) (*user, error) {
 	username, password, ok := r.BasicAuth()
 
@@ -378,35 +83,7 @@ func isAuthenticated(r *http.Request) (*user, error) {
 	return nil, fmt.Errorf(`Unable to read basic authentication`)
 }
 
-func unauthorized(w http.ResponseWriter, err error) {
-	http.Error(w, err.Error(), http.StatusUnauthorized)
-}
-
-func forbidden(w http.ResponseWriter) {
-	http.Error(w, `Forbidden`, http.StatusForbidden)
-}
-
-// Handler for Hello request. Should be use with net/http
-type Handler struct {
-}
-
-func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add(`Access-Control-Allow-Origin`, `*`)
-	w.Header().Add(`Access-Control-Allow-Headers`, `Content-Type, Authorization`)
-	w.Header().Add(`Access-Control-Allow-Methods`, `GET, POST, DELETE`)
-	w.Header().Add(`X-Content-Type-Options`, `nosniff`)
-
-	if r.Method == http.MethodOptions {
-		w.Write(nil)
-		return
-	}
-
-	loggedUser, err := isAuthenticated(r)
-	if err != nil {
-		unauthorized(w, err)
-		return
-	}
-
+func handle(w http.ResponseWriter, r *http.Request, loggedUser *user) {
 	urlPath := []byte(r.URL.Path)
 
 	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {

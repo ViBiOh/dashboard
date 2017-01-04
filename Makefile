@@ -1,4 +1,4 @@
-default: deps lint vet tst build
+default: deps lint tst build
 
 deps:
 	go get -u github.com/golang/lint/golint
@@ -12,8 +12,6 @@ deps:
 
 lint:
 	golint ./...
-
-vet:
 	go vet ./...
 
 tst:
