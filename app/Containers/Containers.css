@@ -39,7 +39,8 @@ $cardMargin: 2px;
 .card {
   @include flexWrap;
   @include smallPadding;
-  width: calc((100% - #{$cardMargin} * 2 * 3) / 3);
+  width: 200px;
+  flex: 0 0 33%;
   align-items: center;
   margin: $cardMargin;
   border: 1px solid $dark;
@@ -62,7 +63,6 @@ $cardMargin: 2px;
   flex-wrap: nowrap;
   flex-direction: column;
   min-width: 0;
-  width: 100%;
 }
 
 .column > span {
@@ -75,12 +75,12 @@ $cardMargin: 2px;
 
 @media screen and (min-width: 800px) and (max-width: 1199px) {
   .card {
-    width: calc((100% - #{$cardMargin} * 2 * 2) / 2);
+    flex: 0 0 49.5%;
   }
 }
 
 @media screen and (max-width: 799px) {
   .card {
-    width: calc(100% - #{$cardMargin} * 2);
+    flex: 0 0 99%;
   }
 }
