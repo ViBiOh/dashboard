@@ -12,8 +12,8 @@ $dark: #3a3a3a;
 }
 
 .throbber > div {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   background-color: $dark;
 
   border-radius: 100%;
@@ -22,10 +22,8 @@ $dark: #3a3a3a;
   animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
 
-.button > div {
+.white > div {
   background-color: white;
-  width: 14px;
-  height: 14px;
 }
 
 .throbber .bounce1 {
