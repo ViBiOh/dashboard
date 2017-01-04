@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 )
 
 const minMemory = 67108864
@@ -100,6 +101,41 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	return &hostConfig
 }
 
+func pullImage(image string, loggedUser *user) error {
+	if !imageTag.MatchString(image) {
+		image = image + defaultTag
+	}
+
+	log.Print(loggedUser.username + ` starts pulling for ` + image)
+	pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
+	if err != nil {
+		return err
+	}
+
+	readBody(pull)
+	log.Print(loggedUser.username + ` ends pulling for ` + image)
+	return nil
+}
+
+func cleanContainers(containers *[]types.Container, loggedUser *user) {
+	for _, container := range *containers {
+		log.Print(loggedUser.username + ` stops ` + strings.Join(container.Names, `, `))
+		stopContainer(container.ID)
+		log.Print(loggedUser.username + ` rm ` + strings.Join(container.Names, `, `))
+		rmContainer(container.ID)
+	}
+}
+
+func renameDeployedContainers(containers *map[string]string) error {
+	for id, name := range *containers {
+		if err := docker.ContainerRename(context.Background(), id, strings.TrimSuffix(name, deploySuffix)); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
 		http.Error(w, `An application name and a compose file are required`, http.StatusBadRequest)
@@ -121,22 +157,12 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		return
 	}
 
-	ids := make(map[string]string)
+	deployedServices := make(map[string]string)
 	for serviceName, service := range compose.Services {
-		image := service.Image
-		if !imageTag.MatchString(image) {
-			image = image + defaultTag
-		}
-
-		log.Print(loggedUser.username + ` starts pulling for ` + image)
-		pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
-		if err != nil {
+		if err := pullImage(service.Image, loggedUser); err != nil {
 			errorHandler(w, err)
 			return
 		}
-
-		readBody(pull)
-		log.Print(loggedUser.username + ` ends pulling for ` + image)
 
 		serviceFullName := appNameStr + `_` + serviceName + deploySuffix
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
@@ -147,22 +173,17 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		}
 
 		startContainer(id.ID)
-		ids[id.ID] = serviceFullName
+		deployedServices[id.ID] = serviceFullName
 	}
 
-	for _, container := range ownerContainers {
-		log.Print(loggedUser.username + ` stops ` + strings.Join(container.Names, `, `))
-		stopContainer(container.ID)
-		log.Print(loggedUser.username + ` rm ` + strings.Join(container.Names, `, `))
-		rmContainer(container.ID)
+	log.Print(`Waiting 5 seconds for containers to start...`)
+	time.Sleep(5 * time.Second)
+
+	cleanContainers(&ownerContainers, loggedUser)
+	if err := renameDeployedContainers(&deployedServices); err != nil {
+		errorHandler(w, err)
+		return
 	}
 
-	for id, name := range ids {
-		if err := docker.ContainerRename(context.Background(), id, strings.TrimSuffix(name, deploySuffix)); err != nil {
-			errorHandler(w, err)
-			return
-		}
-	}
-
-	jsonHttp.ResponseJSON(w, results{ids})
+	jsonHttp.ResponseJSON(w, results{deployedServices})
 }
