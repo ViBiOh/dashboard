@@ -38,10 +38,8 @@ $iconSize: 50px;
 .card {
   @include flexWrap;
   @include smallPadding;
-  flex: 1 1 auto;
+  flex: 0 0 33%;
   align-items: center;
-  width: 33%;
-  min-width: 400px;
   margin: 2px;
   border: 1px solid $dark;
   border-radius: 2px;
@@ -75,13 +73,12 @@ $iconSize: 50px;
 
 @media screen and (min-width: 800px) and (max-width: 1199px) {
   .card {
-    width: 49.5%;
+    flex: 0 0 49.5%;
   }
 }
 
 @media screen and (max-width: 799px) {
   .card {
-    width: 100%;
-    min-width: 0;
+    flex: 0 0 99%;
   }
 }
