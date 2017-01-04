@@ -5,26 +5,32 @@ $warning: #f0ad4e;
 $danger: #d9534f;
 
 .styledButton {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+
+.buttonWrapper {
   display: inline-flex;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   margin: 2px;
-  border: 0;
   border-radius: 2px;
   padding: 10px;
   color: white;
 }
 
-.styledButton svg {
+.buttonWrapper svg {
   color: white;
 }
 
-.styledButton > * {
+.buttonWrapper > * {
   margin-left: 5px;
 }
 
-.styledButton > *:first-child {
+.buttonWrapper > *:first-child {
   margin-left: 0;
 }
 
