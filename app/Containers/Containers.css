@@ -38,7 +38,7 @@ $iconSize: 50px;
 .card {
   @include flexWrap;
   @include smallPadding;
-  @include growingFlex;
+  flex: 1 1 auto;
   align-items: center;
   width: 33%;
   min-width: 400px;
@@ -58,10 +58,10 @@ $iconSize: 50px;
 }
 
 .column {
-  @include growingFlex;
   display: inline-flex;
   flex-wrap: nowrap;
   flex-direction: column;
+  flex: 1;
   min-width: 0;
 }
 
