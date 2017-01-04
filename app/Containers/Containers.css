@@ -5,6 +5,7 @@ $success: #5cb85c;
 $danger: #d9534f;
 
 $iconSize: 50px;
+$cardMargin: 2px;
 
 @mixin smallPadding {
   padding: 5px;
@@ -38,9 +39,9 @@ $iconSize: 50px;
 .card {
   @include flexWrap;
   @include smallPadding;
-  flex: 0 0 33%;
+  width: calc(~'(100% - $cardMargin * 2 * 3) / 3');
   align-items: center;
-  margin: 2px;
+  margin: $cardMargin;
   border: 1px solid $dark;
   border-radius: 2px;
 }
@@ -56,11 +57,12 @@ $iconSize: 50px;
 }
 
 .column {
+  flex: 1;
   display: inline-flex;
   flex-wrap: nowrap;
   flex-direction: column;
-  flex: 1;
   min-width: 0;
+  width: 100%;
 }
 
 .column > span {
@@ -73,12 +75,12 @@ $iconSize: 50px;
 
 @media screen and (min-width: 800px) and (max-width: 1199px) {
   .card {
-    flex: 0 0 49.5%;
+    width: calc(~'(100% - $cardMargin * 2 * 2) / 2');
   }
 }
 
 @media screen and (max-width: 799px) {
   .card {
-    flex: 0 0 99%;
+    width: calc(~'100% - $cardMargin * 2');
   }
 }
