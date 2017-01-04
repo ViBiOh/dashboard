@@ -1,14 +1,11 @@
 package docker
 
 import (
-	"bufio"
-	"bytes"
-	"fmt"
+	"github.com/docker/docker/client"
 	"log"
 	"net/http"
 	"os"
 	"regexp"
-	"strings"
 )
 
 var containersRequest = regexp.MustCompile(`/containers/?$`)
@@ -18,69 +15,18 @@ var stopRequest = regexp.MustCompile(`/containers/([^/]+)/stop`)
 var restartRequest = regexp.MustCompile(`/containers/([^/]+)/restart`)
 var logRequest = regexp.MustCompile(`/containers/([^/]+)/logs`)
 
-type user struct {
-	username string
-	password string
-	role     string
-}
+const host = `DOCKER_HOST`
+const version = `DOCKER_VERSION`
 
-var users map[string]*user
+var docker *client.Client
 
 func init() {
-	users = readConfiguration(configurationFile)
-}
-
-func readConfiguration(path string) map[string]*user {
-	configFile, err := os.Open(path)
-	defer configFile.Close()
-
+	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
 	if err != nil {
-		log.Print(err)
-		return nil
+		log.Fatal(err)
+	} else {
+		docker = client
 	}
-
-	users := make(map[string]*user)
-
-	scanner := bufio.NewScanner(configFile)
-	for scanner.Scan() {
-		parts := bytes.Split(scanner.Bytes(), commaByte)
-		user := user{string(parts[0]), string(parts[1]), string(parts[2])}
-
-		users[strings.ToLower(user.username)] = &user
-	}
-
-	return users
-}
-
-func isAllowed(loggedUser *user, containerID string) (bool, error) {
-	if loggedUser.role != admin {
-		container, err := inspectContainer(string(containerID))
-		if err != nil {
-			return false, err
-		}
-
-		owner, ok := container.Config.Labels[ownerLabel]
-		if !ok || owner != loggedUser.username {
-			return false, nil
-		}
-	}
-
-	return true, nil
-}
-
-func isAuthenticated(r *http.Request) (*user, error) {
-	username, password, ok := r.BasicAuth()
-
-	if ok {
-		user, ok := users[strings.ToLower(username)]
-
-		if ok && user.password == password {
-			return user, nil
-		}
-		return nil, fmt.Errorf(`Invalid credentials for ` + username)
-	}
-
-	return nil, fmt.Errorf(`Unable to read basic authentication`)
 }
 
 func handle(w http.ResponseWriter, r *http.Request, loggedUser *user) {

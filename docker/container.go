@@ -8,14 +8,24 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 )
+
+const ownerLabel = `owner`
+const appLabel = `app`
+
+var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
+
+type results struct {
+	Results interface{} `json:"results"`
+}
 
 func listContainers(loggedUser *user, appName *string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
 	options.Filters = filters.NewArgs()
 
-	if loggedUser != nil && loggedUser.role != admin {
+	if loggedUser != nil && !isAdmin(loggedUser) {
 		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, options.Filters); err != nil {
 			return nil, err
 		}

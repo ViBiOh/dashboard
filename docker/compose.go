@@ -16,7 +16,7 @@ import (
 
 const minMemory = 67108864
 const maxMemory = 536870912
-const defaultTag = `latest`
+const defaultTag = `:latest`
 
 var networkConfig = network.NetworkingConfig{
 	EndpointsConfig: map[string]*network.EndpointSettings{
@@ -130,7 +130,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 	for serviceName, service := range compose.Services {
 		image := service.Image
 		if !imageTag.MatchString(image) {
-			image = image + `:` + defaultTag
+			image = image + defaultTag
 		}
 
 		log.Print(loggedUser.username + ` starts pulling for ` + image)
