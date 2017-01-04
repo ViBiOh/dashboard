@@ -1,10 +1,10 @@
 import React from 'react';
 import style from './Throbber.css';
 
-const Throbber = ({ label, error, button }) => (
+const Throbber = ({ label, error, white }) => (
   <div className={style.throbberContainer}>
     {label && <span>{label}</span>}
-    <div className={`${style.throbber} ${button ? style.button : ''}`}>
+    <div className={`${style.throbber} ${white ? style.white : ''}`}>
       <div className={style.bounce1} />
       <div className={style.bounce2} />
       <div className={style.bounce3} />
@@ -18,7 +18,7 @@ const Throbber = ({ label, error, button }) => (
 Throbber.propTypes = {
   label: React.PropTypes.string,
   error: React.PropTypes.string,
-  button: React.PropTypes.bool,
+  white: React.PropTypes.bool,
 };
 
 Throbber.displayname = 'Throbber';
