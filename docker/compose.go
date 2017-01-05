@@ -43,7 +43,7 @@ type dockerCompose struct {
 	Services map[string]dockerComposeService
 }
 
-func getConfig(service *dockerComposeService, loggedUser *user, appName string) *container.Config {
+func getConfig(service *dockerComposeService, loggedUser *user, appName string) (*container.Config, error) {
 	environments := make([]string, len(service.Environment))
 	for key, value := range service.Environment {
 		environments = append(environments, key+`=`+value)
@@ -63,10 +63,13 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 	}
 
 	if service.Command != `` {
-		config.Cmd = strslice.StrSlice([]string{service.Command})
+		config.Cmd = strslice.StrSlice{}
+		if err := config.Cmd.UnmarshalJSON([]byte(service.Command)); err != nil {
+			return nil, err
+		}
 	}
 
-	return &config
+	return &config, nil
 }
 
 func getHostConfig(service *dockerComposeService) *container.HostConfig {
@@ -163,10 +166,17 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 			errorHandler(w, err)
 			return
 		}
+		
+		config, err := getConfig(&service, loggedUser, appNameStr)
+		if err != nil {
+			errorHandler(w, err)
+			return
+		}
 
 		serviceFullName := appNameStr + `_` + serviceName + deploySuffix
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), &networkConfig, serviceFullName)
+		
+		id, err := docker.ContainerCreate(context.Background(), config, getHostConfig(&service), &networkConfig, serviceFullName)
 		if err != nil {
 			errorHandler(w, err)
 			return
