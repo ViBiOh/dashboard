@@ -82,6 +82,8 @@ $cardMargin: 2px;
 
 @media screen and (max-width: 799px) {
   .card {
+    min-width: 0;
+    width: 99vw;
     flex: 0 0 calc(100% - (#{$cardMargin} * 2));
   }
 }
