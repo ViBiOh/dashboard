@@ -27,6 +27,7 @@ var networkConfig = network.NetworkingConfig{
 }
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
+var commandSplit = regexp.MustCompile(`((?:["'][^"']+["'])|\S+)`)
 
 type dockerComposeService struct {
 	Image       string
@@ -64,8 +65,8 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 
 	if service.Command != `` {
 		config.Cmd = strslice.StrSlice{}
-		if err := config.Cmd.UnmarshalJSON([]byte(service.Command)); err != nil {
-			return nil, err
+		for _, args := range commandSplit.FindAllStringSubmatch(service.Command, -1) {
+			config.Cmd = append(config.Cmd, args[1])
 		}
 	}
 
@@ -166,7 +167,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 			errorHandler(w, err)
 			return
 		}
-		
+
 		config, err := getConfig(&service, loggedUser, appNameStr)
 		if err != nil {
 			errorHandler(w, err)
@@ -175,7 +176,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 
 		serviceFullName := appNameStr + `_` + serviceName + deploySuffix
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
-		
+
 		id, err := docker.ContainerCreate(context.Background(), config, getHostConfig(&service), &networkConfig, serviceFullName)
 		if err != nil {
 			errorHandler(w, err)
