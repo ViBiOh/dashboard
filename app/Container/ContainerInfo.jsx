@@ -44,34 +44,36 @@ const ContainerInfo = ({ container }) => {
         <span>{`${container.Path} ${container.Args.join(' ')}`}</span>
       </span>
       <h3 key="hostConfig">HostConfig</h3>
-      {
-        container.HostConfig.RestartPolicy && <span key="restart" className={style.labelItem}>
-          Restart | {container.HostConfig.RestartPolicy.Name}:
-          {container.HostConfig.RestartPolicy.MaximumRetryCount}
-        </span>
-      }
-      {
-        container.HostConfig.ReadonlyRootfs && <span key="read-only" className={style.labelItem}>
-          read-only
-        </span>
-      }
-      {
-        container.HostConfig.CpuShares && <span key="cpu" className={style.labelItem}>
-          CPU Shares | {container.HostConfig.CpuShares}
-        </span>
-      }
-      {
-        container.HostConfig.Memory > 0 && <span key="memory" className={style.labelItem}>
-          Memory limit| {container.HostConfig.Memory}
-        </span>
-      }
-      {
-        container.HostConfig.SecurityOpt && container.HostConfig.SecurityOpt.length > 0 && (
-          <span key="security" className={style.labelItem}>
-            Security | {container.HostConfig.SecurityOpt.join(', ')}
+      <span key="hostLabels" className={style.labelsContainer}>
+        {
+          container.HostConfig.RestartPolicy && <span key="restart" className={style.labelItem}>
+            Restart | {container.HostConfig.RestartPolicy.Name}:
+            {container.HostConfig.RestartPolicy.MaximumRetryCount}
           </span>
-        )
-      }
+        }
+        {
+          container.HostConfig.ReadonlyRootfs && <span key="read-only" className={style.labelItem}>
+            read-only
+          </span>
+        }
+        {
+          container.HostConfig.CpuShares && <span key="cpu" className={style.labelItem}>
+            CPU Shares | {container.HostConfig.CpuShares}
+          </span>
+        }
+        {
+          container.HostConfig.Memory > 0 && <span key="memory" className={style.labelItem}>
+            Memory limit| {container.HostConfig.Memory}
+          </span>
+        }
+        {
+          container.HostConfig.SecurityOpt && container.HostConfig.SecurityOpt.length > 0 && (
+            <span key="security" className={style.labelItem}>
+              Security | {container.HostConfig.SecurityOpt.join(', ')}
+            </span>
+          )
+        }
+      </span>
       {labelContent}
     </span>
   );
