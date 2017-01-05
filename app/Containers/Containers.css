@@ -39,6 +39,7 @@ $cardMargin: 2px;
 .card {
   @include flexWrap;
   @include smallPadding;
+  min-width: 400px;
   width: 200px;
   flex: 0 0 calc((100% - (#{$cardMargin} * 2 * 3)) / 3);
   align-items: center;
