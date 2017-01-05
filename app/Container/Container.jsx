@@ -108,10 +108,10 @@ export default class Container extends Component {
     let content;
     if (loaded) {
       content = [
-        <ContainerInfo container={container} />,
-        <ContainerNetwork container={container} />,
-        <ContainerVolumes container={container} />,
-        <ContainerLogs containerId={this.props.params.containerId} />,
+        <ContainerInfo key="info" container={container} />,
+        <ContainerNetwork key="network" container={container} />,
+        <ContainerVolumes key="volumes" container={container} />,
+        <ContainerLogs key="logs "containerId={this.props.params.containerId} />,
       ];
     } else {
       content = <Throbber label="Loading informations" />;

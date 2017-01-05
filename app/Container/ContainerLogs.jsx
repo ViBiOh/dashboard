@@ -47,8 +47,8 @@ export default class ContainerLogs extends Component {
     }
 
     return (
-      <span>
-        <h2 className={style.container}>Logs</h2>
+      <span className={style.container}>
+        <h2>Logs</h2>
         {content}
       </span>
     );
