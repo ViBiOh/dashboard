@@ -29,7 +29,7 @@ services:
     command: -spa -domain 'docker-api.vibioh.fr fonts.gstatic.com'
     labels:
       traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: docker.${DOMAIN}'
+      traefik.frontend.rule: 'Host: docker.vibioh.fr, docker.l3miage.fr'
       traefik.port: '1080'
     logging:
       driver: json-file
