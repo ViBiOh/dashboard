@@ -55,11 +55,11 @@ $white: #fff;
 .container {
   display: inline-block;
   width: 100%;
+}
 
-  h2,
-  h3 {
-    padding-left: 5px;
-  }
+.container h2,
+.container h3 {
+  padding-left: 5px;
 }
 
 .code {
