@@ -6,15 +6,15 @@ $grey: #e1e1e8;
   flex-wrap: wrap;
   text-align: center;
   width: 100%;
+}
 
-  input[type='text'],
-  textarea {
-    border: 1px solid $grey;
-    border-radius: 2px;
-    margin-bottom: 5px;
-    padding: 20px;
-    width: 50%;
-  }
+.flex input[type='text'],
+.flex textarea {
+  border: 1px solid $grey;
+  border-radius: 2px;
+  margin-bottom: 5px;
+  padding: 20px;
+  width: 50%;
 }
 
 .flex > * {
