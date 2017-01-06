@@ -128,7 +128,7 @@ export default class Container extends Component {
             <FaRefresh />
             <span>Refresh</span>
           </Button>
-          <span className={style.growingFlex} />
+          <span className={style.fill} />
           {loaded && this.renderActions(container)}
         </Toolbar>
         {content}

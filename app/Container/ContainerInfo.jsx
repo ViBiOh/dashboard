@@ -7,10 +7,10 @@ const ContainerInfo = ({ container }) => {
   if (Object.keys(container.Config.Labels).length > 0) {
     labelContent = [
       <h3 key="labelsHeader">Labels</h3>,
-      <span key="labels" className={style.labelsContainer}>
+      <span key="labels" className={style['labels-container']}>
         {
           Object.keys(container.Config.Labels).map(label => (
-            <span key={label} className={style.labelItem}>
+            <span key={label} className={style['label-item']}>
               {label} | {container.Config.Labels[label]}
             </span>
           ))
@@ -44,31 +44,31 @@ const ContainerInfo = ({ container }) => {
         <span>{`${container.Path} ${container.Args.join(' ')}`}</span>
       </span>
       <h3 key="hostConfig">HostConfig</h3>
-      <span key="hostLabels" className={style.labelsContainer}>
+      <span key="hostLabels" className={style['labels-container']}>
         {
-          container.HostConfig.RestartPolicy && <span key="restart" className={style.labelItem}>
+          container.HostConfig.RestartPolicy && <span key="restart" className={style['label-item']}>
             Restart | {container.HostConfig.RestartPolicy.Name}:
             {container.HostConfig.RestartPolicy.MaximumRetryCount}
           </span>
         }
         {
-          container.HostConfig.ReadonlyRootfs && <span key="read-only" className={style.labelItem}>
+          container.HostConfig.ReadonlyRootfs && <span key="read-only" className={style['label-item']}>
             read-only
           </span>
         }
         {
-          container.HostConfig.CpuShares && <span key="cpu" className={style.labelItem}>
+          container.HostConfig.CpuShares && <span key="cpu" className={style['label-item']}>
             CPU Shares | {container.HostConfig.CpuShares}
           </span>
         }
         {
-          container.HostConfig.Memory > 0 && <span key="memory" className={style.labelItem}>
+          container.HostConfig.Memory > 0 && <span key="memory" className={style['label-item']}>
             Memory limit| {container.HostConfig.Memory}
           </span>
         }
         {
           container.HostConfig.SecurityOpt && container.HostConfig.SecurityOpt.length > 0 && (
-            <span key="security" className={style.labelItem}>
+            <span key="security" className={style['label-item']}>
               Security | {container.HostConfig.SecurityOpt.join(', ')}
             </span>
           )

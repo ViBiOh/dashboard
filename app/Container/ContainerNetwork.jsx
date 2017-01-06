@@ -12,11 +12,11 @@ const ContainerNetwork = ({ container }) => {
   return (
     <span className={style.container}>
       <h3>Network</h3>
-      <span className={style.labelsContainer}>
+      <span className={style['labels-container']}>
         {
           container.NetworkSettings.Networks && Object.keys(container.NetworkSettings.Networks)
             .map(network => (
-              <span key={network} className={style.labelItem}>
+              <span key={network} className={style['label-item']}>
                 {network} | {container.NetworkSettings.Networks[network].IPAddress}
               </span>
             ))
@@ -25,7 +25,7 @@ const ContainerNetwork = ({ container }) => {
           container.NetworkSettings.Ports && Object.keys(container.NetworkSettings.Ports)
             .filter(port => container.NetworkSettings.Ports[port])
             .map(port => (
-              <span key={port} className={style.labelItem}>
+              <span key={port} className={style['label-item']}>
                 {port} | {container.NetworkSettings.Ports[port].map(p => p.HostPort).join(', ')}
               </span>
             ))

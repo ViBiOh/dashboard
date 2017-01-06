@@ -3,35 +3,36 @@ $success: #5cb85c;
 $info: #5bc0de;
 $warning: #f0ad4e;
 $danger: #d9534f;
+$white: #fff;
 
-.styledButton {
-  border: 0;
-  padding: 0;
-  margin: 0;
+.styled-button {
   background-color: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
 }
 
-.buttonWrapper {
+.button-wrapper {
+  align-items: center;
+  border-radius: 2px;
+  color: $white;
   display: inline-flex;
   flex-wrap: nowrap;
-  align-items: center;
   justify-content: center;
   margin: 2px;
-  border-radius: 2px;
   padding: 10px;
-  color: white;
+
+  svg {
+    color: $white;
+  }
 }
 
-.buttonWrapper svg {
-  color: white;
-}
-
-.buttonWrapper > * {
+.button-wrapper > * {
   margin-left: 5px;
-}
 
-.buttonWrapper > *:first-child {
-  margin-left: 0;
+  :first-child {
+    margin-left: 0;
+  }
 }
 
 .transparent {

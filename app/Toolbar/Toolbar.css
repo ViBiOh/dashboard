@@ -1,9 +1,10 @@
 $danger: #d9534f;
+$white: #fff;
 
 .flex {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   width: 100%;
 }
 
@@ -13,8 +14,8 @@ $danger: #d9534f;
 
 .error {
   background-color: $danger;
-  width: 100%;
-  color: white;
-  padding: 20px;
+  color: $white;
   margin-bottom: 2px;
+  padding: 20px;
+  width: 100%;
 }

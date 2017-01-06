@@ -1,32 +1,32 @@
 $grey: #e1e1e8;
 
 .flex {
-  width: 100%;
+  align-items: center;
   display: inline-flex;
   flex-wrap: wrap;
   text-align: center;
-  align-items: center;
+  width: 100%;
+
+  input[type='text'],
+  textarea {
+    border: 1px solid $grey;
+    border-radius: 2px;
+    margin-bottom: 5px;
+    padding: 20px;
+    width: 50%;
+  }
 }
 
 .flex > * {
   width: 100%;
 }
 
-.flex input[type="text"],
-.flex textarea {
-  width: 50%;
-  padding: 20px;
-  margin-bottom: 5px;
-  border-radius: 2px;
-  border: 1px solid $grey;
-}
-
 .code {
-  font-family: monospace; 
+  font-family: monospace;
 }
 
 @media screen and (max-width: 1023px) {
-  .flex input[type="text"],
+  .flex input[type='text'],
   .flex textarea {
     width: 90%;
   }

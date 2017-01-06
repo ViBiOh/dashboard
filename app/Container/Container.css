@@ -2,36 +2,37 @@ $dark: #3a3a3a;
 $grey: #e1e1e8;
 $success: #5cb85c;
 $danger: #d9534f;
+$white: #fff;
 
-@mixin smallPadding {
+@mixin small-padding {
   padding: 5px;
 }
 
-@mixin flexWrap {
+@mixin flex-wrap {
   display: inline-flex;
   flex-wrap: wrap;
 }
 
-@mixin roundBorder {
-  @include smallPadding;
-  width: auto;
+@mixin round-border {
+  @include small-padding;
   border: 1px solid;
   border-radius: 2px;
   margin: 2px;
+  width: auto;
 }
 
 @mixin pastille {
-  padding: 10px;
   border-radius: 2px;
-  color: white;
+  color: $white;
+  padding: 10px;
 }
 
 .flex {
-  @include flexWrap;
+  @include flex-wrap;
   width: 100%;
 }
 
-.growingFlex {
+.fill {
   flex: 1 1 auto;
 }
 
@@ -46,29 +47,29 @@ $danger: #d9534f;
 }
 
 .info {
+  @include small-padding;
   display: inline-block;
-  @include smallPadding;
   width: 100%;
 }
 
 .container {
   display: inline-block;
   width: 100%;
-}
 
-.container h2,
-.container h3 {
-  padding-left : 5px;
+  h2,
+  h3 {
+    padding-left: 5px;
+  }
 }
 
 .code {
-  width: 100%;
-  white-space: pre-wrap;
-  word-break: break-all;
+  @include small-padding;
   background: $dark;
   color: $grey;
   font-size: 12px;
-  @include smallPadding;
+  white-space: pre-wrap;
+  width: 100%;
+  word-break: break-all;
 }
 
 .label {
@@ -76,12 +77,12 @@ $danger: #d9534f;
   width: 200px;
 }
 
-.labelsContainer {
-  @include flexWrap;
+.labels-container {
+  @include flex-wrap;
 }
 
-.labelItem {
-  @include roundBorder;
+.label-item {
+  @include round-border;
   white-space: pre-wrap;
   word-break: break-all;
 }
