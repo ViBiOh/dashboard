@@ -8,7 +8,8 @@
     "copy:web": "cp ./web/* ./dist/",
     "copy": "mkdir -p ./dist && npm run copy:html && npm run copy:web",
     "mustache": "./mustache.js -t \"./app/*.html\" -b `git log --pretty=format:'%h' -n 1` -o ./dist/",
-    "eslint": "./node_modules/.bin/eslint --ext .js --ext .jsx src/",
+    "eslint": "./node_modules/.bin/eslint --ext .js --ext .jsx app/",
+    "sassLint": "./node_modules/.bin/sass-lint \"app/**/*.css\" -v",
     "start": "npm run copy && ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --content-base dist --history-api-fallback --output-public-path static",
     "test": "./node_modules/.bin/nyc --reporter html --reporter text --extension .jsx --require babel-core/register ./node_modules/.bin/mocha --require ./test/common/setup.js --require ignore-styles test/**/* --",
     "build": "npm run eslint && npm test && npm run mustache && npm run copy:web && PRODUCTION=true ./node_modules/.bin/webpack --progress -p"
@@ -53,6 +54,7 @@
     "normalize.css": "latest",
     "nyc": "latest",
     "react-addons-test-utils": "latest",
+    "sass-lint": "latest",
     "sass-loader": "latest",
     "sinon": "latest",
     "style-loader": "latest",
