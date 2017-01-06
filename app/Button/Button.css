@@ -21,18 +21,18 @@ $white: #fff;
   justify-content: center;
   margin: 2px;
   padding: 10px;
+}
 
-  svg {
-    color: $white;
-  }
+.button-wrapper svg {
+  color: $white;
 }
 
 .button-wrapper > * {
   margin-left: 5px;
+}
 
-  :first-child {
-    margin-left: 0;
-  }
+.button-wrapper > *:first-child {
+  margin-left: 0;
 }
 
 .transparent {
