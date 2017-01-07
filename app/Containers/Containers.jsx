@@ -89,7 +89,7 @@ export default class Containers extends Component {
               </Button>
             )
           }
-          <span className={style.growingFlex} />
+          <span className={style.fill} />
           {
             !DockerService.isLogged() && (
               <Button onClick={() => browserHistory.push('/login')}>

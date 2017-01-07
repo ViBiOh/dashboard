@@ -2,7 +2,7 @@ import React from 'react';
 import style from './Throbber.css';
 
 const Throbber = ({ label, white }) => (
-  <div className={style.throbberContainer}>
+  <div className={style.container}>
     {label && <span>{label}</span>}
     <div className={`${style.throbber} ${white ? style.white : ''}`}>
       <div className={style.bounce1} />

@@ -1,30 +1,30 @@
 $grey: #e1e1e8;
 
 .flex {
-  width: 100%;
+  align-items: center;
   display: inline-flex;
   flex-wrap: wrap;
   text-align: center;
-  align-items: center;
+  width: 100%;
 }
 
 .flex > * {
   width: 100%;
 }
 
-.flex input[type="text"],
-.flex input[type="password"] {
+.flex input[type='text'],
+.flex input[type='password'] {
+  border: 1px solid $grey;
+  border-radius: 2px;
+  margin: 5px;
+  padding: 20px;
   text-align: center;
   width: 50%;
-  padding: 20px;
-  margin: 5px;
-  border-radius: 2px;
-  border: 1px solid $grey;
 }
 
 @media screen and (max-width: 1023px) {
-  .flex input[type="text"],
-  .flex input[type="password"] {
+  .flex input[type='text'],
+  .flex input[type='password'] {
     width: 90%;
   }
 }

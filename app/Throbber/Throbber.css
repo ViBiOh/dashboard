@@ -1,46 +1,46 @@
 $dark: #3a3a3a;
+$white: #fff;
 
-.throbberContainer {
+.container {
   margin: auto;
   text-align: center;
 }
 
 .throbber {
-  width: 70px;
   margin: auto;
   text-align: center;
+  width: 70px;
 }
 
 .throbber > div {
-  width: 14px;
-  height: 14px;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
   background-color: $dark;
-
   border-radius: 100%;
   display: inline-block;
-  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  height: 14px;
+  width: 14px;
 }
 
 .white > div {
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 .throbber .bounce1 {
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
+  animation-delay: -.32s;
 }
 
 .throbber .bounce2 {
-  -webkit-animation-delay: -0.16s;
-  animation-delay: -0.16s;
+  animation-delay: -.16s;
 }
 
-.error {
-  color: #d9534f;
-}
+@keyframes sk-bouncedelay {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
 
-@-webkit-keyframes sk-bouncedelay {
-  0%, 80%, 100% { -webkit-transform: scale(0) }
-  40% { -webkit-transform: scale(1.0) }
+  40% {
+    transform: scale(1);
+  }
 }
