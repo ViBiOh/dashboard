@@ -5,14 +5,14 @@ $warning: #f0ad4e;
 $danger: #d9534f;
 $white: #fff;
 
-.styled-button {
+.button {
   background-color: transparent;
   border: 0;
   margin: 0;
   padding: 0;
 }
 
-.button-wrapper {
+.wrapper {
   align-items: center;
   border-radius: 2px;
   color: $white;
@@ -23,15 +23,15 @@ $white: #fff;
   padding: 10px;
 }
 
-.button-wrapper svg {
+.wrapper svg {
   color: $white;
 }
 
-.button-wrapper > * {
+.wrapper > * {
   margin-left: 5px;
 }
 
-.button-wrapper > *:first-child {
+.wrapper > *:first-child {
   margin-left: 0;
 }
 

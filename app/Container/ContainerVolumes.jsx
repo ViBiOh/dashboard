@@ -9,10 +9,10 @@ const ContainerVolumes = ({ container }) => {
   return (
     <span className={style.container}>
       <h3>Volumes</h3>
-      <span className={style['labels-container']}>
+      <span className={style.labels}>
         {
           container.Mounts.map((mount, index) => (
-            <span key={`mount${index}`} className={style['label-item']}>
+            <span key={`mount${index}`} className={style.item}>
               <em>{mount.Source}</em> : {mount.Destination} : <strong>{mount.Mode}</strong>
             </span>
           ))

@@ -77,11 +77,11 @@ $white: #fff;
   width: 200px;
 }
 
-.labels-container {
+.labels {
   @include flex-wrap;
 }
 
-.label-item {
+.item {
   @include round-border;
   white-space: pre-wrap;
   word-break: break-all;

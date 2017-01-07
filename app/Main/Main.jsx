@@ -2,7 +2,7 @@ import React from 'react';
 import style from './Main.css';
 
 const Main = ({ children }) => (
-  <span className={style['main-layout']}>
+  <span className={style.layout}>
     <article>{children}</article>
   </span>
 );
