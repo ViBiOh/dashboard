@@ -60,7 +60,7 @@ ThrobberButton.propTypes = {
   ]),
 };
 
-Throbber.defaultProps = {
+ThrobberButton.defaultProps = {
   onClick: () => null,
   children: '',
 };

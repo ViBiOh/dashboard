@@ -21,7 +21,7 @@ Toolbar.propTypes = {
   ]),
 };
 
-Throbber.defaultProps = {
+Toolbar.defaultProps = {
   error: '',
   center: false,
   children: '',
