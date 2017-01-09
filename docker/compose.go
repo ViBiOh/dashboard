@@ -31,7 +31,7 @@ var commandSplit = regexp.MustCompile(`["']([^"']+)["']|(\S+)`)
 
 type dockerComposeService struct {
 	Image       string
-	Command     string
+	Command     []byte
 	Environment map[string]string
 	Labels      map[string]string
 	ReadOnly    bool  `yaml:"read_only"`
@@ -63,10 +63,11 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 		Env:    environments,
 	}
 
-	if service.Command != `` {
+	if len(service.Command) != 0 {
 		config.Cmd = strslice.StrSlice{}
-		for _, args := range commandSplit.FindAllStringSubmatch(service.Command, -1) {
-			config.Cmd = append(config.Cmd, args[1]+args[2])
+		err := config.Cmd.UnmarshalJSON(service.Command)
+		if err != nil {
+			return nil, err
 		}
 	}
 

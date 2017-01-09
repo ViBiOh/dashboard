@@ -18,7 +18,7 @@ func forbidden(w http.ResponseWriter) {
 	http.Error(w, `Forbidden`, http.StatusForbidden)
 }
 
-// Handler for Hello request. Should be use with net/http
+// Handler for Docker request. Should be use with net/http
 type Handler struct {
 }
 
