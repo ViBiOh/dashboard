@@ -15,8 +15,8 @@ const version = `DOCKER_VERSION`
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	http.Handle(`/`, docker.Handler{})
 	http.Handle(`/ws/`, docker.WsHandler{})
+	http.Handle(`/`, docker.Handler{})
 
 	log.Print(`Starting server on port ` + port)
 	log.Fatal(http.ListenAndServe(`:`+port, nil))
