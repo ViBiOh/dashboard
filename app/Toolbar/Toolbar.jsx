@@ -21,4 +21,10 @@ Toolbar.propTypes = {
   ]),
 };
 
+Throbber.defaultProps = {
+  error: '',
+  center: false,
+  children: '',
+};
+
 export default Toolbar;

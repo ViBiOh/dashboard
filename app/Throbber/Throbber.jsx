@@ -17,6 +17,11 @@ Throbber.propTypes = {
   white: React.PropTypes.bool,
 };
 
+Throbber.defaultProps = {
+  label: '',
+  white: false,
+};
+
 Throbber.displayname = 'Throbber';
 
 export default Throbber;

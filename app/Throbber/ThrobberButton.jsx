@@ -59,3 +59,8 @@ ThrobberButton.propTypes = {
     React.PropTypes.node,
   ]),
 };
+
+Throbber.defaultProps = {
+  onClick: () => null,
+  children: '',
+};

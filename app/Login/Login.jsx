@@ -72,3 +72,6 @@ Login.propTypes = {
   redirect: React.PropTypes.string,
 };
 
+Login.defaultProps = {
+  redirect: '',
+};

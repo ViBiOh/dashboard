@@ -12,7 +12,7 @@ const ContainerVolumes = ({ container }) => {
       <span className={style.labels}>
         {
           container.Mounts.map((mount, index) => (
-            <span key={`mount${index}`} className={style.item}>
+            <span key={mount.Destination} className={style.item}>
               <em>{mount.Source}</em> : {mount.Destination} : <strong>{mount.Mode}</strong>
             </span>
           ))
