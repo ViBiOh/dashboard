@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/docker/docker/api/types"
 	"github.com/gorilla/websocket"
+	"io"
 	"log"
 	"net/http"
 	"regexp"
@@ -22,13 +23,13 @@ var upgrader = websocket.Upgrader{
 }
 
 func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
-	attach, err := docker.ContainerAttach(context.Background(), string(containerID), types.ContainerAttachOptions{Stream: true, Logs: true})
+	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true})
 	if err != nil {
-		errorHandler(w, err)
+		log.Print(err)
 		return
 	}
 
-	defer attach.Close()
+	defer logs.Close()
 
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -38,12 +39,14 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	defer ws.Close()
 
-	for {
-		data, err := attach.Reader.ReadString(13)
-		if err != nil {
-			log.Print(err)
-		}
-		ws.WriteMessage(websocket.TextMessage, []byte(data))
+	socketWrite, err := ws.NextWriter(websocket.BinaryMessage)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	if _, err := io.Copy(socketWrite, logs); err != nil {
+		log.Print(err)
 	}
 }
 
