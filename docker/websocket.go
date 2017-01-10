@@ -10,10 +10,15 @@ import (
 )
 
 var logWebsocketRequest = regexp.MustCompile(`/containers/([^/]+)/logs`)
+var hostCheck = regexp.MustCompile(`vibioh.fr^`)
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		log.Print(r.Host)
+		return hostCheck.MatchString(r.Host)
+	},
 }
 
 func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
