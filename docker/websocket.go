@@ -10,7 +10,7 @@ import (
 )
 
 var logWebsocketRequest = regexp.MustCompile(`/containers/([^/]+)/logs`)
-var hostCheck = regexp.MustCompile(`vibioh.fr^`)
+var hostCheck = regexp.MustCompile(`vibioh\.fr$`)
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
