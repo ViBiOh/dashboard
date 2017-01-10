@@ -6,7 +6,10 @@ import (
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+	"regexp"
 )
+
+var logWebsocketRequest = regexp.MustCompile(`/containers/([^/]+)/logs`)
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -36,5 +39,13 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 			log.Print(err)
 		}
 		ws.WriteMessage(websocket.TextMessage, []byte(data))
+	}
+}
+
+func handleWebsocket(w http.ResponseWriter, r *http.Request) {
+	urlPath := []byte(r.URL.Path)
+
+	if logWebsocketRequest.Match(urlPath) {
+		logsContainerWebsocketHandler(w, r, logWebsocketRequest.FindSubmatch(urlPath)[1])
 	}
 }
