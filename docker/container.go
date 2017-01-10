@@ -99,7 +99,7 @@ func basicActionHandler(w http.ResponseWriter, loggedUser *user, containerID []b
 	}
 }
 
-func logContainerHandler(w http.ResponseWriter, containerID []byte) {
+func logsContainerHandler(w http.ResponseWriter, containerID []byte) {
 	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
 	if err != nil {
 		errorHandler(w, err)

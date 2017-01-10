@@ -14,6 +14,7 @@ var startRequest = regexp.MustCompile(`/containers/([^/]+)/start`)
 var stopRequest = regexp.MustCompile(`/containers/([^/]+)/stop`)
 var restartRequest = regexp.MustCompile(`/containers/([^/]+)/restart`)
 var logRequest = regexp.MustCompile(`/containers/([^/]+)/logs`)
+var logWebsocketRequest = regexp.MustCompile(`/containers/([^/]+)/logs/ws`)
 
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
@@ -45,7 +46,9 @@ func handle(w http.ResponseWriter, r *http.Request, loggedUser *user) {
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
 		basicActionHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], rmContainer)
 	} else if logRequest.Match(urlPath) && r.Method == http.MethodGet {
-		logContainerHandler(w, logRequest.FindSubmatch(urlPath)[1])
+		logsContainerHandler(w, logRequest.FindSubmatch(urlPath)[1])
+	} else if logWebsocketRequest.Match(urlPath) && r.Method == http.MethodGet {
+		logsContainerHandler(w, logRequest.FindSubmatch(urlPath)[1])
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
 		if composeBody, err := readBody(r.Body); err != nil {
 			errorHandler(w, err)
