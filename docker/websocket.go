@@ -17,7 +17,6 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		log.Print(r.Host)
 		return hostCheck.MatchString(r.Host)
 	},
 }
@@ -39,7 +38,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	defer ws.Close()
 
-	socketWrite, err := ws.NextWriter(websocket.BinaryMessage)
+	socketWrite, err := ws.NextWriter(websocket.TextMessage)
 	if err != nil {
 		log.Print(err)
 		return
@@ -47,6 +46,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	if _, err := io.Copy(socketWrite, logs); err != nil {
 		log.Print(err)
+		return
 	}
 }
 
