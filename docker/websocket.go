@@ -37,16 +37,18 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	}
 
 	defer ws.Close()
-
-	socketWrite, err := ws.NextWriter(websocket.TextMessage)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-
-	if _, err := logs.WriteTo(socketWrite); err != nil {
-		log.Print(err)
-		return
+	
+	for {
+		wsWriter, err := ws.NextWriter(websocket.TextMessage)
+		if err != nil {
+			log.Print(err)
+			return
+		}
+		
+		if _, err = io.Copy(wsWriter, logs); err != nil {
+			log.Print(err)
+			return
+		}
 	}
 }
 
