@@ -50,7 +50,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		log.Print(err)
 		return
 	}
-	log.Print(`Stream copied with %d bytes`, writedBytes)
+	log.Print("Stream copied with %d bytes", writedBytes)
 }
 
 func handleWebsocket(w http.ResponseWriter, r *http.Request) {
