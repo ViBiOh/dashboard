@@ -46,7 +46,8 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	}
 	log.Print(`Writer is created`)
 
-	if writedBytes, err := io.Copy(socketWrite, logs); err != nil {
+	writedBytes, err := io.Copy(socketWrite, logs)
+	if err != nil {
 		log.Print(err)
 		return
 	}
