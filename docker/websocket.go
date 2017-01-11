@@ -36,6 +36,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		return
 	}
 
+	log.Print(`Websocket is open`)
 	defer ws.Close()
 
 	socketWrite, err := ws.NextWriter(websocket.TextMessage)
@@ -43,10 +44,13 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		log.Print(err)
 		return
 	}
+	log.Print(`Writer is created`)
 
-	if _, err := io.Copy(socketWrite, logs); err != nil {
+	if writedBytes, err := io.Copy(socketWrite, logs); err != nil {
 		log.Print(err)
 		return
+	} else {
+		log.Print(`Stream copied with %d bytes`, writedBytes)
 	}
 }
 
