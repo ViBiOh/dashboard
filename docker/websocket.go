@@ -22,7 +22,7 @@ var upgrader = websocket.Upgrader{
 }
 
 func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
-	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
+	logs, err := docker.ContainerAttach(context.Background(), string(containerID), types.ContainerAttachOptions{Stream: true, Stdout: true, Stderr: true, Logs: true})
 	if err != nil {
 		log.Print(err)
 		return
@@ -37,17 +37,20 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	}
 
 	defer ws.Close()
-	
-	wsWriter, err := ws.NextWriter(websocket.BinaryMessage)
+
+	wsWriter, err := ws.NextWriter(websocket.TextMessage)
 	if err != nil {
 		log.Print(err)
 		return
 	}
 
-	if _, err = io.Copy(wsWriter, logs); err != nil {
+	written, err := io.Copy(wsWriter, logs.Conn)
+	if err != nil {
 		log.Print(err)
 		return
 	}
+
+	log.Printf(`Written %d`, written)
 }
 
 func handleWebsocket(w http.ResponseWriter, r *http.Request) {
