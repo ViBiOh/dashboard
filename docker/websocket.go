@@ -22,14 +22,6 @@ var upgrader = websocket.Upgrader{
 }
 
 func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
-	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true})
-	if err != nil {
-		log.Print(err)
-		return
-	}
-
-	defer logs.Close()
-
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print(err)
@@ -38,8 +30,15 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	defer ws.Close()
 
-	scanner := bufio.NewScanner(logs)
+	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true})
+	if err != nil {
+		log.Print(err)
+		return
+	}
 
+	defer logs.Close()
+
+	scanner := bufio.NewScanner(logs)
 	for scanner.Scan() {
 		if err = ws.WriteMessage(websocket.TextMessage, scanner.Bytes()[8:]); err != nil {
 			log.Print(err)
