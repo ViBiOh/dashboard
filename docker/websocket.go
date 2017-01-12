@@ -30,6 +30,8 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	defer logs.Close()
 
+	log.Printf(`Connection opened %v`, logs)
+
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print(err)
@@ -38,11 +40,15 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	defer ws.Close()
 
+	log.Printf(`Websocket opened %v`, ws)
+
 	wsWriter, err := ws.NextWriter(websocket.TextMessage)
 	if err != nil {
 		log.Print(err)
 		return
 	}
+
+	log.Printf(`Writter instanciated %v`, wsWriter)
 
 	written, err := io.Copy(wsWriter, logs.Conn)
 	if err != nil {
