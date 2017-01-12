@@ -1,10 +1,10 @@
 package docker
 
 import (
+	"bufio"
 	"context"
 	"github.com/docker/docker/api/types"
 	"github.com/gorilla/websocket"
-	"io"
 	"log"
 	"net/http"
 	"regexp"
@@ -22,15 +22,13 @@ var upgrader = websocket.Upgrader{
 }
 
 func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
-	logs, err := docker.ContainerAttach(context.Background(), string(containerID), types.ContainerAttachOptions{Stream: true, Stdout: true, Stderr: true, Logs: true})
+	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true})
 	if err != nil {
 		log.Print(err)
 		return
 	}
 
 	defer logs.Close()
-
-	log.Printf(`Connection opened %v`, logs)
 
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -40,23 +38,14 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	defer ws.Close()
 
-	log.Printf(`Websocket opened %v`, ws)
+	scanner := bufio.NewScanner(logs)
 
-	wsWriter, err := ws.NextWriter(websocket.TextMessage)
-	if err != nil {
-		log.Print(err)
-		return
+	for scanner.Scan() {
+		if err = ws.WriteMessage(websocket.TextMessage, scanner.Bytes()); err != nil {
+			log.Print(err)
+			return
+		}
 	}
-
-	log.Printf(`Writter instanciated %v`, wsWriter)
-
-	written, err := io.Copy(wsWriter, logs.Conn)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-
-	log.Printf(`Written %d`, written)
 }
 
 func handleWebsocket(w http.ResponseWriter, r *http.Request) {
