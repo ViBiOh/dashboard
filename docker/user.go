@@ -3,6 +3,7 @@ package docker
 import (
 	"bufio"
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"os"
@@ -62,6 +63,22 @@ func isAllowed(loggedUser *user, containerID string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func isAuthenticatedByBasicAuth(base64value string) (*user, error) {
+	data, err := base64.StdEncoding.DecodeString(base64value)
+	if err != nil {
+		return nil, fmt.Errorf(`Unable to read basic authentication`)
+	}
+
+	dataStr := string(data)
+
+	sepIndex := strings.IndexByte(dataStr, ':')
+	if sepIndex < 0 {
+		return nil, fmt.Errorf(`Unable to read basic authentication`)
+	}
+
+	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:], err != nil)
 }
 
 func isAuthenticated(username string, password string, ok bool) (*user, error) {
