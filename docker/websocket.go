@@ -30,7 +30,10 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		return
 	}
 
-	defer ws.Close()
+	defer func() {
+		ws.Close()
+		log.Print(`Websocket logging ended`)
+	}()
 
 	_, basicAuth, err := ws.ReadMessage()
 	if err != nil {
@@ -59,7 +62,6 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		}
 	}
 
-	log.Print(`Websocket logging ended`)
 }
 
 func handleWebsocket(w http.ResponseWriter, r *http.Request) {
