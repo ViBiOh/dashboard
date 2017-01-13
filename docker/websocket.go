@@ -58,6 +58,8 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 			return
 		}
 	}
+
+	log.Print(`Websocket logging ended`)
 }
 
 func handleWebsocket(w http.ResponseWriter, r *http.Request) {
