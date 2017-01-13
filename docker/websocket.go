@@ -63,7 +63,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	for {
 		if messageType, _, err := ws.NextReader(); messageType == websocket.CloseMessage || err != nil {
-			if err != nil {
+			if messageType != websocket.CloseMessage {
 				log.Print(err)
 			}
 			return
