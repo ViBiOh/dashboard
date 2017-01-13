@@ -80,7 +80,7 @@ export default class DockerService {
 
     socket.onmessage = event => onMessage(event.data);
 
-    socket.onopen = () => socket.send(localStorage.getItem(authStorage).replace('Basic ', ''));
+    socket.onopen = () => socket.send(localStorage.getItem(authStorage));
 
     return socket;
   }

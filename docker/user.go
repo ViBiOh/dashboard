@@ -12,6 +12,7 @@ import (
 
 const configurationFile = `./users`
 const admin = `admin`
+const basicPrefix = `Basic `
 
 var commaByte = []byte(`,`)
 
@@ -65,8 +66,12 @@ func isAllowed(loggedUser *user, containerID string) (bool, error) {
 	return true, nil
 }
 
-func isAuthenticatedByBasicAuth(base64value string) (*user, error) {
-	data, err := base64.StdEncoding.DecodeString(base64value)
+func isAuthenticatedByBasicAuth(authContent string) (*user, error) {
+	if !strings.HasPrefix(authContent, basicPrefix) {
+		return nil, fmt.Errorf(`Unable to read authentication type`)
+	}
+
+	data, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(authContent, basicPrefix))
 	if err != nil {
 		return nil, fmt.Errorf(`Unable to read basic authentication`)
 	}
