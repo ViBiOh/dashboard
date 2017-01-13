@@ -78,7 +78,7 @@ func isAuthenticatedByBasicAuth(base64value string) (*user, error) {
 		return nil, fmt.Errorf(`Unable to read basic authentication`)
 	}
 
-	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:], err != nil)
+	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:], true)
 }
 
 func isAuthenticated(username string, password string, ok bool) (*user, error) {
