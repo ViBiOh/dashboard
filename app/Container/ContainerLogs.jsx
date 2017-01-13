@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import DockerService from '../Service/DockerService';
-import Throbber from '../Throbber/Throbber';
 import style from './Container.css';
 
 export default class ContainerLogs extends Component {
@@ -8,9 +7,10 @@ export default class ContainerLogs extends Component {
     super(props);
 
     this.state = {
-      loaded: false,
+      logs: [],
     };
 
+    this.appendLogs = this.appendLogs.bind(this);
     this.fetchLogs = this.fetchLogs.bind(this);
   }
 
@@ -18,38 +18,33 @@ export default class ContainerLogs extends Component {
     this.fetchLogs();
   }
 
-  fetchLogs() {
-    return DockerService.logs(this.props.containerId)
-      .then((logs) => {
-        this.setState({
-          loaded: true,
-          logs,
-        });
+  componentWillUnmount() {
+    if (this.websocket) {
+      this.websocket.close();
+    }
+  }
 
-        return logs;
-      })
-      .catch((error) => {
-        this.setState({ error: error.content });
-        return error;
-      });
+  appendLogs(log) {
+    this.setState({
+      logs: [...this.state.logs, log],
+    });
+  }
+
+  fetchLogs() {
+    try {
+      this.websocket = DockerService.logs(this.props.containerId, this.appendLogs);
+    } catch (e) {
+      this.setState({ error: JSON.stringify(e, null, 2) });
+    }
   }
 
   render() {
-    let content;
-    if (this.state.loaded) {
-      content = (
-        <pre className={style.code}>
-          {this.state.logs.join('\n')}
-        </pre>
-      );
-    } else {
-      content = <Throbber label="Loading logs" error={this.state.error} />;
-    }
-
     return (
       <span className={style.container}>
         <h2>Logs</h2>
-        {content}
+        <pre className={style.code}>
+          {this.state.logs.join('\n')}
+        </pre>
       </span>
     );
   }

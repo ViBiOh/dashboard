@@ -1,7 +1,8 @@
 import { browserHistory } from 'react-router';
 import Fetch, { errorHandler } from 'js-fetch';
 
-const API = 'https://docker-api.vibioh.fr/';
+const API_HOST = 'docker-api.vibioh.fr';
+const API = `https://${API_HOST}/`;
 const authStorage = 'auth';
 
 function authRedirect(response) {
@@ -74,9 +75,13 @@ export default class DockerService {
     return auth(`${API}containers/${containerId}/`).delete();
   }
 
-  static logs(containerId) {
-    return auth(`${API}containers/${containerId}/logs`)
-      .get()
-      .then(({ results }) => results);
+  static logs(containerId, onMessage) {
+    const socket = new WebSocket(`wss://${API_HOST}/ws/containers/${containerId}/logs`);
+
+    socket.onmessage = event => onMessage(event.data);
+
+    socket.onopen = () => socket.send(localStorage.getItem(authStorage).replace('Basic ', ''));
+
+    return socket;
   }
 }
