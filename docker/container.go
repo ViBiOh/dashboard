@@ -8,13 +8,10 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"regexp"
 )
 
 const ownerLabel = `owner`
 const appLabel = `app`
-
-var splitLogs = regexp.MustCompile(`.{8}(.*?)\n`)
 
 type results struct {
 	Results interface{} `json:"results"`
@@ -96,28 +93,6 @@ func basicActionHandler(w http.ResponseWriter, loggedUser *user, containerID []b
 		} else {
 			w.Write(nil)
 		}
-	}
-}
-
-func logsContainerHandler(w http.ResponseWriter, containerID []byte) {
-	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
-	if err != nil {
-		errorHandler(w, err)
-		return
-	}
-
-	defer logs.Close()
-
-	if logLines, err := ioutil.ReadAll(logs); err != nil {
-		errorHandler(w, err)
-	} else {
-		matches := splitLogs.FindAllSubmatch(logLines, -1)
-		cleanLogs := make([]string, 0, len(matches))
-		for _, match := range matches {
-			cleanLogs = append(cleanLogs, string(match[1]))
-		}
-
-		jsonHttp.ResponseJSON(w, results{cleanLogs})
 	}
 }
 
