@@ -20,7 +20,6 @@ export default class ContainerLogs extends Component {
 
   componentWillUnmount() {
     if (this.websocket) {
-      this.websocket.send('close');
       this.websocket.close();
     }
   }
