@@ -54,9 +54,9 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	go func() {
 		scanner := bufio.NewScanner(logs)
 		for scanner.Scan() {
-			log := scanner.Bytes()
-			if len(log) > ignoredByteLogSize {
-				if err = ws.WriteMessage(websocket.TextMessage, log[ignoredByteLogSize:]); err != nil {
+			logLine := scanner.Bytes()
+			if len(logLine) > ignoredByteLogSize {
+				if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
 					log.Print(err)
 					return
 				}
