@@ -11,6 +11,7 @@ import (
 )
 
 const ignoredByteLogSize = 8
+const closeMessage = `close`
 
 var logWebsocketRequest = regexp.MustCompile(`/containers/([^/]+)/logs`)
 var hostCheck = regexp.MustCompile(`vibioh\.fr$`)
@@ -30,10 +31,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		return
 	}
 
-	defer func() {
-		ws.Close()
-		log.Print(`Websocket logging ended`)
-	}()
+	defer ws.Close()
 
 	_, basicAuth, err := ws.ReadMessage()
 	if err != nil {
@@ -71,7 +69,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 			return
 		}
 
-		if string(action) == `close` {
+		if string(action) == closeMessage {
 			return
 		}
 	}
