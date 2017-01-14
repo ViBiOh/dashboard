@@ -41,8 +41,8 @@ $card-margin: 2px;
   align-items: center;
   border: 1px solid $dark;
   border-radius: 2px;
-  flex: 0 0 calc((100% - (#{$card-margin} * 2 * 3)) / 3);
-  margin: $card-margin;
+  flex: 0 0 calc((100% - (#{$card-margin} * 3) - #{$card-margin}) / 3);
+  margin: 0 0 $card-margin $card-margin;
   min-width: 400px;
   width: 200px;
 }
@@ -75,7 +75,7 @@ $card-margin: 2px;
 
 @media screen and (min-width: 800px) and (max-width: 1199px) {
   .card {
-    flex: 0 0 calc((100% - (#{$card-margin} * 2 * 2)) / 2);
+    flex: 0 0 calc((100% - (#{$card-margin} * 2) - #{$card-margin}) / 2);
   }
 }
 
