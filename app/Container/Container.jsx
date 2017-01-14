@@ -75,6 +75,7 @@ export default class Container extends Component {
         <ThrobberButton
           key="stop"
           type="danger"
+          left
           onClick={() => this.action(DockerService.stop(container.Id))}
         >
           <FaStopCircle />
@@ -93,6 +94,7 @@ export default class Container extends Component {
       <ThrobberButton
         key="delete"
         type="danger"
+        left
         onClick={() => this.action(DockerService.delete(container.Id)).then(() =>
           browserHistory.push('/'))}
       >

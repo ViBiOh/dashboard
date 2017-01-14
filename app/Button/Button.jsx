@@ -13,7 +13,7 @@ const Button = (props) => {
 
   // div-wrapper is needed for Firefox compatibility http://stackoverflow.com/a/32119435
   return (
-    <button className={style.button} {...buttonProps}>
+    <button className={`${style.button} ${props.left ? style.left : ''}`} {...buttonProps}>
       <div
         className={`${style.wrapper} ${style[type]}`}
       >
@@ -38,11 +38,13 @@ Button.propTypes = {
     React.PropTypes.arrayOf(React.PropTypes.node),
     React.PropTypes.node,
   ]),
+  left: React.PropTypes.bool,
 };
 
 Button.defaultProps = {
   type: 'primary',
   children: '',
+  left: false,
 };
 
 export default Button;

@@ -19,8 +19,12 @@ $white: #fff;
   display: inline-flex;
   flex-wrap: nowrap;
   justify-content: center;
-  margin: 2px;
+  margin: 2px 0 2px 2px;
   padding: 10px;
+}
+
+.left {
+  margin-right: 2px;
 }
 
 .wrapper svg {

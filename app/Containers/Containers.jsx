@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaRefresh from 'react-icons/lib/fa/refresh';
-import FaUser from 'react-icons/lib/fa/user';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
 import DockerService from '../Service/DockerService';
 import Toolbar from '../Toolbar/Toolbar';
@@ -81,33 +80,19 @@ export default class Containers extends Component {
             <FaRefresh />
             <span>Refresh</span>
           </Button>
-          {
-            DockerService.isLogged() && (
-              <Button onClick={() => browserHistory.push('/containers/New')}>
-                <FaPlus />
-                <span>Add an app</span>
-              </Button>
-            )
-          }
+          <Button onClick={() => browserHistory.push('/containers/New')}>
+            <FaPlus />
+            <span>Add an app</span>
+          </Button>
           <span className={style.fill} />
-          {
-            !DockerService.isLogged() && (
-              <Button onClick={() => browserHistory.push('/login')}>
-                <FaUser />
-              </Button>
-            )
-          }
-          {
-            DockerService.isLogged() && (
-              <Button
-                onClick={() => DockerService.logout().then(this.fetchContainers)}
-                type="danger"
-              >
-                <FaUserTimes />
-                <span>Disconnect</span>
-              </Button>
-            )
-          }
+          <Button
+            onClick={() => DockerService.logout().then(this.fetchContainers)}
+            type="danger"
+            left
+          >
+            <FaUserTimes />
+            <span>Disconnect</span>
+          </Button>
         </Toolbar>
         {content}
       </span>
