@@ -5,7 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const config = {
   context: path.join(__dirname, 'app'),
   entry: ['./index.jsx', './style.scss'],
-  
+
   resolve: {
     modulesDirectories: ['node_modules', 'src'],
     extensions: ['', '.js', '.jsx'],
