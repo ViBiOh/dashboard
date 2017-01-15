@@ -41,7 +41,7 @@ export default class ContainerLogs extends Component {
   render() {
     return (
       <span className={style.container}>
-        <h2>Logs</h2>
+        <h3>Logs</h3>
         <pre className={style.code}>
           {this.state.logs.join('\n')}
         </pre>
