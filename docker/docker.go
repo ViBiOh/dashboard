@@ -8,11 +8,11 @@ import (
 	"regexp"
 )
 
-var containersRequest = regexp.MustCompile(`/containers/?$`)
-var containerRequest = regexp.MustCompile(`/containers/([^/]+)/?$`)
-var startRequest = regexp.MustCompile(`/containers/([^/]+)/start`)
-var stopRequest = regexp.MustCompile(`/containers/([^/]+)/stop`)
-var restartRequest = regexp.MustCompile(`/containers/([^/]+)/restart`)
+var containersRequest = regexp.MustCompile(`containers/?$`)
+var containerRequest = regexp.MustCompile(`containers/([^/]+)/?$`)
+var startRequest = regexp.MustCompile(`containers/([^/]+)/start`)
+var stopRequest = regexp.MustCompile(`containers/([^/]+)/stop`)
+var restartRequest = regexp.MustCompile(`containers/([^/]+)/restart`)
 
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`

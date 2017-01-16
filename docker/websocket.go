@@ -12,7 +12,7 @@ import (
 
 const ignoredByteLogSize = 8
 
-var logWebsocketRequest = regexp.MustCompile(`/containers/([^/]+)/logs`)
+var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
 var hostCheck = regexp.MustCompile(`vibioh\.fr$`)
 
 var upgrader = websocket.Upgrader{
