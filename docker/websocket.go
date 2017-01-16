@@ -78,8 +78,6 @@ type WebsocketHandler struct {
 func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	urlPath := []byte(r.URL.Path)
 
-	log.Print(string(urlPath))
-
 	if logWebsocketRequest.Match(urlPath) {
 		logsContainerWebsocketHandler(w, r, logWebsocketRequest.FindSubmatch(urlPath)[1])
 	}
