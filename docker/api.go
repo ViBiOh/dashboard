@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-const websocketPrefix = `/ws/`
+const websocketPrefix = `/ws`
 
 func errorHandler(w http.ResponseWriter, err error) {
 	log.Print(err)
