@@ -71,7 +71,11 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	}
 }
 
-func handleWebsocket(w http.ResponseWriter, r *http.Request) {
+// WebsocketHandler for Docker Websocket request. Should be use with net/http
+type WebsocketHandler struct {
+}
+
+func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	urlPath := []byte(r.URL.Path)
 
 	if logWebsocketRequest.Match(urlPath) {

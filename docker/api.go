@@ -37,7 +37,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
-		handleWebsocket(w, r)
+		http.StripPrefix(websocketPrefix, WebsocketHandler{})
 	} else {
 		loggedUser, err := isAuthenticated(r.BasicAuth())
 		if err != nil {
