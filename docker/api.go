@@ -3,10 +3,7 @@ package docker
 import (
 	"log"
 	"net/http"
-	"strings"
 )
-
-const websocketPrefix = `/ws`
 
 func errorHandler(w http.ResponseWriter, err error) {
 	log.Print(err)
@@ -36,15 +33,11 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
-		http.StripPrefix(websocketPrefix, WebsocketHandler{})
-	} else {
-		loggedUser, err := isAuthenticated(r.BasicAuth())
-		if err != nil {
-			unauthorized(w, err)
-			return
-		}
-
-		handle(w, r, loggedUser)
+	loggedUser, err := isAuthenticated(r.BasicAuth())
+	if err != nil {
+		unauthorized(w, err)
+		return
 	}
+
+	handle(w, r, loggedUser)
 }
