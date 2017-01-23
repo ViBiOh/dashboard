@@ -2,6 +2,14 @@ import React from 'react';
 import moment from 'moment';
 import style from './Container.css';
 
+const BYTES_SIZE = 1024;
+const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB']
+
+function humanFileSize(size) {
+    var i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
+    return `${size / Math.pow(BYTES_SIZE, i)).toFixed(2)} ${BYTES_NAMES[i]}`;
+};
+
 const ContainerInfo = ({ container }) => {
   let labelContent = null;
   if (Object.keys(container.Config.Labels).length > 0) {
