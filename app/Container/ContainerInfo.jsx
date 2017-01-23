@@ -71,7 +71,7 @@ const ContainerInfo = ({ container }) => {
         }
         {
           container.HostConfig.Memory > 0 && <span key="memory" className={style.item}>
-            Memory limit| {container.HostConfig.Memory}
+            Memory limit| {humanFileSize(container.HostConfig.Memory)}
           </span>
         }
         {
