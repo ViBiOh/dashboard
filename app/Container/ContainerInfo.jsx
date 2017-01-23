@@ -7,6 +7,7 @@ const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
 
 function humanFileSize(size) {
   const i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
+  // eslint-disable-next-line no-restricted-properties
   return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(2)} ${BYTES_NAMES[i]}`;
 }
 
