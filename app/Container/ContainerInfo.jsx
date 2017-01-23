@@ -7,7 +7,7 @@ const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB']
 
 function humanFileSize(size) {
     var i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
-    return `${size / Math.pow(BYTES_SIZE, i)).toFixed(2)} ${BYTES_NAMES[i]}`;
+    return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(2)} ${BYTES_NAMES[i]}`;
 };
 
 const ContainerInfo = ({ container }) => {
