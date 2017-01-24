@@ -19,6 +19,7 @@ const minMemory = 67108864
 const maxMemory = 536870912
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
+const linkSeparator = `:`
 
 var networkConfig = network.NetworkingConfig{
 	EndpointsConfig: map[string]*network.EndpointSettings{
@@ -74,7 +75,7 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 	return &config, nil
 }
 
-func getHostConfig(service *dockerComposeService) *container.HostConfig {
+func getHostConfig(service *dockerComposeService, appName string) *container.HostConfig {
 	hostConfig := container.HostConfig{
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 			`max-size`: `50m`,
@@ -101,6 +102,17 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 		} else {
 			hostConfig.Resources.Memory = maxMemory
 		}
+	}
+
+	for _, link := range service.Links {
+		linkParts := strings.Split(link, linkSeparator)
+
+		alias := linkParts[0]
+		if len(linkParts) > 1 {
+			alias = linkParts[1]
+		}
+
+		hostConfig.Links = append(hostConfig.Links, getServiceFullName(appName, linkParts[0])+linkSeparator+alias)
 	}
 
 	return &hostConfig
@@ -141,6 +153,10 @@ func renameDeployedContainers(containers *map[string]string) error {
 	return nil
 }
 
+func getServiceFullName(appName string, serviceName string) string {
+	return appName + `_` + serviceName + deploySuffix
+}
+
 func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
 		http.Error(w, `An application name and a compose file are required`, http.StatusBadRequest)
@@ -175,10 +191,10 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 			return
 		}
 
-		serviceFullName := appNameStr + `_` + serviceName + deploySuffix
+		serviceFullName := getServiceFullName(appNameStr, serviceName)
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), config, getHostConfig(&service), &networkConfig, serviceFullName)
+		id, err := docker.ContainerCreate(context.Background(), config, getHostConfig(&service, appNameStr), &networkConfig, serviceFullName)
 		if err != nil {
 			errorHandler(w, err)
 			return
