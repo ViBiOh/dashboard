@@ -34,6 +34,7 @@ type dockerComposeService struct {
 	Command     string
 	Environment map[string]string
 	Labels      map[string]string
+	Links       []string
 	ReadOnly    bool  `yaml:"read_only"`
 	CPUShares   int64 `yaml:"cpu_shares"`
 	MemoryLimit int64 `yaml:"mem_limit"`
