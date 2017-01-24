@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DockerService from '../Service/DockerService';
+import Button from '../Button/Button';
 import style from './Container.css';
 
 export default class ContainerLogs extends Component {
@@ -7,15 +8,12 @@ export default class ContainerLogs extends Component {
     super(props);
 
     this.state = {
+      websocketOpen: false,
       logs: [],
     };
 
     this.appendLogs = this.appendLogs.bind(this);
     this.fetchLogs = this.fetchLogs.bind(this);
-  }
-
-  componentDidMount() {
-    this.fetchLogs();
   }
 
   componentWillUnmount() {
@@ -31,14 +29,26 @@ export default class ContainerLogs extends Component {
   }
 
   fetchLogs() {
+    this.setState({ websocketOpen: true });
     try {
       this.websocket = DockerService.logs(this.props.containerId, this.appendLogs);
     } catch (e) {
-      this.setState({ error: JSON.stringify(e, null, 2) });
+      this.setState({
+        error: JSON.stringify(e, null, 2),
+        websocketOpen: false,
+      });
     }
   }
 
   render() {
+    if (!this.state.websocketOpen) {
+      return (
+        <span className={style.container}>
+          <Button onClick={this.fetchLogs}>Fetch logs...</Button>
+        </span>
+      );
+    }
+
     return (
       <span className={style.container}>
         <h3>Logs</h3>

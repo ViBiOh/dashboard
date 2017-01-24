@@ -2,6 +2,7 @@ package docker
 
 import (
 	"context"
+	"fmt"
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
@@ -24,11 +25,11 @@ func listContainers(loggedUser *user, appName *string) ([]types.Container, error
 
 	if loggedUser != nil && !isAdmin(loggedUser) {
 		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, options.Filters); err != nil {
-			return nil, err
+			return nil, fmt.Errorf(`Error while parsing flag for user: %v`, err)
 		}
 	} else if appName != nil && *appName != `` {
 		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, options.Filters); err != nil {
-			return nil, err
+			return nil, fmt.Errorf(`Error while parsing labels: %v`, err)
 		}
 	}
 
@@ -54,12 +55,12 @@ func restartContainer(containerID string) error {
 func rmContainer(containerID string) error {
 	container, err := inspectContainer(containerID)
 	if err != nil {
-		return err
+		return fmt.Errorf(`Error while inspecting containers: %v`, err)
 	}
 
 	err = docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
 	if err != nil {
-		return err
+		return fmt.Errorf(`Error while removing containers: %v`, err)
 	}
 
 	return rmImages(container.Image)

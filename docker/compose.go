@@ -2,6 +2,7 @@ package docker
 
 import (
 	"context"
+	"fmt"
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -46,7 +47,7 @@ type dockerCompose struct {
 	Services map[string]dockerComposeService
 }
 
-func getConfig(service *dockerComposeService, loggedUser *user, appName string) (*container.Config, error) {
+func getConfig(service *dockerComposeService, loggedUser *user, appName string) *container.Config {
 	environments := make([]string, len(service.Environment))
 	for key, value := range service.Environment {
 		environments = append(environments, key+`=`+value)
@@ -72,7 +73,7 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 		}
 	}
 
-	return &config, nil
+	return &config
 }
 
 func getHostConfig(service *dockerComposeService, appName string) *container.HostConfig {
@@ -126,7 +127,7 @@ func pullImage(image string, loggedUser *user) error {
 	log.Print(loggedUser.username + ` starts pulling for ` + image)
 	pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
 	if err != nil {
-		return err
+		return fmt.Errorf(`Error while pulling image: %v`, err)
 	}
 
 	readBody(pull)
@@ -146,7 +147,7 @@ func cleanContainers(containers *[]types.Container, loggedUser *user) {
 func renameDeployedContainers(containers *map[string]string) error {
 	for id, name := range *containers {
 		if err := docker.ContainerRename(context.Background(), id, strings.TrimSuffix(name, deploySuffix)); err != nil {
-			return err
+			return fmt.Errorf(`Error while renaming container %s: %v`, name, err)
 		}
 	}
 
@@ -165,7 +166,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 
 	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		errorHandler(w, err)
+		errorHandler(w, fmt.Errorf(`Error while unmarshalling compose file: %v`, err))
 		return
 	}
 
@@ -185,18 +186,12 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 			return
 		}
 
-		config, err := getConfig(&service, loggedUser, appNameStr)
-		if err != nil {
-			errorHandler(w, err)
-			return
-		}
-
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), config, getHostConfig(&service, appNameStr), &networkConfig, serviceFullName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service, appNameStr), &networkConfig, serviceFullName)
 		if err != nil {
-			errorHandler(w, err)
+			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
 			return
 		}
 
