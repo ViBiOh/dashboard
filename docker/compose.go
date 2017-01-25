@@ -113,9 +113,9 @@ func getHostConfig(service *dockerComposeService, deployedServices map[string]de
 	for _, link := range service.Links {
 		linkParts := strings.Split(link, linkSeparator)
 
-		id := linkParts[0]
+		target := linkParts[0]
 		if linkedService, ok := deployedServices[linkParts[0]]; ok {
-			id = linkedService.ID
+			target = linkedService.Name
 		}
 
 		alias := linkParts[0]
@@ -123,7 +123,7 @@ func getHostConfig(service *dockerComposeService, deployedServices map[string]de
 			alias = linkParts[1]
 		}
 
-		hostConfig.Links = append(hostConfig.Links, id+linkSeparator+alias)
+		hostConfig.Links = append(hostConfig.Links, target+linkSeparator+alias)
 	}
 
 	return &hostConfig
@@ -209,8 +209,8 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		deployedServices[serviceName] = deployedService{ID: id.ID, Name: serviceFullName}
 	}
 
-	log.Print(`Waiting 10 seconds for containers to start...`)
-	time.Sleep(10 * time.Second)
+	log.Print(`Waiting 5 seconds for containers to start...`)
+	time.Sleep(5 * time.Second)
 
 	cleanContainers(&ownerContainers, loggedUser)
 	if err := renameDeployedContainers(&deployedServices); err != nil {
