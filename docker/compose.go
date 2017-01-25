@@ -107,7 +107,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	return &hostConfig
 }
 
-func getNetworkConfig(service *dockerComposeService, deployedServices *map[string]deployedService) *network.NetworkingConfig {
+func getNetworkConfig(serviceName string, service *dockerComposeService, deployedServices *map[string]deployedService) *network.NetworkingConfig {
 	traefikConfig := network.EndpointSettings{}
 
 	for _, link := range service.Links {
@@ -126,7 +126,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices *map[strin
 		traefikConfig.Links = append(traefikConfig.Links, target+linkSeparator+alias)
 	}
 
-	traefikConfig.Aliases = append(traefikConfig.Aliases, service.Name)
+	traefikConfig.Aliases = append(traefikConfig.Aliases, serviceName)
 
 	return &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
@@ -205,7 +205,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), getNetworkConfig(&service, &deployedServices), serviceFullName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), getNetworkConfig(serviceName, &service, &deployedServices), serviceFullName)
 		if err != nil {
 			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
 			return
