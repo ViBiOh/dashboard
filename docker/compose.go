@@ -20,6 +20,7 @@ const minMemory = 16777216
 const maxMemory = 805306368
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
+const networkMode = `traefik`
 const linkSeparator = `:`
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
@@ -80,6 +81,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 			`max-size`: `50m`,
 		}},
+		NetworkMode:   networkMode,
 		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 		Resources: container.Resources{
 			CPUShares: 128,
@@ -130,7 +132,7 @@ func getNetworkConfig(serviceName string, service *dockerComposeService, deploye
 
 	return &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
-			`traefik`: &traefikConfig,
+			networkMode: &traefikConfig,
 		},
 	}
 }
