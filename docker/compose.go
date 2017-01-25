@@ -16,8 +16,8 @@ import (
 	"time"
 )
 
-const minMemory = 67108864
-const maxMemory = 536870912
+const minMemory = 16777216
+const maxMemory = 805306368
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const linkSeparator = `:`
@@ -103,7 +103,7 @@ func getHostConfig(service *dockerComposeService, deployedServices map[string]de
 	}
 
 	if service.MemoryLimit != 0 {
-		if service.MemoryLimit < maxMemory {
+		if service.MemoryLimit <= maxMemory {
 			hostConfig.Resources.Memory = service.MemoryLimit
 		} else {
 			hostConfig.Resources.Memory = maxMemory
