@@ -114,7 +114,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices *map[strin
 		linkParts := strings.Split(link, linkSeparator)
 
 		target := linkParts[0]
-		if linkedService, ok := deployedServices[linkParts[0]]; ok {
+		if linkedService, ok := &deployedServices[linkParts[0]]; ok {
 			target = linkedService.Name
 		}
 
@@ -126,7 +126,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices *map[strin
 		traefikConfig.Links = append(traefikConfig.Links, target+linkSeparator+alias)
 	}
 
-	return network.NetworkingConfig{
+	return &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
 			`traefik`: &traefikConfig,
 		},
