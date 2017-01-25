@@ -156,7 +156,7 @@ func cleanContainers(containers *[]types.Container, loggedUser *user) {
 
 func renameDeployedContainers(containers *map[string]deployedService) error {
 	for _, service := range *containers {
-		if err := docker.ContainerRename(context.Background(), service.id, strings.TrimSuffix(service.Name, deploySuffix)); err != nil {
+		if err := docker.ContainerRename(context.Background(), service.ID, strings.TrimSuffix(service.Name, deploySuffix)); err != nil {
 			return fmt.Errorf(`Error while renaming container %s: %v`, service.Name, err)
 		}
 	}
