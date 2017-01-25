@@ -146,12 +146,6 @@ func cleanContainers(containers *[]types.Container, loggedUser *user) {
 
 func renameDeployedContainers(containers *map[string]string) error {
 	for id, name := range *containers {
-		if err := stopContainer(id); err != nil {
-			return fmt.Errorf(`Error while stopping for renaming container %s: %v`, name, err)
-		}
-	}
-
-	for id, name := range *containers {
 		if err := docker.ContainerRename(context.Background(), id, strings.TrimSuffix(name, deploySuffix)); err != nil {
 			return fmt.Errorf(`Error while renaming container %s: %v`, name, err)
 		}
@@ -205,8 +199,8 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		deployedServices[id.ID] = serviceFullName
 	}
 
-	log.Print(`Waiting 5 seconds for containers to start...`)
-	time.Sleep(5 * time.Second)
+	log.Print(`Waiting 10 seconds for containers to start...`)
+	time.Sleep(10 * time.Second)
 
 	cleanContainers(&ownerContainers, loggedUser)
 	if err := renameDeployedContainers(&deployedServices); err != nil {
