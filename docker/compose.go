@@ -47,6 +47,11 @@ type dockerCompose struct {
 	Services map[string]dockerComposeService
 }
 
+type deployedService struct {
+	ID   string
+	Name string
+}
+
 func getConfig(service *dockerComposeService, loggedUser *user, appName string) *container.Config {
 	environments := make([]string, len(service.Environment))
 	for key, value := range service.Environment {
@@ -76,7 +81,7 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 	return &config
 }
 
-func getHostConfig(service *dockerComposeService, appName string) *container.HostConfig {
+func getHostConfig(service *dockerComposeService, deployedServices map[string]deployedService) *container.HostConfig {
 	hostConfig := container.HostConfig{
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 			`max-size`: `50m`,
@@ -108,12 +113,17 @@ func getHostConfig(service *dockerComposeService, appName string) *container.Hos
 	for _, link := range service.Links {
 		linkParts := strings.Split(link, linkSeparator)
 
+		id := linkParts[0]
+		if linkedService, ok := deployedServices[linkParts[0]]; ok {
+			id := linkedService.ID
+		}
+
 		alias := linkParts[0]
 		if len(linkParts) > 1 {
 			alias = linkParts[1]
 		}
 
-		hostConfig.Links = append(hostConfig.Links, getServiceFullName(appName, linkParts[0])+linkSeparator+alias)
+		hostConfig.Links = append(hostConfig.Links, id+linkSeparator+alias)
 	}
 
 	return &hostConfig
@@ -144,10 +154,10 @@ func cleanContainers(containers *[]types.Container, loggedUser *user) {
 	}
 }
 
-func renameDeployedContainers(containers *map[string]string) error {
-	for id, name := range *containers {
-		if err := docker.ContainerRename(context.Background(), id, strings.TrimSuffix(name, deploySuffix)); err != nil {
-			return fmt.Errorf(`Error while renaming container %s: %v`, name, err)
+func renameDeployedContainers(containers *map[string]deployedService) error {
+	for _, service := range *containers {
+		if err := docker.ContainerRename(context.Background(), service.id, strings.TrimSuffix(service.Name, deploySuffix)); err != nil {
+			return fmt.Errorf(`Error while renaming container %s: %v`, service.Name, err)
 		}
 	}
 
@@ -179,7 +189,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		return
 	}
 
-	deployedServices := make(map[string]string)
+	deployedServices := make(map[string]deployedService)
 	for serviceName, service := range compose.Services {
 		if err := pullImage(service.Image, loggedUser); err != nil {
 			errorHandler(w, err)
@@ -189,14 +199,14 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service, appNameStr), &networkConfig, serviceFullName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service, deployedServices), &networkConfig, serviceFullName)
 		if err != nil {
 			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
 			return
 		}
 
 		startContainer(id.ID)
-		deployedServices[id.ID] = serviceFullName
+		deployedServices[serviceName] = deployedService{ID: id.ID, Name: serviceFullName}
 	}
 
 	log.Print(`Waiting 10 seconds for containers to start...`)
