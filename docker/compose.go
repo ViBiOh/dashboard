@@ -115,7 +115,7 @@ func getHostConfig(service *dockerComposeService, deployedServices map[string]de
 
 		id := linkParts[0]
 		if linkedService, ok := deployedServices[linkParts[0]]; ok {
-			id := linkedService.ID
+			id = linkedService.ID
 		}
 
 		alias := linkParts[0]
