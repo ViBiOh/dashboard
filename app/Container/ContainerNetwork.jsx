@@ -9,6 +9,19 @@ const ContainerNetwork = ({ container }) => {
     return null;
   }
 
+  const linkContent = [];
+  Object.keys(container.NetworkSettings.Networks)
+    .filter(network => container.NetworkSettings.Networks[network].Links)
+    .forEach(network => container.NetworkSettings.Networks[network].Links.forEach((link) => {
+      const parts = link.split(':');
+
+      linkContent.push(
+        <span key={link} className={style.item}>
+          {parts[0]} | {parts[1]}
+        </span>,
+      );
+    }));
+
   return (
     <span className={style.container}>
       <h3>Network</h3>
@@ -30,6 +43,7 @@ const ContainerNetwork = ({ container }) => {
               </span>
             ))
         }
+        {linkContent}
       </span>
     </span>
   );
