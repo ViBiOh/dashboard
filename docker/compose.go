@@ -76,7 +76,7 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 	return &config
 }
 
-func getHostConfig(service *dockerComposeService) *container.HostConfig {
+func getHostConfig(service *dockerComposeService, deployedServices *map[string]deployedService) *container.HostConfig {
 	hostConfig := container.HostConfig{
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 			`max-size`: `50m`,
@@ -104,6 +104,22 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 		} else {
 			hostConfig.Resources.Memory = maxMemory
 		}
+	}
+
+	for _, link := range service.Links {
+		linkParts := strings.Split(link, linkSeparator)
+
+		target := linkParts[0]
+		if linkedService, ok := (*deployedServices)[target]; ok {
+			target = linkedService.ID
+		}
+
+		alias := linkParts[0]
+		if len(linkParts) > 1 {
+			alias = linkParts[1]
+		}
+
+		hostConfig.Links = append(hostConfig.Links, target+linkSeparator+alias)
 	}
 
 	return &hostConfig
@@ -207,7 +223,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), getNetworkConfig(serviceName, &service, &deployedServices), serviceFullName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service, &deployedServices), getNetworkConfig(serviceName, &service, &deployedServices), serviceFullName)
 		if err != nil {
 			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
 			return
