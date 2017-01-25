@@ -114,7 +114,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices *map[strin
 		linkParts := strings.Split(link, linkSeparator)
 
 		target := linkParts[0]
-		if linkedService, ok := (&deployedServices)[target]; ok {
+		if linkedService, ok := (*deployedServices)[target]; ok {
 			target = linkedService.Name
 		}
 
