@@ -42,10 +42,10 @@ const ContainerNetwork = ({ container }) => {
             ))
         }
       </span>
-      <h3 key="linksHeader">Links</h3>,
+      <h3 key="linksHeader">Links</h3>
       <span key="labels" className={style.labels}>
         {linkContent}
-      </span>,
+      </span>
     </span>
   );
 };
