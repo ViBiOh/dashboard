@@ -22,12 +22,6 @@ const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const linkSeparator = `:`
 
-var networkConfig = network.NetworkingConfig{
-	EndpointsConfig: map[string]*network.EndpointSettings{
-		`traefik`: &network.EndpointSettings{},
-	},
-}
-
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 var commandSplit = regexp.MustCompile(`["']([^"']+)["']|(\S+)`)
 
@@ -81,7 +75,7 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 	return &config
 }
 
-func getHostConfig(service *dockerComposeService, deployedServices map[string]deployedService) *container.HostConfig {
+func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	hostConfig := container.HostConfig{
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 			`max-size`: `50m`,
@@ -110,6 +104,12 @@ func getHostConfig(service *dockerComposeService, deployedServices map[string]de
 		}
 	}
 
+	return &hostConfig
+}
+
+func getNetworkConfig(deployedServices map[string]deployedService) *container.NetworkingConfig {
+	traefikConfig := network.EndpointSettings{}
+
 	for _, link := range service.Links {
 		linkParts := strings.Split(link, linkSeparator)
 
@@ -123,10 +123,14 @@ func getHostConfig(service *dockerComposeService, deployedServices map[string]de
 			alias = linkParts[1]
 		}
 
-		hostConfig.Links = append(hostConfig.Links, target+linkSeparator+alias)
+		traefikConfig.Links = append(traefikConfig.Links, target+linkSeparator+alias)
 	}
 
-	return &hostConfig
+	return network.NetworkingConfig{
+		EndpointsConfig: map[string]*network.EndpointSettings{
+			`traefik`: &traefikConfig,
+		},
+	}
 }
 
 func pullImage(image string, loggedUser *user) error {
@@ -199,7 +203,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service, deployedServices), &networkConfig, serviceFullName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), getNetworkConfig(deployedServices), serviceFullName, deployedServices)
 		if err != nil {
 			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
 			return
