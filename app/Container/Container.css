@@ -50,7 +50,9 @@ $white: #fff;
 .info {
   @include small-padding;
   display: inline-block;
+  white-space: pre-wrap;
   width: 100%;
+  word-break: break-all;
 }
 
 .container {
