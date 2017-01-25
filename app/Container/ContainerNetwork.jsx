@@ -9,22 +9,20 @@ const ContainerNetwork = ({ container }) => {
     return null;
   }
 
-  const linkContent = [];
-  Object.keys(container.NetworkSettings.Networks)
-    .filter(network => container.NetworkSettings.Networks[network].Links)
-    .forEach(network => container.NetworkSettings.Networks[network].Links.forEach((link) => {
-      const parts = link.split(':');
-
-      linkContent.push(
-        <span key={link} className={style.item}>
-          {parts[0]} | {parts[1]}
-        </span>,
-      );
-    }));
+  const linkContent = [].concat(...Object.keys(container.NetworkSettings.Networks)
+    .map(networkName => container.NetworkSettings.Networks[networkName])
+    .filter(network => network.Links)
+    .map(network => network.Links))
+    .map(link => link.split(':'))
+    .map(parts => (
+      <span key={parts[1]} className={style.item}>
+        {parts[0]} | {parts[1]}
+      </span>
+    ));
 
   return (
     <span className={style.container}>
-      <h3>Network</h3>
+      <h3 key="networkHeader">Network</h3>
       <span className={style.labels}>
         {
           container.NetworkSettings.Networks && Object.keys(container.NetworkSettings.Networks)
@@ -43,8 +41,11 @@ const ContainerNetwork = ({ container }) => {
               </span>
             ))
         }
-        {linkContent}
       </span>
+      <h3 key="linksHeader">Links</h3>,
+      <span key="labels" className={style.labels}>
+        {linkContent}
+      </span>,
     </span>
   );
 };
