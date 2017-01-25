@@ -28,6 +28,26 @@ const ContainerInfo = ({ container }) => {
     ];
   }
 
+  let linkContent = null;
+  if (container.HostConfig.Links.length > 0) {
+    linkContent = [
+      <h3 key="linksHeader">Links</h3>,
+      <span key="links" className={style.labels}>
+        {
+          container.HostConfig.Links.map(link => {
+            const parts = link.split(':');
+            
+            return (
+              <span key={parts[0]} className={style.item}>
+                {parts[0]} | {parts[1]}
+              </span>
+            );
+          })
+        }
+      </span>,
+    ];
+  }
+
   return (
     <span className={style.container}>
       <h2>
@@ -83,7 +103,8 @@ const ContainerInfo = ({ container }) => {
           )
         }
       </span>
-      {labelContent}
+      {labelContent}>
+      {linkContent}
     </span>
   );
 };
