@@ -107,7 +107,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	return &hostConfig
 }
 
-func getNetworkConfig(deployedServices map[string]deployedService) *container.NetworkingConfig {
+func getNetworkConfig(service *dockerComposeService, deployedServices *map[string]deployedService) *network.NetworkingConfig {
 	traefikConfig := network.EndpointSettings{}
 
 	for _, link := range service.Links {
@@ -203,7 +203,7 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), getNetworkConfig(deployedServices), serviceFullName, deployedServices)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), getNetworkConfig(&service, &deployedServices), serviceFullName)
 		if err != nil {
 			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
 			return
