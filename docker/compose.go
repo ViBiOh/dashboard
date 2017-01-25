@@ -76,7 +76,7 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 	return &config
 }
 
-func getHostConfig(service *dockerComposeService, deployedServices *map[string]deployedService) *container.HostConfig {
+func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	hostConfig := container.HostConfig{
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 			`max-size`: `50m`,
@@ -106,26 +106,10 @@ func getHostConfig(service *dockerComposeService, deployedServices *map[string]d
 		}
 	}
 
-	for _, link := range service.Links {
-		linkParts := strings.Split(link, linkSeparator)
-
-		target := linkParts[0]
-		if linkedService, ok := (*deployedServices)[target]; ok {
-			target = linkedService.ID
-		}
-
-		alias := linkParts[0]
-		if len(linkParts) > 1 {
-			alias = linkParts[1]
-		}
-
-		hostConfig.Links = append(hostConfig.Links, target+linkSeparator+alias)
-	}
-
 	return &hostConfig
 }
 
-func getNetworkConfig(serviceName string, service *dockerComposeService, deployedServices *map[string]deployedService) *network.NetworkingConfig {
+func getNetworkConfig(appName string, service *dockerComposeService, deployedServices *map[string]deployedService) *network.NetworkingConfig {
 	traefikConfig := network.EndpointSettings{}
 
 	for _, link := range service.Links {
@@ -133,7 +117,7 @@ func getNetworkConfig(serviceName string, service *dockerComposeService, deploye
 
 		target := linkParts[0]
 		if linkedService, ok := (*deployedServices)[target]; ok {
-			target = linkedService.ID
+			target = getServiceFullName(appName, linkedService.Name, false)
 		}
 
 		alias := linkParts[0]
@@ -143,8 +127,6 @@ func getNetworkConfig(serviceName string, service *dockerComposeService, deploye
 
 		traefikConfig.Links = append(traefikConfig.Links, target+linkSeparator+alias)
 	}
-
-	traefikConfig.Aliases = append(traefikConfig.Aliases, serviceName)
 
 	return &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
@@ -188,8 +170,11 @@ func renameDeployedContainers(containers *map[string]deployedService) error {
 	return nil
 }
 
-func getServiceFullName(appName string, serviceName string) string {
-	return appName + `_` + serviceName + deploySuffix
+func getServiceFullName(appName string, serviceName string, deploy bool) string {
+	if deploy {
+		return appName + `_` + serviceName + deploySuffix
+	}
+	return appName + `_` + serviceName
 }
 
 func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, composeFile []byte) {
@@ -220,10 +205,10 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 			return
 		}
 
-		serviceFullName := getServiceFullName(appNameStr, serviceName)
+		serviceFullName := getServiceFullName(appNameStr, serviceName, true)
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service, &deployedServices), getNetworkConfig(serviceName, &service, &deployedServices), serviceFullName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), getNetworkConfig(appNameStr, &service, &deployedServices), serviceFullName)
 		if err != nil {
 			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
 			return
