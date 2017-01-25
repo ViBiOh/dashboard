@@ -109,7 +109,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	return &hostConfig
 }
 
-func getNetworkConfig(appName string, service *dockerComposeService, deployedServices *map[string]deployedService) *network.NetworkingConfig {
+func getNetworkConfig(service *dockerComposeService, deployedServices *map[string]deployedService) *network.NetworkingConfig {
 	traefikConfig := network.EndpointSettings{}
 
 	for _, link := range service.Links {
@@ -117,7 +117,7 @@ func getNetworkConfig(appName string, service *dockerComposeService, deployedSer
 
 		target := linkParts[0]
 		if linkedService, ok := (*deployedServices)[target]; ok {
-			target = getServiceFullName(appName, linkedService.Name, false)
+			target = getFinalName(linkedService.Name)
 		}
 
 		alias := linkParts[0]
@@ -162,7 +162,7 @@ func cleanContainers(containers *[]types.Container, loggedUser *user) {
 
 func renameDeployedContainers(containers *map[string]deployedService) error {
 	for _, service := range *containers {
-		if err := docker.ContainerRename(context.Background(), service.ID, strings.TrimSuffix(service.Name, deploySuffix)); err != nil {
+		if err := docker.ContainerRename(context.Background(), service.ID, getFinalName(service.Name)); err != nil {
 			return fmt.Errorf(`Error while renaming container %s: %v`, service.Name, err)
 		}
 	}
@@ -170,11 +170,12 @@ func renameDeployedContainers(containers *map[string]deployedService) error {
 	return nil
 }
 
-func getServiceFullName(appName string, serviceName string, deploy bool) string {
-	if deploy {
-		return appName + `_` + serviceName + deploySuffix
-	}
-	return appName + `_` + serviceName
+func getServiceFullName(appName string, serviceName string) string {
+	return appName + `_` + serviceName + deploySuffix
+}
+
+func getFinalName(serviceFullName string) string {
+	return strings.TrimSuffix(serviceFullName, deploySuffix)
 }
 
 func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, composeFile []byte) {
@@ -205,10 +206,10 @@ func createAppHandler(w http.ResponseWriter, loggedUser *user, appName []byte, c
 			return
 		}
 
-		serviceFullName := getServiceFullName(appNameStr, serviceName, true)
+		serviceFullName := getServiceFullName(appNameStr, serviceName)
 		log.Print(loggedUser.username + ` starts ` + serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), getNetworkConfig(appNameStr, &service, &deployedServices), serviceFullName)
+		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, loggedUser, appNameStr), getHostConfig(&service), getNetworkConfig(&service, &deployedServices), serviceFullName)
 		if err != nil {
 			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
 			return
