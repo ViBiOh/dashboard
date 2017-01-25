@@ -115,7 +115,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices *map[strin
 
 		target := linkParts[0]
 		if linkedService, ok := (*deployedServices)[target]; ok {
-			target = linkedService.Name
+			target = linkedService.ID
 		}
 
 		alias := linkParts[0]
