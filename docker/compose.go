@@ -24,7 +24,6 @@ const networkMode = `traefik`
 const linkSeparator = `:`
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
-var commandSplit = regexp.MustCompile(`["']([^"']+)["']|(\S+)`)
 
 type dockerComposeService struct {
 	Image       string
@@ -68,9 +67,7 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 
 	if service.Command != `` {
 		config.Cmd = strslice.StrSlice{}
-		for _, args := range commandSplit.FindAllStringSubmatch(service.Command, -1) {
-			config.Cmd = append(config.Cmd, args[1]+args[2])
-		}
+		config.Cmd.UnmarshalJSON([]byte(service.Command))
 	}
 
 	return &config
