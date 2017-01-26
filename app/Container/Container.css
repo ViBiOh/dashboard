@@ -28,6 +28,11 @@ $white: #fff;
   padding: 10px;
 }
 
+@mixin break-word {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
 .flex {
   @include flex-wrap;
   width: 100%;
@@ -49,15 +54,13 @@ $white: #fff;
 
 .info {
   @include small-padding;
+  @include break-word;
   display: inline-block;
-  white-space: pre-wrap;
   width: 100%;
-  word-break: break-all;
 }
 
 .container {
-  display: inline-flex;
-  flex-wrap: wrap;
+  @include flex-wrap;
   width: 100%;
 }
 
@@ -76,12 +79,11 @@ $white: #fff;
 
 .code {
   @include small-padding;
+  @include break-word;
   background: $dark;
   color: $grey;
   font-size: 12px;
-  white-space: pre-wrap;
   width: 100%;
-  word-break: break-all;
 }
 
 .label {
@@ -95,6 +97,5 @@ $white: #fff;
 
 .item {
   @include round-border;
-  white-space: pre-wrap;
-  word-break: break-all;
+  @include break-word;
 }
