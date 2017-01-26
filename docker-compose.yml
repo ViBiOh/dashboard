@@ -29,7 +29,7 @@ services:
     command:
     - -spa
     - -csp
-    - default-src 'self' wss: docker-api.vibioh.fr fonts.gstatic.com
+    - default-src 'self'; font-src: 'self' fonts.gstatic.com; connect-src 'self' wss: docker-api.vibioh.fr
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: docker.vibioh.fr, docker.l3miage.fr'
