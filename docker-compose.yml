@@ -26,7 +26,10 @@ services:
 
   front:
     image: vibioh/docker-front
-    command: -spa -csp "default-src 'self' docker-api.vibioh.fr fonts.gstatic.com"
+    command:
+    - -spa
+    - -csp
+    - default-src 'self' wss: docker-api.vibioh.fr fonts.gstatic.com
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: docker.vibioh.fr, docker.l3miage.fr'
