@@ -7,7 +7,6 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
-	"github.com/docker/docker/api/types/strslice"
 	"gopkg.in/yaml.v2"
 	"log"
 	"net/http"
@@ -27,7 +26,7 @@ var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
 type dockerComposeService struct {
 	Image       string
-	Command     string
+	Command     []string
 	Environment map[string]string
 	Labels      map[string]string
 	Links       []string
@@ -65,9 +64,8 @@ func getConfig(service *dockerComposeService, loggedUser *user, appName string) 
 		Env:    environments,
 	}
 
-	if service.Command != `` {
-		config.Cmd = strslice.StrSlice{}
-		config.Cmd.UnmarshalJSON([]byte(service.Command))
+	if len(service.Command) != 0 {
+		config.Cmd = service.Command
 	}
 
 	return &config
