@@ -1,0 +1,171 @@
+FORMAT: 1A
+HOST: https://docker-api.vibioh.fr/
+
+# Docker Deploy
+
+Docker deploy helps you to manage Docker containers on a host.
+
+## Containers [/containers]
+
+### List All Containers [GET]
+
++ Request
+
+    + Headers
+
+            Authorization: Basic ABC123
+
++ Response 200 (application/json)
+
+            {
+              "results": [
+                {
+                  "Id": "edae77505ea6847232c231ecbf6806050b48863bd941de5d61ecfc9efb47975c",
+                  "Names": [
+                    "/ma"
+                  ],
+                  "Image": "python:2.7-alpine",
+                  "ImageID": "sha256:c80455665c574e845529369fb21d5295711e7c9772e456cd161b64d6b9cfde67",
+                  "Command": "/bin/sh -c 'apk --update add make && pip install virtualenv && make init && make run'",
+                  "Created": 1485469503,
+                  "Ports": [],
+                  "Labels": {
+                    "traefik.frontend.passHostHeader": "true",
+                    "traefik.frontend.rule": "Host:ma.vibioh.fr",
+                    "traefik.port": "8080"
+                  },
+                  "State": "running",
+                  "Status": "Up 15 hours",
+                  "HostConfig": {
+                    "NetworkMode": "traefik"
+                  },
+                  "NetworkSettings": {
+                    "Networks": {
+                      "traefik": {
+                        "IPAMConfig": null,
+                        "Links": null,
+                        "Aliases": null,
+                        "NetworkID": "f7ed6560d960d20067ea58761e9a052ff023bd74ef9db12941081486775da3db",
+                        "EndpointID": "2edcb2e7b6824b43765dd567943e11d78a51268c6b2dfe1ef3c084d51e4c0638",
+                        "Gateway": "172.18.0.1",
+                        "IPAddress": "172.18.0.4",
+                        "IPPrefixLen": 16,
+                        "IPv6Gateway": "",
+                        "GlobalIPv6Address": "",
+                        "GlobalIPv6PrefixLen": 0,
+                        "MacAddress": "02:42:ac:12:00:04"
+                      }
+                    }
+                  },
+                  "Mounts": [
+                    {
+                      "Source": "/home/vibioh/legacy/ma/MA-Frontend-Demo-master",
+                      "Destination": "/usr/src/myapp",
+                      "Mode": "",
+                      "RW": true,
+                      "Propagation": "rprivate"
+                    }
+                  ]
+                },
+                {
+                  "Id": "27125ad8d9a7db36680013bd93b09d4add5e8f83320e6c10db183a7ef9c59a1b",
+                  "Names": [
+                    "/manager_front_97"
+                  ],
+                  "Image": "vibioh/docker-front",
+                  "ImageID": "sha256:56f28e909d399cbf0b95d3270b94762206feebd90f0079a2a1606ff5faec92e0",
+                  "Command": "/server -spa -csp 'default-src 'self'; font-src 'self' fonts.gstatic.com; connect-src 'self' wss: docker-api.vibioh.fr;'",
+                  "Created": 1485466754,
+                  "Ports": [
+                    {
+                      "PrivatePort": 1080,
+                      "Type": "tcp"
+                    }
+                  ],
+                  "Labels": {
+                    "com.docker.compose.config-hash": "907822b25b25059452cf3db7dd4cc077acaa534f2ce9c4cab847575bb3553f84",
+                    "com.docker.compose.container-number": "97",
+                    "com.docker.compose.oneoff": "False",
+                    "com.docker.compose.project": "manager",
+                    "com.docker.compose.service": "front",
+                    "com.docker.compose.version": "1.8.0",
+                    "traefik.frontend.passHostHeader": "true",
+                    "traefik.frontend.rule": "Host: docker.vibioh.fr, docker.l3miage.fr",
+                    "traefik.port": "1080"
+                  },
+                  "State": "running",
+                  "Status": "Up 16 hours",
+                  "HostConfig": {
+                    "NetworkMode": "traefik"
+                  },
+                  "NetworkSettings": {
+                    "Networks": {
+                      "traefik": {
+                        "IPAMConfig": null,
+                        "Links": null,
+                        "Aliases": null,
+                        "NetworkID": "f7ed6560d960d20067ea58761e9a052ff023bd74ef9db12941081486775da3db",
+                        "EndpointID": "f7d8d8a2ee250d9b4a37224aa0f0cbcc500bbc37e2a044f7e827bce33b904e3e",
+                        "Gateway": "172.18.0.1",
+                        "IPAddress": "172.18.0.17",
+                        "IPPrefixLen": 16,
+                        "IPv6Gateway": "",
+                        "GlobalIPv6Address": "",
+                        "GlobalIPv6PrefixLen": 0,
+                        "MacAddress": "02:42:ac:12:00:11"
+                      }
+                    }
+                  },
+                  "Mounts": []
+                }
+              ]
+            }
+
+### Create a new Application [POST /containers/{app_name}]
+
++ Request
+
+    + Headers
+
+            Authorization: Basic ABC123
+    
+    + Body
+
+            version: '2'
+    
+            services:
+              spring:
+                image: vibioh/spring-web-bp
+                labels:
+                  traefik.frontend.passHostHeader: 'true'
+                  traefik.frontend.rule: 'Host: spring.vibioh.fr, spring.l3miage.fr'
+                  traefik.port: '8080'
+                logging:
+                  driver: json-file
+                  options:
+                    max-size: '50m'
+                read_only: true
+                restart: on-failure:5
+                cpu_shares: 128
+                mem_limit: 536870912
+                security_opt:
+                - no-new-privileges
+    
+            networks:
+              default:
+                external:
+                  name: traefik
+
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "results": {
+                    "spring": {
+                        "ID":"3e96bcd68d16ca4abad3c12becfd516405aa7570f6f69549c97f814cb900ef75",
+                        "Name":"spring_spring_deploy"
+                    }
+                }
+            }
