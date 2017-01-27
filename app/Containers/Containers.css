@@ -3,6 +3,7 @@ $grey: #e1e1e8;
 $clear: #f8f8f8;
 $success: #5cb85c;
 $danger: #d9534f;
+$card-border: #ddd;
 
 $card-margin: 2px;
 
@@ -41,7 +42,7 @@ $card-margin: 2px;
   @include small-padding;
   align-items: center;
   background-color: transparent;
-  border: 1px solid #ccc;
+  border: 1px solid $card-border;
   flex: 0 0 calc((100% - (#{$card-margin} * 3) - #{$card-margin}) / 3);
   margin: 0 0 $card-margin $card-margin;
   min-width: 400px;
@@ -49,7 +50,7 @@ $card-margin: 2px;
 }
 
 .card:hover {
-  box-shadow: 0 0 10px 0 rgba(50, 50, 50, .75);
+  box-shadow: 0 0 20px 0 $card-border;
 }
 
 .green {
