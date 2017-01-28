@@ -31,4 +31,5 @@ dist/
 
 # Go binary
 server
+bcrypt_pass
 users

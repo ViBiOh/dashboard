@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"os"
 	"strings"
@@ -18,7 +19,7 @@ var commaByte = []byte(`,`)
 
 type user struct {
 	username string
-	password string
+	password []byte
 	role     string
 }
 
@@ -42,7 +43,7 @@ func readConfiguration(path string) map[string]*user {
 	scanner := bufio.NewScanner(configFile)
 	for scanner.Scan() {
 		parts := bytes.Split(scanner.Bytes(), commaByte)
-		user := user{string(parts[0]), string(parts[1]), string(parts[2])}
+		user := user{string(parts[0]), parts[1], string(parts[2])}
 
 		users[strings.ToLower(user.username)] = &user
 	}
@@ -90,9 +91,12 @@ func isAuthenticated(username string, password string, ok bool) (*user, error) {
 	if ok {
 		user, ok := users[strings.ToLower(username)]
 
-		if ok && user.password == password {
-			return user, nil
+		if ok {
+			if err := bcrypt.CompareHashAndPassword(user.password, []byte(password)); err == nil {
+				return user, nil
+			}
 		}
+
 		return nil, fmt.Errorf(`Invalid credentials for ` + username)
 	}
 
