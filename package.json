@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "copy:html": "cp ./app/index.html ./dist/",
-    "copy:robots": "cp ./web/robots.txt ./dist/",
-    "copy:favicon": "cp ./web/favicon/* ./dist/",
-    "copy:web": "npm run copy:robots && npm run copy:favicon",
+    "copy:web": "cp  -r ./web/* ./dist/",
     "mustache": "./mustache.js -t \"./app/*.html\" -b `git log --pretty=format:'%h' -n 1` -o ./dist/",
     "eslint": "./node_modules/.bin/eslint --ext .js --ext .jsx app/",
     "sassLint": "./node_modules/.bin/sass-lint \"app/**/*.css\" -v -s scss",
