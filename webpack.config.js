@@ -7,32 +7,37 @@ const config = {
   entry: ['./index.jsx', './style.scss'],
 
   resolve: {
-    modulesDirectories: ['node_modules', 'src'],
-    extensions: ['', '.js', '.jsx'],
+    modules: ['node_modules', 'src'],
+    extensions: ['.js', '.jsx'],
   },
 
   module: {
-    preLoaders: [{
+    rules: [{
+      test: /\.jsx?$/,
+      enforce: 'pre',
+      exclude: /node_modules/,
+      loader: 'eslint-loader',
+    }, {
       test: /\.jsx?$/,
       exclude: /node_modules/,
-      loader: 'eslint',
-    }],
-
-    loaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel',
+      use: 'babel-loader',
     }, {
       test: /\.scss$/,
-      loader: process.env.PRODUCTION ? ExtractTextPlugin.extract('style', 'css!sass') : 'style!css!sass',
+      use: ExtractTextPlugin.extract({
+        fallbackLoader: 'style-loader',
+        loader: 'css-loader!sass-loader',
+      }),
     }, {
       test: /\.css$/,
-      loader: ExtractTextPlugin.extract('css?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!sass'),
+      use: ExtractTextPlugin.extract({
+        loader: 'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!sass-loader',
+      }),
     }],
   },
 
   plugins: [
-    new ExtractTextPlugin('app.css', {
+    new ExtractTextPlugin({
+      filename: 'app.css',
       allChunks: true,
     }),
   ],
