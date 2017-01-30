@@ -19,7 +19,7 @@ const ContainerNetwork = ({ container }) => {
         {parts[0]} | {parts[1]}
       </span>
     ));
-  
+
   const portContent = container.NetworkSettings.Ports &&
         Object.keys(container.NetworkSettings.Ports)
           .filter(port => container.NetworkSettings.Ports[port])
