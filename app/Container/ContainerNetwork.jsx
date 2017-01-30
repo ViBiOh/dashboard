@@ -2,23 +2,25 @@ import React from 'react';
 import style from './Container.css';
 
 const ContainerNetwork = ({ container }) => {
-  if ((container.NetworkSettings.Networks &&
-       Object.keys(container.NetworkSettings.Networks).length === 0) &&
-    (container.NetworkSettings.Ports &&
-     Object.keys(container.NetworkSettings.Ports).length === 0)) {
-    return null;
-  }
+  const networkContent = container.NetworkSettings.Networks &&
+        Object.keys(container.NetworkSettings.Networks)
+          .map(network => (
+            <span key={network} className={style.item}>
+              {network} | {container.NetworkSettings.Networks[network].IPAddress}
+            </span>
+          ));
 
-  const linkContent = [].concat(...Object.keys(container.NetworkSettings.Networks)
-    .map(networkName => container.NetworkSettings.Networks[networkName])
-    .filter(network => network.Links)
-    .map(network => network.Links))
-    .map(link => link.split(':'))
-    .map(parts => (
-      <span key={parts[1]} className={style.item}>
-        {parts[0]} | {parts[1]}
-      </span>
-    ));
+  const linkContent = container.NetworkSettings.Network &&
+        [].concat(...Object.keys(container.NetworkSettings.Networks)
+          .map(networkName => container.NetworkSettings.Networks[networkName])
+          .filter(network => network.Links)
+          .map(network => network.Links))
+          .map(link => link.split(':'))
+          .map(parts => (
+            <span key={parts[1]} className={style.item}>
+              {parts[0]} | {parts[1]}
+            </span>
+          ));
 
   const portContent = container.NetworkSettings.Ports &&
         Object.keys(container.NetworkSettings.Ports)
@@ -31,19 +33,16 @@ const ContainerNetwork = ({ container }) => {
 
   return (
     <span className={style.container}>
-      <h3 key="networkHeader">Network</h3>
-      <span className={style.labels}>
-        {
-          container.NetworkSettings.Networks && Object.keys(container.NetworkSettings.Networks)
-            .map(network => (
-              <span key={network} className={style.item}>
-                {network} | {container.NetworkSettings.Networks[network].IPAddress}
-              </span>
-            ))
-        }
-      </span>
       {
-        portContent && [
+        networkContent && networkContent.length > 0 && [
+          <h3 key="networkHeader">Networks</h3>,
+          <span key="networks" className={style.labels}>
+            {networkContent}
+          </span>,
+        ]
+      }
+      {
+        portContent && portContent.length > 0 && [
           <h3 key="portsHeader">Ports</h3>,
           <span key="ports" className={style.labels}>
             {portContent}
@@ -51,7 +50,7 @@ const ContainerNetwork = ({ container }) => {
         ]
       }
       {
-        linkContent.length > 0 && [
+        linkContent && linkContent.length > 0 && [
           <h3 key="linksHeader">Links</h3>,
           <span key="labels" className={style.labels}>
             {linkContent}
