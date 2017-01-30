@@ -19,6 +19,15 @@ const ContainerNetwork = ({ container }) => {
         {parts[0]} | {parts[1]}
       </span>
     ));
+  
+  const portContent = container.NetworkSettings.Ports &&
+        Object.keys(container.NetworkSettings.Ports)
+          .filter(port => container.NetworkSettings.Ports[port])
+          .map(port => (
+            <span key={port} className={style.item}>
+              {port} | {container.NetworkSettings.Ports[port].map(p => p.HostPort).join(', ')}
+            </span>
+          ));
 
   return (
     <span className={style.container}>
@@ -32,16 +41,15 @@ const ContainerNetwork = ({ container }) => {
               </span>
             ))
         }
-        {
-          container.NetworkSettings.Ports && Object.keys(container.NetworkSettings.Ports)
-            .filter(port => container.NetworkSettings.Ports[port])
-            .map(port => (
-              <span key={port} className={style.item}>
-                {port} | {container.NetworkSettings.Ports[port].map(p => p.HostPort).join(', ')}
-              </span>
-            ))
-        }
       </span>
+      {
+        portContent && [
+          <h3 key="portsHeader">Ports</h3>,
+          <span key="ports" className={style.labels}>
+            {portContent}
+          </span>,
+        ]
+      }
       {
         linkContent.length > 0 && [
           <h3 key="linksHeader">Links</h3>,
