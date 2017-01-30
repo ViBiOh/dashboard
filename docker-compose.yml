@@ -29,7 +29,7 @@ services:
     command:
     - -spa
     - -csp
-    - "default-src 'self'; font-src 'self' fonts.gstatic.com; connect-src 'self' wss: docker-api.vibioh.fr;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com fonts.googleapis.com; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; img-src 'self' data:; font-src 'self' 'unsafe-inline' data: fonts.gstatic.com cdnjs.cloudflare.com; connect-src 'self' wss: docker-api.vibioh.fr;"
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: docker.vibioh.fr, docker.l3miage.fr'
