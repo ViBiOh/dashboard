@@ -10,7 +10,7 @@ const ContainerNetwork = ({ container }) => {
             </span>
           ));
 
-  const linkContent = container.NetworkSettings.Network &&
+  const linkContent = container.NetworkSettings.Networks &&
         [].concat(...Object.keys(container.NetworkSettings.Networks)
           .map(networkName => container.NetworkSettings.Networks[networkName])
           .filter(network => network.Links)
