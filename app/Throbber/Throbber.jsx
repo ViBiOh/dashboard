@@ -12,6 +12,8 @@ const Throbber = ({ label, white }) => (
   </div>
 );
 
+Throbber.displayname = 'Throbber';
+
 Throbber.propTypes = {
   label: React.PropTypes.string,
   white: React.PropTypes.bool,
@@ -21,7 +23,5 @@ Throbber.defaultProps = {
   label: '',
   white: false,
 };
-
-Throbber.displayname = 'Throbber';
 
 export default Throbber;
