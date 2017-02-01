@@ -20,6 +20,7 @@ $shadow: rgba(0, 0, 0, .5);
   flex-wrap: nowrap;
   justify-content: center;
   padding: 10px;
+  width: 100%;
 }
 
 .wrapper svg {
@@ -45,6 +46,7 @@ $shadow: rgba(0, 0, 0, .5);
 
 .none {
   color: inherit;
+  text-align: left;
 }
 
 .primary {
