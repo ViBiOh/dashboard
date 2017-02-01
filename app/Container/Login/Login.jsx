@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
-import Toolbar from '../Toolbar/Toolbar';
-import ThrobberButton from '../Throbber/ThrobberButton';
-import DockerService from '../Service/DockerService';
-import onValueChange from '../ChangeHandler/ChangeHandler';
+import Toolbar from '../../Presentational/Toolbar/Toolbar';
+import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
+import DockerService from '../../Service/DockerService';
+import onValueChange from '../../Utils/ChangeHandler/ChangeHandler';
 import style from './Login.css';
 
 export default class Login extends Component {

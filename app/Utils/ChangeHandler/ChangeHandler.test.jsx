@@ -2,7 +2,7 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 import sinon from 'sinon';
-import onValueChange, { cleanDirtyFlags } from '../../app/ChangeHandler/ChangeHandler';
+import onValueChange, { cleanDirtyFlags } from './ChangeHandler';
 
 describe('ChangeHandler', () => {
   describe('onValueChange', () => {

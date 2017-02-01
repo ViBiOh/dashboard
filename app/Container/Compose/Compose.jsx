@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
 import { browserHistory } from 'react-router';
-import DockerService from '../Service/DockerService';
-import Toolbar from '../Toolbar/Toolbar';
-import Button from '../Button/Button';
-import ThrobberButton from '../Throbber/ThrobberButton';
-import onValueChange from '../ChangeHandler/ChangeHandler';
+import DockerService from '../../Service/DockerService';
+import Toolbar from '../../Presentational/Toolbar/Toolbar';
+import Button from '../../Presentational/Button/Button';
+import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
+import onValueChange from '../../Utils/ChangeHandler/ChangeHandler';
 import style from './Compose.css';
 
 export default class ComposeForm extends Component {

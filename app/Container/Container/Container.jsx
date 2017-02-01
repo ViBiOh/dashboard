@@ -6,11 +6,11 @@ import FaTrash from 'react-icons/lib/fa/trash';
 import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaRetweet from 'react-icons/lib/fa/retweet';
 import { browserHistory } from 'react-router';
-import DockerService from '../Service/DockerService';
-import Toolbar from '../Toolbar/Toolbar';
-import Button from '../Button/Button';
-import Throbber from '../Throbber/Throbber';
-import ThrobberButton from '../Throbber/ThrobberButton';
+import DockerService from '../../Service/DockerService';
+import Toolbar from '../../Presentational/Toolbar/Toolbar';
+import Button from '../../Presentational/Button/Button';
+import Throbber from '../../Presentational/Throbber/Throbber';
+import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import ContainerInfo from './ContainerInfo';
 import ContainerNetwork from './ContainerNetwork';
 import ContainerVolumes from './ContainerVolumes';
@@ -75,7 +75,6 @@ export default class Container extends Component {
         <ThrobberButton
           key="stop"
           type="danger"
-          left
           onClick={() => this.action(DockerService.stop(container.Id))}
         >
           <FaStopCircle />
@@ -94,7 +93,6 @@ export default class Container extends Component {
       <ThrobberButton
         key="delete"
         type="danger"
-        left
         onClick={() => this.action(DockerService.delete(container.Id)).then(() =>
           browserHistory.push('/'))}
       >

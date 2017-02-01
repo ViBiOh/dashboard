@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Button from '../Button/Button';
+import Button from '../../Presentational/Button/Button';
 import Throbber from './Throbber';
 
 export default class ThrobberButton extends Component {

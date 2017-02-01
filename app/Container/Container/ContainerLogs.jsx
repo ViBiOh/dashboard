@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import DockerService from '../Service/DockerService';
-import Button from '../Button/Button';
+import DockerService from '../../Service/DockerService';
+import Button from '../../Presentational/Button/Button';
 import style from './Container.css';
 
 export default class ContainerLogs extends Component {

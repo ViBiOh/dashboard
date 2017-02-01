@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { browserHistory } from 'react-router';
-import Button from '../Button/Button';
+import Button from '../../Presentational/Button/Button';
 import style from './Containers.css';
 
 const GREEN_STATUS = /up/i;

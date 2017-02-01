@@ -3,10 +3,10 @@ import { browserHistory } from 'react-router';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
-import DockerService from '../Service/DockerService';
-import Toolbar from '../Toolbar/Toolbar';
-import Button from '../Button/Button';
-import Throbber from '../Throbber/Throbber';
+import DockerService from '../../Service/DockerService';
+import Toolbar from '../../Presentational/Toolbar/Toolbar';
+import Button from '../../Presentational/Button/Button';
+import Throbber from '../../Presentational/Throbber/Throbber';
 import ContainerCard from './ContainerCard';
 import style from './Containers.css';
 
@@ -88,7 +88,6 @@ export default class Containers extends Component {
           <Button
             onClick={() => DockerService.logout().then(this.fetchContainers)}
             type="danger"
-            left
           >
             <FaUserTimes />
             <span>Disconnect</span>

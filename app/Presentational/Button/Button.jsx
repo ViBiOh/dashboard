@@ -5,18 +5,28 @@ const Button = (props) => {
   const { children, type } = props;
 
   const buttonProps = Object.keys(props)
-    .filter(e => e !== 'children' && e !== 'type' && e !== 'active' && e !== 'className')
+    .filter(e => !Button.propTypes[e])
     .reduce((previous, current) => {
       previous[current] = props[current]; // eslint-disable-line no-param-reassign
       return previous;
     }, {});
 
-  // div-wrapper is needed for Firefox compatibility http://stackoverflow.com/a/32119435
-  return (
-    <button type="button" className={`${style.button} ${props.className}`} {...buttonProps}>
-      <div className={`${style.wrapper} ${style[type]} ${props.active ? style.active : ''}`}>
+  let content = children;
+  if (Array.isArray(children)) {
+    content = (
+      <div className={`${style.wrapper}`}>
         {children}
       </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className={`${style.button} ${style[type]} ${props.className} ${props.active ? style.active : ''}`}
+      {...buttonProps}
+    >
+      {content}
     </button>
   );
 };

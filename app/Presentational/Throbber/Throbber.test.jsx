@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
-import Throbber from '../../app/Throbber/Throbber';
+import Throbber from './Throbber';
 
 describe('Throbber', () => {
   it('should render empty', () => {
