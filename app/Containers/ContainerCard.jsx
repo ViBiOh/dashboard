@@ -9,7 +9,7 @@ const GREEN_STATUS = /up/i;
 const ContainerCard = ({ container }) => (
   <Button
     type="none"
-    parentClassName={style.card}
+    className={style.card}
     onClick={() => browserHistory.push(`/containers/${container.Id}`)}
   >
     <div
