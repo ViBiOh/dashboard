@@ -5,7 +5,7 @@ const Button = (props) => {
   const { children, type } = props;
 
   const buttonProps = Object.keys(props)
-    .filter(e => e !== 'children' && e !== 'type' && e !== 'left')
+    .filter(e => e !== 'children' && e !== 'type' && e !== 'left' && e !== 'active')
     .reduce((previous, current) => {
       previous[current] = props[current]; // eslint-disable-line no-param-reassign
       return previous;
@@ -13,10 +13,12 @@ const Button = (props) => {
 
   // div-wrapper is needed for Firefox compatibility http://stackoverflow.com/a/32119435
   return (
-    <button className={`${style.button} ${props.left ? style.left : ''}`} {...buttonProps}>
-      <div
-        className={`${style.wrapper} ${style[type]}`}
-      >
+    <button
+      type="button"
+      className={`${style.button} ${props.left ? style.left : ''}`}
+      {...buttonProps}
+    >
+      <div className={`${style.wrapper} ${style[type]} ${props.active ? style.active : ''}`}>
         {children}
       </div>
     </button>
@@ -33,18 +35,21 @@ Button.propTypes = {
     'info',
     'warning',
     'danger',
+    'none',
   ]).isRequired,
   children: React.PropTypes.oneOfType([
     React.PropTypes.arrayOf(React.PropTypes.node),
     React.PropTypes.node,
   ]),
   left: React.PropTypes.bool,
+  active: React.PropTypes.bool,
 };
 
 Button.defaultProps = {
   type: 'primary',
   children: '',
   left: false,
+  active: false,
 };
 
 export default Button;
