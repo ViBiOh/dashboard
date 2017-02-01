@@ -13,7 +13,7 @@ const Button = (props) => {
 
   // div-wrapper is needed for Firefox compatibility http://stackoverflow.com/a/32119435
   return (
-    <button type="button" className={style.button} {...buttonProps}>
+    <button type="button" className={`${style.button} ${props.parentClassName}`} {...buttonProps}>
       <div className={`${style.wrapper} ${style[type]} ${props.active ? style.active : ''}`}>
         {children}
       </div>
@@ -38,9 +38,11 @@ Button.propTypes = {
     React.PropTypes.node,
   ]),
   active: React.PropTypes.bool,
+  parentClassName: React:PropTypes.string,
 };
 
 Button.defaultProps = {
+  parentClassName: '',
   type: 'primary',
   children: '',
   active: false,
