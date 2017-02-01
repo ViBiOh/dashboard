@@ -23,10 +23,6 @@ $white: #fff;
   padding: 10px;
 }
 
-.left {
-  margin-right: 2px;
-}
-
 .wrapper svg {
   color: $white;
 }
@@ -39,7 +35,12 @@ $white: #fff;
   margin-left: 0;
 }
 
-.transparent {
+.active {
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.transparent,
+.none {
   background-color: transparent;
 }
 
