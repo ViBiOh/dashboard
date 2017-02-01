@@ -7,7 +7,7 @@ import DockerService from '../../Service/DockerService';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import Button from '../../Presentational/Button/Button';
 import Throbber from '../../Presentational/Throbber/Throbber';
-import ContainerCard from './ContainerCard';
+import ContainerCard from '../../Presentational/ContainerCard/ContainerCard';
 import style from './Containers.css';
 
 export default class Containers extends Component {

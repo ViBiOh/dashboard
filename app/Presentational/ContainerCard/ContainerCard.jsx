@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { browserHistory } from 'react-router';
 import Button from '../../Presentational/Button/Button';
-import style from './Containers.css';
+import style from './ContainerCard.css';
 
 const GREEN_STATUS = /up/i;
 

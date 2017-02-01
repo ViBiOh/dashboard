@@ -1,80 +1,20 @@
 $dark: #3a3a3a;
 $grey: #e1e1e8;
-$success: #5cb85c;
-$danger: #d9534f;
-$white: #fff;
-
-@mixin small-padding {
-  padding: 5px;
-}
-
-@mixin flex-wrap {
-  display: inline-flex;
-  flex-wrap: wrap;
-}
-
-@mixin round-border {
-  @include small-padding;
-  border: 1px solid;
-  border-radius: 2px;
-  margin: 2px;
-  width: auto;
-}
-
-@mixin pastille {
-  border-radius: 2px;
-  color: $white;
-  display: inline-block;
-  padding: 10px;
-}
-
-@mixin break-word {
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-
-.flex {
-  @include flex-wrap;
-  width: 100%;
-}
 
 .fill {
   flex: 1 1 auto;
 }
 
-.green {
-  @include pastille;
-  background-color: $success;
-}
-
-.red {
-  @include pastille;
-  background-color: $danger;
-}
-
-.info {
-  @include small-padding;
-  @include break-word;
-  display: inline-block;
-  width: 100%;
-}
-
 .container {
-  @include flex-wrap;
+  display: inline-flex;
+  flex-wrap: wrap;
   width: 100%;
 }
 
-.container h2,
 .container h3 {
   margin-bottom: 0;
   padding-left: 5px;
   width: 100%;
-}
-
-.container h2 {
-  border: 0;
-  margin: 0;
-  padding: 0 0 0 2px;
 }
 
 .button {
@@ -82,24 +22,11 @@ $white: #fff;
 }
 
 .code {
-  @include small-padding;
-  @include break-word;
   background: $dark;
   color: $grey;
   font-size: 12px;
+  padding: 5px;
+  white-space: pre-wrap;
   width: 100%;
-}
-
-.label {
-  display: inline-block;
-  width: 200px;
-}
-
-.labels {
-  @include flex-wrap;
-}
-
-.item {
-  @include round-border;
-  @include break-word;
+  word-break: break-all;
 }

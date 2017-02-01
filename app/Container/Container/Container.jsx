@@ -11,9 +11,9 @@ import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import Button from '../../Presentational/Button/Button';
 import Throbber from '../../Presentational/Throbber/Throbber';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
-import ContainerInfo from './ContainerInfo';
-import ContainerNetwork from './ContainerNetwork';
-import ContainerVolumes from './ContainerVolumes';
+import ContainerInfo from '../../Presentational/Container/ContainerInfo';
+import ContainerNetwork from '../../Presentational/Container/ContainerNetwork';
+import ContainerVolumes from '../../Presentational/Container/ContainerVolumes';
 import ContainerLogs from './ContainerLogs';
 import style from './Container.css';
 
