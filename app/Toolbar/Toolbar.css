@@ -8,6 +8,14 @@ $white: #fff;
   width: 100%;
 }
 
+.flex > * {
+  margin: 2px 0 2px 2px;
+}
+
+.flex > *:last-child {
+  margin: 2px;
+}
+
 .center {
   justify-content: center;
 }
