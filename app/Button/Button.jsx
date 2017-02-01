@@ -38,7 +38,7 @@ Button.propTypes = {
     React.PropTypes.node,
   ]),
   active: React.PropTypes.bool,
-  parentClassName: React:PropTypes.string,
+  parentClassName: React.PropTypes.string,
 };
 
 Button.defaultProps = {
