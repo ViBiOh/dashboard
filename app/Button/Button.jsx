@@ -13,11 +13,7 @@ const Button = (props) => {
 
   // div-wrapper is needed for Firefox compatibility http://stackoverflow.com/a/32119435
   return (
-    <button
-      type="button"
-      className={`${style.button} ${props.left ? style.left : ''}`}
-      {...buttonProps}
-    >
+    <button type="button" className={style.button} {...buttonProps}>
       <div className={`${style.wrapper} ${style[type]} ${props.active ? style.active : ''}`}>
         {children}
       </div>
