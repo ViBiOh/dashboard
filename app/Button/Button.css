@@ -43,6 +43,10 @@ $shadow: rgba(0, 0, 0, .5);
   background-color: transparent;
 }
 
+.none {
+  color: inherit;
+}
+
 .primary {
   background-color: $primary;
 }
