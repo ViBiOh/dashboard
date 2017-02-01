@@ -4,6 +4,7 @@ $info: #5bc0de;
 $warning: #f0ad4e;
 $danger: #d9534f;
 $white: #fff;
+$shadow: rgba(0, 0, 0, .5);
 
 .button {
   background-color: transparent;
@@ -35,7 +36,7 @@ $white: #fff;
 }
 
 .active {
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 10px $shadow;
 }
 
 .transparent,
