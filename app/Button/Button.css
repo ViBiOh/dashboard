@@ -19,7 +19,6 @@ $white: #fff;
   display: inline-flex;
   flex-wrap: nowrap;
   justify-content: center;
-  margin: 2px 0 2px 2px;
   padding: 10px;
 }
 
