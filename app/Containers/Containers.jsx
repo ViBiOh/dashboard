@@ -75,7 +75,7 @@ export default class Containers extends Component {
 
     return (
       <span>
-        <Toolbar error={this.state.error} wrapperClassName={style.toolbar}>
+        <Toolbar error={this.state.error}>
           <Button onClick={this.fetchContainers}>
             <FaRefresh />
             <span>Refresh</span>
