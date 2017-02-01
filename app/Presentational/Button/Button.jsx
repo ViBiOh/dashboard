@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import style from './Button.css';
 
 const Button = (props) => {
@@ -20,12 +21,15 @@ const Button = (props) => {
     );
   }
 
+  const btnClassNames = classnames({
+    [style.button]: true,
+    [style[type]]: true,
+    [props.className]: true,
+    [style.active]: props.active,
+  });
+
   return (
-    <button
-      type="button"
-      className={`${style.button} ${style[type]} ${props.className} ${props.active ? style.active : ''}`}
-      {...buttonProps}
-    >
+    <button type="button" className={btnClassNames} {...buttonProps}>
       {content}
     </button>
   );

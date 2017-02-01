@@ -5,13 +5,7 @@
   width: 100%;
 }
 
-article {
-  flex: 1;
+.article {
+  flex: 1 1 auto;
   text-align: left;
-}
-
-@media screen and (max-width: 669px) {
-  article {
-    flex-basis: auto;
-  }
 }

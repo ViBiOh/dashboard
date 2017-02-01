@@ -16,10 +16,6 @@ $white: #fff;
   margin: 2px;
 }
 
-.center {
-  justify-content: center;
-}
-
 .error {
   background-color: $danger;
   color: $white;

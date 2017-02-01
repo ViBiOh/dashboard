@@ -44,7 +44,7 @@ export default class ContainerLogs extends Component {
     if (!this.state.websocketOpen) {
       return (
         <span className={style.container}>
-          <Button onClick={this.fetchLogs}>Fetch logs...</Button>
+          <Button className={style.button} onClick={this.fetchLogs}>Fetch logs...</Button>
         </span>
       );
     }

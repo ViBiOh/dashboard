@@ -63,6 +63,7 @@
     "yargs": "latest"
   },
   "dependencies": {
+    "classnames": "^2.2.5",
     "js-fetch": "git+https://github.com/ViBiOh/js-fetch.git",
     "moment": "latest",
     "react": "latest",

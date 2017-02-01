@@ -3,7 +3,7 @@ import style from './Main.css';
 
 const Main = ({ children }) => (
   <span className={style.layout}>
-    <article>{children}</article>
+    <article className={style.article}>{children}</article>
   </span>
 );
 

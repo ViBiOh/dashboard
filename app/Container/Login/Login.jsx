@@ -58,7 +58,7 @@ export default class Login extends Component {
             onChange={e => onValueChange(this, 'password')(e.target.value)}
           />
         </span>
-        <Toolbar center error={this.state.error}>
+        <Toolbar className={style.center} error={this.state.error}>
           <ThrobberButton onClick={this.login}>
             Login
           </ThrobberButton>

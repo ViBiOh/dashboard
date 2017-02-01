@@ -24,8 +24,7 @@ export default class ThrobberButton extends Component {
     this.setState({ loading: true });
 
     if (this.props.onClick) {
-      this.props.onClick(args)
-        .then(this.hideThrobber, this.hideThrobber);
+      this.props.onClick(args).then(this.hideThrobber, this.hideThrobber);
     }
   }
 
@@ -36,12 +35,9 @@ export default class ThrobberButton extends Component {
   }
 
   render() {
-    let content;
-
+    let content = this.props.children;
     if (this.state.loading) {
       content = <Throbber white />;
-    } else {
-      content = this.props.children;
     }
 
     return (

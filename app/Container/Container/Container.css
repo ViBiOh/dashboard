@@ -77,6 +77,10 @@ $white: #fff;
   padding: 0 0 0 2px;
 }
 
+.button {
+  margin-left: 2px;
+}
+
 .code {
   @include small-padding;
   @include break-word;

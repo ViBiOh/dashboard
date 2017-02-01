@@ -49,10 +49,6 @@ $card-margin: 2px;
   width: 200px;
 }
 
-.card:hover {
-  box-shadow: 0 0 20px 0 $card-border;
-}
-
 .green {
   @include pastille;
   background-color: $success;
