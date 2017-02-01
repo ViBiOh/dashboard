@@ -79,14 +79,6 @@ $card-margin: 2px;
   @include small-padding;
 }
 
-.toolbar > * {
-  margin: 2px 0 2px 2px;
-}
-
-.toolbar > *:last-child {
-  margin: 2px;
-}
-
 @media screen and (min-width: 800px) and (max-width: 1199px) {
   .card {
     flex: 0 0 calc((100% - (#{$card-margin} * 2) - #{$card-margin}) / 2);
