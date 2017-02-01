@@ -5,7 +5,7 @@ const Button = (props) => {
   const { children, type } = props;
 
   const buttonProps = Object.keys(props)
-    .filter(e => e !== 'children' && e !== 'type' && e !== 'left' && e !== 'active')
+    .filter(e => e !== 'children' && e !== 'type' && e !== 'active')
     .reduce((previous, current) => {
       previous[current] = props[current]; // eslint-disable-line no-param-reassign
       return previous;
@@ -41,14 +41,12 @@ Button.propTypes = {
     React.PropTypes.arrayOf(React.PropTypes.node),
     React.PropTypes.node,
   ]),
-  left: React.PropTypes.bool,
   active: React.PropTypes.bool,
 };
 
 Button.defaultProps = {
   type: 'primary',
   children: '',
-  left: false,
   active: false,
 };
 
