@@ -5,7 +5,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import Main from './Presentational/Main/Main';
 import LoginContainer from './Container/LoginContainer';
 import ContainersListContainer from './Container/ContainersListContainer';
-import Container from './Container/Container/Container';
+import ContainerContainer from './Container/ContainerContainer';
 import ComposeContainer from './Container/ComposeContainer';
 
 ReactDOM.render(
@@ -14,7 +14,7 @@ ReactDOM.render(
       <IndexRoute component={ContainersListContainer} />
       <Route path="/login" component={LoginContainer} />
       <Route path="/containers/New" component={ComposeContainer} />
-      <Route path="/containers/:containerId" component={Container} />
+      <Route path="/containers/:containerId" component={ContainerContainer} />
     </Route>
   </Router>,
   document.getElementById('root'),

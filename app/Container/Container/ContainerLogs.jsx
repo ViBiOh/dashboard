@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DockerService from '../../Service/DockerService';
 import Button from '../../Presentational/Button/Button';
-import style from './Container.css';
+import style from './ContainerLogs.css';
 
 export default class ContainerLogs extends Component {
   constructor(props) {

@@ -1,10 +1,6 @@
 $dark: #3a3a3a;
 $grey: #e1e1e8;
 
-.fill {
-  flex: 1 1 auto;
-}
-
 .container {
   display: inline-flex;
   flex-wrap: wrap;

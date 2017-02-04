@@ -30,10 +30,7 @@ export default class ContainersListContainer extends Component {
     return DockerService.containers()
       .then((containers) => {
         if (this.mounted) {
-          this.setState({
-            loaded: true,
-            containers,
-          });
+          this.setState({ containers });
         }
 
         return containers;

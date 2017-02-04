@@ -33,6 +33,10 @@ $white: #fff;
   word-break: break-all;
 }
 
+.fill {
+  flex: 1 1 auto;
+}
+
 .container {
   @include flex-wrap;
   width: 100%;
