@@ -39,7 +39,7 @@
     "eslint-config-airbnb": "latest",
     "eslint-loader": "latest",
     "eslint-plugin-import": "latest",
-    "eslint-plugin-jsx-a11y": "latest",
+    "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "latest",
     "extract-text-webpack-plugin": "^2.0.0-rc.2",
     "glob": "latest",
@@ -63,7 +63,7 @@
     "yargs": "latest"
   },
   "dependencies": {
-    "classnames": "^2.2.5",
+    "classnames": "latest",
     "js-fetch": "git+https://github.com/ViBiOh/js-fetch.git",
     "moment": "latest",
     "react": "latest",
