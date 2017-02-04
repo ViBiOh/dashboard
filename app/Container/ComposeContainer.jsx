@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import DockerService from '../Service/DockerService';
-import onValueChange from '../Utils/ChangeHandler/ChangeHandler';
 import Compose from '../Presentational/Compose/Compose';
 
 export default class ComposeContainer extends Component {
@@ -16,7 +15,7 @@ export default class ComposeContainer extends Component {
   create() {
     this.setState({ error: undefined });
 
-    return DockerService.create(this.state.name, this.state.compose)
+    return DockerService.create(this.state.form.name, this.state.form.compose)
       .then((data) => {
         browserHistory.push('/');
         return data;
@@ -30,11 +29,9 @@ export default class ComposeContainer extends Component {
   render() {
     return (
       <Compose
-        name={this.state.name}
-        onNameChange={onValueChange(this, 'name')}
-        compose={this.state.compose}
-        onComposeChange={onValueChange(this, 'compose')}
-        onLogin={this.create}
+        form={this.state.form}
+        onChange={form => this.setState({ form })}
+        onCompose={this.create}
         error={this.state.error}
       />
     );

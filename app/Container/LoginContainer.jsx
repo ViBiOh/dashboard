@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 import DockerService from '../Service/DockerService';
-import onValueChange from '../Utils/ChangeHandler/ChangeHandler';
 import Login from '../Presentational/Login/Login';
 
 export default class LoginContainer extends Component {
@@ -16,7 +15,7 @@ export default class LoginContainer extends Component {
   login() {
     this.setState({ error: undefined });
 
-    return DockerService.login(this.state.login, this.state.password)
+    return DockerService.login(this.state.form.login, this.state.form.password)
       .then((data) => {
         browserHistory.push(this.props.redirect || '/');
         return data;
@@ -30,10 +29,8 @@ export default class LoginContainer extends Component {
   render() {
     return (
       <Login
-        login={this.state.login}
-        onLoginChange={onValueChange(this, 'login')}
-        password={this.state.password}
-        onPasswordChange={onValueChange(this, 'password')}
+        form={this.state.form}
+        onChange={form => this.setState({ form })}
         onLogin={this.login}
         error={this.state.error}
       />

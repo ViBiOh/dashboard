@@ -3,7 +3,7 @@ import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Login.css';
 
-const Login = ({ login, onLoginChange, password, onPasswordChange, error, onLogin }) => {
+const Login = ({ form, onChange, onLogin, error }) => {
   function onKeyDown(event) {
     if (event.keyCode === 13) {
       return onLogin();
@@ -18,9 +18,9 @@ const Login = ({ login, onLoginChange, password, onPasswordChange, error, onLogi
           name="login"
           type="text"
           placeholder="login"
-          value={login}
+          value={form.login}
           onKeyDown={onKeyDown}
-          onChange={e => onLoginChange(e.target.value)}
+          onChange={e => onChange(Object.assign({}, form, { login: e.target.value }))}
         />
       </span>
       <span>
@@ -28,9 +28,9 @@ const Login = ({ login, onLoginChange, password, onPasswordChange, error, onLogi
           name="password"
           type="password"
           placeholder="password"
-          value={password}
+          value={form.password}
           onKeyDown={onKeyDown}
-          onChange={e => onPasswordChange(e.target.value)}
+          onChange={e => onChange(Object.assign({}, form, { password: e.target.value }))}
         />
       </span>
       <Toolbar className={style.center} error={error}>
@@ -43,17 +43,17 @@ const Login = ({ login, onLoginChange, password, onPasswordChange, error, onLogi
 Login.displayName = 'Login';
 
 Login.propTypes = {
-  login: React.PropTypes.string,
-  onLoginChange: React.PropTypes.func.isRequired,
-  password: React.PropTypes.string,
-  onPasswordChange: React.PropTypes.func.isRequired,
+  form: React.PropTypes.shape({
+    login: React.PropTypes.string,
+    password: React.PropTypes.string,
+  }),
+  onChange: React.PropTypes.func.isRequired,
   onLogin: React.PropTypes.func.isRequired,
   error: React.PropTypes.string,
 };
 
 Login.defaultProps = {
-  login: '',
-  password: '',
+  form: {},
   error: '',
 };
 

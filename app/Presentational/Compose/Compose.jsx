@@ -6,7 +6,7 @@ import Button from '../../Presentational/Button/Button';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Compose.css';
 
-const Compose = ({ name, onNameChange, compose, onComposeChange, onCompose, error }) => {
+const Compose = ({ form, onChange, onCompose, error }) => {
   function onKeyDown(event) {
     if (event.keyCode === 13) {
       return onCompose();
@@ -27,19 +27,19 @@ const Compose = ({ name, onNameChange, compose, onComposeChange, onCompose, erro
           name="name"
           type="text"
           placeholder="name"
-          value={name}
+          value={form.name}
           onKeyDown={onKeyDown}
-          onChange={e => onNameChange(e.target.value)}
+          onChange={e => onChange(Object.assign({}, form, { name: e.target.value }))}
         />
       </span>
       <span>
         <textarea
           className={style.code}
           placeholder="compose file yaml v2"
-          value={compose}
+          value={form.compose}
           rows={20}
           onKeyDown={onKeyDown}
-          onChange={e => onComposeChange(e.target.value)}
+          onChange={e => onChange(Object.assign({}, form, { compose: e.target.value }))}
         />
       </span>
       <span>
@@ -52,17 +52,17 @@ const Compose = ({ name, onNameChange, compose, onComposeChange, onCompose, erro
 Compose.displayName = 'Compose';
 
 Compose.propTypes = {
-  name: React.PropTypes.string,
-  onNameChange: React.PropTypes.func.isRequired,
-  compose: React.PropTypes.string,
-  onComposeChange: React.PropTypes.func.isRequired,
+  form: React.PropTypes.shape({
+    name: React.PropTypes.string,
+    compose: React.PropTypes.string,
+  }),
+  onChange: React.PropTypes.func.isRequired,
   onCompose: React.PropTypes.func.isRequired,
   error: React.PropTypes.string,
 };
 
 Compose.defaultProps = {
-  name: '',
-  compose: '',
+  form: {},
   error: '',
 };
 
