@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import style from './Container.css';
+import style from './ContainerInfo.css';
 
 const BYTES_SIZE = 1024;
 const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];

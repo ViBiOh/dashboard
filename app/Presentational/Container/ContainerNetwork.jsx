@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './Container.css';
+import style from './ContainerNetwork.css';
 
 const ContainerNetwork = ({ container }) => {
   const networkContent = container.NetworkSettings.Networks &&
