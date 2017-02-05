@@ -12,11 +12,22 @@ import ThrobberButton from '../Throbber/ThrobberButton';
 import ContainerInfo from './ContainerInfo';
 import ContainerNetwork from './ContainerNetwork';
 import ContainerVolumes from './ContainerVolumes';
-import ContainerLogs from '../../Container/Container/ContainerLogs';
+import ContainerLogs from './ContainerLogs';
 import style from './Container.css';
 
 const Container = (props) => {
-  const { container, onBack, onRefresh, onRestart, onStop, onStart, onDelete, error } = props;
+  const {
+    container,
+    logs,
+    fetchLogs,
+    onBack,
+    onRefresh,
+    onRestart,
+    onStop,
+    onStart,
+    onDelete,
+    error,
+  } = props;
   const loaded = typeof container !== 'undefined';
 
   let content;
@@ -25,7 +36,7 @@ const Container = (props) => {
       <ContainerInfo key="info" container={container} />,
       <ContainerNetwork key="network" container={container} />,
       <ContainerVolumes key="volumes" container={container} />,
-      <ContainerLogs key="logs "containerId={container.Id} />,
+      <ContainerLogs key="logs "logs={logs} fetchLogs={fetchLogs} />,
     ];
   } else {
     content = <Throbber label="Loading informations" />;
@@ -85,6 +96,8 @@ Container.displayName = 'Container';
 
 Container.propTypes = {
   container: React.PropTypes.shape({}),
+  logs: React.PropTypes.arrayOf(React.PropTypes.string),
+  fetchLogs: React.PropTypes.func.isRequired,
   onBack: React.PropTypes.func.isRequired,
   onRefresh: React.PropTypes.func.isRequired,
   onStart: React.PropTypes.func.isRequired,
@@ -96,6 +109,7 @@ Container.propTypes = {
 
 Container.defaultProps = {
   container: undefined,
+  logs: undefined,
   error: '',
 };
 

@@ -12,10 +12,10 @@ export default class LoginContainer extends Component {
     this.login = this.login.bind(this);
   }
 
-  login() {
+  login(login, password) {
     this.setState({ error: undefined });
 
-    return DockerService.login(this.state.form.login, this.state.form.password)
+    return DockerService.login(login, password)
       .then((data) => {
         browserHistory.push(this.props.redirect || '/');
         return data;
@@ -28,12 +28,7 @@ export default class LoginContainer extends Component {
 
   render() {
     return (
-      <Login
-        form={this.state.form}
-        onChange={form => this.setState({ form })}
-        onLogin={this.login}
-        error={this.state.error}
-      />
+      <Login onLogin={this.login} error={this.state.error} />
     );
   }
 }

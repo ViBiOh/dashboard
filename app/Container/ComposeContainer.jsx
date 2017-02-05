@@ -12,10 +12,10 @@ export default class ComposeContainer extends Component {
     this.create = this.create.bind(this);
   }
 
-  create() {
+  create(name, compose) {
     this.setState({ error: undefined });
 
-    return DockerService.create(this.state.form.name, this.state.form.compose)
+    return DockerService.create(name, compose)
       .then((data) => {
         browserHistory.push('/');
         return data;
@@ -28,12 +28,7 @@ export default class ComposeContainer extends Component {
 
   render() {
     return (
-      <Compose
-        form={this.state.form}
-        onChange={form => this.setState({ form })}
-        onCompose={this.create}
-        error={this.state.error}
-      />
+      <Compose onCompose={this.create} error={this.state.error} />
     );
   }
 }

@@ -10,11 +10,19 @@ export default class ContainerContainer extends Component {
     this.state = {};
 
     this.fetchInfos = this.fetchInfos.bind(this);
+    this.appendLogs = this.appendLogs.bind(this);
+    this.fetchLogs = this.fetchLogs.bind(this);
     this.action = this.action.bind(this);
   }
 
   componentDidMount() {
     this.fetchInfos();
+  }
+
+  componentWillUnmount() {
+    if (this.websocket) {
+      this.websocket.close();
+    }
   }
 
   fetchInfos() {
@@ -32,6 +40,23 @@ export default class ContainerContainer extends Component {
       });
   }
 
+  appendLogs(log) {
+    this.setState({
+      logs: [...this.state.logs, log],
+    });
+  }
+
+  fetchLogs() {
+    try {
+      this.setState({ logs: [] });
+      this.websocket = DockerService.logs(this.props.params.containerId, this.appendLogs);
+    } catch (e) {
+      this.setState({
+        error: JSON.stringify(e, null, 2),
+      });
+    }
+  }
+
   action(promise) {
     this.setState({ error: undefined });
 
@@ -47,6 +72,8 @@ export default class ContainerContainer extends Component {
     return (
       <Container
         container={this.state.container}
+        logs={this.state.logs}
+        fetchLogs={this.fetchLogs}
         onBack={() => browserHistory.push('/')}
         onRefresh={this.fetchInfos}
         onStart={containerId => this.action(DockerService.start(containerId))}

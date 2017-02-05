@@ -1,10 +1,14 @@
-$grey: #e1e1e8;
+  $grey: #e1e1e8;
 
 .flex {
   align-items: center;
   display: inline-flex;
   flex-wrap: wrap;
   text-align: center;
+  width: 100%;
+}
+
+.flex > * {
   width: 100%;
 }
 
@@ -15,10 +19,6 @@ $grey: #e1e1e8;
   margin-bottom: 5px;
   padding: 20px;
   width: 50%;
-}
-
-.flex > * {
-  width: 100%;
 }
 
 .code {

@@ -4,11 +4,8 @@ $grey: #e1e1e8;
   align-items: center;
   display: inline-flex;
   flex-wrap: wrap;
+  justify-content: center;
   text-align: center;
-  width: 100%;
-}
-
-.flex > * {
   width: 100%;
 }
 
