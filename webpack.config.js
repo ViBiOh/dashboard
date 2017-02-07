@@ -40,6 +40,8 @@ const config = {
       filename: 'app.css',
       allChunks: true,
     }),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
   ],
 
   output: {
