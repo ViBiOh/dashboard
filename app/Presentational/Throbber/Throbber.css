@@ -1,5 +1,4 @@
 $dark: #3a3a3a;
-$white: #fff;
 
 .container {
   margin: auto;
@@ -19,10 +18,6 @@ $white: #fff;
   display: inline-block;
   height: 14px;
   width: 14px;
-}
-
-.white > div {
-  background-color: $white;
 }
 
 .throbber .bounce1 {

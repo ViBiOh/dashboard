@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from '../../Presentational/Button/Button';
 import Throbber from './Throbber';
+import style from './ThrobberButton.css';
 
 export default class ThrobberButton extends Component {
   constructor(props) {
@@ -37,7 +38,7 @@ export default class ThrobberButton extends Component {
   render() {
     let content = this.props.children;
     if (this.state.loading) {
-      content = <Throbber white />;
+      content = <Throbber className={style.white} />;
     }
 
     return (

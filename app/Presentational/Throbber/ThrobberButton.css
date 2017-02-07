@@ -1,0 +1,5 @@
+$white: #fff;
+
+.white > div {
+  background-color: $white;
+}

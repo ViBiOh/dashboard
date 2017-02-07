@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies,react/no-find-dom-node */
 /* eslint-env mocha */
 import { expect } from 'chai';
 import ReactDOM from 'react-dom';
@@ -9,14 +9,14 @@ describe('Throbber', () => {
   it('should render empty', () => {
     const component = TestUtils.renderIntoDocument(new Throbber({}));
 
-    expect(!!component).to.be.true;
+    expect(!!component).to.equal(true);
   });
 
   it('should have no label by default', () => {
     const component = TestUtils.renderIntoDocument(new Throbber({}));
-    const result = ReactDOM.findDOMNode(component).getElementsByTagName('span').length === 0;
+    const result = ReactDOM.findDOMNode(component).getElementsByTagName('span').length;
 
-    expect(result).to.be.true;
+    expect(result).to.equal(0);
   });
 
   it('should have a label when given', () => {
