@@ -69,6 +69,8 @@
     "react": "latest",
     "react-dom": "latest",
     "react-icons": "latest",
-    "react-router": "latest"
+    "react-redux": "latest",
+    "react-router": "latest",
+    "redux": "latest"
   }
 }
