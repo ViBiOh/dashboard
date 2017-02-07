@@ -1,58 +1,48 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+import { fetchContainers } from './actions';
 import DockerService from '../Service/DockerService';
 import ContainersList from '../Presentational/ContainersList/ContainersList';
 
-export default class ContainersListContainer extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-
-    this.fetchContainers = this.fetchContainers.bind(this);
-  }
-
-  componentWillMount() {
-    this.mounted = true;
-  }
-
+class Container extends Component {
   componentDidMount() {
-    this.fetchContainers();
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  fetchContainers() {
-    this.setState({ error: undefined });
-
-    return DockerService.containers()
-      .then((containers) => {
-        if (this.mounted) {
-          this.setState({ containers });
-        }
-
-        return containers;
-      })
-      .catch((error) => {
-        if (this.mounted) {
-          this.setState({ error: error.content });
-        }
-
-        return error;
-      });
+    this.props.fetchContainers();
   }
 
   render() {
     return (
       <ContainersList
-        containers={this.state.containers}
-        error={this.state.error}
-        onRefresh={this.fetchContainers}
+        throbber={this.props.throbber}
+        containers={this.props.containers}
+        error={this.props.error}
+        onRefresh={this.props.fetchContainers}
         onAdd={() => browserHistory.push('/containers/New')}
         onLogout={() => DockerService.logout().then(browserHistory.push('/login'))}
       />
     );
   }
 }
+
+Container.propTypes = {
+  throbber: React.PropTypes.bool.isRequired,
+  containers: React.PropTypes.arrayOf(React.PropTypes.shape({})).isRequired,
+  error: React.PropTypes.string.isRequired,
+  fetchContainers: React.PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  throbber: state.throbber,
+  containers: state.containers,
+  error: state.error,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchContainers: containers => dispatch(fetchContainers(containers)),
+});
+
+const ContainersListContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Container);
+export default ContainersListContainer;

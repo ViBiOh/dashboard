@@ -63,6 +63,7 @@
     "yargs": "latest"
   },
   "dependencies": {
+    "babel-polyfill": "latest",
     "classnames": "latest",
     "js-fetch": "git+https://github.com/ViBiOh/js-fetch.git",
     "moment": "latest",
@@ -71,6 +72,7 @@
     "react-icons": "latest",
     "react-redux": "latest",
     "react-router": "latest",
-    "redux": "latest"
+    "redux": "latest",
+    "redux-saga": "latest"
   }
 }

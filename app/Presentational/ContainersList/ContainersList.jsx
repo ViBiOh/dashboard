@@ -8,10 +8,12 @@ import Throbber from '../../Presentational/Throbber/Throbber';
 import ContainerCard from '../../Presentational/ContainerCard/ContainerCard';
 import style from './ContainersList.css';
 
-const ContainersList = ({ containers, error, onRefresh, onAdd, onLogout }) => {
+const ContainersList = ({ throbber, containers, error, onRefresh, onAdd, onLogout }) => {
   let content;
 
-  if (typeof containers !== 'undefined') {
+  if (throbber) {
+    content = <Throbber label="Loading containers" error={error} />;
+  } else {
     content = (
       <div key="list" className={style.flex}>
         {
@@ -21,8 +23,6 @@ const ContainersList = ({ containers, error, onRefresh, onAdd, onLogout }) => {
         }
       </div>
     );
-  } else {
-    content = <Throbber label="Loading containers" error={error} />;
   }
 
   return (
@@ -50,6 +50,7 @@ const ContainersList = ({ containers, error, onRefresh, onAdd, onLogout }) => {
 ContainersList.displayName = 'ContainersList';
 
 ContainersList.propTypes = {
+  throbber: React.PropTypes.bool.isRequired,
   containers: React.PropTypes.arrayOf(React.PropTypes.shape({})),
   error: React.PropTypes.string,
   onRefresh: React.PropTypes.func.isRequired,
@@ -58,7 +59,7 @@ ContainersList.propTypes = {
 };
 
 ContainersList.defaultProps = {
-  containers: undefined,
+  containers: [],
   error: '',
 };
 

@@ -55,9 +55,6 @@ if (process.env.PRODUCTION) {
       warnings: false,
     },
   }));
-} else {
-  config.plugins.push(new webpack.HotModuleReplacementPlugin());
-  config.plugins.push(new webpack.NamedModulesPlugin());
 }
 
 module.exports = config;
