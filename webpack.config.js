@@ -16,7 +16,7 @@ const config = {
       test: /\.jsx?$/,
       enforce: 'pre',
       exclude: /node_modules/,
-      loader: 'eslint-loader',
+      use: 'eslint-loader',
     }, {
       test: /\.jsx?$/,
       exclude: /node_modules/,
@@ -24,13 +24,13 @@ const config = {
     }, {
       test: /\.scss$/,
       use: ExtractTextPlugin.extract({
-        fallbackLoader: 'style-loader',
-        loader: 'css-loader!sass-loader',
+        fallback: 'style-loader',
+        use: 'css-loader!sass-loader',
       }),
     }, {
       test: /\.css$/,
       use: ExtractTextPlugin.extract({
-        loader: 'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!sass-loader',
+        use: 'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!sass-loader',
       }),
     }],
   },
