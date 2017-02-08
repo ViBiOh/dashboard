@@ -21,6 +21,12 @@ export const fetchContainerSucceed = container => ({
   container,
 });
 
+export const ACTION_CONTAINER_SUCCEED = 'ACTION_CONTAINER_SUCCEED';
+export const actionContainerSucceed = id => ({
+  type: ACTION_CONTAINER_SUCCEED,
+  id,
+});
+
 export const SET_ERROR = 'SET_ERROR';
 export const setError = error => ({
   type: SET_ERROR,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import { fetchContainer } from './actions';
+import { fetchContainer, actionContainerSucceed } from './actions';
 import DockerService from '../Service/DockerService';
 import Container from '../Presentational/Container/Container';
 
@@ -11,9 +11,9 @@ class ContainerComponent extends Component {
 
     this.state = {};
 
+    this.onAction = this.onAction.bind(this);
     this.appendLogs = this.appendLogs.bind(this);
     this.fetchLogs = this.fetchLogs.bind(this);
-    this.action = this.action.bind(this);
   }
 
   componentDidMount() {
@@ -24,6 +24,10 @@ class ContainerComponent extends Component {
     if (this.websocket) {
       this.websocket.close();
     }
+  }
+
+  onAction(promise) {
+    return promise.then(() => this.props.action(this.props.params.containerId));
   }
 
   appendLogs(log) {
@@ -43,10 +47,6 @@ class ContainerComponent extends Component {
     }
   }
 
-  action(promise) {
-    return promise.then(this.props.fetchContainer);
-  }
-
   render() {
     return (
       <Container
@@ -55,11 +55,10 @@ class ContainerComponent extends Component {
         fetchLogs={this.fetchLogs}
         onBack={() => browserHistory.push('/')}
         onRefresh={() => this.props.fetchContainer(this.props.params.containerId)}
-        onStart={containerId => this.action(DockerService.start(containerId))}
-        onRestart={containerId => this.action(DockerService.restart(containerId))}
-        onStop={containerId => this.action(DockerService.stop(containerId))}
-        onDelete={containerId => this.action(DockerService.delete(containerId)).then(() =>
-            browserHistory.push('/'))}
+        onStart={id => this.onAction(DockerService.start(id))}
+        onRestart={id => this.onAction(DockerService.restart(id))}
+        onStop={id => this.onAction(DockerService.stop(id))}
+        onDelete={id => DockerService.delete(id).then(() => browserHistory.push('/'))}
         error={this.props.error}
       />
     );
@@ -72,6 +71,7 @@ ContainerComponent.propTypes = {
   }).isRequired,
   container: React.PropTypes.shape({}),
   fetchContainer: React.PropTypes.func.isRequired,
+  action: React.PropTypes.func.isRequired,
   error: React.PropTypes.string.isRequired,
 };
 
@@ -86,6 +86,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchContainer: id => dispatch(fetchContainer(id)),
+  action: id => dispatch(actionContainerSucceed(id)),
 });
 
 const ContainerContainer = connect(

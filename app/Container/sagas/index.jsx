@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { FETCH_CONTAINERS, fetchContainersSucceed, FETCH_CONTAINER, fetchContainerSucceed,
-  setError } from '../actions';
+  ACTION_CONTAINER_SUCCEED, setError } from '../actions';
 import DockerService from '../../Service/DockerService';
 
 function* fetchContainers() {
@@ -25,6 +25,7 @@ function* fetchContainer(action) {
 function* appSaga() {
   yield takeLatest(FETCH_CONTAINERS, fetchContainers);
   yield takeLatest(FETCH_CONTAINER, fetchContainer);
+  yield takeLatest(ACTION_CONTAINER_SUCCEED, fetchContainer);
 }
 
 export default appSaga;
