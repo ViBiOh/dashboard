@@ -27,8 +27,8 @@ class Container extends Component {
 Container.propTypes = {
   throbber: React.PropTypes.bool.isRequired,
   containers: React.PropTypes.arrayOf(React.PropTypes.shape({})).isRequired,
-  error: React.PropTypes.string.isRequired,
   fetchContainers: React.PropTypes.func.isRequired,
+  error: React.PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
