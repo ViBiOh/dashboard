@@ -1,43 +1,29 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+import { fetchContainer } from './actions';
 import DockerService from '../Service/DockerService';
 import Container from '../Presentational/Container/Container';
 
-export default class ContainerContainer extends Component {
+class ContainerComponent extends Component {
   constructor(props) {
     super(props);
 
     this.state = {};
 
-    this.fetchInfos = this.fetchInfos.bind(this);
     this.appendLogs = this.appendLogs.bind(this);
     this.fetchLogs = this.fetchLogs.bind(this);
     this.action = this.action.bind(this);
   }
 
   componentDidMount() {
-    this.fetchInfos();
+    this.props.fetchContainer(this.props.params.containerId);
   }
 
   componentWillUnmount() {
     if (this.websocket) {
       this.websocket.close();
     }
-  }
-
-  fetchInfos() {
-    this.setState({ error: undefined });
-
-    return DockerService.infos(this.props.params.containerId)
-      .then((container) => {
-        this.setState({ container });
-
-        return container;
-      })
-      .catch((error) => {
-        this.setState({ error: error.content });
-        return error;
-      });
   }
 
   appendLogs(log) {
@@ -58,37 +44,52 @@ export default class ContainerContainer extends Component {
   }
 
   action(promise) {
-    this.setState({ error: undefined });
-
-    return promise
-      .then(this.fetchInfos)
-      .catch((error) => {
-        this.setState({ error: error.content });
-        return error;
-      });
+    return promise.then(this.props.fetchContainer);
   }
 
   render() {
     return (
       <Container
-        container={this.state.container}
+        container={this.props.container}
         logs={this.state.logs}
         fetchLogs={this.fetchLogs}
         onBack={() => browserHistory.push('/')}
-        onRefresh={this.fetchInfos}
+        onRefresh={() => this.props.fetchContainer(this.props.params.containerId)}
         onStart={containerId => this.action(DockerService.start(containerId))}
         onRestart={containerId => this.action(DockerService.restart(containerId))}
         onStop={containerId => this.action(DockerService.stop(containerId))}
         onDelete={containerId => this.action(DockerService.delete(containerId)).then(() =>
             browserHistory.push('/'))}
-        error={this.state.error}
+        error={this.props.error}
       />
     );
   }
 }
 
-ContainerContainer.propTypes = {
+ContainerComponent.propTypes = {
   params: React.PropTypes.shape({
     containerId: React.PropTypes.string.isRequired,
   }).isRequired,
+  container: React.PropTypes.shape({}),
+  fetchContainer: React.PropTypes.func.isRequired,
+  error: React.PropTypes.string.isRequired,
 };
+
+ContainerComponent.defaultProps = {
+  container: null,
+};
+
+const mapStateToProps = state => ({
+  container: state.container,
+  error: state.error,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchContainer: id => dispatch(fetchContainer(id)),
+});
+
+const ContainerContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ContainerComponent);
+export default ContainerContainer;

@@ -28,22 +28,18 @@ const Container = (props) => {
     onDelete,
     error,
   } = props;
-  const loaded = typeof container !== 'undefined';
 
   let content;
-  if (loaded) {
+  const buttons = [];
+
+  if (container) {
     content = [
       <ContainerInfo key="info" container={container} />,
       <ContainerNetwork key="network" container={container} />,
       <ContainerVolumes key="volumes" container={container} />,
       <ContainerLogs key="logs "logs={logs} fetchLogs={fetchLogs} />,
     ];
-  } else {
-    content = <Throbber label="Loading informations" />;
-  }
 
-  const buttons = [];
-  if (loaded) {
     if (container.State.Running) {
       buttons.push(
         <ThrobberButton key="restart" onClick={() => onRestart(container.Id)}>
@@ -71,6 +67,8 @@ const Container = (props) => {
         </ThrobberButton>,
       );
     }
+  } else {
+    content = <Throbber label="Loading informations" />;
   }
 
   return (
@@ -85,7 +83,7 @@ const Container = (props) => {
           <span>Refresh</span>
         </Button>
         <span className={style.fill} />
-        {loaded && buttons}
+        {buttons}
       </Toolbar>
       {content}
     </span>
@@ -108,7 +106,7 @@ Container.propTypes = {
 };
 
 Container.defaultProps = {
-  container: undefined,
+  container: null,
   logs: undefined,
   error: '',
 };

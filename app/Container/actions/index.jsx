@@ -16,13 +16,13 @@ export const fetchContainer = id => ({
 });
 
 export const FETCH_CONTAINER_SUCCEED = 'FETCH_CONTAINER_SUCCEED';
-export const fetchContainerSucceed = containers => ({
+export const fetchContainerSucceed = container => ({
   type: FETCH_CONTAINER_SUCCEED,
-  containers,
+  container,
 });
 
 export const SET_ERROR = 'SET_ERROR';
-export const setError = err => ({
+export const setError = error => ({
   type: SET_ERROR,
-  error: err,
+  error,
 });

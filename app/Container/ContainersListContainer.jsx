@@ -5,7 +5,7 @@ import { fetchContainers } from './actions';
 import DockerService from '../Service/DockerService';
 import ContainersList from '../Presentational/ContainersList/ContainersList';
 
-class Container extends Component {
+class ContainersListComponent extends Component {
   componentDidMount() {
     this.props.fetchContainers();
   }
@@ -13,7 +13,6 @@ class Container extends Component {
   render() {
     return (
       <ContainersList
-        throbber={this.props.throbber}
         containers={this.props.containers}
         error={this.props.error}
         onRefresh={this.props.fetchContainers}
@@ -24,15 +23,17 @@ class Container extends Component {
   }
 }
 
-Container.propTypes = {
-  throbber: React.PropTypes.bool.isRequired,
-  containers: React.PropTypes.arrayOf(React.PropTypes.shape({})).isRequired,
+ContainersListComponent.propTypes = {
+  containers: React.PropTypes.arrayOf(React.PropTypes.shape({})),
   fetchContainers: React.PropTypes.func.isRequired,
   error: React.PropTypes.string.isRequired,
 };
 
+ContainersListComponent.defaultProps = {
+  containers: null,
+};
+
 const mapStateToProps = state => ({
-  throbber: state.throbber,
   containers: state.containers,
   error: state.error,
 });
@@ -44,5 +45,5 @@ const mapDispatchToProps = dispatch => ({
 const ContainersListContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Container);
+)(ContainersListComponent);
 export default ContainersListContainer;
