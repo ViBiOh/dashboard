@@ -25,7 +25,10 @@ export default class ThrobberButton extends Component {
     this.setState({ loading: true });
 
     if (this.props.onClick) {
-      this.props.onClick(args).then(this.hideThrobber, this.hideThrobber);
+      const result = this.props.onClick(args);
+      if (result instanceof Promise) {
+        result.then(this.hideThrobber, this.hideThrobber);
+      }
     }
   }
 

@@ -4,6 +4,7 @@ import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { routerMiddleware } from 'react-router-redux';
 
 import appReducers from './Container/reducers';
 import appSaga from './Container/sagas';
@@ -17,8 +18,10 @@ import Main from './Presentational/Main/Main';
 const sagaMiddleware = createSagaMiddleware();
 const appStore = createStore(
   appReducers,
+  applyMiddleware(routerMiddleware(browserHistory)),
   applyMiddleware(sagaMiddleware),
 );
+
 sagaMiddleware.run(appSaga);
 
 ReactDOM.render(

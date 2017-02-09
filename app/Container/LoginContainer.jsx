@@ -1,42 +1,18 @@
-import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
-import DockerService from '../Service/DockerService';
+import { connect } from 'react-redux';
+import { login } from './actions';
 import Login from '../Presentational/Login/Login';
 
-export default class LoginContainer extends Component {
-  constructor(props) {
-    super(props);
+const mapStateToProps = state => ({
+  error: state.error,
+});
 
-    this.state = {};
+const mapDispatchToProps = dispatch => ({
+  onLogin: (username, password) => dispatch(login(username, password)),
+});
 
-    this.login = this.login.bind(this);
-  }
+const LoginContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Login);
 
-  login(login, password) {
-    this.setState({ error: undefined });
-
-    return DockerService.login(login, password)
-      .then((data) => {
-        browserHistory.push(this.props.redirect || '/');
-        return data;
-      })
-      .catch((error) => {
-        this.setState({ error: error.content });
-        return error;
-      });
-  }
-
-  render() {
-    return (
-      <Login onLogin={this.login} error={this.state.error} />
-    );
-  }
-}
-
-LoginContainer.propTypes = {
-  redirect: React.PropTypes.string,
-};
-
-LoginContainer.defaultProps = {
-  redirect: '',
-};
+export default LoginContainer;

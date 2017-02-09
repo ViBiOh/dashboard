@@ -1,6 +1,6 @@
 import React from 'react';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
-import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
+import Button from '../../Presentational/Button/Button';
 import style from './Login.css';
 
 const Login = ({ onLogin, error }) => {
@@ -35,7 +35,7 @@ const Login = ({ onLogin, error }) => {
         onKeyDown={onKeyDown}
       />
       <Toolbar className={style.center} error={error}>
-        <ThrobberButton onClick={submit}>Login</ThrobberButton>
+        <Button onClick={submit}>Login</Button>
       </Toolbar>
     </span>
   );
