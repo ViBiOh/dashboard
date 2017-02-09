@@ -20,6 +20,9 @@
   },
   "keywords": [
     "react",
+    "react-router",
+    "redux",
+    "redux-saga",
     "docker"
   ],
   "author": "Vincent Boutour",
@@ -31,6 +34,7 @@
   "devDependencies": {
     "babel-core": "latest",
     "babel-loader": "latest",
+    "babel-plugin-transform-object-rest-spread": "latest",
     "babel-preset-es2015": "latest",
     "babel-preset-react": "latest",
     "chai": "latest",
@@ -72,7 +76,7 @@
     "react-icons": "latest",
     "react-redux": "latest",
     "react-router": "latest",
-    "react-router-redux": "^4.0.7",
+    "react-router-redux": "latest",
     "redux": "latest",
     "redux-saga": "latest"
   }

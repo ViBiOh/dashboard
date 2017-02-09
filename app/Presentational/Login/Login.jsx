@@ -1,9 +1,9 @@
 import React from 'react';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
-import Button from '../../Presentational/Button/Button';
+import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Login.css';
 
-const Login = ({ onLogin, error }) => {
+const Login = ({ loginPending, onLogin, error }) => {
   let loginInput;
   let passwordInput;
 
@@ -35,7 +35,7 @@ const Login = ({ onLogin, error }) => {
         onKeyDown={onKeyDown}
       />
       <Toolbar className={style.center} error={error}>
-        <Button onClick={submit}>Login</Button>
+        <ThrobberButton onClick={submit} pending={loginPending}>Login</ThrobberButton>
       </Toolbar>
     </span>
   );
@@ -44,6 +44,7 @@ const Login = ({ onLogin, error }) => {
 Login.displayName = 'Login';
 
 Login.propTypes = {
+  loginPending: React.PropTypes.bool.isRequired,
   onLogin: React.PropTypes.func.isRequired,
   error: React.PropTypes.string,
 };

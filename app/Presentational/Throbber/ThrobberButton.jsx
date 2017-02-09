@@ -1,58 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Button from '../../Presentational/Button/Button';
 import Throbber from './Throbber';
 import style from './ThrobberButton.css';
 
-export default class ThrobberButton extends Component {
-  constructor(props) {
-    super(props);
+const ThrobberButton = ({ pending, onClick, children, ...buttonProps }) => (
+  <Button {...buttonProps} onClick={onClick}>
+    {pending ? <Throbber className={style.white} /> : children}
+  </Button>
+);
 
-    this.state = {};
-
-    this.onClick = this.onClick.bind(this);
-    this.hideThrobber = this.hideThrobber.bind(this);
-  }
-
-  componentWillMount() {
-    this.mounted = true;
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  onClick(...args) {
-    this.setState({ loading: true });
-
-    if (this.props.onClick) {
-      const result = this.props.onClick(args);
-      if (result instanceof Promise) {
-        result.then(this.hideThrobber, this.hideThrobber);
-      }
-    }
-  }
-
-  hideThrobber() {
-    if (this.mounted) {
-      this.setState({ loading: false });
-    }
-  }
-
-  render() {
-    let content = this.props.children;
-    if (this.state.loading) {
-      content = <Throbber className={style.white} />;
-    }
-
-    return (
-      <Button {...this.props} onClick={this.onClick}>
-        {content}
-      </Button>
-    );
-  }
-}
+ThrobberButton.displayName = 'ThrobberButton';
 
 ThrobberButton.propTypes = {
+  pending: React.PropTypes.bool,
   onClick: React.PropTypes.func,
   children: React.PropTypes.oneOfType([
     React.PropTypes.arrayOf(React.PropTypes.node),
@@ -61,6 +21,9 @@ ThrobberButton.propTypes = {
 };
 
 ThrobberButton.defaultProps = {
+  pending: false,
   onClick: () => null,
   children: '',
 };
+
+export default ThrobberButton;

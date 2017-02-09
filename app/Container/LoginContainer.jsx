@@ -3,6 +3,7 @@ import { login } from './actions';
 import Login from '../Presentational/Login/Login';
 
 const mapStateToProps = state => ({
+  loginPending: state.loginPending,
   error: state.error,
 });
 

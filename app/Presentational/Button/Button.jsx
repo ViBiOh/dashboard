@@ -2,16 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import style from './Button.css';
 
-const Button = (props) => {
-  const { children, type } = props;
-
-  const buttonProps = Object.keys(props)
-    .filter(e => !Button.propTypes[e])
-    .reduce((previous, current) => {
-      previous[current] = props[current]; // eslint-disable-line no-param-reassign
-      return previous;
-    }, {});
-
+const Button = ({ children, type, active, className, ...buttonProps }) => {
   let content = children;
   if (Array.isArray(children)) {
     content = (
@@ -24,8 +15,8 @@ const Button = (props) => {
   const btnClassNames = classnames({
     [style.button]: true,
     [style[type]]: true,
-    [props.className]: true,
-    [style.active]: props.active,
+    [className]: true,
+    [style.active]: active,
   });
 
   return (
@@ -56,10 +47,10 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
-  className: '',
+  children: null,
   type: 'primary',
-  children: '',
   active: false,
+  className: '',
 };
 
 export default Button;
