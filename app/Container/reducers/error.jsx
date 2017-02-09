@@ -4,7 +4,7 @@ const error = (state = '', action) => {
   if (action.type === SET_ERROR || /FAILED/.test(action.type)) {
     return action.error;
   }
-  if (/SUCCEED/.test(action.type)) {
+  if (/SUCCEEDED/.test(action.type)) {
     return '';
   }
   return state;

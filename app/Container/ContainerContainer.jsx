@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import { fetchContainer, actionContainerSucceed } from './actions';
+import { fetchContainer, actionContainerSucceeded } from './actions';
 import DockerService from '../Service/DockerService';
 import Container from '../Presentational/Container/Container';
 
@@ -86,7 +86,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchContainer: id => dispatch(fetchContainer(id)),
-  action: id => dispatch(actionContainerSucceed(id)),
+  action: id => dispatch(actionContainerSucceeded(id)),
 });
 
 const ContainerContainer = connect(

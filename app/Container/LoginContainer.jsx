@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
-import { login } from './actions';
+import { login, LOGIN } from './actions';
 import Login from '../Presentational/Login/Login';
 
 const mapStateToProps = state => ({
-  loginPending: state.loginPending,
+  loginPending: !!state.pending[LOGIN],
   error: state.error,
 });
 

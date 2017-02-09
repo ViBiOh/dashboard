@@ -1,15 +1,15 @@
 import 'babel-polyfill';
 import { call, fork, put, take, takeLatest, cancel } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
-import { FETCH_CONTAINERS, fetchContainersSucceed, FETCH_CONTAINER, fetchContainerSucceed,
-  ACTION_CONTAINER_SUCCEED, LOGIN, LOGOUT, LOGIN_FAILED, loginSucceed, loginFailed,
+import { FETCH_CONTAINERS, fetchContainersSucceeded, FETCH_CONTAINER, fetchContainerSucceeded,
+  ACTION_CONTAINER_SUCCEEDED, LOGIN, LOGOUT, LOGIN_FAILED, loginSucceeded, loginFailed,
   setError } from '../actions';
 import DockerService from '../../Service/DockerService';
 
 function* fetchContainers() {
   try {
     const containers = yield call(DockerService.containers);
-    yield put(fetchContainersSucceed(containers));
+    yield put(fetchContainersSucceeded(containers));
   } catch (e) {
     yield put(setError(e.message));
   }
@@ -18,7 +18,7 @@ function* fetchContainers() {
 function* fetchContainer(action) {
   try {
     const container = yield call(DockerService.infos, action.id);
-    yield put(fetchContainerSucceed(container));
+    yield put(fetchContainerSucceeded(container));
   } catch (e) {
     yield put(setError(e.message));
   }
@@ -27,7 +27,7 @@ function* fetchContainer(action) {
 function* login(username, password) {
   try {
     yield call(DockerService.login, username, password);
-    yield put(loginSucceed());
+    yield put(loginSucceeded());
     yield put(push('/'));
   } catch (e) {
     yield put(loginFailed(e.content));
@@ -51,7 +51,7 @@ function* loginFlow() {
 function* appSaga() {
   yield takeLatest(FETCH_CONTAINERS, fetchContainers);
   yield takeLatest(FETCH_CONTAINER, fetchContainer);
-  yield takeLatest(ACTION_CONTAINER_SUCCEED, fetchContainer);
+  yield takeLatest(ACTION_CONTAINER_SUCCEEDED, fetchContainer);
   yield loginFlow();
 }
 

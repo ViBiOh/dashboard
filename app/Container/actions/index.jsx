@@ -3,9 +3,9 @@ export const fetchContainers = () => ({
   type: FETCH_CONTAINERS,
 });
 
-export const FETCH_CONTAINERS_SUCCEED = 'FETCH_CONTAINERS_SUCCEED';
-export const fetchContainersSucceed = containers => ({
-  type: FETCH_CONTAINERS_SUCCEED,
+export const FETCH_CONTAINERS_SUCCEEDED = 'FETCH_CONTAINERS_SUCCEEDED';
+export const fetchContainersSucceeded = containers => ({
+  type: FETCH_CONTAINERS_SUCCEEDED,
   containers,
 });
 
@@ -15,15 +15,15 @@ export const fetchContainer = id => ({
   id,
 });
 
-export const FETCH_CONTAINER_SUCCEED = 'FETCH_CONTAINER_SUCCEED';
-export const fetchContainerSucceed = container => ({
-  type: FETCH_CONTAINER_SUCCEED,
+export const FETCH_CONTAINER_SUCCEEDED = 'FETCH_CONTAINER_SUCCEEDED';
+export const fetchContainerSucceeded = container => ({
+  type: FETCH_CONTAINER_SUCCEEDED,
   container,
 });
 
-export const ACTION_CONTAINER_SUCCEED = 'ACTION_CONTAINER_SUCCEED';
-export const actionContainerSucceed = id => ({
-  type: ACTION_CONTAINER_SUCCEED,
+export const ACTION_CONTAINER_SUCCEEDED = 'ACTION_CONTAINER_SUCCEEDED';
+export const actionContainerSucceeded = id => ({
+  type: ACTION_CONTAINER_SUCCEEDED,
   id,
 });
 
@@ -40,9 +40,9 @@ export const login = (username, password) => ({
   password,
 });
 
-export const LOGIN_SUCCEED = 'LOGIN_SUCCEED';
-export const loginSucceed = () => ({
-  type: LOGIN_SUCCEED,
+export const LOGIN_SUCCEEDED = 'LOGIN_SUCCEEDED';
+export const loginSucceeded = () => ({
+  type: LOGIN_SUCCEEDED,
 });
 
 export const LOGIN_FAILED = 'LOGIN_FAILED';
