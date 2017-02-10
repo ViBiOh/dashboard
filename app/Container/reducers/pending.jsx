@@ -1,9 +1,10 @@
 import { LOGIN, FETCH_CONTAINERS, FETCH_CONTAINER } from '../actions';
 
+const pendingActions = [LOGIN, FETCH_CONTAINERS, FETCH_CONTAINER];
 const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
 
 const pending = (state = {}, action) => {
-  if (action.type === LOGIN || action.type === FETCH_CONTAINERS || action.type === FETCH_CONTAINER) {
+  if (pendingActions.includes(action.type)) {
     return { ...state, [action.type]: true };
   }
 
