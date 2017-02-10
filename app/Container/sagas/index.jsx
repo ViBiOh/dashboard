@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import { call, fork, put, take, takeLatest, cancel } from 'redux-saga/effects';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
 import {
