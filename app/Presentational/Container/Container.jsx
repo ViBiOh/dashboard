@@ -17,6 +17,7 @@ import style from './Container.css';
 
 const Container = (props) => {
   const {
+    containerPending,
     container,
     logs,
     fetchLogs,
@@ -32,7 +33,7 @@ const Container = (props) => {
   let content;
   const buttons = [];
 
-  if (container) {
+  if (!containerPending) {
     content = [
       <ContainerInfo key="info" container={container} />,
       <ContainerNetwork key="network" container={container} />,
@@ -93,6 +94,7 @@ const Container = (props) => {
 Container.displayName = 'Container';
 
 Container.propTypes = {
+  containerPending: React.PropTypes.bool.isRequired,
   container: React.PropTypes.shape({}),
   logs: React.PropTypes.arrayOf(React.PropTypes.string),
   fetchLogs: React.PropTypes.func.isRequired,
