@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import { fetchContainer, actionContainerSucceeded } from './actions';
+import { FETCH_CONTAINER, fetchContainer, actionContainerSucceeded } from './actions';
 import DockerService from '../Service/DockerService';
 import Container from '../Presentational/Container/Container';
 
@@ -50,6 +50,7 @@ class ContainerComponent extends Component {
   render() {
     return (
       <Container
+        containerPending={this.props.containerPending}
         container={this.props.container}
         logs={this.state.logs}
         fetchLogs={this.fetchLogs}
@@ -69,6 +70,7 @@ ContainerComponent.propTypes = {
   params: React.PropTypes.shape({
     containerId: React.PropTypes.string.isRequired,
   }).isRequired,
+  containerPending: React.PropTypes.bool.isRequired,
   container: React.PropTypes.shape({}),
   fetchContainer: React.PropTypes.func.isRequired,
   action: React.PropTypes.func.isRequired,
@@ -80,6 +82,7 @@ ContainerComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
+  containerPending: !!state.pending[FETCH_CONTAINER],
   container: state.container,
   error: state.error,
 });
