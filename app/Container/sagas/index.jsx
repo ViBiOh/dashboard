@@ -36,9 +36,9 @@ function* fetchContainer(action) {
   }
 }
 
-function* login(username, password) {
+function* login(action) {
   try {
-    yield call(DockerService.login, username, password);
+    yield call(DockerService.login, action.username, action.password);
     yield [
       put(loginSucceeded()),
       put(push('/')),
