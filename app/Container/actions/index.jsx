@@ -1,3 +1,37 @@
+export const LOGIN = 'LOGIN';
+export const login = (username, password) => ({
+  type: LOGIN,
+  username,
+  password,
+});
+
+export const LOGIN_SUCCEEDED = 'LOGIN_SUCCEEDED';
+export const loginSucceeded = () => ({
+  type: LOGIN_SUCCEEDED,
+});
+
+export const LOGIN_FAILED = 'LOGIN_FAILED';
+export const loginFailed = error => ({
+  type: LOGIN_FAILED,
+  error,
+});
+
+export const LOGOUT = 'LOGOUT';
+export const logout = () => ({
+  type: LOGOUT,
+});
+
+export const LOGOUT_SUCCEEDED = 'LOGOUT_SUCCEEDED';
+export const logoutSucceeded = () => ({
+  type: LOGOUT_SUCCEEDED,
+});
+
+export const LOGOUT_FAILED = 'LOGOUT_FAILED';
+export const logoutFailed = error => ({
+  type: LOGOUT_FAILED,
+  error,
+});
+
 export const FETCH_CONTAINERS = 'FETCH_CONTAINERS';
 export const fetchContainers = () => ({
   type: FETCH_CONTAINERS,
@@ -51,36 +85,19 @@ export const actionContainerFailed = error => ({
   error,
 });
 
-export const LOGIN = 'LOGIN';
-export const login = (username, password) => ({
-  type: LOGIN,
-  username,
-  password,
+export const OPEN_LOGS = 'OPEN_LOGS';
+export const openLogs = id => ({
+  type: OPEN_LOGS,
+  id,
 });
 
-export const LOGIN_SUCCEEDED = 'LOGIN_SUCCEEDED';
-export const loginSucceeded = () => ({
-  type: LOGIN_SUCCEEDED,
+export const CLOSE_LOGS = 'CLOSE_LOGS';
+export const closeLogs = () => ({
+  type: CLOSE_LOGS,
 });
 
-export const LOGIN_FAILED = 'LOGIN_FAILED';
-export const loginFailed = error => ({
-  type: LOGIN_FAILED,
-  error,
-});
-
-export const LOGOUT = 'LOGOUT';
-export const logout = () => ({
-  type: LOGOUT,
-});
-
-export const LOGOUT_SUCCEEDED = 'LOGOUT_SUCCEEDED';
-export const logoutSucceeded = () => ({
-  type: LOGOUT_SUCCEEDED,
-});
-
-export const LOGOUT_FAILED = 'LOGOUT_FAILED';
-export const logoutFailed = error => ({
-  type: LOGOUT_FAILED,
-  error,
+export const ADD_LOG = 'ADD_LOG';
+export const addLog = log => ({
+  type: ADD_LOG,
+  log,
 });

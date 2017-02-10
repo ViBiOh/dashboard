@@ -21,7 +21,7 @@ const Container = (props) => {
     pendingAction,
     container,
     logs,
-    fetchLogs,
+    openLogs,
     onBack,
     onRefresh,
     onRestart,
@@ -41,7 +41,7 @@ const Container = (props) => {
       <ContainerInfo key="info" container={container} />,
       <ContainerNetwork key="network" container={container} />,
       <ContainerVolumes key="volumes" container={container} />,
-      <ContainerLogs key="logs "logs={logs} fetchLogs={fetchLogs} />,
+      <ContainerLogs key="logs "logs={logs} openLogs={openLogs} />,
     ];
 
     if (container.State.Running) {
@@ -99,7 +99,7 @@ Container.propTypes = {
   pendingAction: React.PropTypes.bool.isRequired,
   container: React.PropTypes.shape({}),
   logs: React.PropTypes.arrayOf(React.PropTypes.string),
-  fetchLogs: React.PropTypes.func.isRequired,
+  openLogs: React.PropTypes.func.isRequired,
   onBack: React.PropTypes.func.isRequired,
   onRefresh: React.PropTypes.func.isRequired,
   onStart: React.PropTypes.func.isRequired,

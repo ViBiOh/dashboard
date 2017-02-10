@@ -1,45 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import { FETCH_CONTAINER, fetchContainer, ACTION_CONTAINER, actionContainer } from './actions';
-import DockerService from '../Service/DockerService';
+import {
+  FETCH_CONTAINER,
+  fetchContainer,
+  ACTION_CONTAINER,
+  actionContainer,
+  openLogs,
+  closeLogs,
+} from './actions';
 import Container from '../Presentational/Container/Container';
 
 class ContainerComponent extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-
-    this.appendLogs = this.appendLogs.bind(this);
-    this.fetchLogs = this.fetchLogs.bind(this);
-  }
-
   componentDidMount() {
     this.props.fetchContainer(this.props.params.containerId);
   }
 
   componentWillUnmount() {
-    if (this.websocket) {
-      this.websocket.close();
-    }
-  }
-
-  appendLogs(log) {
-    this.setState({
-      logs: [...this.state.logs, log],
-    });
-  }
-
-  fetchLogs() {
-    try {
-      this.setState({ logs: [] });
-      this.websocket = DockerService.logs(this.props.params.containerId, this.appendLogs);
-    } catch (e) {
-      this.setState({
-        error: JSON.stringify(e, null, 2),
-      });
-    }
+    this.props.closeLogs();
   }
 
   render() {
@@ -50,8 +28,9 @@ class ContainerComponent extends Component {
         pending={this.props.pending}
         pendingAction={this.props.pendingAction}
         container={this.props.container}
-        logs={this.state.logs}
-        fetchLogs={this.fetchLogs}
+        logs={this.props.logs}
+        openLogs={() => this.props.openLogs(container.Id)}
+        closeLogs={() => this.props.closeLogs()}
         onBack={() => browserHistory.push('/')}
         onRefresh={() => this.props.actionContainer('infos', container.Id)}
         onStart={() => this.props.actionContainer('start', container.Id)}
@@ -71,25 +50,32 @@ ContainerComponent.propTypes = {
   pending: React.PropTypes.bool.isRequired,
   pendingAction: React.PropTypes.bool.isRequired,
   container: React.PropTypes.shape({}),
+  logs: React.PropTypes.arrayOf(React.PropTypes.string),
+  error: React.PropTypes.string.isRequired,
   fetchContainer: React.PropTypes.func.isRequired,
   actionContainer: React.PropTypes.func.isRequired,
-  error: React.PropTypes.string.isRequired,
+  openLogs: React.PropTypes.func.isRequired,
+  closeLogs: React.PropTypes.func.isRequired,
 };
 
 ContainerComponent.defaultProps = {
   container: null,
+  logs: null,
 };
 
 const mapStateToProps = state => ({
   pending: !!state.pending[FETCH_CONTAINER],
   pendingAction: !!state.pending[ACTION_CONTAINER],
   container: state.container,
+  logs: state.logs,
   error: state.error,
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchContainer: id => dispatch(fetchContainer(id)),
   actionContainer: (action, id) => dispatch(actionContainer(action, id)),
+  openLogs: id => dispatch(openLogs(id)),
+  closeLogs: () => dispatch(closeLogs()),
 });
 
 const ContainerContainer = connect(

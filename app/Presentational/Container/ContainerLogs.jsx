@@ -2,11 +2,11 @@ import React from 'react';
 import Button from '../Button/Button';
 import style from './ContainerLogs.css';
 
-const ContainerLogs = ({ logs, fetchLogs }) => {
-  if (typeof logs === 'undefined') {
+const ContainerLogs = ({ logs, openLogs }) => {
+  if (!logs) {
     return (
       <span className={style.container}>
-        <Button className={style.button} onClick={fetchLogs}>Fetch logs...</Button>
+        <Button className={style.button} onClick={openLogs}>Open logs...</Button>
       </span>
     );
   }
@@ -25,7 +25,7 @@ ContainerLogs.displayName = 'ContainerLogs';
 
 ContainerLogs.propTypes = {
   logs: React.PropTypes.arrayOf(React.PropTypes.string),
-  fetchLogs: React.PropTypes.func.isRequired,
+  openLogs: React.PropTypes.func.isRequired,
 };
 
 ContainerLogs.defaultProps = {
