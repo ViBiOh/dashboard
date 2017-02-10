@@ -41,9 +41,8 @@ export const actionContainer = (action, id) => ({
 });
 
 export const ACTION_CONTAINER_SUCCEEDED = 'ACTION_CONTAINER_SUCCEEDED';
-export const actionContainerSucceeded = id => ({
+export const actionContainerSucceeded = () => ({
   type: ACTION_CONTAINER_SUCCEEDED,
-  id,
 });
 
 export const ACTION_CONTAINER_FAILED = 'ACTION_CONTAINER_FAILED';

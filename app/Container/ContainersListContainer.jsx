@@ -7,7 +7,9 @@ import ContainersList from '../Presentational/ContainersList/ContainersList';
 
 class ContainersListComponent extends Component {
   componentDidMount() {
-    this.props.fetchContainers();
+    if (!this.props.containers) {
+      this.props.fetchContainers();
+    }
   }
 
   render() {

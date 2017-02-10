@@ -11,7 +11,7 @@ import style from './ContainersList.css';
 const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onLogout }) => {
   let content;
 
-  if (pending) {
+  if (pending || !containers) {
     content = <Throbber label="Loading containers" error={error} />;
   } else {
     content = (

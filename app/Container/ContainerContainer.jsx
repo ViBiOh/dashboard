@@ -57,7 +57,7 @@ class ContainerComponent extends Component {
         onStart={() => this.props.actionContainer('start', container.Id)}
         onRestart={() => this.props.actionContainer('restart', container.Id)}
         onStop={() => this.props.actionContainer('stop', container.Id)}
-        onDelete={() => DockerService.delete(container.Id).then(() => browserHistory.push('/'))}
+        onDelete={() => this.props.actionContainer('delete', container.Id)}
         error={this.props.error}
       />
     );
