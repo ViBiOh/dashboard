@@ -9,6 +9,12 @@ export const fetchContainersSucceeded = containers => ({
   containers,
 });
 
+export const FETCH_CONTAINERS_FAILED = 'FETCH_CONTAINERS_FAILED';
+export const fetchContainersFailed = error => ({
+  type: FETCH_CONTAINERS_FAILED,
+  error,
+});
+
 export const FETCH_CONTAINER = 'FETCH_CONTAINER';
 export const fetchContainer = id => ({
   type: FETCH_CONTAINER,
@@ -21,15 +27,21 @@ export const fetchContainerSucceeded = container => ({
   container,
 });
 
+export const FETCH_CONTAINER_FAILED = 'FETCH_CONTAINER_FAILED';
+export const fetchContainerFailed = error => ({
+  type: FETCH_CONTAINER_FAILED,
+  error,
+});
+
 export const ACTION_CONTAINER_SUCCEEDED = 'ACTION_CONTAINER_SUCCEEDED';
 export const actionContainerSucceeded = id => ({
   type: ACTION_CONTAINER_SUCCEEDED,
   id,
 });
 
-export const SET_ERROR = 'SET_ERROR';
-export const setError = error => ({
-  type: SET_ERROR,
+export const ACTION_CONTAINER_FAILED = 'ACTION_CONTAINER_FAILED';
+export const actionContainerFailed = error => ({
+  type: ACTION_CONTAINER_FAILED,
   error,
 });
 
