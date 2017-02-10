@@ -9,6 +9,9 @@ import {
   FETCH_CONTAINER,
   fetchContainerSucceeded,
   fetchContainerFailed,
+  ACTION_CONTAINER,
+  actionContainerSucceeded,
+  actionContainerFailed,
   ACTION_CONTAINER_SUCCEEDED,
   LOGIN,
   loginSucceeded,
@@ -33,6 +36,15 @@ function* fetchContainer(action) {
     yield put(fetchContainerSucceeded(container));
   } catch (e) {
     yield put(fetchContainerFailed(e.content));
+  }
+}
+
+function* actionContainer(action) {
+  try {
+    yield call(DockerService[action.action], action.id);
+    yield put(actionContainerSucceeded(action.id));
+  } catch (e) {
+    yield put(actionContainerFailed(e.content));
   }
 }
 
@@ -63,6 +75,7 @@ function* logout() {
 function* appSaga() {
   yield takeLatest(FETCH_CONTAINERS, fetchContainers);
   yield takeLatest(FETCH_CONTAINER, fetchContainer);
+  yield takeLatest(ACTION_CONTAINER, actionContainer);
   yield takeLatest(ACTION_CONTAINER_SUCCEEDED, fetchContainer);
   yield takeLatest(LOGIN, login);
   yield takeLatest(LOGOUT, logout);

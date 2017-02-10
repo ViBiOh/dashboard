@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import { FETCH_CONTAINER, fetchContainer, actionContainerSucceeded } from './actions';
+import { FETCH_CONTAINER, fetchContainer, ACTION_CONTAINER, actionContainer } from './actions';
 import DockerService from '../Service/DockerService';
 import Container from '../Presentational/Container/Container';
 
@@ -11,7 +11,6 @@ class ContainerComponent extends Component {
 
     this.state = {};
 
-    this.onAction = this.onAction.bind(this);
     this.appendLogs = this.appendLogs.bind(this);
     this.fetchLogs = this.fetchLogs.bind(this);
   }
@@ -24,10 +23,6 @@ class ContainerComponent extends Component {
     if (this.websocket) {
       this.websocket.close();
     }
-  }
-
-  onAction(promise) {
-    return promise.then(() => this.props.action(this.props.params.containerId));
   }
 
   appendLogs(log) {
@@ -48,18 +43,21 @@ class ContainerComponent extends Component {
   }
 
   render() {
+    const { container } = this.props;
+
     return (
       <Container
-        containerPending={this.props.containerPending}
+        pending={this.props.pending}
+        pendingAction={this.props.pendingAction}
         container={this.props.container}
         logs={this.state.logs}
         fetchLogs={this.fetchLogs}
         onBack={() => browserHistory.push('/')}
-        onRefresh={() => this.props.fetchContainer(this.props.params.containerId)}
-        onStart={id => this.onAction(DockerService.start(id))}
-        onRestart={id => this.onAction(DockerService.restart(id))}
-        onStop={id => this.onAction(DockerService.stop(id))}
-        onDelete={id => DockerService.delete(id).then(() => browserHistory.push('/'))}
+        onRefresh={() => this.props.actionContainer('infos', container.Id)}
+        onStart={() => this.props.actionContainer('start', container.Id)}
+        onRestart={() => this.props.actionContainer('restart', container.Id)}
+        onStop={() => this.props.actionContainer('stop', container.Id)}
+        onDelete={() => DockerService.delete(container.Id).then(() => browserHistory.push('/'))}
         error={this.props.error}
       />
     );
@@ -70,10 +68,11 @@ ContainerComponent.propTypes = {
   params: React.PropTypes.shape({
     containerId: React.PropTypes.string.isRequired,
   }).isRequired,
-  containerPending: React.PropTypes.bool.isRequired,
+  pending: React.PropTypes.bool.isRequired,
+  pendingAction: React.PropTypes.bool.isRequired,
   container: React.PropTypes.shape({}),
   fetchContainer: React.PropTypes.func.isRequired,
-  action: React.PropTypes.func.isRequired,
+  actionContainer: React.PropTypes.func.isRequired,
   error: React.PropTypes.string.isRequired,
 };
 
@@ -82,14 +81,15 @@ ContainerComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  containerPending: !!state.pending[FETCH_CONTAINER],
+  pending: !!state.pending[FETCH_CONTAINER],
+  pendingAction: !!state.pending[ACTION_CONTAINER],
   container: state.container,
   error: state.error,
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchContainer: id => dispatch(fetchContainer(id)),
-  action: id => dispatch(actionContainerSucceeded(id)),
+  actionContainer: (action, id) => dispatch(actionContainer(action, id)),
 });
 
 const ContainerContainer = connect(

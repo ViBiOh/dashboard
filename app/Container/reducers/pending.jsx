@@ -1,6 +1,6 @@
-import { LOGIN, FETCH_CONTAINERS, FETCH_CONTAINER } from '../actions';
+import { LOGIN, FETCH_CONTAINERS, FETCH_CONTAINER, ACTION_CONTAINER } from '../actions';
 
-const pendingActions = [LOGIN, FETCH_CONTAINERS, FETCH_CONTAINER];
+const pendingActions = [LOGIN, FETCH_CONTAINERS, FETCH_CONTAINER, ACTION_CONTAINER];
 const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
 
 const pending = (state = {}, action) => {

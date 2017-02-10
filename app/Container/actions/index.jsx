@@ -33,6 +33,13 @@ export const fetchContainerFailed = error => ({
   error,
 });
 
+export const ACTION_CONTAINER = 'ACTION_CONTAINER';
+export const actionContainer = (action, id) => ({
+  type: ACTION_CONTAINER,
+  action,
+  id,
+});
+
 export const ACTION_CONTAINER_SUCCEEDED = 'ACTION_CONTAINER_SUCCEEDED';
 export const actionContainerSucceeded = id => ({
   type: ACTION_CONTAINER_SUCCEEDED,

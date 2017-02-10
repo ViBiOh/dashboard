@@ -17,7 +17,8 @@ import style from './Container.css';
 
 const Container = (props) => {
   const {
-    containerPending,
+    pending,
+    pendingAction,
     container,
     logs,
     fetchLogs,
@@ -33,7 +34,9 @@ const Container = (props) => {
   let content;
   const buttons = [];
 
-  if (!containerPending && container) {
+  if (pending || !container) {
+    content = <Throbber label="Loading informations" />;
+  } else {
     content = [
       <ContainerInfo key="info" container={container} />,
       <ContainerNetwork key="network" container={container} />,
@@ -43,33 +46,31 @@ const Container = (props) => {
 
     if (container.State.Running) {
       buttons.push(
-        <ThrobberButton key="restart" onClick={() => onRestart(container.Id)}>
+        <ThrobberButton key="restart" onClick={onRestart} pending={pendingAction}>
           <FaRetweet />
           <span>Restart</span>
         </ThrobberButton>,
       );
       buttons.push(
-        <ThrobberButton key="stop" type="danger" onClick={() => onStop(container.Id)}>
+        <ThrobberButton key="stop" type="danger" onClick={onStop} pending={pendingAction}>
           <FaStopCircle />
           <span>Stop</span>
         </ThrobberButton>,
       );
     } else {
       buttons.push(
-        <ThrobberButton key="start" onClick={() => onStart(container.Id)}>
+        <ThrobberButton key="start" onClick={onStart} pending={pendingAction}>
           <FaPlay />
           <span>Start</span>
         </ThrobberButton>,
       );
       buttons.push(
-        <ThrobberButton key="delete" type="danger" onClick={() => onDelete(container.Id)}>
+        <ThrobberButton key="delete" type="danger" onClick={onDelete} pending={pendingAction}>
           <FaTrash />
           <span>Delete</span>
         </ThrobberButton>,
       );
     }
-  } else {
-    content = <Throbber label="Loading informations" />;
   }
 
   return (
@@ -79,10 +80,10 @@ const Container = (props) => {
           <FaArrowLeft />
           <span>Back</span>
         </Button>
-        <Button onClick={onRefresh}>
+        <ThrobberButton onClick={onRefresh} pending={pendingAction}>
           <FaRefresh />
           <span>Refresh</span>
-        </Button>
+        </ThrobberButton>
         <span className={style.fill} />
         {buttons}
       </Toolbar>
@@ -94,7 +95,8 @@ const Container = (props) => {
 Container.displayName = 'Container';
 
 Container.propTypes = {
-  containerPending: React.PropTypes.bool.isRequired,
+  pending: React.PropTypes.bool.isRequired,
+  pendingAction: React.PropTypes.bool.isRequired,
   container: React.PropTypes.shape({}),
   logs: React.PropTypes.arrayOf(React.PropTypes.string),
   fetchLogs: React.PropTypes.func.isRequired,
