@@ -87,9 +87,8 @@ function* actionContainerSaga(action) {
 }
 
 function* readLogs(action) {
-  let socket;
   const websocketChannel = eventChannel((emit) => {
-    socket = DockerService.logs(action.id, log => emit(log));
+    const socket = DockerService.logs(action.id, log => emit(log));
 
     socket.onclose = () => emit(END);
 
