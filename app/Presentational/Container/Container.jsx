@@ -33,7 +33,7 @@ const Container = (props) => {
   let content;
   const buttons = [];
 
-  if (!containerPending) {
+  if (!containerPending && container) {
     content = [
       <ContainerInfo key="info" container={container} />,
       <ContainerNetwork key="network" container={container} />,
