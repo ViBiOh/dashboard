@@ -73,7 +73,7 @@ export const logoutSucceeded = () => ({
   type: LOGOUT_SUCCEEDED,
 });
 
-export const LOGIN_FAILED = 'LOGOUT_FAILED';
+export const LOGOUT_FAILED = 'LOGOUT_FAILED';
 export const logoutFailed = error => ({
   type: LOGOUT_FAILED,
   error,
