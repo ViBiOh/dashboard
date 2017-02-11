@@ -21,6 +21,9 @@ import {
   ACTION_CONTAINER,
   actionContainerSucceeded,
   actionContainerFailed,
+  COMPOSE,
+  composeSucceeded,
+  composeFailed,
   OPEN_LOGS,
   CLOSE_LOGS,
   addLog,
@@ -86,6 +89,20 @@ function* actionContainerSaga(action) {
   }
 }
 
+function* composeSaga(action) {
+  try {
+    yield call(DockerService.create, action.name, action.file);
+    yield put(composeSucceeded());
+
+    yield [
+      put(fetchContainers()),
+      put(push('/')),
+    ];
+  } catch (e) {
+    yield put(composeFailed(e.content));
+  }
+}
+
 function* readLogs(action) {
   const websocketChannel = eventChannel((emit) => {
     const socket = DockerService.logs(action.id, log => emit(log));
@@ -114,6 +131,7 @@ function* appSaga() {
   yield takeLatest(FETCH_CONTAINERS, fetchContainersSaga);
   yield takeLatest(FETCH_CONTAINER, fetchContainerSaga);
   yield takeLatest(ACTION_CONTAINER, actionContainerSaga);
+  yield takeLatest(COMPOSE, composeSaga);
   yield takeLatest(OPEN_LOGS, logs);
 }
 

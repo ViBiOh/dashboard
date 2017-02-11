@@ -3,7 +3,7 @@ import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Login.css';
 
-const Login = ({ loginPending, onLogin, error }) => {
+const Login = ({ pending, onLogin, error }) => {
   let loginInput;
   let passwordInput;
 
@@ -35,7 +35,7 @@ const Login = ({ loginPending, onLogin, error }) => {
         onKeyDown={onKeyDown}
       />
       <Toolbar className={style.center} error={error}>
-        <ThrobberButton onClick={submit} pending={loginPending}>Login</ThrobberButton>
+        <ThrobberButton onClick={submit} pending={pending}>Login</ThrobberButton>
       </Toolbar>
     </span>
   );
@@ -44,7 +44,7 @@ const Login = ({ loginPending, onLogin, error }) => {
 Login.displayName = 'Login';
 
 Login.propTypes = {
-  loginPending: React.PropTypes.bool.isRequired,
+  pending: React.PropTypes.bool.isRequired,
   onLogin: React.PropTypes.func.isRequired,
   error: React.PropTypes.string,
 };

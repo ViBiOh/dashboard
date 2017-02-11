@@ -85,6 +85,24 @@ export const actionContainerFailed = error => ({
   error,
 });
 
+export const COMPOSE = 'COMPOSE';
+export const compose = (name, file) => ({
+  type: COMPOSE,
+  name,
+  file,
+});
+
+export const COMPOSE_SUCCEEDED = 'COMPOSE_SUCCEEDED';
+export const composeSucceeded = () => ({
+  type: COMPOSE_SUCCEEDED,
+});
+
+export const COMPOSE_FAILED = 'COMPOSE_FAILED';
+export const composeFailed = error => ({
+  type: COMPOSE_FAILED,
+  error,
+});
+
 export const OPEN_LOGS = 'OPEN_LOGS';
 export const openLogs = id => ({
   type: OPEN_LOGS,

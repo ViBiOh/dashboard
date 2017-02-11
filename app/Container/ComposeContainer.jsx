@@ -1,34 +1,19 @@
-import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
-import DockerService from '../Service/DockerService';
+import { connect } from 'react-redux';
+import { COMPOSE, compose } from './actions';
 import Compose from '../Presentational/Compose/Compose';
 
-export default class ComposeContainer extends Component {
-  constructor(props) {
-    super(props);
+const mapStateToProps = state => ({
+  pending: !!state.pending[COMPOSE],
+  error: state.error,
+});
 
-    this.state = {};
+const mapDispatchToProps = dispatch => ({
+  onCompose: (name, file) => dispatch(compose(name, file)),
+});
 
-    this.create = this.create.bind(this);
-  }
+const ComposeContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Compose);
 
-  create(name, compose) {
-    this.setState({ error: undefined });
-
-    return DockerService.create(name, compose)
-      .then((data) => {
-        browserHistory.push('/');
-        return data;
-      })
-      .catch((error) => {
-        this.setState({ error: error.content });
-        return error;
-      });
-  }
-
-  render() {
-    return (
-      <Compose onCompose={this.create} error={this.state.error} />
-    );
-  }
-}
+export default ComposeContainer;

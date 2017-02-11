@@ -6,7 +6,7 @@ import Button from '../../Presentational/Button/Button';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Compose.css';
 
-const Compose = ({ onCompose, error }) => {
+const Compose = ({ onCompose, pending, error }) => {
   let nameInput;
   let composeInput;
 
@@ -49,7 +49,7 @@ const Compose = ({ onCompose, error }) => {
         />
       </span>
       <span>
-        <ThrobberButton onClick={submit}>Create</ThrobberButton>
+        <ThrobberButton onClick={submit} pending={pending}>Create</ThrobberButton>
       </span>
     </div>
   );
@@ -59,6 +59,7 @@ Compose.displayName = 'Compose';
 
 Compose.propTypes = {
   onCompose: React.PropTypes.func.isRequired,
+  pending: React.PropTypes.bool.isRequired,
   error: React.PropTypes.string,
 };
 
