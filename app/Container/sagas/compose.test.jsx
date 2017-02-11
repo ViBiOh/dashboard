@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies,react/no-find-dom-node */
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-env mocha */
 import { expect } from 'chai';
 import { call, put } from 'redux-saga/effects';
