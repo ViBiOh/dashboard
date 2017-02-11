@@ -29,7 +29,7 @@ import {
   addLog,
 } from '../actions';
 
-function* loginSaga(action) {
+export function* loginSaga(action) {
   try {
     yield call(DockerService.login, action.username, action.password);
     yield [
@@ -41,7 +41,7 @@ function* loginSaga(action) {
   }
 }
 
-function* logoutSaga() {
+export function* logoutSaga() {
   try {
     yield call(DockerService.logout);
     yield [
@@ -53,7 +53,7 @@ function* logoutSaga() {
   }
 }
 
-function* fetchContainersSaga() {
+export function* fetchContainersSaga() {
   try {
     const containers = yield call(DockerService.containers);
     yield put(fetchContainersSucceeded(containers));
@@ -62,7 +62,7 @@ function* fetchContainersSaga() {
   }
 }
 
-function* fetchContainerSaga(action) {
+export function* fetchContainerSaga(action) {
   try {
     const container = yield call(DockerService.infos, action.id);
     yield put(fetchContainerSucceeded(container));
@@ -71,7 +71,7 @@ function* fetchContainerSaga(action) {
   }
 }
 
-function* actionContainerSaga(action) {
+export function* actionContainerSaga(action) {
   try {
     yield call(DockerService[action.action], action.id);
     yield put(actionContainerSucceeded());
@@ -89,12 +89,12 @@ function* actionContainerSaga(action) {
   }
 }
 
-function* composeSaga(action) {
+export function* composeSaga(action) {
   try {
     yield call(DockerService.create, action.name, action.file);
-    yield put(composeSucceeded());
 
     yield [
+      put(composeSucceeded()),
       put(fetchContainers()),
       put(push('/')),
     ];
@@ -103,7 +103,7 @@ function* composeSaga(action) {
   }
 }
 
-function* readLogs(action) {
+export function* readLogs(action) {
   const websocketChannel = eventChannel((emit) => {
     const socket = DockerService.logs(action.id, log => emit(log));
 
@@ -118,7 +118,7 @@ function* readLogs(action) {
   }
 }
 
-function* logs(action) {
+export function* logs(action) {
   const task = yield fork(readLogs, action);
 
   yield take(CLOSE_LOGS);
