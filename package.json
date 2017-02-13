@@ -78,7 +78,6 @@
     "react-router": "latest",
     "react-router-redux": "latest",
     "redux": "latest",
-    "redux-saga": "latest",
-    "remote-redux-devtools": "latest"
+    "redux-saga": "latest"
   }
 }
