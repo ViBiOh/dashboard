@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import { call, put, fork, take, takeLatest, cancel, cancelled } from 'redux-saga/effects';
-import { eventChannel, END } from 'redux-saga';
+import { eventChannel } from 'redux-saga';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
 import {
@@ -113,7 +113,7 @@ export function* readLogs(action) {
     }
   } finally {
     if (yield cancelled()) {
-      chan.close()
+      chan.close();
     }
   }
 }
