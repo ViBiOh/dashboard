@@ -55,9 +55,10 @@ if (process.env.PRODUCTION) {
       warnings: false,
     },
   }));
+} else {
+  config.plugins.push(new webpack.DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify('development'),
+  }));
 }
-config.plugins.push(new webpack.DefinePlugin({
-  'process.env.NODE_ENV': JSON.stringify('development'),
-}));
 
 module.exports = config;
