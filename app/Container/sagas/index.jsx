@@ -104,18 +104,26 @@ export function* composeSaga(action) {
 }
 
 export function* readLogs(action) {
-  const websocketChannel = eventChannel((emit) => {
-    const socket = DockerService.logs(action.id, log => emit(log));
+  let socket;
 
-    // eslint-disable-next-line no-console
-    socket.onclose = () => console.log(`Logs ended for ${action.id}`) || emit(END);
+  try {
+    const websocketChannel = eventChannel((emit) => {
+      socket = DockerService.logs(action.id, log => emit(log));
 
-    return socket.close;
-  });
+      // eslint-disable-next-line no-console
+      socket.onclose = () => console.log(`Logs ended for ${action.id}`) || emit(END);
 
-  while (true) { // eslint-disable-line no-constant-condition
-    const log = yield take(websocketChannel);
-    yield put(addLog(log));
+      return socket.close;
+    });
+
+    while (true) { // eslint-disable-line no-constant-condition
+      const log = yield take(websocketChannel);
+      yield put(addLog(log));
+    }
+  } finally {
+    if (socket) {
+      socket.close();
+    }
   }
 }
 
