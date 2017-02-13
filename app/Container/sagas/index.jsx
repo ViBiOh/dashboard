@@ -108,7 +108,8 @@ export function* readLogs(action) {
   const chan = eventChannel((emit) => {
     websocket = DockerService.logs(action.id, log => emit(log));
 
-    return websocket.close;
+    // eslint-disable-next-line no-console
+    return () => console.log('closing socket') || websocket.close();
   });
 
   try {
