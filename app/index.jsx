@@ -17,15 +17,13 @@ import Main from './Presentational/Main/Main';
 
 const sagaMiddleware = createSagaMiddleware();
 
-/* eslint-disable no-underscore-dangle */
 const appStore = createStore(
   appReducers,
-  (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose(
+  compose(
     applyMiddleware(routerMiddleware(browserHistory)),
     applyMiddleware(sagaMiddleware),
   ),
 );
-/* eslint-enable no-underscore-dangle */
 
 sagaMiddleware.run(appSaga);
 
