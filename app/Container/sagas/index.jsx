@@ -104,12 +104,10 @@ export function* composeSaga(action) {
 }
 
 export function* readLogs(action) {
-  let websocket;
   const chan = eventChannel((emit) => {
-    websocket = DockerService.logs(action.id, log => emit(log));
+    const websocket = DockerService.logs(action.id, log => emit(log));
 
-    // eslint-disable-next-line no-console
-    return () => console.log('closing socket') || websocket.close();
+    return () => websocket.close();
   });
 
   try {
@@ -118,7 +116,6 @@ export function* readLogs(action) {
       yield put(addLog(log));
     }
   } finally {
-    websocket.close();
     chan.close();
   }
 }
