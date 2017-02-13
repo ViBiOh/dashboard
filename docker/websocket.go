@@ -3,7 +3,6 @@ package docker
 import (
 	"bufio"
 	"context"
-	"encoding/json"
 	"github.com/docker/docker/api/types"
 	"github.com/gorilla/websocket"
 	"log"
