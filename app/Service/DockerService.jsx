@@ -79,7 +79,15 @@ export default class DockerService {
     const socket = new WebSocket(`wss://${API_HOST}/ws/containers/${containerId}/logs`);
 
     socket.onmessage = event => onMessage(event.data);
+    socket.onopen = () => socket.send(localStorage.getItem(authStorage));
 
+    return socket;
+  }
+
+  static events(onMessage) {
+    const socket = new WebSocket(`wss://${API_HOST}/ws/events`);
+
+    socket.onmessage = event => onMessage(event.data);
     socket.onopen = () => socket.send(localStorage.getItem(authStorage));
 
     return socket;

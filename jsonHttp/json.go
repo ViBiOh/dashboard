@@ -1,7 +1,9 @@
 package jsonHttp
 
-import "net/http"
-import "encoding/json"
+import (
+	"encoding/json"
+	"net/http"
+)
 
 // ResponseJSON write marshalled obj to http.ResponseWriter with correct header
 func ResponseJSON(w http.ResponseWriter, obj interface{}) {

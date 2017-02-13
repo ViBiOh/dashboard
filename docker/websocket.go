@@ -3,6 +3,7 @@ package docker
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"github.com/docker/docker/api/types"
 	"github.com/gorilla/websocket"
 	"log"
@@ -28,14 +29,12 @@ var upgrader = websocket.Upgrader{
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Print(err)
 		defer ws.Close()
 		return nil, err
 	}
 
 	_, basicAuth, err := ws.ReadMessage()
 	if err != nil {
-		log.Print(err)
 		defer ws.Close()
 		return nil, err
 	}
@@ -52,8 +51,10 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, er
 func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
 	ws, err := upgradeAndAuth(w, r)
 	if err != nil {
+		log.Print(err)
 		return
 	}
+
 	defer ws.Close()
 
 	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
@@ -64,22 +65,37 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	defer logs.Close()
 
+	end := make(chan int)
+
 	go func() {
 		scanner := bufio.NewScanner(logs)
 		for scanner.Scan() {
-			logLine := scanner.Bytes()
-			if len(logLine) > ignoredByteLogSize {
-				if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
-					log.Print(err)
-					return
+			select {
+			case <-end:
+				return
+			default:
+				logLine := scanner.Bytes()
+				if len(logLine) > ignoredByteLogSize {
+					if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
+						log.Print(err)
+						end <- 1
+						return
+					}
 				}
 			}
 		}
 	}()
 
 	for {
-		if _, _, err := ws.NextReader(); err != nil {
+		select {
+		case <-end:
 			return
+		default:
+			if _, _, err := ws.NextReader(); err != nil {
+				end <- 1
+				close(end)
+				return
+			}
 		}
 	}
 }
@@ -95,22 +111,42 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	messages, errors := docker.Events(context, types.EventsOptions{})
 	defer context.Done()
 
+	end := make(chan int)
+
 	go func() {
 		for {
 			select {
 			case message := <-messages:
-				log.Print(message)
+				messageJSON, err := json.Marshal(message)
+				if err != nil {
+					log.Print(err)
+					end <- 1
+					return
+				}
+
+				if err = ws.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
+					log.Print(err)
+					end <- 1
+					return
+				}
 				break
 			case err := <-errors:
 				log.Print(err)
-				return
+				end <- 1
 			}
 		}
 	}()
 
 	for {
-		if _, _, err := ws.NextReader(); err != nil {
+		select {
+		case <-end:
 			return
+		default:
+			if _, _, err := ws.NextReader(); err != nil {
+				end <- 1
+				close(end)
+				return
+			}
 		}
 	}
 }
