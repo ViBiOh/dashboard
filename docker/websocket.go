@@ -43,7 +43,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		return
 	}
 
-	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true})
+	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: `500`})
 	if err != nil {
 		log.Print(err)
 		return
