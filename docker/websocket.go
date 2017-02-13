@@ -11,8 +11,10 @@ import (
 )
 
 const ignoredByteLogSize = 8
+const tailSize = `100`
 
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
+var eventsWebsocketRequest = regexp.MustCompile(`events`)
 var hostCheck = regexp.MustCompile(`vibioh\.fr$`)
 
 var upgrader = websocket.Upgrader{
@@ -23,27 +25,37 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
+func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print(err)
-		return
+		defer ws.Close()
+		return nil, err
 	}
-
-	defer ws.Close()
 
 	_, basicAuth, err := ws.ReadMessage()
 	if err != nil {
 		log.Print(err)
-		return
+		defer ws.Close()
+		return nil, err
 	}
 
 	if _, err := isAuthenticatedByBasicAuth(string(basicAuth)); err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
+		defer ws.Close()
+		return nil, err
+	}
+
+	return ws, nil
+}
+
+func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
+	ws, err := upgradeAndAuth(w, r)
+	if err != nil {
 		return
 	}
 
-	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: `500`})
+	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	if err != nil {
 		log.Print(err)
 		return
