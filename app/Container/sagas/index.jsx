@@ -123,6 +123,7 @@ export function* logs(action) {
   const task = yield fork(readLogs, action);
 
   yield take(CLOSE_LOGS);
+  debugger; // eslint-disable-line no-debugger
   yield cancel(task);
 }
 
