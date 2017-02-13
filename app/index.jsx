@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
@@ -16,11 +16,16 @@ import ComposeContainer from './Container/ComposeContainer';
 import Main from './Presentational/Main/Main';
 
 const sagaMiddleware = createSagaMiddleware();
+
+/* eslint-disable no-underscore-dangle */
 const appStore = createStore(
   appReducers,
-  applyMiddleware(routerMiddleware(browserHistory)),
-  applyMiddleware(sagaMiddleware),
+  (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose(
+    applyMiddleware(routerMiddleware(browserHistory)),
+    applyMiddleware(sagaMiddleware),
+  ),
 );
+/* eslint-enable no-underscore-dangle */
 
 sagaMiddleware.run(appSaga);
 
