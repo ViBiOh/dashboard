@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
+import { call, put, fork, take, takeLatest, cancel, cancelled } from 'redux-saga/effects';
 import { eventChannel, END } from 'redux-saga';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
@@ -104,18 +104,17 @@ export function* composeSaga(action) {
 }
 
 export function* readLogs(action) {
-  const websocketChannel = eventChannel((emit) => {
-    const socket = DockerService.logs(action.id, log => emit(log));
+  const chan = eventChannel(emit => DockerService.logs(action.id, log => emit(log)).close);
 
-    // eslint-disable-next-line no-console
-    socket.onclose = () => console.log(`Logs ended for ${action.id}`) || emit(END);
-
-    return socket.close;
-  });
-
-  while (true) { // eslint-disable-line no-constant-condition
-    const log = yield take(websocketChannel);
-    yield put(addLog(log));
+  try {
+    while (true) { // eslint-disable-line no-constant-condition
+      const log = yield take(chan);
+      yield put(addLog(log));
+    }
+  } finally {
+    if (yield cancelled()) {
+      chan.close()
+    }
   }
 }
 
@@ -123,7 +122,6 @@ export function* logs(action) {
   const task = yield fork(readLogs, action);
 
   yield take(CLOSE_LOGS);
-  debugger; // eslint-disable-line no-debugger
   yield cancel(task);
 }
 
