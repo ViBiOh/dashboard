@@ -3,6 +3,7 @@ package docker
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"github.com/docker/docker/api/types"
 	"github.com/gorilla/websocket"
 	"log"
@@ -54,6 +55,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	if err != nil {
 		return
 	}
+	defer ws.Close()
 
 	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	if err != nil {
@@ -83,6 +85,37 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	}
 }
 
+func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
+	ws, err := upgradeAndAuth(w, r)
+	if err != nil {
+		return
+	}
+	defer ws.Close()
+
+	context := context.Background()
+	messages, errors := docker.Events(context, types.EventsOptions{})
+	defer context.Done()
+
+	go func() {
+		for {
+			select {
+			case message := <-messages:
+				log.Print(message)
+				break
+			case err := <-errors:
+				log.Print(err)
+				return
+			}
+		}
+	}()
+
+	for {
+		if _, _, err := ws.NextReader(); err != nil {
+			return
+		}
+	}
+}
+
 // WebsocketHandler for Docker Websocket request. Should be use with net/http
 type WebsocketHandler struct {
 }
@@ -92,5 +125,7 @@ func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 
 	if logWebsocketRequest.Match(urlPath) {
 		logsContainerWebsocketHandler(w, r, logWebsocketRequest.FindSubmatch(urlPath)[1])
+	} else if eventsWebsocketRequest.Match((urlPath)) {
+		eventsWebsocketHandler(w, r)
 	}
 }
