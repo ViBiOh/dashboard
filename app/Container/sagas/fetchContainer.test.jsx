@@ -30,11 +30,11 @@ describe('FetchContainer Saga', () => {
     );
   });
 
-  xit('should put error on failure', () => {
+  it('should put error on failure', () => {
     const iterator = fetchContainerSaga({});
 
     expect(
-      iterator.throw({ content: 'Test error' }).value,
+      iterator.throw(new Error('Test error' )).value,
     ).to.deep.equal(
       put(fetchContainerFailed('Test error')),
     );
