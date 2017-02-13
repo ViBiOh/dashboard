@@ -106,8 +106,8 @@ export function* composeSaga(action) {
 export function* readLogs(action) {
   let websocket;
   const chan = eventChannel((emit) => {
-    websocket = DockerService.logs(action.id, log => emit(log))
-      
+    websocket = DockerService.logs(action.id, log => emit(log));
+  
     return websocket.close;
   });
 
