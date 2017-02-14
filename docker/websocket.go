@@ -106,11 +106,16 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer ws.Close()
+	
+	filter, err := labelFilter(loggedUser, appName)
+	if err != nil {
+		return
+	}
 
 	context := context.Background()
-	messages, errors := docker.Events(context, types.EventsOptions{})
-	defer context.Done()
+	messages, errors := docker.Events(context, types.EventsOptions{Filters: filter})
 
+	defer context.Done()
 	done := make(chan struct{})
 
 	go func() {
