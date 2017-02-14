@@ -20,8 +20,8 @@ type results struct {
 func listContainers(loggedUser *user, appName *string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
-	if filters, err := labelFilter(loggedUser, appName); err == nil {
-		options.Filters = *filters
+	if filter, err := labelFilter(loggedUser, appName); err == nil {
+		options.Filters = *filter
 	} else {
 		return nil, err
 	}
