@@ -3,7 +3,7 @@ import { LOGIN, FETCH_CONTAINERS, FETCH_CONTAINER, ACTION_CONTAINER, COMPOSE } f
 const pendingActions = [LOGIN, FETCH_CONTAINERS, FETCH_CONTAINER, ACTION_CONTAINER, COMPOSE];
 const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
 
-const pending = (state = {}, action) => {
+export default (state = {}, action) => {
   if (pendingActions.includes(action.type)) {
     return { ...state, [action.type]: true };
   }
@@ -14,5 +14,3 @@ const pending = (state = {}, action) => {
   }
   return state;
 };
-
-export default pending;
