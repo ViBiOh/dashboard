@@ -135,7 +135,7 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 				break
 
 			case err := <-errors:
-				log.Print(`Error while reading events: %v`, err)
+				log.Printf(`Error while reading events: %v`, err)
 				close(done)
 				return
 			}
