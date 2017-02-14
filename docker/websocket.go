@@ -72,14 +72,17 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		for scanner.Scan() {
 			select {
 			case <-done:
+				log.Print(`Exiting logs goroutine`)
 				return
 	
 			default:
 				logLine := scanner.Bytes()
-				if len(logLine) > ignoredByteLogSize && err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
-					log.Print(err)
-					close(done)
-					return
+				if len(logLine) > ignoredByteLogSize {
+					if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
+						log.Printf(`Error while writing to socket: %v`, err)
+						close(done)
+						return
+					}
 				}
 			}
 		}
@@ -88,9 +91,11 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	for {
 		select {
 		case <-done:
+			log.Print(`Exiting handler`)
 			return
 		default:
 			if _, _, err := ws.NextReader(); err != nil {
+				log.Printf(`Error while reading from socket: %v`, err)
 				close(done)
 				return
 			}
