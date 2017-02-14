@@ -1,6 +1,6 @@
 import { SET_ERROR } from '../actions';
 
-const error = (state = '', action) => {
+export default (state = '', action) => {
   if (action.type === SET_ERROR || /FAILED/.test(action.type)) {
     return action.error;
   }
@@ -9,5 +9,3 @@ const error = (state = '', action) => {
   }
   return state;
 };
-
-export default error;
