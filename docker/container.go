@@ -21,16 +21,10 @@ type results struct {
 func listContainers(loggedUser *user, appName *string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
-	options.Filters = filters.NewArgs()
-
-	if loggedUser != nil && !isAdmin(loggedUser) {
-		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, options.Filters); err != nil {
-			return nil, fmt.Errorf(`Error while parsing flag for user: %v`, err)
-		}
-	} else if appName != nil && *appName != `` {
-		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, options.Filters); err != nil {
-			return nil, fmt.Errorf(`Error while parsing labels: %v`, err)
-		}
+	if filters, err := labelFilter(loggedUser, appName); err == nil {
+		options.Filters = filters
+	} else {
+		return nil, err
 	}
 
 	return docker.ContainerList(context.Background(), options)
