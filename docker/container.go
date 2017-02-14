@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/filters"
 	"io"
 	"io/ioutil"
 	"net/http"
