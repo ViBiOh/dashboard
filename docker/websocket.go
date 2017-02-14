@@ -65,22 +65,21 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	defer logs.Close()
 
-	end := make(chan int)
+	done := make(chan struct{})
 
 	go func() {
 		scanner := bufio.NewScanner(logs)
 		for scanner.Scan() {
 			select {
-			case <-end:
+			case <-done:
 				return
+	
 			default:
 				logLine := scanner.Bytes()
-				if len(logLine) > ignoredByteLogSize {
-					if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
-						log.Print(err)
-						end <- 1
-						return
-					}
+				if len(logLine) > ignoredByteLogSize && err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
+					log.Print(err)
+					close(done)
+					return
 				}
 			}
 		}
@@ -88,12 +87,11 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	for {
 		select {
-		case <-end:
+		case <-done:
 			return
 		default:
 			if _, _, err := ws.NextReader(); err != nil {
-				end <- 1
-				close(end)
+				close(done)
 				return
 			}
 		}
@@ -111,7 +109,7 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	messages, errors := docker.Events(context, types.EventsOptions{})
 	defer context.Done()
 
-	end := make(chan int)
+	done := make(chan struct{})
 
 	go func() {
 		for {
@@ -120,31 +118,35 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 				messageJSON, err := json.Marshal(message)
 				if err != nil {
 					log.Print(err)
-					end <- 1
+					close(done)
 					return
 				}
 
 				if err = ws.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
 					log.Print(err)
-					end <- 1
+					close(done)
 					return
 				}
 				break
+
 			case err := <-errors:
 				log.Print(err)
-				end <- 1
+				close(done)
+				return
+
+			case <-done:
+				return
 			}
 		}
 	}()
 
 	for {
 		select {
-		case <-end:
+		case <-done:
 			return
 		default:
 			if _, _, err := ws.NextReader(); err != nil {
-				end <- 1
-				close(end)
+				close(done)
 				return
 			}
 		}
