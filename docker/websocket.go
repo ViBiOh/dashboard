@@ -113,7 +113,7 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	context := context.Background()
-	messages, errors := docker.Events(context, types.EventsOptions{Filters: filter})
+	messages, errors := docker.Events(context, types.EventsOptions{Filters: *filter})
 
 	defer context.Done()
 	done := make(chan struct{})
