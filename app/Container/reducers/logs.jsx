@@ -1,6 +1,6 @@
 import { OPEN_LOGS, ADD_LOG, CLOSE_LOGS } from '../actions';
 
-const logs = (state = null, action) => {
+export default (state = null, action) => {
   if (action.type === OPEN_LOGS) {
     return [];
   }
@@ -12,5 +12,3 @@ const logs = (state = null, action) => {
   }
   return state;
 };
-
-export default logs;
