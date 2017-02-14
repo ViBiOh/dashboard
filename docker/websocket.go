@@ -26,30 +26,31 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
+func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *user, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		defer ws.Close()
-		return nil, err
+		return nil, nil, err
 	}
 
 	_, basicAuth, err := ws.ReadMessage()
 	if err != nil {
 		defer ws.Close()
-		return nil, err
+		return nil, nil, err
 	}
 
-	if _, err := isAuthenticatedByBasicAuth(string(basicAuth)); err != nil {
+	loggedUser, err := isAuthenticatedByBasicAuth(string(basicAuth))
+	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
 		defer ws.Close()
-		return nil, err
+		return nil, nil, err
 	}
 
-	return ws, nil
+	return ws, loggedUser, nil
 }
 
 func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
-	ws, err := upgradeAndAuth(w, r)
+	ws, _, err := upgradeAndAuth(w, r)
 	if err != nil {
 		log.Print(err)
 		return
@@ -101,13 +102,13 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 }
 
 func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
-	ws, err := upgradeAndAuth(w, r)
+	ws, loggedUser, err := upgradeAndAuth(w, r)
 	if err != nil {
 		return
 	}
 	defer ws.Close()
 	
-	filter, err := labelFilter(loggedUser, appName)
+	filter, err := labelFilter(loggedUser, nil)
 	if err != nil {
 		return
 	}
