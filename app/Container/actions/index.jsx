@@ -1,36 +1,30 @@
+function makeActionCreator(type, ...argNames) {
+  return (...args) => {
+    const action = { type };
+    argNames.forEach((arg, index) => {
+      action[argNames[index]] = args[index];
+    });
+    return action;
+  };
+}
+
 export const LOGIN = 'LOGIN';
-export const login = (username, password) => ({
-  type: LOGIN,
-  username,
-  password,
-});
+export const login = makeActionCreator(LOGIN, 'username', 'password');
 
 export const LOGIN_SUCCEEDED = 'LOGIN_SUCCEEDED';
-export const loginSucceeded = () => ({
-  type: LOGIN_SUCCEEDED,
-});
+export const loginSucceeded = makeActionCreator(LOGIN_SUCCEEDED);
 
 export const LOGIN_FAILED = 'LOGIN_FAILED';
-export const loginFailed = error => ({
-  type: LOGIN_FAILED,
-  error,
-});
+export const loginFailed = makeActionCreator(LOGIN_FAILED, 'error');
 
 export const LOGOUT = 'LOGOUT';
-export const logout = () => ({
-  type: LOGOUT,
-});
+export const logout = makeActionCreator(LOGOUT, 'error');
 
 export const LOGOUT_SUCCEEDED = 'LOGOUT_SUCCEEDED';
-export const logoutSucceeded = () => ({
-  type: LOGOUT_SUCCEEDED,
-});
+export const logout = makeActionCreator(LOGOUT_SUCCEEDED, 'error');
 
 export const LOGOUT_FAILED = 'LOGOUT_FAILED';
-export const logoutFailed = error => ({
-  type: LOGOUT_FAILED,
-  error,
-});
+export const logout = makeActionCreator(LOGOUT_FAILED, 'error');
 
 export const FETCH_CONTAINERS = 'FETCH_CONTAINERS';
 export const fetchContainers = () => ({
