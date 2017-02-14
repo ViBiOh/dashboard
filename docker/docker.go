@@ -1,6 +1,8 @@
 package docker
 
 import (
+	"fmt"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"log"
 	"os"
@@ -20,7 +22,7 @@ func init() {
 	}
 }
 
-func labelFilter(loggedUser *user, appName string) (*filters.Args, error) {
+func labelFilter(loggedUser *user, appName *string) (*filters.Args, error) {
 	filters := filters.NewArgs()
 	
 	if !isAdmin(loggedUser) {
