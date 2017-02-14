@@ -54,7 +54,6 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		log.Print(err)
 		return
 	}
-
 	defer ws.Close()
 
 	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
@@ -62,16 +61,11 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		log.Print(err)
 		return
 	}
-
 	defer logs.Close()
 
 	done := make(chan struct{})
 
 	go func() {
-		defer func() {
-			log.Print(`Exiting read goroutine`)
-		}()
-
 		scanner := bufio.NewScanner(logs)
 		for scanner.Scan() {
 			select {
@@ -82,7 +76,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 				logLine := scanner.Bytes()
 				if len(logLine) > ignoredByteLogSize {
 					if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
-						log.Printf(`Error while writing to socket: %v`, err)
+						log.Printf(`Error while writing to logs socket: %v`, err)
 						close(done)
 						return
 					}
@@ -94,11 +88,11 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	for {
 		select {
 		case <-done:
-			log.Print(`Exiting handler`)
 			return
+
 		default:
 			if _, _, err := ws.NextReader(); err != nil {
-				log.Printf(`Error while reading from socket: %v`, err)
+				log.Printf(`Error while reading from logs socket: %v`, err)
 				close(done)
 				return
 			}
@@ -122,27 +116,27 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	go func() {
 		for {
 			select {
+			case <-done:
+				return
+
 			case message := <-messages:
 				messageJSON, err := json.Marshal(message)
 				if err != nil {
-					log.Print(err)
+					log.Printf(`Error while marshalling event: %v`, err)
 					close(done)
 					return
 				}
 
 				if err = ws.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
-					log.Print(err)
+					log.Printf(`Error while writing to events socket: %v`, err)
 					close(done)
 					return
 				}
 				break
 
 			case err := <-errors:
-				log.Print(err)
+				log.Print(`Error while reading events: %v`, err)
 				close(done)
-				return
-
-			case <-done:
 				return
 			}
 		}
@@ -154,6 +148,7 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		default:
 			if _, _, err := ws.NextReader(); err != nil {
+				log.Printf(`Error while reading from events socket: %v`, err)
 				close(done)
 				return
 			}
