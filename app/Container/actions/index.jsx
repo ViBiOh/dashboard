@@ -21,10 +21,10 @@ export const LOGOUT = 'LOGOUT';
 export const logout = makeActionCreator(LOGOUT, 'error');
 
 export const LOGOUT_SUCCEEDED = 'LOGOUT_SUCCEEDED';
-export const logout = makeActionCreator(LOGOUT_SUCCEEDED, 'error');
+export const logoutSucceeded = makeActionCreator(LOGOUT_SUCCEEDED, 'error');
 
 export const LOGOUT_FAILED = 'LOGOUT_FAILED';
-export const logout = makeActionCreator(LOGOUT_FAILED, 'error');
+export const logoutFailed = makeActionCreator(LOGOUT_FAILED, 'error');
 
 export const FETCH_CONTAINERS = 'FETCH_CONTAINERS';
 export const fetchContainers = () => ({
