@@ -19,3 +19,19 @@ func init() {
 		docker = client
 	}
 }
+
+func labelFilter(loggedUser *user, appName string) (*filters.Args, error) {
+	filters := filters.NewArgs()
+	
+	if !isAdmin(loggedUser) {
+		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, filters); err != nil {
+			return nil, fmt.Errorf(`Error while parsing label for user: %v`, err)
+		}
+	} else if appName != nil && *appName != `` {
+		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, filters); err != nil {
+			return nil, fmt.Errorf(`Error while parsing label for user: %v`, err)
+		}
+	}
+	
+	return filters
+}
