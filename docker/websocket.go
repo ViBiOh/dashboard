@@ -68,11 +68,14 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	done := make(chan struct{})
 
 	go func() {
+		defer func() {
+			log.Print(`Exiting read goroutine`)
+		}()
+
 		scanner := bufio.NewScanner(logs)
 		for scanner.Scan() {
 			select {
 			case <-done:
-				log.Print(`Exiting logs goroutine`)
 				return
 	
 			default:
