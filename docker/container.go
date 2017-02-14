@@ -21,7 +21,7 @@ func listContainers(loggedUser *user, appName *string) ([]types.Container, error
 	options := types.ContainerListOptions{All: true}
 
 	if filters, err := labelFilter(loggedUser, appName); err == nil {
-		options.Filters = filters
+		options.Filters = *filters
 	} else {
 		return nil, err
 	}
