@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { browserHistory } from 'react-router';
 import { routerMiddleware } from 'react-router-redux';
@@ -9,10 +9,8 @@ const sagaMiddleware = createSagaMiddleware();
 
 const appStore = createStore(
   appReducers,
-  compose(
-    applyMiddleware(routerMiddleware(browserHistory)),
-    applyMiddleware(sagaMiddleware),
-  ),
+  applyMiddleware(routerMiddleware(browserHistory)),
+  applyMiddleware(sagaMiddleware),
 );
 
 sagaMiddleware.run(appSaga);

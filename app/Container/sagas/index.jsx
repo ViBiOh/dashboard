@@ -37,7 +37,7 @@ export function* loginSaga(action) {
       put(push('/')),
     ];
   } catch (e) {
-    yield put(loginFailed(e.content));
+    yield put(loginFailed(String(e)));
   }
 }
 
@@ -49,7 +49,7 @@ export function* logoutSaga() {
       put(push('/login')),
     ];
   } catch (e) {
-    yield put(logoutFailed(e.content));
+    yield put(logoutFailed(String(e)));
   }
 }
 
@@ -58,7 +58,7 @@ export function* fetchContainersSaga() {
     const containers = yield call(DockerService.containers);
     yield put(fetchContainersSucceeded(containers));
   } catch (e) {
-    yield put(fetchContainersFailed(e.content));
+    yield put(fetchContainersFailed(String(e)));
   }
 }
 
@@ -67,7 +67,7 @@ export function* fetchContainerSaga(action) {
     const container = yield call(DockerService.infos, action.id);
     yield put(fetchContainerSucceeded(container));
   } catch (e) {
-    yield put(fetchContainerFailed(e.content));
+    yield put(fetchContainerFailed(String(e)));
   }
 }
 
@@ -85,7 +85,7 @@ export function* actionContainerSaga(action) {
       ];
     }
   } catch (e) {
-    yield put(actionContainerFailed(e.content));
+    yield put(actionContainerFailed(String(e)));
   }
 }
 
@@ -99,7 +99,7 @@ export function* composeSaga(action) {
       put(push('/')),
     ];
   } catch (e) {
-    yield put(composeFailed(e.content));
+    yield put(composeFailed(String(e)));
   }
 }
 

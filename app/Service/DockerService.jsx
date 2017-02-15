@@ -1,5 +1,6 @@
 import { browserHistory } from 'react-router';
 import Fetch, { errorHandler } from 'js-fetch';
+import LocalStorage from './LocalStorageService';
 
 const API_HOST = 'docker-api.vibioh.fr';
 const API = `https://${API_HOST}/`;
@@ -14,13 +15,13 @@ function authRedirect(response) {
 
 function auth(url) {
   return Fetch.url(url)
-    .auth(localStorage.getItem(authStorage))
+    .auth(LocalStorage.getItem(authStorage))
     .error(authRedirect);
 }
 
 export default class DockerService {
   static isLogged() {
-    return !!localStorage.getItem(authStorage);
+    return !!LocalStorage.getItem(authStorage);
   }
 
   static login(username, password) {
@@ -30,12 +31,12 @@ export default class DockerService {
       .auth(hash)
       .get()
       .then(() => {
-        localStorage.setItem(authStorage, hash);
+        LocalStorage.setItem(authStorage, hash);
       });
   }
 
   static logout() {
-    localStorage.removeItem(authStorage);
+    LocalStorage.removeItem(authStorage);
     return Promise.resolve();
   }
 
