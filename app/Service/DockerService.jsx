@@ -1,5 +1,6 @@
 import { browserHistory } from 'react-router';
 import Fetch, { errorHandler } from 'js-fetch';
+import btoa from '../Tools/btoa';
 import LocalStorage from './LocalStorageService';
 
 const API_HOST = 'docker-api.vibioh.fr';
@@ -27,11 +28,10 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return Fetch.url(`${API}auth`)
-      .auth(hash)
-      .get()
-      .then(() => {
+    return Fetch.url(`${API}auth`).auth(hash).get()
+      .then((result) => {
         LocalStorage.setItem(authStorage, hash);
+        return result;
       });
   }
 
