@@ -33,13 +33,14 @@ describe('Login Saga', () => {
     ]);
   });
 
-  xit('should put error on failure', () => {
+  it('should put error on failure', () => {
     const iterator = loginSaga({});
+    iterator.next();
 
     expect(
-      iterator.throw({ content: 'Test error' }).value,
+      iterator.throw(new Error('Test')).value,
     ).to.deep.equal(
-      put(loginFailed('Test error')),
+      put(loginFailed('Error: Test')),
     );
   });
 });

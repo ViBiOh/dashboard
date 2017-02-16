@@ -65,13 +65,17 @@ describe('ActionContainer Saga', () => {
     ]);
   });
 
-  xit('should put error on failure', () => {
-    const iterator = actionContainerSaga({});
+  it('should put error on failure', () => {
+    const iterator = actionContainerSaga({
+      action: 'delete',
+      id: 'test',
+    });
+    iterator.next();
 
     expect(
-      iterator.throw({ content: 'Test error' }).value,
+      iterator.throw(new Error('Test')).value,
     ).to.deep.equal(
-      put(actionContainerFailed('Test error')),
+      put(actionContainerFailed('Error: Test')),
     );
   });
 });
