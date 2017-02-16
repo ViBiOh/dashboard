@@ -1,12 +1,14 @@
 let storageEnabled;
 const storage = {};
+const localStorageKeyCheck = 'localStorageKeyCheck';
 
 const LocalStorage = {
   isEnabled: () => {
     if (typeof storageEnabled === 'undefined') {
       try {
-        localStorage.setItem('test', true);
-        localStorage.removeItem('test');
+        localStorage.setItem(localeStorageKeyCheck, true);
+        localStorage.removeItem(localeStorageKeyCheck);
+        storageEnabled = true;
       } catch (e) {
         storageEnabled = false;
       }
