@@ -9,7 +9,7 @@ const sagaMiddleware = createSagaMiddleware();
 
 const appStore = createStore(
   appReducers,
-  applyMiddleware(routerMiddleware(browserHistory), sagaMiddleware)),
+  applyMiddleware(routerMiddleware(browserHistory), sagaMiddleware),
 );
 
 sagaMiddleware.run(appSaga);
