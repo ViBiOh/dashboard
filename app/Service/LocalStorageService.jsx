@@ -6,8 +6,8 @@ const LocalStorage = {
   isEnabled: () => {
     if (typeof storageEnabled === 'undefined') {
       try {
-        localStorage.setItem(localeStorageKeyCheck, true);
-        localStorage.removeItem(localeStorageKeyCheck);
+        localStorage.setItem(localStorageKeyCheck, true);
+        localStorage.removeItem(localStorageKeyCheck);
         storageEnabled = true;
       } catch (e) {
         storageEnabled = false;
