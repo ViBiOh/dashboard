@@ -21,13 +21,13 @@ const Container = (props) => {
     pendingAction,
     container,
     logs,
-    openLogs,
     onBack,
     onRefresh,
     onRestart,
     onStop,
     onStart,
     onDelete,
+    openLogs,
     error,
   } = props;
 

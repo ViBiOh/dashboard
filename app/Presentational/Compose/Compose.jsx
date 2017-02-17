@@ -1,12 +1,11 @@
 import React from 'react';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
-import { browserHistory } from 'react-router';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import Button from '../../Presentational/Button/Button';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Compose.css';
 
-const Compose = ({ onCompose, pending, error }) => {
+const Compose = ({ onCompose, onBack, pending, error }) => {
   let nameInput;
   let composeInput;
 
@@ -24,7 +23,7 @@ const Compose = ({ onCompose, pending, error }) => {
   return (
     <div className={style.flex}>
       <Toolbar error={error}>
-        <Button onClick={() => browserHistory.push('/')}>
+        <Button onClick={onBack}>
           <FaArrowLeft />
           <span>Back</span>
         </Button>
@@ -59,6 +58,7 @@ Compose.displayName = 'Compose';
 
 Compose.propTypes = {
   onCompose: React.PropTypes.func.isRequired,
+  onBack: React.PropTypes.func.isRequired,
   pending: React.PropTypes.bool.isRequired,
   error: React.PropTypes.string,
 };

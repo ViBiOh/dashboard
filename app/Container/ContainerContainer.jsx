@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { push } from 'react-router-redux';
 import {
   FETCH_CONTAINER,
   fetchContainer,
@@ -29,14 +29,13 @@ class ContainerComponent extends Component {
         pendingAction={this.props.pendingAction}
         container={this.props.container}
         logs={this.props.logs}
-        openLogs={() => this.props.openLogs(container.Id)}
-        closeLogs={() => this.props.closeLogs()}
-        onBack={() => browserHistory.push('/')}
+        onBack={this.props.onBack}
         onRefresh={() => this.props.actionContainer('infos', container.Id)}
         onStart={() => this.props.actionContainer('start', container.Id)}
         onRestart={() => this.props.actionContainer('restart', container.Id)}
         onStop={() => this.props.actionContainer('stop', container.Id)}
         onDelete={() => this.props.actionContainer('delete', container.Id)}
+        openLogs={() => this.props.openLogs(container.Id)}
         error={this.props.error}
       />
     );
@@ -54,6 +53,7 @@ ContainerComponent.propTypes = {
   error: React.PropTypes.string.isRequired,
   fetchContainer: React.PropTypes.func.isRequired,
   actionContainer: React.PropTypes.func.isRequired,
+  onBack: React.PropTypes.func.isRequired,
   openLogs: React.PropTypes.func.isRequired,
   closeLogs: React.PropTypes.func.isRequired,
 };
@@ -74,6 +74,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   fetchContainer: id => dispatch(fetchContainer(id)),
   actionContainer: (action, id) => dispatch(actionContainer(action, id)),
+  onBack: () => dispatch(push('/')),
   openLogs: id => dispatch(openLogs(id)),
   closeLogs: () => dispatch(closeLogs()),
 });

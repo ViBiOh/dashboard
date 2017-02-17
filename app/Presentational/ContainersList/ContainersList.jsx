@@ -8,7 +8,7 @@ import Throbber from '../../Presentational/Throbber/Throbber';
 import ContainerCard from '../../Presentational/ContainerCard/ContainerCard';
 import style from './ContainersList.css';
 
-const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onLogout }) => {
+const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect, onLogout }) => {
   let content;
 
   if (pending || !containers) {
@@ -18,7 +18,7 @@ const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onLogout
       <div key="list" className={style.flex}>
         {
           containers.map(container => (
-            <ContainerCard key={container.Id} container={container} />
+            <ContainerCard key={container.Id} container={container} onClick={onSelect} />
           ))
         }
       </div>
@@ -55,6 +55,7 @@ ContainersList.propTypes = {
   error: React.PropTypes.string,
   onRefresh: React.PropTypes.func.isRequired,
   onAdd: React.PropTypes.func.isRequired,
+  onSelect: React.PropTypes.func.isRequired,
   onLogout: React.PropTypes.func.isRequired,
 };
 
