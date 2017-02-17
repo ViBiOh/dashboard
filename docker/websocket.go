@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -72,7 +73,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 			select {
 			case <-done:
 				return
-	
+
 			default:
 				logLine := scanner.Bytes()
 				if len(logLine) > ignoredByteLogSize {
@@ -107,14 +108,19 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer ws.Close()
-	
-	filter, err := labelFilter(loggedUser, nil)
-	if err != nil {
+
+	filtersArgs := filters.NewArgs()
+	if labelFilters(&filtersArgs, loggedUser, nil) != nil {
+		log.Printf(`Error while defining label filters: %v`, err)
+		return
+	}
+	if eventFilters(&filtersArgs) != nil {
+		log.Printf(`Error while defining event filters: %v`, err)
 		return
 	}
 
 	context := context.Background()
-	messages, errors := docker.Events(context, types.EventsOptions{Filters: *filter})
+	messages, errors := docker.Events(context, types.EventsOptions{Filters: filtersArgs})
 
 	defer context.Done()
 	done := make(chan struct{})

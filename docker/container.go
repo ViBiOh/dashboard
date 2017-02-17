@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/ViBiOh/docker-deploy/jsonHttp"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -20,9 +21,8 @@ type results struct {
 func listContainers(loggedUser *user, appName *string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
-	if filter, err := labelFilter(loggedUser, appName); err == nil {
-		options.Filters = *filter
-	} else {
+	options.Filters = filters.NewArgs()
+	if err := labelFilters(&options.Filters, loggedUser, appName); err != nil {
 		return nil, err
 	}
 

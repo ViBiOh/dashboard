@@ -22,18 +22,33 @@ func init() {
 	}
 }
 
-func labelFilter(loggedUser *user, appName *string) (*filters.Args, error) {
-	labelFilter := filters.NewArgs()
-	
+func labelFilters(filtersArgs *filters.Args, loggedUser *user, appName *string) error {
 	if !isAdmin(loggedUser) {
-		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, labelFilter); err != nil {
-			return nil, fmt.Errorf(`Error while parsing label for user: %v`, err)
+		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, *filtersArgs); err != nil {
+			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
 	} else if appName != nil && *appName != `` {
-		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, labelFilter); err != nil {
-			return nil, fmt.Errorf(`Error while parsing label for user: %v`, err)
+		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, *filtersArgs); err != nil {
+			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
 	}
-	
-	return &labelFilter, nil
+
+	return nil
+}
+
+func eventFilters(filtersArgs *filters.Args) error {
+	if _, err := filters.ParseFlag(`event=create`, *filtersArgs); err != nil {
+		return fmt.Errorf(`Error while parsing label for user: %v`, err)
+	}
+	if _, err := filters.ParseFlag(`event=start`, *filtersArgs); err != nil {
+		return fmt.Errorf(`Error while parsing label for user: %v`, err)
+	}
+	if _, err := filters.ParseFlag(`event=stop`, *filtersArgs); err != nil {
+		return fmt.Errorf(`Error while parsing label for user: %v`, err)
+	}
+	if _, err := filters.ParseFlag(`event=restart`, *filtersArgs); err != nil {
+		return fmt.Errorf(`Error while parsing label for user: %v`, err)
+	}
+
+	return nil
 }
