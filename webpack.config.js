@@ -36,6 +36,7 @@ const config = {
   },
 
   plugins: [
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new ExtractTextPlugin({
       filename: 'app.css',
       allChunks: true,
