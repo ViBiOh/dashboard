@@ -49,7 +49,7 @@ describe('ActionContainer Saga', () => {
     );
   });
 
-  it('should put fetch containers and go home after delete API call', () => {
+  it('should go home after delete API call', () => {
     const iterator = actionContainerSaga({
       action: 'delete',
       id: 'test',
@@ -59,10 +59,9 @@ describe('ActionContainer Saga', () => {
 
     expect(
       iterator.next().value,
-    ).to.deep.equal([
-      put(fetchContainers()),
+    ).to.deep.equal(
       put(push('/')),
-    ]);
+    );
   });
 
   it('should put error on failure', () => {

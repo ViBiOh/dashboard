@@ -26,7 +26,12 @@ import {
   composeFailed,
   OPEN_LOGS,
   CLOSE_LOGS,
+  closeLogs,
   addLog,
+  OPEN_EVENTS,
+  CLOSE_EVENTS,
+  openEvents,
+  closeEvents,
 } from '../actions';
 
 export function* loginSaga(action) {
@@ -34,6 +39,8 @@ export function* loginSaga(action) {
     yield call(DockerService.login, action.username, action.password);
     yield [
       put(loginSucceeded()),
+      put(fetchContainers()),
+      put(openEvents()),
       put(push('/')),
     ];
   } catch (e) {
@@ -46,6 +53,8 @@ export function* logoutSaga() {
     yield call(DockerService.logout);
     yield [
       put(logoutSucceeded()),
+      put(closeEvents()),
+      put(closeLogs()),
       put(push('/login')),
     ];
   } catch (e) {
@@ -79,10 +88,7 @@ export function* actionContainerSaga(action) {
     if (action.action !== 'delete') {
       yield put(fetchContainer(action.id));
     } else {
-      yield [
-        put(fetchContainers()),
-        put(push('/')),
-      ];
+      yield put(push('/'));
     }
   } catch (e) {
     yield put(actionContainerFailed(String(e)));
@@ -95,7 +101,6 @@ export function* composeSaga(action) {
 
     yield [
       put(composeSucceeded()),
-      put(fetchContainers()),
       put(push('/')),
     ];
   } catch (e) {
@@ -103,9 +108,9 @@ export function* composeSaga(action) {
   }
 }
 
-export function* readLogs(action) {
+export function* readLogsSaga(action) {
   const chan = eventChannel((emit) => {
-    const websocket = DockerService.logs(action.id, log => emit(log));
+    const websocket = DockerService.logs(action.id, emit);
 
     return () => websocket.close();
   });
@@ -120,10 +125,34 @@ export function* readLogs(action) {
   }
 }
 
-export function* logs(action) {
-  const task = yield fork(readLogs, action);
+export function* logsSaga(action) {
+  const task = yield fork(readLogsSaga, action);
 
   yield take(CLOSE_LOGS);
+  yield cancel(task);
+}
+
+export function* readEventsSaga() {
+  const chan = eventChannel((emit) => {
+    const websocket = DockerService.events(emit);
+
+    return () => websocket.close();
+  });
+
+  try {
+    while (true) { // eslint-disable-line no-constant-condition
+      yield take(chan);
+      yield put(fetchContainers());
+    }
+  } finally {
+    chan.close();
+  }
+}
+
+export function* eventsSaga(action) {
+  const task = yield fork(readEventsSaga, action);
+
+  yield take(CLOSE_EVENTS);
   yield cancel(task);
 }
 
@@ -134,7 +163,8 @@ function* appSaga() {
   yield takeLatest(FETCH_CONTAINER, fetchContainerSaga);
   yield takeLatest(ACTION_CONTAINER, actionContainerSaga);
   yield takeLatest(COMPOSE, composeSaga);
-  yield takeLatest(OPEN_LOGS, logs);
+  yield takeLatest(OPEN_LOGS, logsSaga);
+  yield takeLatest(OPEN_EVENTS, eventsSaga);
 }
 
 export default appSaga;

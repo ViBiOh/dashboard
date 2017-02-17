@@ -18,10 +18,10 @@ export const LOGIN_FAILED = 'LOGIN_FAILED';
 export const loginFailed = makeActionCreator(LOGIN_FAILED, 'error');
 
 export const LOGOUT = 'LOGOUT';
-export const logout = makeActionCreator(LOGOUT, 'error');
+export const logout = makeActionCreator(LOGOUT);
 
 export const LOGOUT_SUCCEEDED = 'LOGOUT_SUCCEEDED';
-export const logoutSucceeded = makeActionCreator(LOGOUT_SUCCEEDED, 'error');
+export const logoutSucceeded = makeActionCreator(LOGOUT_SUCCEEDED);
 
 export const LOGOUT_FAILED = 'LOGOUT_FAILED';
 export const logoutFailed = makeActionCreator(LOGOUT_FAILED, 'error');
@@ -70,3 +70,9 @@ export const closeLogs = makeActionCreator(CLOSE_LOGS);
 
 export const ADD_LOG = 'ADD_LOG';
 export const addLog = makeActionCreator(ADD_LOG, 'log');
+
+export const OPEN_EVENTS = 'OPEN_EVENTS';
+export const openEvents = makeActionCreator(OPEN_EVENTS);
+
+export const CLOSE_EVENTS = 'CLOSE_EVENTS';
+export const closeEvents = makeActionCreator(CLOSE_EVENTS);

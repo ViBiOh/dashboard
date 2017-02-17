@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
-import { logoutSucceeded, logoutFailed } from '../actions';
+import { logoutSucceeded, closeEvents, closeLogs, logoutFailed } from '../actions';
 import { logoutSaga } from './';
 
 describe('Logout Saga', () => {
@@ -18,7 +18,7 @@ describe('Logout Saga', () => {
     );
   });
 
-  it('should put success and redirect to login after API call', () => {
+  it('should put success, close streams and redirect to login after API call', () => {
     const iterator = logoutSaga();
     iterator.next();
 
@@ -26,6 +26,8 @@ describe('Logout Saga', () => {
       iterator.next().value,
     ).to.deep.equal([
       put(logoutSucceeded()),
+      put(closeEvents()),
+      put(closeLogs()),
       put(push('/login')),
     ]);
   });

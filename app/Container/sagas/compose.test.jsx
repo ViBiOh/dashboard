@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
-import { composeSucceeded, composeFailed, fetchContainers } from '../actions';
+import { composeSucceeded, composeFailed } from '../actions';
 import { composeSaga } from './';
 
 describe('Compose Saga', () => {
@@ -21,7 +21,7 @@ describe('Compose Saga', () => {
     );
   });
 
-  it('should put success, fetch containers and redirect to home after API call', () => {
+  it('should put success and redirect to home after API call', () => {
     const iterator = composeSaga({});
     iterator.next();
 
@@ -29,7 +29,6 @@ describe('Compose Saga', () => {
       iterator.next().value,
     ).to.deep.equal([
       put(composeSucceeded()),
-      put(fetchContainers()),
       put(push('/')),
     ]);
   });
