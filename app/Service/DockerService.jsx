@@ -1,7 +1,7 @@
 import { browserHistory } from 'react-router';
 import Fetch, { errorHandler } from 'js-fetch';
 import btoa from '../Tools/btoa';
-import LocalStorage from './LocalStorageService';
+import localStorageService from './LocalStorageService';
 
 const API_HOST = 'docker-api.vibioh.fr';
 const API = `https://${API_HOST}/`;
@@ -16,13 +16,13 @@ function authRedirect(response) {
 
 function auth(url) {
   return Fetch.url(url)
-    .auth(LocalStorage.getItem(authStorage))
+    .auth(localStorageService.getItem(authStorage))
     .error(authRedirect);
 }
 
 export default class DockerService {
   static isLogged() {
-    return !!LocalStorage.getItem(authStorage);
+    return !!localStorageService.getItem(authStorage);
   }
 
   static login(username, password) {
@@ -30,13 +30,13 @@ export default class DockerService {
 
     return Fetch.url(`${API}auth`).auth(hash).get()
       .then((result) => {
-        LocalStorage.setItem(authStorage, hash);
+        localStorageService.setItem(authStorage, hash);
         return result;
       });
   }
 
   static logout() {
-    LocalStorage.removeItem(authStorage);
+    localStorageService.removeItem(authStorage);
     return Promise.resolve();
   }
 
@@ -80,7 +80,7 @@ export default class DockerService {
     const socket = new WebSocket(`wss://${API_HOST}/ws/containers/${containerId}/logs`);
 
     socket.onmessage = event => onMessage(event.data);
-    socket.onopen = () => socket.send(LocalStorage.getItem(authStorage));
+    socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
 
     return socket;
   }
@@ -89,7 +89,7 @@ export default class DockerService {
     const socket = new WebSocket(`wss://${API_HOST}/ws/events`);
 
     socket.onmessage = event => onMessage(event.data);
-    socket.onopen = () => socket.send(LocalStorage.getItem(authStorage));
+    socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
 
     return socket;
   }

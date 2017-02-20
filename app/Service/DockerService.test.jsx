@@ -4,10 +4,12 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import Fetch from 'js-fetch';
 import btoa from '../Tools/btoa';
+import localStorageService from './LocalStorageService';
 import DockerService from './DockerService';
 
 describe('DockerService', () => {
   beforeEach(() => {
+    sinon.stub(localStorageService, 'isEnabled', () => false);
     sinon.stub(Fetch, 'url', urlValue => ({
       auth: auth => ({
         get: () => Promise.resolve({
@@ -20,6 +22,7 @@ describe('DockerService', () => {
 
   afterEach(() => {
     Fetch.url.restore();
+    localStorageService.isEnabled.restore();
   });
 
   it('should login with given username and password', () =>
