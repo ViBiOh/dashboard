@@ -4,6 +4,7 @@ import style from './ContainerInfo.css';
 
 const BYTES_SIZE = 1024;
 const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
+const ENV_PARSER = /(.*?)=(.*)/;
 
 function humanFileSize(size) {
   const i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
@@ -23,6 +24,25 @@ const ContainerInfo = ({ container }) => {
               {label} | {container.Config.Labels[label]}
             </span>
           ))
+        }
+      </span>,
+    ];
+  }
+
+  let envContent = null;
+  if (container.Config.Env.length > 0) {
+    envContent = [
+      <h3 key="envsHeader">Environment</h3>,
+      <span key="envs" className={style.labels}>
+        {
+          container.Config.Env
+            .map(env => ENV_PARSER.exec(env))
+            .map(parts => (
+              <span key={label} className={style.item}>
+                {parts[0]} | {parts[1]}
+              </span>
+            )
+          )
         }
       </span>,
     ];
@@ -84,6 +104,7 @@ const ContainerInfo = ({ container }) => {
         }
       </span>
       {labelContent}
+      {envContent}
     </span>
   );
 };
