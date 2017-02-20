@@ -38,8 +38,8 @@ const ContainerInfo = ({ container }) => {
           container.Config.Env
             .map(env => ENV_PARSER.exec(env))
             .map(parts => (
-              <span key={parts[0]} className={style.item}>
-                {parts[0]} | {parts[1]}
+              <span key={parts[1]} className={style.item}>
+                {parts[1]} | {parts[2]}
               </span>
             ))
         }
