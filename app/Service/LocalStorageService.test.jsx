@@ -33,4 +33,27 @@ describe('LocalStorageService', () => {
 
     expect(new LocalStorageService().isEnabled()).to.be.true;
   });
+
+  it('should return asked key from global localStorage', () => {
+    global.localStorage = {
+      setItem: () => null,
+      removeItem: () => null,
+      getItem: () => 'Test',
+    };
+
+    expect(new LocalStorageService().getItem('test')).to.be.eql('Test');
+  });
+
+  it('should return asked key from proxyfied localStorage', () => {
+    global.localStorage = {
+      setItem: () => throw new Error('Test'),
+    };
+    
+    const localStorage = new LocalStorageService();
+    localStorage.storage = {
+      test: 'Test',
+    };
+
+    expect(localStorage.getItem('test')).to.be.eql('Test');
+  });
 });
