@@ -46,7 +46,9 @@ describe('LocalStorageService', () => {
 
   it('should return asked key from proxyfied localStorage', () => {
     global.localStorage = {
-      setItem: () => throw new Error('Test'),
+      setItem: () => {
+        throw new Error('Test');
+      },
     };
     
     const localStorage = new LocalStorageService();
