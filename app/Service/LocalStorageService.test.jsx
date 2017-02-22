@@ -58,4 +58,16 @@ describe('LocalStorageService', () => {
 
     expect(localStorage.getItem('test')).to.be.eql('Test');
   });
+
+  it('should set key to global localStorage', () => {
+    const localStorage = {};
+    global.localStorage = {
+      setItem: (key, value) => (localStorage[key] = value),
+      removeItem: () => null,
+      getItem: () => 'Test',
+    };
+
+    new LocalStorageService().setItem('test', 'value')
+    expect(localStorage.test).to.be.eql('value');
+  });
 });
