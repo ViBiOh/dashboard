@@ -44,6 +44,33 @@ describe('LocalStorageService', () => {
     expect(new LocalStorageService().getItem('test')).to.be.eql('Test');
   });
 
+  it('should set key to global localStorage', () => {
+    const localStorage = {};
+    global.localStorage = {
+      setItem: (key, value) => (localStorage[key] = value),
+      removeItem: () => null,
+      getItem: () => 'Test',
+    };
+
+    new LocalStorageService().setItem('test', 'value');
+    expect(localStorage.test).to.be.eql('value');
+  });
+
+  it('should set key to global localStorage', () => {
+    const localStorage = {
+      test: 'value',
+      remain: 'value',
+    };
+    global.localStorage = {
+      setItem: () => null,
+      removeItem: key => delete localStorage[key],
+      getItem: () => null,
+    };
+
+    new LocalStorageService().removeItem('test');
+    expect(localStorage).to.be.eql({ remain: 'value' });
+  });
+
   it('should return asked key from proxyfied localStorage', () => {
     global.localStorage = {
       setItem: () => {
@@ -59,15 +86,33 @@ describe('LocalStorageService', () => {
     expect(localStorage.getItem('test')).to.be.eql('Test');
   });
 
-  it('should set key to global localStorage', () => {
-    const localStorage = {};
+  it('should set key to proxyfied localStorage', () => {
     global.localStorage = {
-      setItem: (key, value) => (localStorage[key] = value),
-      removeItem: () => null,
-      getItem: () => 'Test',
+      setItem: () => {
+        throw new Error('Test');
+      },
+    };
+    
+    const localStorage = new LocalStorageService();
+
+    localStorage.setItem('test', 'value')
+    expect(localStorage.storage.test).to.be.eql('value');
+  });
+
+  it('should remove key to proxyfied localStorage', () => {
+    global.localStorage = {
+      setItem: () => {
+        throw new Error('Test');
+      },
+    };
+    
+    const localStorage = new LocalStorageService();
+    localStorage.storage = {
+      test: 'value',
+      remain: 'value',
     };
 
-    new LocalStorageService().setItem('test', 'value')
-    expect(localStorage.test).to.be.eql('value');
+    localStorage.removeItem('test')
+    expect(localStorage.storage).to.be.eql({ remain: 'value' });
   });
 });
