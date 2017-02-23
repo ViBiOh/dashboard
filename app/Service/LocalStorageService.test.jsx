@@ -34,6 +34,20 @@ describe('LocalStorageService', () => {
     expect(new LocalStorageService().isEnabled()).to.be.true;
   });
 
+  it('should use cached value for isEnabled', () => {
+    let count = 0;
+    global.localStorage = {
+      setItem: () => (count += 1),
+      removeItem: () => null,
+    };
+
+    const localStorageService = new LocalStorageService();
+
+    expect(localStorageService.isEnabled()).to.be.true;
+    expect(localStorageService.isEnabled()).to.be.true;
+    expect(count).to.be.eql(1);
+  });
+
   it('should return asked key from global localStorage', () => {
     global.localStorage = {
       setItem: () => null,
