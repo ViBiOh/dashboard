@@ -25,6 +25,20 @@ describe('DockerService', () => {
     localStorageService.isEnabled.restore();
   });
 
+  it('should determine if already logged', () => {
+    sinon.stub(localStorageService, 'getItem', () => 'token');
+
+    expect(DockerService.isLogged()).to.be.true;
+    localStorageService.getItem.restore();
+  });
+
+  it('should determine if not already logged', () => {
+    sinon.stub(localStorageService, 'getItem', () => '');
+
+    expect(DockerService.isLogged()).to.be.false;
+    localStorageService.getItem.restore();
+  });
+
   it('should login with given username and password', () =>
     DockerService.login('admin', 'password').then((result) => {
       expect(result.urlValue).to.match(/auth$/);
