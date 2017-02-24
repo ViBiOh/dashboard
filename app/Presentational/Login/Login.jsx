@@ -20,6 +20,7 @@ const Login = ({ pending, onLogin, error }) => {
 
   return (
     <span className={style.flex}>
+      <h2>Login</h2>
       <input
         ref={e => (loginInput = e)}
         name="login"
