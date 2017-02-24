@@ -9,6 +9,10 @@ $grey: #e1e1e8;
   width: 100%;
 }
 
+.flex h2 {
+  width: 100%;
+}
+
 .flex input[type='text'],
 .flex input[type='password'] {
   border: 1px solid $grey;
