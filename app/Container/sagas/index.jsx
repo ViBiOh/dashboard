@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
-import { eventChannel } from 'redux-saga';
+import { eventChannel, delay } from 'redux-saga';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
 import {
@@ -132,6 +132,11 @@ export function* logsSaga(action) {
   yield cancel(task);
 }
 
+export function* debounceFetchContainers() {
+  yield call(delay, 5555);
+  yield put(fetchContainers());
+}
+
 export function* readEventsSaga() {
   const chan = eventChannel((emit) => {
     const websocket = DockerService.events(emit);
@@ -139,10 +144,14 @@ export function* readEventsSaga() {
     return () => websocket.close();
   });
 
+  let task;
   try {
     while (true) { // eslint-disable-line no-constant-condition
       yield take(chan);
-      yield put(fetchContainers());
+      if (task) {
+        yield cancel(task);
+      }
+      task = yield fork(debounceFetchContainers);
     }
   } finally {
     chan.close();

@@ -4,7 +4,7 @@
   "description": "Docker management",
   "main": "index.js",
   "scripts": {
-    "copy:html": "cp ./app/index.html ./dist/",
+    "copy:html": "mkdir -p ./dist && cp ./app/index.html ./dist/",
     "copy:web": "cp ./web/*.txt ./web/*.html ./dist/ && cp ./web/favicon/* ./dist/",
     "mustache": "./mustache.js -t \"./app/*.html\" -b `git log --pretty=format:'%h' -n 1` -o ./dist/",
     "eslint": "./node_modules/.bin/eslint --ext .js --ext .jsx app/",

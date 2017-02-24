@@ -49,6 +49,21 @@ func eventFilters(filtersArgs *filters.Args) error {
 	if _, err := filters.ParseFlag(`event=restart`, *filtersArgs); err != nil {
 		return fmt.Errorf(`Error while parsing label for user: %v`, err)
 	}
+	if _, err := filters.ParseFlag(`event=rename`, *filtersArgs); err != nil {
+		return fmt.Errorf(`Error while parsing label for user: %v`, err)
+	}
+	if _, err := filters.ParseFlag(`event=update`, *filtersArgs); err != nil {
+		return fmt.Errorf(`Error while parsing label for user: %v`, err)
+	}
+	if _, err := filters.ParseFlag(`event=destroy`, *filtersArgs); err != nil {
+		return fmt.Errorf(`Error while parsing label for user: %v`, err)
+	}
+	if _, err := filters.ParseFlag(`event=die`, *filtersArgs); err != nil {
+		return fmt.Errorf(`Error while parsing label for user: %v`, err)
+	}
+	if _, err := filters.ParseFlag(`event=kill`, *filtersArgs); err != nil {
+		return fmt.Errorf(`Error while parsing label for user: %v`, err)
+	}
 
 	return nil
 }
