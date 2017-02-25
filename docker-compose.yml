@@ -5,7 +5,7 @@ services:
     image: vibioh/docker-api
     environment:
       DOCKER_HOST: 'unix:///var/run/docker.sock'
-      DOCKER_VERSION: '1.23'
+      DOCKER_VERSION: '1.24'
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: docker-api.vibioh.fr'
