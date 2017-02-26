@@ -5,7 +5,7 @@ import localStorageService from './LocalStorageService';
 
 const API_HOST = 'docker-api.vibioh.fr';
 const API = `https://${API_HOST}/`;
-const authStorage = 'auth';
+export const authStorage = 'auth';
 
 function authRedirect(response) {
   if (response.status === 401) {
