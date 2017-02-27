@@ -40,14 +40,14 @@ describe('DockerService', () => {
   });
 
   it('should determine if already logged', () => {
-    sinon.stub(localStorageService, 'getItem', () => 'token');
+    sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
     expect(DockerService.isLogged()).to.be.true;
     localStorageService.getItem.restore();
   });
 
   it('should determine if not already logged', () => {
-    sinon.stub(localStorageService, 'getItem', () => '');
+    sinon.stub(localStorageService, 'getItem').callsFake(() => '');
 
     expect(DockerService.isLogged()).to.be.false;
     localStorageService.getItem.restore();
