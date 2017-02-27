@@ -23,8 +23,8 @@ describe('DockerService', () => {
       });
     }
 
-    sinon.stub(localStorageService, 'isEnabled', () => false);
-    sinon.stub(Fetch, 'url', urlValue => ({
+    sinon.stub(localStorageService, 'isEnabled').callsFake(() => false);
+    sinon.stub(Fetch, 'url').callsFake(urlValue => ({
       auth: auth => ({
         get: () => get(urlValue, auth),
         error: () => ({
