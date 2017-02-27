@@ -8,8 +8,15 @@ import localStorageService from './LocalStorageService';
 import DockerService, { authStorage } from './DockerService';
 
 describe('DockerService', () => {
+  let data;
   beforeEach(() => {
+    data = null;
+
     function get(urlValue, auth) {
+      if (data) {
+        return Promise.resolve(data);
+      }
+
       return Promise.resolve({
         urlValue,
         auth,
@@ -77,5 +84,15 @@ describe('DockerService', () => {
       localStorageService.getItem.restore();
       expect(getItemSpy.calledWith(authStorage)).to.be.true;
     });
+  });
+
+  it('should return results when listing containers', () => {
+    data = {
+      results: [{
+        id: 1,
+      }],
+    };
+    
+    return DockerService.containers().then(value => expect(value).to.be.eql([{ id: 1 }]));
   });
 });
