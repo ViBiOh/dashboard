@@ -80,8 +80,9 @@ describe('DockerService', () => {
   it('should list containers with auth', () => {
     const getItemSpy = sinon.spy(localStorageService, 'getItem');
 
-    return DockerService.containers().then(() => {
+    return DockerService.containers().then((result) => {
       localStorageService.getItem.restore();
+      expect(result.urlValue).to.match(/containers$/);
       expect(getItemSpy.calledWith(authStorage)).to.be.true;
     });
   });
@@ -94,5 +95,15 @@ describe('DockerService', () => {
     };
     
     return DockerService.containers().then(value => expect(value).to.be.eql([{ id: 1 }]));
+  });
+
+  it('should inspect container with auth', () => {
+    const getItemSpy = sinon.spy(localStorageService, 'getItem');
+
+    return DockerService.infos('test').then((result) => {
+      localStorageService.getItem.restore();
+      expect(result.urlValue).to.match(/containers\/test\/$/);
+      expect(getItemSpy.calledWith(authStorage)).to.be.true;
+    });
   });
 });
