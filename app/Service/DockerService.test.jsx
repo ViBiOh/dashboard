@@ -27,7 +27,7 @@ describe('DockerService', () => {
     sinon.stub(Fetch, 'url', urlValue => ({
       auth: auth => ({
         get: () => get(urlValue, auth),
-        error: () => ({ get: get(urlValue, auth) }),
+        error: () => ({ get: () => get(urlValue, auth) }),
       }),
     }));
   });
