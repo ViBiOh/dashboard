@@ -78,9 +78,8 @@ describe('DockerService', () => {
   it('should list containers with auth', () => {
     const getItemSpy = sinon.spy(localStorageService, 'getItem');
 
-    return DockerService.containers().then((result) => {
+    return DockerService.containers().then(() => {
       localStorageService.getItem.restore();
-      expect(result.urlValue).to.match(/containers$/);
       expect(getItemSpy.calledWith(authStorage)).to.be.true;
     });
   });
