@@ -23,8 +23,8 @@ describe('DockerService', () => {
       });
     }
 
-    sinon.stub(localStorageService, 'isEnabled').callsFake(() => false);
-    sinon.stub(Fetch, 'url').callsFake(urlValue => ({
+    sinon.stub(localStorageService, 'isEnabled', () => false);
+    sinon.stub(Fetch, 'url', (urlValue) => ({
       auth: auth => ({
         get: () => get(urlValue, auth),
         error: () => ({
@@ -40,14 +40,14 @@ describe('DockerService', () => {
   });
 
   it('should determine if already logged', () => {
-    sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
+    sinon.stub(localStorageService, 'getItem', () => 'token');
 
     expect(DockerService.isLogged()).to.be.true;
     localStorageService.getItem.restore();
   });
 
   it('should determine if not already logged', () => {
-    sinon.stub(localStorageService, 'getItem').callsFake(() => '');
+    sinon.stub(localStorageService, 'getItem', () => '');
 
     expect(DockerService.isLogged()).to.be.false;
     localStorageService.getItem.restore();
