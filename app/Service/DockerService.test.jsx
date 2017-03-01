@@ -9,29 +9,35 @@ import DockerService, { authStorage } from './DockerService';
 
 describe('DockerService', () => {
   let data;
+
   beforeEach(() => {
     data = null;
 
-    function send(urlValue, auth, content) {
+    function send(url, auth, method, content) {
       if (data) {
         return Promise.resolve(data);
       }
 
       return Promise.resolve({
-        urlValue,
+        url,
         auth,
         content,
+        method,
       });
     }
 
+    const fetch = (url, auth) => ({
+      get: () => send(url, auth, 'get'),
+      post: body => send(url, auth, 'post', body),
+      put: body => send(url, auth, 'put', body),
+      delete: () => send(url, auth, 'delete'),
+    });
+
     sinon.stub(localStorageService, 'isEnabled', () => false);
-    sinon.stub(Fetch, 'url', urlValue => ({
+    sinon.stub(Fetch, 'url', url => ({
       auth: auth => ({
-        get: () => send(urlValue, auth),
-        error: () => ({
-          get: () => send(urlValue, auth),
-          post: content => send(urlValue, auth, content),
-        }),
+        ...fetch(url, auth),
+        error: () => fetch(url, auth),
       }),
     }));
   });
@@ -57,7 +63,7 @@ describe('DockerService', () => {
 
   it('should login with given username and password', () =>
     DockerService.login('admin', 'password').then((result) => {
-      expect(result.urlValue).to.match(/auth$/);
+      expect(result.url).to.match(/auth$/);
       expect(result.auth).to.eql(`Basic ${btoa('admin:password')}`);
     }));
 
@@ -94,24 +100,52 @@ describe('DockerService', () => {
         id: 1,
       }],
     };
-    
+
     return DockerService.containers().then(value => expect(value).to.be.eql([{ id: 1 }]));
   });
 
-  it('should inspect container with auth', () => {
-    const getItemSpy = sinon.spy(localStorageService, 'getItem');
-
-    return DockerService.infos('test').then((result) => {
-      localStorageService.getItem.restore();
-      expect(result.urlValue).to.match(/containers\/test\/$/);
-      expect(getItemSpy.calledWith(authStorage)).to.be.true;
-    });
-  });
-
-  it('should create container with given args', () => {
-    return DockerService.create('test', 'composeFileContent').then((result) => {
-      expect(result.urlValue).to.match(/containers\/test\/$/);
+  it('should create container with given args', () =>
+    DockerService.create('test', 'composeFileContent').then((result) => {
+      expect(result.url).to.match(/containers\/test\/$/);
       expect(result.content).to.equal('composeFileContent');
+    }),
+  );
+
+  describe('should call API with auth', () => {
+    let getItemSpy;
+
+    beforeEach(() => {
+      getItemSpy = sinon.spy(localStorageService, 'getItem');
+    });
+
+    afterEach(() => {
+      localStorageService.getItem.restore();
+    });
+
+    [
+      { method: 'infos', args: ['test'], httpMethod: 'get', url: /containers\/test\/$/ },
+      {
+        method: 'create',
+        args: [
+          'test',
+          'composeFileContent',
+        ],
+        httpMethod: 'post',
+        url: /containers\/test\/$/,
+      },
+      { method: 'start', args: ['test'], httpMethod: 'post', url: /containers\/test\/start$/ },
+      { method: 'stop', args: ['test'], httpMethod: 'post', url: /containers\/test\/stop$/ },
+      { method: 'restart', args: ['test'], httpMethod: 'post', url: /containers\/test\/restart$/ },
+      { method: 'delete', args: ['test'], httpMethod: 'delete', url: /containers\/test\/$/ },
+    ].forEach((param) => {
+      it(`for ${param.method}`, () => {
+
+        return DockerService[param.method].apply(null, param.args).then((result) => {
+          expect(result.method).to.eql(param.httpMethod);
+          expect(result.url).to.match(param.url);
+          expect(getItemSpy.calledWith(authStorage)).to.be.true;
+        });
+      });
     });
   });
 });
