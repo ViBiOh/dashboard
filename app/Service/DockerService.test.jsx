@@ -29,8 +29,8 @@ describe('DockerService', () => {
       auth: auth => ({
         get: () => send(urlValue, auth),
         error: () => ({
-          get: () => send(urlValue, auth)
-          post: content => send(urlValue, auth, content)
+          get: () => send(urlValue, auth),
+          post: content => send(urlValue, auth, content),
         }),
       }),
     }));
