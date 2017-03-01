@@ -12,7 +12,7 @@ describe('DockerService', () => {
   beforeEach(() => {
     data = null;
 
-    function get(urlValue, auth) {
+    function send(urlValue, auth, content) {
       if (data) {
         return Promise.resolve(data);
       }
@@ -20,14 +20,18 @@ describe('DockerService', () => {
       return Promise.resolve({
         urlValue,
         auth,
+        content,
       });
     }
 
     sinon.stub(localStorageService, 'isEnabled', () => false);
     sinon.stub(Fetch, 'url', urlValue => ({
       auth: auth => ({
-        get: () => get(urlValue, auth),
-        error: () => ({ get: () => get(urlValue, auth) }),
+        get: () => send(urlValue, auth),
+        error: () => ({
+          get: () => send(urlValue, auth)
+          post: content => send(urlValue, auth, content)
+        }),
       }),
     }));
   });
@@ -101,6 +105,13 @@ describe('DockerService', () => {
       localStorageService.getItem.restore();
       expect(result.urlValue).to.match(/containers\/test\/$/);
       expect(getItemSpy.calledWith(authStorage)).to.be.true;
+    });
+  });
+
+  it('should create container with given args', () => {
+    return DockerService.create('test', 'composeFileContent').then((result) => {
+      expect(result.urlValue).to.match(/containers\/test\/$/);
+      expect(result.content).to.equal('composeFileContent');
     });
   });
 });
