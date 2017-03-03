@@ -6,7 +6,7 @@ const Button = ({ children, type, active, className, ...buttonProps }) => {
   let content = children;
   if (Array.isArray(children)) {
     content = (
-      <div className={`${style.wrapper}`}>
+      <div className={style.wrapper}>
         {children}
       </div>
     );
