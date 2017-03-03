@@ -7,14 +7,24 @@ import Button from './Button';
 
 describe('Button', () => {
   const renderer = ReactTestUtils.createRenderer();
-  let wrapper;
 
-  beforeEach(() => {
+  it('should always render as a button', () => {
     renderer.render(<Button />);
-    wrapper = renderer.getRenderOutput();
+    const wrapper = renderer.getRenderOutput();
+
+    expect(wrapper.type).to.equal('button');
   });
 
-  it('should render empty as a button', () => {
+  it('should wrap children in div if array', () => {
+    renderer.render((
+      <Button>
+        <span>First</span>
+        <span>Second</span>
+      </Button>
+    ));
+    const wrapper = renderer.getRenderOutput();
+
     expect(wrapper.type).to.equal('button');
+    expect(wrapper.children.type).to.equal('div');
   });
 });
