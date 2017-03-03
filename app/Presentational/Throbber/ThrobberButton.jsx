@@ -4,7 +4,7 @@ import Throbber from './Throbber';
 import style from './ThrobberButton.css';
 
 const ThrobberButton = ({ pending, onClick, children, ...buttonProps }) => (
-  <Button {...buttonProps} onClick={() => (pending ? null : onClick())}>
+  <Button {...buttonProps} onClick={e => (pending ? null : onClick(e))}>
     {pending ? <Throbber className={style.white} /> : children}
   </Button>
 );

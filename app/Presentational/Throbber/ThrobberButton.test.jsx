@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-env mocha */
 import { expect } from 'chai';
+import sinon from 'sinon';
 import React from 'react';
 import { createRenderer } from 'react-addons-test-utils';
 import ThrobberButton from './ThrobberButton';
@@ -33,5 +34,25 @@ describe('ThrobberButton', () => {
     const wrapper = renderer.getRenderOutput();
 
     expect(wrapper.props.children.type).to.equal('span');
+  });
+
+  it('should call onClick at click', () => {
+    const onClick = sinon.spy();
+
+    renderer.render(<ThrobberButton onClick={onClick} />);
+    const wrapper = renderer.getRenderOutput();
+    wrapper.props.onClick();
+
+    expect(onClick.called).to.equal(true);
+  });
+
+  it('should not call onClick if pending', () => {
+    const onClick = sinon.spy();
+
+    renderer.render(<ThrobberButton onClick={onClick} pending />);
+    const wrapper = renderer.getRenderOutput();
+    wrapper.props.onClick();
+
+    expect(onClick.called).to.equal(false);
   });
 });
