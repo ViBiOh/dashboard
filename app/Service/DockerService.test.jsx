@@ -50,14 +50,14 @@ describe('DockerService', () => {
   it('should determine if already logged', () => {
     sinon.stub(localStorageService, 'getItem', () => 'token');
 
-    expect(DockerService.isLogged()).to.be.true;
+    expect(DockerService.isLogged()).to.equal(true);
     localStorageService.getItem.restore();
   });
 
   it('should determine if not already logged', () => {
     sinon.stub(localStorageService, 'getItem', () => '');
 
-    expect(DockerService.isLogged()).to.be.false;
+    expect(DockerService.isLogged()).to.equal(false);
     localStorageService.getItem.restore();
   });
 
@@ -72,7 +72,7 @@ describe('DockerService', () => {
 
     return DockerService.login('admin', 'password').then(() => {
       localStorageService.setItem.restore();
-      expect(setItemSpy.calledWith(authStorage, `Basic ${btoa('admin:password')}`)).to.be.true;
+      expect(setItemSpy.calledWith(authStorage, `Basic ${btoa('admin:password')}`)).to.equal(true);
     });
   });
 
@@ -81,7 +81,7 @@ describe('DockerService', () => {
 
     return DockerService.logout().then(() => {
       localStorageService.removeItem.restore();
-      expect(removeItemSpy.calledWith(authStorage)).to.be.true;
+      expect(removeItemSpy.calledWith(authStorage)).to.equal(true);
     });
   });
 
@@ -90,7 +90,7 @@ describe('DockerService', () => {
 
     return DockerService.containers().then(() => {
       localStorageService.getItem.restore();
-      expect(getItemSpy.calledWith(authStorage)).to.be.true;
+      expect(getItemSpy.calledWith(authStorage)).to.equal(true);
     });
   });
 
@@ -139,11 +139,10 @@ describe('DockerService', () => {
       { method: 'delete', args: ['test'], httpMethod: 'delete', url: /containers\/test\/$/ },
     ].forEach((param) => {
       it(`for ${param.method}`, () => {
-
         return DockerService[param.method].apply(null, param.args).then((result) => {
           expect(result.method).to.eql(param.httpMethod);
           expect(result.url).to.match(param.url);
-          expect(getItemSpy.calledWith(authStorage)).to.be.true;
+          expect(getItemSpy.calledWith(authStorage)).to.equal(true);
         });
       });
     });
