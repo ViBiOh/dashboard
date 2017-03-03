@@ -11,7 +11,7 @@ describe('LocalStorageService', () => {
       },
     };
 
-    expect(new LocalStorageService().isEnabled()).to.be.false;
+    expect(new LocalStorageService().isEnabled()).to.equal(false);
   });
 
   it('should determine localStorage not available on error', () => {
@@ -22,7 +22,7 @@ describe('LocalStorageService', () => {
       },
     };
 
-    expect(new LocalStorageService().isEnabled()).to.be.false;
+    expect(new LocalStorageService().isEnabled()).to.equal(false);
   });
 
   it('should determine localStorage is available if all success', () => {
@@ -31,7 +31,7 @@ describe('LocalStorageService', () => {
       removeItem: () => null,
     };
 
-    expect(new LocalStorageService().isEnabled()).to.be.true;
+    expect(new LocalStorageService().isEnabled()).to.equal(true);
   });
 
   it('should use cached value for isEnabled', () => {
@@ -43,8 +43,8 @@ describe('LocalStorageService', () => {
 
     const localStorageService = new LocalStorageService();
 
-    expect(localStorageService.isEnabled()).to.be.true;
-    expect(localStorageService.isEnabled()).to.be.true;
+    expect(localStorageService.isEnabled()).to.equal(true);
+    expect(localStorageService.isEnabled()).to.equal(true);
     expect(count).to.be.eql(1);
   });
 
@@ -91,7 +91,7 @@ describe('LocalStorageService', () => {
         throw new Error('Test');
       },
     };
-    
+
     const localStorage = new LocalStorageService();
     localStorage.storage = {
       test: 'Test',
@@ -106,10 +106,10 @@ describe('LocalStorageService', () => {
         throw new Error('Test');
       },
     };
-    
+
     const localStorage = new LocalStorageService();
 
-    localStorage.setItem('test', 'value')
+    localStorage.setItem('test', 'value');
     expect(localStorage.storage.test).to.be.eql('value');
   });
 
@@ -119,14 +119,14 @@ describe('LocalStorageService', () => {
         throw new Error('Test');
       },
     };
-    
+
     const localStorage = new LocalStorageService();
     localStorage.storage = {
       test: 'value',
       remain: 'value',
     };
 
-    localStorage.removeItem('test')
+    localStorage.removeItem('test');
     expect(localStorage.storage).to.be.eql({ remain: 'value' });
   });
 });
