@@ -25,6 +25,6 @@ describe('Button', () => {
     const wrapper = renderer.getRenderOutput();
 
     expect(wrapper.type).to.equal('button');
-    expect(wrapper.props.children[0].type).to.equal('div');
+    expect(wrapper.props.children.type).to.equal('div');
   });
 });
