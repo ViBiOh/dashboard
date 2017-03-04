@@ -13,7 +13,7 @@ ThrobberButton.displayName = 'ThrobberButton';
 
 ThrobberButton.propTypes = {
   pending: React.PropTypes.bool,
-  onClick: React.PropTypes.func,
+  onClick: React.PropTypes.func.isRequired,
   children: React.PropTypes.oneOfType([
     React.PropTypes.arrayOf(React.PropTypes.node),
     React.PropTypes.node,
@@ -22,7 +22,6 @@ ThrobberButton.propTypes = {
 
 ThrobberButton.defaultProps = {
   pending: false,
-  onClick: () => null,
   children: '',
 };
 

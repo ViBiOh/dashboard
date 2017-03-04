@@ -45,12 +45,13 @@ const Login = ({ pending, onLogin, error }) => {
 Login.displayName = 'Login';
 
 Login.propTypes = {
-  pending: React.PropTypes.bool.isRequired,
+  pending: React.PropTypes.bool,
   onLogin: React.PropTypes.func.isRequired,
   error: React.PropTypes.string,
 };
 
 Login.defaultProps = {
+  pending: false,
   error: '',
 };
 

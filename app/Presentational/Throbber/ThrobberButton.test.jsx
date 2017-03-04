@@ -12,14 +12,14 @@ describe('ThrobberButton', () => {
   const renderer = createRenderer();
 
   it('should render as a Button', () => {
-    renderer.render(<ThrobberButton />);
+    renderer.render(<ThrobberButton onClick={() => null} />);
     const wrapper = renderer.getRenderOutput();
 
     expect(wrapper.type).to.equal(Button);
   });
 
   it('should render with a Throbber if pending', () => {
-    renderer.render(<ThrobberButton pending />);
+    renderer.render(<ThrobberButton onClick={() => null} pending />);
     const wrapper = renderer.getRenderOutput();
 
     expect(wrapper.props.children.type).to.equal(Throbber);
@@ -27,7 +27,7 @@ describe('ThrobberButton', () => {
 
   it('should render with children if not pending', () => {
     renderer.render((
-      <ThrobberButton>
+      <ThrobberButton onClick={() => null}>
         <span>Test</span>
       </ThrobberButton>
     ));
