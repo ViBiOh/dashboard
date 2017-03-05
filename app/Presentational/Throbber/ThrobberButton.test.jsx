@@ -3,45 +3,39 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import React from 'react';
-import { createRenderer } from 'react-addons-test-utils';
+import { shallow } from 'enzyme';
 import ThrobberButton from './ThrobberButton';
 import Button from '../Button/Button';
 import Throbber from './Throbber';
 
 describe('ThrobberButton', () => {
-  const renderer = createRenderer();
-
   it('should render as a Button', () => {
-    renderer.render(<ThrobberButton onClick={() => null} />);
-    const wrapper = renderer.getRenderOutput();
+    const wrapper = shallow(<ThrobberButton onClick={() => null} />);
 
-    expect(wrapper.type).to.equal(Button);
+    expect(wrapper.type()).to.equal(Button);
   });
 
   it('should render with a Throbber if pending', () => {
-    renderer.render(<ThrobberButton onClick={() => null} pending />);
-    const wrapper = renderer.getRenderOutput();
+    const wrapper = shallow(<ThrobberButton onClick={() => null} pending />);
 
-    expect(wrapper.props.children.type).to.equal(Throbber);
+    expect(wrapper.find(Throbber).length).to.equal(1);
   });
 
   it('should render with children if not pending', () => {
-    renderer.render((
+    const wrapper = shallow((
       <ThrobberButton onClick={() => null}>
         <span>Test</span>
       </ThrobberButton>
     ));
-    const wrapper = renderer.getRenderOutput();
 
-    expect(wrapper.props.children.type).to.equal('span');
+    expect(wrapper.find('span').length).to.equal(1);
   });
 
   it('should call onClick at click', () => {
     const onClick = sinon.spy();
 
-    renderer.render(<ThrobberButton onClick={onClick} />);
-    const wrapper = renderer.getRenderOutput();
-    wrapper.props.onClick();
+    const wrapper = shallow(<ThrobberButton onClick={onClick} />);
+    wrapper.simulate('click');
 
     expect(onClick.called).to.equal(true);
   });
@@ -49,9 +43,8 @@ describe('ThrobberButton', () => {
   it('should not call onClick if pending', () => {
     const onClick = sinon.spy();
 
-    renderer.render(<ThrobberButton onClick={onClick} pending />);
-    const wrapper = renderer.getRenderOutput();
-    wrapper.props.onClick();
+    const wrapper = shallow(<ThrobberButton onClick={onClick} pending />);
+    wrapper.simulate('click');
 
     expect(onClick.called).to.equal(false);
   });

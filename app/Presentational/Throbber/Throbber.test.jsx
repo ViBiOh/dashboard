@@ -2,30 +2,25 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 import React from 'react';
-import { createRenderer } from 'react-addons-test-utils';
+import { shallow } from 'enzyme';
 import Throbber from './Throbber';
 
 describe('Throbber', () => {
-  const renderer = createRenderer();
-
   it('should render into a div', () => {
-    renderer.render(<Throbber />);
-    const wrapper = renderer.getRenderOutput();
+    const wrapper = shallow(<Throbber />);
 
-    expect(wrapper.type).to.equal('div');
+    expect(wrapper.type()).to.equal('div');
   });
 
   it('should have no label by default', () => {
-    renderer.render(<Throbber />);
-    const wrapper = renderer.getRenderOutput();
+    const wrapper = shallow(<Throbber />);
 
-    expect(wrapper.props.children.type).to.not.equal('span');
+    expect(wrapper.find('span').length).to.equal(0);
   });
 
   it('should have label when given', () => {
-    renderer.render(<Throbber label="test" />);
-    const wrapper = renderer.getRenderOutput();
+    const wrapper = shallow(<Throbber label="test" />);
 
-    expect(wrapper.props.children[0].type).to.equal('span');
+    expect(wrapper.find('span').text()).to.equal('test');
   });
 });

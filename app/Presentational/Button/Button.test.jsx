@@ -2,41 +2,36 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 import React from 'react';
-import { createRenderer } from 'react-addons-test-utils';
+import { shallow } from 'enzyme';
 import Button from './Button';
 
 describe('Button', () => {
-  const renderer = createRenderer();
-
   it('should always render as a button', () => {
-    renderer.render(<Button />);
-    const wrapper = renderer.getRenderOutput();
+    const wrapper = shallow(<Button />);
 
-    expect(wrapper.type).to.equal('button');
+    expect(wrapper.type()).to.equal('button');
   });
 
   it('should not wrap if one child', () => {
-    renderer.render((
+    const wrapper = shallow((
       <Button>
         <span>First</span>
       </Button>
     ));
-    const wrapper = renderer.getRenderOutput();
 
-    expect(wrapper.type).to.equal('button');
-    expect(wrapper.props.children.type).to.equal('span');
+    expect(wrapper.type()).to.equal('button');
+    expect(wrapper.find('span').length).to.equal(1);
   });
 
   it('should wrap children in div', () => {
-    renderer.render((
+    const wrapper = shallow((
       <Button>
         <span>First</span>
         <span>Second</span>
       </Button>
     ));
-    const wrapper = renderer.getRenderOutput();
 
-    expect(wrapper.type).to.equal('button');
-    expect(wrapper.props.children.type).to.equal('div');
+    expect(wrapper.type()).to.equal('button');
+    expect(wrapper.find('div').length).to.equal(1);
   });
 });
