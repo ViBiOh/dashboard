@@ -11,7 +11,7 @@ import style from './ContainersList.css';
 const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect, onLogout }) => {
   let content;
 
-  if (pending || !containers) {
+  if (pending || !Array.isArray(containers)) {
     content = <Throbber label="Loading containers" error={error} />;
   } else {
     content = (
@@ -50,7 +50,7 @@ const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect
 ContainersList.displayName = 'ContainersList';
 
 ContainersList.propTypes = {
-  pending: React.PropTypes.bool.isRequired,
+  pending: React.PropTypes.bool,
   containers: React.PropTypes.arrayOf(React.PropTypes.shape({})),
   error: React.PropTypes.string,
   onRefresh: React.PropTypes.func.isRequired,
@@ -60,6 +60,7 @@ ContainersList.propTypes = {
 };
 
 ContainersList.defaultProps = {
+  pending: false,
   containers: null,
   error: '',
 };

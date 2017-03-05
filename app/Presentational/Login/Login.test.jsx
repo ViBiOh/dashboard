@@ -27,4 +27,22 @@ describe('Login', () => {
 
     expect(onLogin.called).to.equal(true);
   });
+
+  it('should call submit on enter key down', () => {
+    const onLogin = sinon.spy();
+
+    const wrapper = mount(<Login onLogin={onLogin} />);
+    wrapper.find('input').at(0).simulate('keyDown', { keyCode: 13 });
+
+    expect(onLogin.called).to.equal(true);
+  });
+
+  it('should not call submit on other key down', () => {
+    const onLogin = sinon.spy();
+
+    const wrapper = mount(<Login onLogin={onLogin} />);
+    wrapper.find('input').at(1).simulate('keyDown', { keyCode: 10 });
+
+    expect(onLogin.called).to.equal(false);
+  });
 });
