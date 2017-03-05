@@ -10,11 +10,11 @@ import Throbber from '../Throbber/Throbber';
 import ContainerCard from '../ContainerCard/ContainerCard';
 
 describe('ContainersList', () => {
+  let wrapper;
   let onRefresh;
   let onAdd;
   let onSelect;
   let onLogout;
-  let wrapper;
 
   beforeEach(() => {
     onRefresh = sinon.spy();

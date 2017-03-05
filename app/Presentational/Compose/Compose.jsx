@@ -28,6 +28,7 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
           <span>Back</span>
         </Button>
       </Toolbar>
+      <h2>Create an app</h2>
       <span>
         <input
           ref={e => (nameInput = e)}
@@ -59,11 +60,12 @@ Compose.displayName = 'Compose';
 Compose.propTypes = {
   onCompose: React.PropTypes.func.isRequired,
   onBack: React.PropTypes.func.isRequired,
-  pending: React.PropTypes.bool.isRequired,
+  pending: React.PropTypes.bool,
   error: React.PropTypes.string,
 };
 
 Compose.defaultProps = {
+  pending: false,
   error: '',
 };
 

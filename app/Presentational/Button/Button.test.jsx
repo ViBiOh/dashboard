@@ -6,32 +6,32 @@ import { shallow } from 'enzyme';
 import Button from './Button';
 
 describe('Button', () => {
-  it('should always render as a button', () => {
-    const wrapper = shallow(<Button />);
+  let wrapper;
 
+  beforeEach(() => {
+    wrapper = shallow(<Button />);
+  });
+
+  it('should always render as a button', () => {
     expect(wrapper.type()).to.equal('button');
   });
 
-  it('should not wrap if one child', () => {
-    const wrapper = shallow((
-      <Button>
-        <span>First</span>
-      </Button>
-    ));
+  it('should not wrap child', () => {
+    wrapper.setProps({
+      children: <span>First</span>,
+    });
 
-    expect(wrapper.type()).to.equal('button');
     expect(wrapper.find('span').length).to.equal(1);
   });
 
   it('should wrap children in div', () => {
-    const wrapper = shallow((
-      <Button>
-        <span>First</span>
-        <span>Second</span>
-      </Button>
-    ));
+    wrapper.setProps({
+      children: [
+        <span key="first">First</span>,
+        <span key="second">Second</span>,
+      ],
+    });
 
-    expect(wrapper.type()).to.equal('button');
     expect(wrapper.find('div').length).to.equal(1);
   });
 });

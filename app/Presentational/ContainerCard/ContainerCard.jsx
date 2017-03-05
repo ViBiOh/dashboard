@@ -6,14 +6,8 @@ import style from './ContainerCard.css';
 const GREEN_STATUS = /up/i;
 
 const ContainerCard = ({ container, onClick }) => (
-  <Button
-    type="none"
-    className={style.card}
-    onClick={() => onClick(container.Id)}
-  >
-    <div
-      className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`}
-    />
+  <Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
+    <div className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`} />
     <span className={style.column}>
       <span>Image: <em>{container.Image}</em></span>
       <span>Names: <strong>{container.Names.join(', ')}</strong></span>
