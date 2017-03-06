@@ -38,7 +38,16 @@ describe('ContainersList', () => {
   });
 
   it('should render a div list with ContainerCard if not pending', () => {
-    wrapper.setProps({ containers: [{ Id: 1 }] });
+    wrapper.setProps({
+      containers: [{
+        Id: 1,
+        Image: 'test',
+        Created: 0,
+        Status: 'up',
+        Names: [],
+      }],
+    });
+
     expect(wrapper.find('div').length).to.equal(1);
     expect(wrapper.find(ContainerCard).length).to.equal(1);
   });

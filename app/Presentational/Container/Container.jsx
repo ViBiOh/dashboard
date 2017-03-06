@@ -95,8 +95,8 @@ const Container = (props) => {
 Container.displayName = 'Container';
 
 Container.propTypes = {
-  pending: React.PropTypes.bool.isRequired,
-  pendingAction: React.PropTypes.bool.isRequired,
+  pending: React.PropTypes.bool,
+  pendingAction: React.PropTypes.bool,
   container: React.PropTypes.shape({}),
   logs: React.PropTypes.arrayOf(React.PropTypes.string),
   openLogs: React.PropTypes.func.isRequired,
@@ -110,6 +110,8 @@ Container.propTypes = {
 };
 
 Container.defaultProps = {
+  pending: false,
+  pendingAction: false,
   container: null,
   logs: undefined,
   error: '',
