@@ -138,13 +138,13 @@ describe('DockerService', () => {
       { method: 'restart', args: ['test'], httpMethod: 'post', url: /containers\/test\/restart$/ },
       { method: 'delete', args: ['test'], httpMethod: 'delete', url: /containers\/test\/$/ },
     ].forEach((param) => {
-      it(`for ${param.method}`, () => {
-        return DockerService[param.method].apply(null, param.args).then((result) => {
+      it(`for ${param.method}`, () => DockerService[param.method].apply(null, param.args)
+        .then((result) => {
           expect(result.method).to.eql(param.httpMethod);
           expect(result.url).to.match(param.url);
           expect(getItemSpy.calledWith(authStorage)).to.equal(true);
-        });
-      });
+        }),
+      );
     });
   });
 });

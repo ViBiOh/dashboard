@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
-import { actionContainerSucceeded, actionContainerFailed, fetchContainer, fetchContainers } from '../actions';
+import { actionContainerSucceeded, actionContainerFailed, fetchContainer } from '../actions';
 import { actionContainerSaga } from './';
 
 describe('ActionContainer Saga', () => {
