@@ -9,7 +9,7 @@ const ENV_PARSER = /(.*?)=(.*)/;
 function humanFileSize(size) {
   const i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
   // eslint-disable-next-line no-restricted-properties
-  return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(2)} ${BYTES_NAMES[i]}`;
+  return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(0)} ${BYTES_NAMES[i]}`;
 }
 
 const ContainerInfo = ({ container }) => {
@@ -38,6 +38,7 @@ const ContainerInfo = ({ container }) => {
           container.Config.Env
             .filter(e => !!e)
             .map(env => ENV_PARSER.exec(env))
+            .filter(parts => parts !== null && parts.length > 2)
             .map(parts => (
               <span key={parts[1]} className={style.item}>
                 {parts[1]} | {parts[2]}
@@ -52,13 +53,13 @@ const ContainerInfo = ({ container }) => {
     <span className={style.container}>
       <h2>
         <span key="status" className={container.State.Running ? style.green : style.red}>
-          {container.Name.replace(/^\//, '')}
+          {String(container.Name).replace(/^\//, '')}
         </span>
       </h2>
       <h3 key="config">Config</h3>
       <span key="id" className={style.info}>
         <span className={style.label}>Id</span>
-        <span>{container.Id.substring(0, 12)}</span>
+        <span>{String(container.Id).substring(0, 12)}</span>
       </span>
       <span key="created" className={style.info}>
         <span className={style.label}>Created</span>
@@ -92,7 +93,7 @@ const ContainerInfo = ({ container }) => {
         }
         {
           container.HostConfig.Memory > 0 && <span key="memory" className={style.item}>
-            Memory limit| {humanFileSize(container.HostConfig.Memory)}
+            Memory limit | {humanFileSize(container.HostConfig.Memory)}
           </span>
         }
         {
@@ -113,17 +114,27 @@ ContainerInfo.displayName = 'ContainerInfo';
 
 ContainerInfo.propTypes = {
   container: React.PropTypes.shape({
-    Id: React.PropTypes.string.isRequired,
-    Created: React.PropTypes.string.isRequired,
+    Id: React.PropTypes.string,
+    Name: React.PropTypes.string,
+    Args: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    Created: React.PropTypes.string,
     State: React.PropTypes.shape({
-      Status: React.PropTypes.string.isRequired,
+      Running: React.PropTypes.bool,
     }).isRequired,
     Config: React.PropTypes.shape({
-      Image: React.PropTypes.string.isRequired,
+      Image: React.PropTypes.string,
       Labels: React.PropTypes.shape({}).isRequired,
+      Env: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     }).isRequired,
     HostConfig: React.PropTypes.shape({
-      ReadonlyRootfs: React.PropTypes.bool.isRequired,
+      ReadonlyRootfs: React.PropTypes.bool,
+      RestartPolicy: React.PropTypes.shape({
+        Name: React.PropTypes.string,
+        MaximumRetryCount: React.PropTypes.number,
+      }),
+      CpuShares: React.PropTypes.number,
+      Memory: React.PropTypes.number,
+      SecurityOpt: React.PropTypes.arrayOf(React.PropTypes.string),
     }).isRequired,
   }).isRequired,
 };

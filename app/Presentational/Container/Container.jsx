@@ -97,7 +97,11 @@ Container.displayName = 'Container';
 Container.propTypes = {
   pending: React.PropTypes.bool,
   pendingAction: React.PropTypes.bool,
-  container: React.PropTypes.shape({}),
+  container: React.PropTypes.shape({
+    State: React.PropTypes.shape({
+      Running: React.PropTypes.bool,
+    }).isRequired,
+  }),
   logs: React.PropTypes.arrayOf(React.PropTypes.string),
   openLogs: React.PropTypes.func.isRequired,
   onBack: React.PropTypes.func.isRequired,

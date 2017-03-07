@@ -24,19 +24,15 @@ describe('Container', () => {
   let onDelete;
 
   const container = {
-    Id: '1',
-    Created: '',
+    Args: [],
     Config: {
-      Image: 'test',
       Labels: {},
+      Env: [],
     },
-    HostConfig: {
-      ReadonlyRootfs: false,
-    },
+    HostConfig: {},
     NetworkSettings: {},
     Mounts: [],
     State: {
-      Status: 'up',
       Running: true,
     },
   };
@@ -95,10 +91,13 @@ describe('Container', () => {
   });
 
   it('should have a two action button if not up', () => {
-    wrapper.setProps({ pending: false, container: {
-      ...container,
-      State: { Status: 'down', Running: false },
-    }});
+    wrapper.setProps({
+      pending: false,
+      container: {
+        ...container,
+        State: { Status: 'down', Running: false },
+      },
+    });
 
     expect(wrapper.find(ThrobberButton).length).to.be.at.least(2);
     expect(wrapper.find(ThrobberButton).at(1).find('span').text()).to.equal('Start');
