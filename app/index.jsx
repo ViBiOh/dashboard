@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
-import actions, { openEvents } from './Container/actions';
+import actions from './Container/actions';
 import LoginContainer from './Container/LoginContainer';
 import ContainersListContainer from './Container/ContainersListContainer';
 import ContainerContainer from './Container/ContainerContainer';
@@ -25,4 +25,4 @@ ReactDOM.render(
 );
 
 appStore.dispatch(actions.fetchContainers());
-appStore.dispatch(openEvents());
+appStore.dispatch(actions.openEvents());

@@ -3,8 +3,7 @@ import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
 import { eventChannel, delay } from 'redux-saga';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
-import actions, { OPEN_LOGS, CLOSE_LOGS, closeLogs, addLog, OPEN_EVENTS, CLOSE_EVENTS, openEvents,
-  closeEvents } from '../actions';
+import actions from '../actions';
 
 export function* loginSaga(action) {
   try {
@@ -12,7 +11,7 @@ export function* loginSaga(action) {
     yield [
       put(actions.loginSucceeded()),
       put(actions.fetchContainers()),
-      put(openEvents()),
+      put(actions.openEvents()),
       put(push('/')),
     ];
   } catch (e) {
@@ -25,8 +24,8 @@ export function* logoutSaga() {
     yield call(DockerService.logout);
     yield [
       put(actions.logoutSucceeded()),
-      put(closeEvents()),
-      put(closeLogs()),
+      put(actions.closeEvents()),
+      put(actions.closeLogs()),
       put(push('/login')),
     ];
   } catch (e) {
@@ -90,7 +89,7 @@ export function* readLogsSaga(action) {
   try {
     while (true) { // eslint-disable-line no-constant-condition
       const log = yield take(chan);
-      yield put(addLog(log));
+      yield put(actions.addLog(log));
     }
   } finally {
     chan.close();
@@ -100,7 +99,7 @@ export function* readLogsSaga(action) {
 export function* logsSaga(action) {
   const task = yield fork(readLogsSaga, action);
 
-  yield take(CLOSE_LOGS);
+  yield take(actions.CLOSE_LOGS);
   yield cancel(task);
 }
 
@@ -133,19 +132,17 @@ export function* readEventsSaga() {
 export function* eventsSaga(action) {
   const task = yield fork(readEventsSaga, action);
 
-  yield take(CLOSE_EVENTS);
+  yield take(actions.CLOSE_EVENTS);
   yield cancel(task);
 }
 
-function* appSaga() {
+export default function* appSaga() {
   yield takeLatest(actions.LOGIN, loginSaga);
   yield takeLatest(actions.LOGOUT, logoutSaga);
   yield takeLatest(actions.FETCH_CONTAINERS, fetchContainersSaga);
   yield takeLatest(actions.FETCH_CONTAINER, fetchContainerSaga);
   yield takeLatest(actions.ACTION_CONTAINER, actionContainerSaga);
   yield takeLatest(actions.COMPOSE, composeSaga);
-  yield takeLatest(OPEN_LOGS, logsSaga);
-  yield takeLatest(OPEN_EVENTS, eventsSaga);
+  yield takeLatest(actions.OPEN_LOGS, logsSaga);
+  yield takeLatest(actions.OPEN_EVENTS, eventsSaga);
 }
-
-export default appSaga;

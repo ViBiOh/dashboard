@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
-import actions, { openEvents } from '../actions';
+import actions from '../actions';
 import { loginSaga } from './';
 
 describe('Login Saga', () => {
@@ -30,7 +30,7 @@ describe('Login Saga', () => {
     ).to.deep.equal([
       put(actions.loginSucceeded()),
       put(actions.fetchContainers()),
-      put(openEvents()),
+      put(actions.openEvents()),
       put(push('/')),
     ]);
   });

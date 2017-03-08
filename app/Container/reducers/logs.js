@@ -1,13 +1,13 @@
-import { OPEN_LOGS, ADD_LOG, CLOSE_LOGS } from '../actions';
+import actions from '../actions';
 
 export default (state = null, action) => {
-  if (action.type === OPEN_LOGS) {
+  if (action.type === actions.OPEN_LOGS) {
     return [];
   }
-  if (action.type === ADD_LOG) {
+  if (action.type === actions.ADD_LOG) {
     return [...state, action.log];
   }
-  if (action.type === CLOSE_LOGS) {
+  if (action.type === actions.CLOSE_LOGS) {
     return null;
   }
   return state;

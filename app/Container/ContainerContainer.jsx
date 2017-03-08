@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import actions, { openLogs, closeLogs } from './actions';
+import actions from './actions';
 import Container from '../Presentational/Container/Container';
 
 class ContainerComponent extends Component {
@@ -68,8 +68,8 @@ const mapDispatchToProps = dispatch => ({
   fetchContainer: id => dispatch(actions.fetchContainer(id)),
   actionContainer: (action, id) => dispatch(actions.actionContainer(action, id)),
   onBack: () => dispatch(push('/')),
-  openLogs: id => dispatch(openLogs(id)),
-  closeLogs: () => dispatch(closeLogs()),
+  openLogs: id => dispatch(actions.openLogs(id)),
+  closeLogs: () => dispatch(actions.closeLogs()),
 });
 
 const ContainerContainer = connect(
