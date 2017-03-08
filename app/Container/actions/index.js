@@ -39,9 +39,9 @@ function makeOpenCloseActionCreator(camelCaseName, inputs = []) {
 
   return {
     [openName]: openName,
-    [`open${camelCaseName}`]: makeActionCreator(cleanName, ...inputs),
+    [`open${camelCaseName}`]: makeActionCreator(openName, ...inputs),
     [closeName]: closeName,
-    [`close${camelCaseName}`]: makeActionCreator(cleanName, ...inputs),
+    [`close${camelCaseName}`]: makeActionCreator(closeName, ...inputs),
   };
 }
 
