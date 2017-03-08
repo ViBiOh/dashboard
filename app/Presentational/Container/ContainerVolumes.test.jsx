@@ -17,7 +17,7 @@ describe('ContainerVolumes', () => {
   });
 
   it('should not render if no Mounts', () => {
-    expect(wrapper).to.equal(null);
+    expect(wrapper.type()).to.equal(null);
   });
 
   it('should always render in a span and have a h3 title', () => {
