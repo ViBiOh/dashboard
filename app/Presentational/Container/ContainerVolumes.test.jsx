@@ -16,11 +16,22 @@ describe('ContainerVolumes', () => {
     wrapper = shallow(<ContainerVolumes container={container} />);
   });
 
-  it('should always render as a span', () => {
-    expect(wrapper.type()).to.equal('span');
+  it('should not render if no Mounts', () => {
+    expect(wrapper).to.equal(null);
   });
 
-  it('should have a h3 title', () => {
+  it('should always render in a span and have a h3 title', () => {
+    wrapper.setProps({
+      container: {
+        ...container,
+        Mounts: [{
+          Destination: '/www/',
+          Source: '/home',
+          Mode: 'ro',
+        }],
+    });
+    
+    expect(wrapper.type()).to.equal('span');
     expect(wrapper.find('h3').text()).to.equal('Volumes');
   });
 });
