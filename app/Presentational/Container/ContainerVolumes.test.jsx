@@ -29,6 +29,7 @@ describe('ContainerVolumes', () => {
           Source: '/home',
           Mode: 'ro',
         }],
+      },
     });
     
     expect(wrapper.type()).to.equal('span');
