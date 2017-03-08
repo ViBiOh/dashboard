@@ -1,51 +1,37 @@
-function makeActionCreator(type, ...argNames) {
-  return (...args) => {
-    const action = { type };
-    argNames.forEach((arg, index) => {
-      action[argNames[index]] = args[index];
-    });
+const makeActionCreator = (type, ...argNames) => (...args) => {
+  const action = { type };
+  argNames.forEach((arg, index) => {
+    action[argNames[index]] = args[index];
+  });
 
-    return action;
-  };
-}
+  return action;
+};
 
 const toEventName = name => String(name).replace(/(?!^)([A-Z])/g, '_$1').toUpperCase();
 
-const SUCCESS_SUFFIX = '_SUCCEEDED';
-const FAIL_SUFFIX = '_FAILED';
+const makeActionAndTypeCreator = (type, action, inputs = []) => ({
+  [type]: type,
+  [action]: makeActionCreator(type, ...inputs),
+});
 
 function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
   const cleanName = toEventName(camelCaseName);
-  const successName = `${cleanName}${SUCCESS_SUFFIX}`;
-  const failName = `${cleanName}${FAIL_SUFFIX}`;
 
   return {
-    [cleanName]: cleanName,
-    [camelCaseName]: makeActionCreator(cleanName, ...inputs),
-    [successName]: successName,
-    [`${camelCaseName}Succeeded`]: makeActionCreator(successName, ...outputs),
-    [failName]: failName,
-    [`${camelCaseName}Failed`]: makeActionCreator(failName, 'error'),
+    ...makeActionAndTypeCreator(cleanName, camelCaseName, inputs),
+    ...makeActionAndTypeCreator(`${cleanName}_SUCCEEDED`, `${camelCaseName}Succeeded`, outputs),
+    ...makeActionAndTypeCreator(`${cleanName}_FAILED`, `${camelCaseName}Failed`, ['error']),
   };
 }
 
-const OPEN_PREFIX = 'OPEN_';
-const CLOSE_PREFIX = 'CLOSE_';
-
-function makeOpenCloseActionCreator(camelCaseName, inputs = []) {
+function makeOpenCloseActionCreator(camelCaseName, opens = [], closes = []) {
   const cleanName = toEventName(camelCaseName);
-  const openName = `${OPEN_PREFIX}${cleanName}`;
-  const closeName = `${CLOSE_PREFIX}${cleanName}`;
 
   return {
-    [openName]: openName,
-    [`open${camelCaseName}`]: makeActionCreator(openName, ...inputs),
-    [closeName]: closeName,
-    [`close${camelCaseName}`]: makeActionCreator(closeName, ...inputs),
+    ...makeActionAndTypeCreator(`OPEN_${cleanName}`, `open${camelCaseName}`, opens),
+    ...makeActionAndTypeCreator(`CLOSE_${cleanName}`, `close${camelCaseName}`, closes),
   };
 }
-
-const ADD_LOG = 'ADD_LOG';
 
 export default {
   ...makeApiActionCreator('login', ['username', 'password']),
@@ -56,6 +42,5 @@ export default {
   ...makeApiActionCreator('compose', ['name', 'file']),
   ...makeOpenCloseActionCreator('Logs', ['id']),
   ...makeOpenCloseActionCreator('Events'),
-  ADD_LOG,
-  addLog: makeActionCreator(ADD_LOG, 'log'),
+  ...makeActionAndTypeCreator('ADD_LOG', 'addLog', ['log']),
 };

@@ -5,7 +5,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import ContainerInfo from '../Container/ContainerInfo';
 
-describe('Container', () => {
+describe('ContainerInfo', () => {
   let wrapper;
 
   const container = {
