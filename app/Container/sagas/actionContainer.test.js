@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
-import { actionContainerSucceeded, actionContainerFailed, fetchContainer } from '../actions';
+import actions from '../actions';
 import { actionContainerSaga } from './';
 
 describe('ActionContainer Saga', () => {
@@ -30,7 +30,7 @@ describe('ActionContainer Saga', () => {
     expect(
       iterator.next().value,
     ).to.deep.equal(
-      put(actionContainerSucceeded()),
+      put(actions.actionContainerSucceeded()),
     );
   });
 
@@ -45,7 +45,7 @@ describe('ActionContainer Saga', () => {
     expect(
       iterator.next().value,
     ).to.deep.equal(
-      put(fetchContainer('test')),
+      put(actions.fetchContainer('test')),
     );
   });
 
@@ -74,7 +74,7 @@ describe('ActionContainer Saga', () => {
     expect(
       iterator.throw(new Error('Test')).value,
     ).to.deep.equal(
-      put(actionContainerFailed('Error: Test')),
+      put(actions.actionContainerFailed('Error: Test')),
     );
   });
 });

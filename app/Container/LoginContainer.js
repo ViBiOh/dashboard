@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
-import { login, LOGIN } from './actions';
+import actions from './actions';
 import Login from '../Presentational/Login/Login';
 
 const mapStateToProps = state => ({
-  pending: !!state.pending[LOGIN],
+  pending: !!state.pending[actions.LOGIN],
   error: state.error,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onLogin: (username, password) => dispatch(login(username, password)),
+  onLogin: (username, password) => dispatch(actions.login(username, password)),
 });
 
 const LoginContainer = connect(

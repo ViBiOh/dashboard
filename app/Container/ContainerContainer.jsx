@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import {
-  FETCH_CONTAINER,
-  fetchContainer,
-  ACTION_CONTAINER,
-  actionContainer,
-  openLogs,
-  closeLogs,
-} from './actions';
+import actions, { openLogs, closeLogs } from './actions';
 import Container from '../Presentational/Container/Container';
 
 class ContainerComponent extends Component {
@@ -64,16 +57,16 @@ ContainerComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  pending: !!state.pending[FETCH_CONTAINER],
-  pendingAction: !!state.pending[ACTION_CONTAINER],
+  pending: !!state.pending[actions.FETCH_CONTAINER],
+  pendingAction: !!state.pending[actions.ACTION_CONTAINER],
   container: state.container,
   logs: state.logs,
   error: state.error,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchContainer: id => dispatch(fetchContainer(id)),
-  actionContainer: (action, id) => dispatch(actionContainer(action, id)),
+  fetchContainer: id => dispatch(actions.fetchContainer(id)),
+  actionContainer: (action, id) => dispatch(actions.actionContainer(action, id)),
   onBack: () => dispatch(push('/')),
   openLogs: id => dispatch(openLogs(id)),
   closeLogs: () => dispatch(closeLogs()),

@@ -3,48 +3,20 @@ import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
 import { eventChannel, delay } from 'redux-saga';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
-import {
-  LOGIN,
-  loginSucceeded,
-  loginFailed,
-  LOGOUT,
-  logoutSucceeded,
-  logoutFailed,
-  FETCH_CONTAINERS,
-  fetchContainers,
-  fetchContainersSucceeded,
-  fetchContainersFailed,
-  FETCH_CONTAINER,
-  fetchContainer,
-  fetchContainerSucceeded,
-  fetchContainerFailed,
-  ACTION_CONTAINER,
-  actionContainerSucceeded,
-  actionContainerFailed,
-  COMPOSE,
-  composeSucceeded,
-  composeFailed,
-  OPEN_LOGS,
-  CLOSE_LOGS,
-  closeLogs,
-  addLog,
-  OPEN_EVENTS,
-  CLOSE_EVENTS,
-  openEvents,
-  closeEvents,
-} from '../actions';
+import actions, { OPEN_LOGS, CLOSE_LOGS, closeLogs, addLog, OPEN_EVENTS, CLOSE_EVENTS, openEvents,
+  closeEvents } from '../actions';
 
 export function* loginSaga(action) {
   try {
     yield call(DockerService.login, action.username, action.password);
     yield [
-      put(loginSucceeded()),
-      put(fetchContainers()),
+      put(actions.loginSucceeded()),
+      put(actions.fetchContainers()),
       put(openEvents()),
       put(push('/')),
     ];
   } catch (e) {
-    yield put(loginFailed(String(e)));
+    yield put(actions.loginFailed(String(e)));
   }
 }
 
@@ -52,46 +24,46 @@ export function* logoutSaga() {
   try {
     yield call(DockerService.logout);
     yield [
-      put(logoutSucceeded()),
+      put(actions.logoutSucceeded()),
       put(closeEvents()),
       put(closeLogs()),
       put(push('/login')),
     ];
   } catch (e) {
-    yield put(logoutFailed(String(e)));
+    yield put(actions.logoutFailed(String(e)));
   }
 }
 
 export function* fetchContainersSaga() {
   try {
     const containers = yield call(DockerService.containers);
-    yield put(fetchContainersSucceeded(containers));
+    yield put(actions.fetchContainersSucceeded(containers));
   } catch (e) {
-    yield put(fetchContainersFailed(String(e)));
+    yield put(actions.fetchContainersFailed(String(e)));
   }
 }
 
 export function* fetchContainerSaga(action) {
   try {
     const container = yield call(DockerService.infos, action.id);
-    yield put(fetchContainerSucceeded(container));
+    yield put(actions.fetchContainerSucceeded(container));
   } catch (e) {
-    yield put(fetchContainerFailed(String(e)));
+    yield put(actions.fetchContainerFailed(String(e)));
   }
 }
 
 export function* actionContainerSaga(action) {
   try {
     yield call(DockerService[action.action], action.id);
-    yield put(actionContainerSucceeded());
+    yield put(actions.actionContainerSucceeded());
 
     if (action.action !== 'delete') {
-      yield put(fetchContainer(action.id));
+      yield put(actions.fetchContainer(action.id));
     } else {
       yield put(push('/'));
     }
   } catch (e) {
-    yield put(actionContainerFailed(String(e)));
+    yield put(actions.actionContainerFailed(String(e)));
   }
 }
 
@@ -100,11 +72,11 @@ export function* composeSaga(action) {
     yield call(DockerService.create, action.name, action.file);
 
     yield [
-      put(composeSucceeded()),
+      put(actions.composeSucceeded()),
       put(push('/')),
     ];
   } catch (e) {
-    yield put(composeFailed(String(e)));
+    yield put(actions.composeFailed(String(e)));
   }
 }
 
@@ -134,7 +106,7 @@ export function* logsSaga(action) {
 
 export function* debounceFetchContainers() {
   yield call(delay, 5555);
-  yield put(fetchContainers());
+  yield put(actions.fetchContainers());
 }
 
 export function* readEventsSaga() {
@@ -166,12 +138,12 @@ export function* eventsSaga(action) {
 }
 
 function* appSaga() {
-  yield takeLatest(LOGIN, loginSaga);
-  yield takeLatest(LOGOUT, logoutSaga);
-  yield takeLatest(FETCH_CONTAINERS, fetchContainersSaga);
-  yield takeLatest(FETCH_CONTAINER, fetchContainerSaga);
-  yield takeLatest(ACTION_CONTAINER, actionContainerSaga);
-  yield takeLatest(COMPOSE, composeSaga);
+  yield takeLatest(actions.LOGIN, loginSaga);
+  yield takeLatest(actions.LOGOUT, logoutSaga);
+  yield takeLatest(actions.FETCH_CONTAINERS, fetchContainersSaga);
+  yield takeLatest(actions.FETCH_CONTAINER, fetchContainerSaga);
+  yield takeLatest(actions.ACTION_CONTAINER, actionContainerSaga);
+  yield takeLatest(actions.COMPOSE, composeSaga);
   yield takeLatest(OPEN_LOGS, logsSaga);
   yield takeLatest(OPEN_EVENTS, eventsSaga);
 }

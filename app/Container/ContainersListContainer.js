@@ -1,19 +1,19 @@
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { FETCH_CONTAINERS, fetchContainers, logout } from './actions';
+import actions from './actions';
 import ContainersList from '../Presentational/ContainersList/ContainersList';
 
 const mapStateToProps = state => ({
-  pending: !!state.pending[FETCH_CONTAINERS],
+  pending: !!state.pending[actions.FETCH_CONTAINERS],
   containers: state.containers,
   error: state.error,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onRefresh: containers => dispatch(fetchContainers(containers)),
+  onRefresh: () => dispatch(actions.fetchContainers()),
   onAdd: () => dispatch(push('/containers/New')),
   onSelect: id => dispatch(push(`/containers/${id}`)),
-  onLogout: () => dispatch(logout()),
+  onLogout: () => dispatch(actions.logout()),
 });
 
 const ContainersListContainer = connect(

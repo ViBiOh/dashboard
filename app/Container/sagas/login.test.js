@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
-import { loginSucceeded, fetchContainers, openEvents, loginFailed } from '../actions';
+import actions, { openEvents } from '../actions';
 import { loginSaga } from './';
 
 describe('Login Saga', () => {
@@ -28,8 +28,8 @@ describe('Login Saga', () => {
     expect(
       iterator.next().value,
     ).to.deep.equal([
-      put(loginSucceeded()),
-      put(fetchContainers()),
+      put(actions.loginSucceeded()),
+      put(actions.fetchContainers()),
       put(openEvents()),
       put(push('/')),
     ]);
@@ -42,7 +42,7 @@ describe('Login Saga', () => {
     expect(
       iterator.throw(new Error('Test')).value,
     ).to.deep.equal(
-      put(loginFailed('Error: Test')),
+      put(actions.loginFailed('Error: Test')),
     );
   });
 });

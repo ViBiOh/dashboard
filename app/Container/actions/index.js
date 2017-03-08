@@ -4,63 +4,37 @@ function makeActionCreator(type, ...argNames) {
     argNames.forEach((arg, index) => {
       action[argNames[index]] = args[index];
     });
+
     return action;
   };
 }
 
-export const LOGIN = 'LOGIN';
-export const login = makeActionCreator(LOGIN, 'username', 'password');
+const SUCCESS_SUFFIX = '_SUCCEEDED';
+const FAIL_SUFFIX = '_FAILED';
 
-export const LOGIN_SUCCEEDED = 'LOGIN_SUCCEEDED';
-export const loginSucceeded = makeActionCreator(LOGIN_SUCCEEDED);
+function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
+  const cleanName = String(camelCaseName).replace(/([A-Z])/, '_$1').toUpperCase();
+  const successName = `${cleanName}${SUCCESS_SUFFIX}`;
+  const failName = `${cleanName}${FAIL_SUFFIX}`;
 
-export const LOGIN_FAILED = 'LOGIN_FAILED';
-export const loginFailed = makeActionCreator(LOGIN_FAILED, 'error');
+  return {
+    [cleanName]: cleanName,
+    [camelCaseName]: makeActionCreator(cleanName, ...inputs),
+    [successName]: successName,
+    [`${camelCaseName}Succeeded`]: makeActionCreator(successName, ...outputs),
+    [failName]: failName,
+    [`${camelCaseName}Failed`]: makeActionCreator(failName, 'error'),
+  };
+}
 
-export const LOGOUT = 'LOGOUT';
-export const logout = makeActionCreator(LOGOUT);
-
-export const LOGOUT_SUCCEEDED = 'LOGOUT_SUCCEEDED';
-export const logoutSucceeded = makeActionCreator(LOGOUT_SUCCEEDED);
-
-export const LOGOUT_FAILED = 'LOGOUT_FAILED';
-export const logoutFailed = makeActionCreator(LOGOUT_FAILED, 'error');
-
-export const FETCH_CONTAINERS = 'FETCH_CONTAINERS';
-export const fetchContainers = makeActionCreator(FETCH_CONTAINERS);
-
-export const FETCH_CONTAINERS_SUCCEEDED = 'FETCH_CONTAINERS_SUCCEEDED';
-export const fetchContainersSucceeded = makeActionCreator(FETCH_CONTAINERS_SUCCEEDED, 'containers');
-
-export const FETCH_CONTAINERS_FAILED = 'FETCH_CONTAINERS_FAILED';
-export const fetchContainersFailed = makeActionCreator(FETCH_CONTAINERS_FAILED, 'error');
-
-export const FETCH_CONTAINER = 'FETCH_CONTAINER';
-export const fetchContainer = makeActionCreator(FETCH_CONTAINER, 'id');
-
-export const FETCH_CONTAINER_SUCCEEDED = 'FETCH_CONTAINER_SUCCEEDED';
-export const fetchContainerSucceeded = makeActionCreator(FETCH_CONTAINER_SUCCEEDED, 'container');
-
-export const FETCH_CONTAINER_FAILED = 'FETCH_CONTAINER_FAILED';
-export const fetchContainerFailed = makeActionCreator(FETCH_CONTAINER_FAILED, 'error');
-
-export const ACTION_CONTAINER = 'ACTION_CONTAINER';
-export const actionContainer = makeActionCreator(ACTION_CONTAINER, 'action', 'id');
-
-export const ACTION_CONTAINER_SUCCEEDED = 'ACTION_CONTAINER_SUCCEEDED';
-export const actionContainerSucceeded = makeActionCreator(ACTION_CONTAINER_SUCCEEDED);
-
-export const ACTION_CONTAINER_FAILED = 'ACTION_CONTAINER_FAILED';
-export const actionContainerFailed = makeActionCreator(ACTION_CONTAINER_FAILED, 'error');
-
-export const COMPOSE = 'COMPOSE';
-export const compose = makeActionCreator(COMPOSE, 'name', 'file');
-
-export const COMPOSE_SUCCEEDED = 'COMPOSE_SUCCEEDED';
-export const composeSucceeded = makeActionCreator(COMPOSE_SUCCEEDED);
-
-export const COMPOSE_FAILED = 'COMPOSE_FAILED';
-export const composeFailed = makeActionCreator(COMPOSE_FAILED, 'error');
+export default {
+  ...makeApiActionCreator('login', ['username', 'password']),
+  ...makeApiActionCreator('logout'),
+  ...makeApiActionCreator('fetchContainers', [], ['containers']),
+  ...makeApiActionCreator('fetchContainer', ['id'], ['container']),
+  ...makeApiActionCreator('actionContainer', ['action', 'id']),
+  ...makeApiActionCreator('compose', ['name', 'file']),
+};
 
 export const OPEN_LOGS = 'OPEN_LOGS';
 export const openLogs = makeActionCreator(OPEN_LOGS, 'id');
