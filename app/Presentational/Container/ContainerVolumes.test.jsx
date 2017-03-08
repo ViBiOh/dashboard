@@ -3,9 +3,9 @@
 import { expect } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import ContainerVolumes from '../Container/ContainerVolumes';
+import ContainerVolumes from './ContainerVolumes';
 
-describe('Container', () => {
+describe('ContainerVolumes', () => {
   let wrapper;
 
   const container = {
