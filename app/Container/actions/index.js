@@ -1,3 +1,9 @@
+/**
+ * Action creator : return a function for given action
+ * @param  {string}    type      Action type
+ * @param  {...objects} argNames Properties' names of action
+ * @return {func} Function that generate action with type and properties given the params
+ */
 const makeActionCreator = (type, ...argNames) => (...args) => {
   const action = { type };
   argNames.forEach((arg, index) => {
@@ -7,7 +13,12 @@ const makeActionCreator = (type, ...argNames) => (...args) => {
   return action;
 };
 
-const toEventName = name => String(name).replace(/(?!^)([A-Z])/g, '_$1').toUpperCase();
+/**
+ * Transform a name into a type name : SNAKE_UPPER_CASE
+ * @param  {string} name A camel case action name
+ * @return {string} Snake upper case type name
+ */
+const toTypeName = name => String(name).replace(/(?!^)([A-Z])/g, '_$1').toUpperCase();
 
 const makeActionAndTypeCreator = (type, action, inputs = []) => ({
   [type]: type,
@@ -15,7 +26,7 @@ const makeActionAndTypeCreator = (type, action, inputs = []) => ({
 });
 
 function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
-  const cleanName = toEventName(camelCaseName);
+  const cleanName = toTypeName(camelCaseName);
 
   return {
     ...makeActionAndTypeCreator(cleanName, camelCaseName, inputs),
@@ -25,7 +36,7 @@ function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
 }
 
 function makeOpenCloseActionCreator(camelCaseName, opens = [], closes = []) {
-  const cleanName = toEventName(camelCaseName);
+  const cleanName = toTypeName(camelCaseName);
 
   return {
     ...makeActionAndTypeCreator(`OPEN_${cleanName}`, `open${camelCaseName}`, opens),
