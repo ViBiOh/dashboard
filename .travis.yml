@@ -10,8 +10,8 @@ install:
 - nvm install node
 - npm i -g npm
 - npm i
+- npm run build
 script: |
-  npm run build &&
   docker build -t ${DOCKER_USER}/docker-front -f Dockerfile_front . &&
   docker build -t ${DOCKER_USER}/docker-api -f Dockerfile_api .
 after_success: |
