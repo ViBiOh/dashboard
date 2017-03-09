@@ -26,21 +26,21 @@ const makeActionAndTypeCreator = (type, action, inputs = []) => ({
 });
 
 function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
-  const cleanName = toTypeName(camelCaseName);
+  const typeName = toTypeName(camelCaseName);
 
   return {
-    ...makeActionAndTypeCreator(cleanName, camelCaseName, inputs),
-    ...makeActionAndTypeCreator(`${cleanName}_SUCCEEDED`, `${camelCaseName}Succeeded`, outputs),
-    ...makeActionAndTypeCreator(`${cleanName}_FAILED`, `${camelCaseName}Failed`, ['error']),
+    ...makeActionAndTypeCreator(typeName, camelCaseName, inputs),
+    ...makeActionAndTypeCreator(`${typeName}_SUCCEEDED`, `${camelCaseName}Succeeded`, outputs),
+    ...makeActionAndTypeCreator(`${typeName}_FAILED`, `${camelCaseName}Failed`, ['error']),
   };
 }
 
 function makeOpenCloseActionCreator(camelCaseName, opens = [], closes = []) {
-  const cleanName = toTypeName(camelCaseName);
+  const typeName = toTypeName(camelCaseName);
 
   return {
-    ...makeActionAndTypeCreator(`OPEN_${cleanName}`, `open${camelCaseName}`, opens),
-    ...makeActionAndTypeCreator(`CLOSE_${cleanName}`, `close${camelCaseName}`, closes),
+    ...makeActionAndTypeCreator(`OPEN_${typeName}`, `open${camelCaseName}`, opens),
+    ...makeActionAndTypeCreator(`CLOSE_${typeName}`, `close${camelCaseName}`, closes),
   };
 }
 
