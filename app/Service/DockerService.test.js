@@ -3,9 +3,10 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import Fetch from 'js-fetch';
+import { browserHistory } from 'react-router';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
-import DockerService, { authStorage } from './DockerService';
+import DockerService, { authStorage, authRedirect } from './DockerService';
 
 describe('DockerService', () => {
   let data;
@@ -111,6 +112,36 @@ describe('DockerService', () => {
     }),
   );
 
+  it('should redirect to login on 401', () => {
+    const pushSpy = sinon.stub(browserHistory, 'push');
+
+    authRedirect({
+      status: 401,
+      headers: {
+        get: () => 'text/plain',
+      },
+      text: () => Promise.reject(new Error('Mocha Text Error')),
+    });
+
+    expect(pushSpy.calledWith('/login')).to.equal(true);
+    browserHistory.push.restore();
+  });
+
+  it('should not to login if not 401', () => {
+    const pushSpy = sinon.stub(browserHistory, 'push');
+
+    authRedirect({
+      status: 403,
+      headers: {
+        get: () => 'text/plain',
+      },
+      text: () => Promise.reject(new Error('Mocha Text Error')),
+    });
+
+    expect(pushSpy.called).to.equal(false);
+    browserHistory.push.restore();
+  });
+
   describe('should call API with auth', () => {
     let getItemSpy;
 
@@ -165,6 +196,22 @@ describe('DockerService', () => {
     expect(getItemSpy.calledWith(authStorage)).to.equal(true);
   });
 
+  it('should call onMessage when receiving', () => {
+    const onMessage = sinon.spy();
+    const wsSend = sinon.spy();
+    sinon.stub(localStorageService, 'getItem', () => 'token');
+
+    global.WebSocket = () => ({
+      send: wsSend,
+      onmessage: onMessage,
+    });
+
+    DockerService.logs('test', onMessage).onmessage({ data: 'test' });
+    localStorageService.getItem.restore();
+
+    expect(onMessage.calledWith('test')).to.equal(true);
+  });
+
   it('should send auth on events opening', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
@@ -180,5 +227,21 @@ describe('DockerService', () => {
 
     expect(wsSend.calledWith('token')).to.equal(true);
     expect(getItemSpy.calledWith(authStorage)).to.equal(true);
+  });
+
+  it('should send auth on events opening', () => {
+    const onMessage = sinon.spy();
+    const wsSend = sinon.spy();
+    const getItemSpy = sinon.stub(localStorageService, 'getItem', () => 'token');
+
+    global.WebSocket = () => ({
+      send: wsSend,
+      onmessage: onMessage,
+    });
+
+    DockerService.events(onMessage).onmessage({ data: 'test' });
+    localStorageService.getItem.restore();
+
+    expect(onMessage.calledWith('test')).to.equal(true);
   });
 });

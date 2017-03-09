@@ -7,7 +7,7 @@ const API_HOST = 'docker-api.vibioh.fr';
 const API = `https://${API_HOST}/`;
 export const authStorage = 'auth';
 
-function authRedirect(response) {
+export function authRedirect(response) {
   if (response.status === 401) {
     browserHistory.push('/login');
   }
