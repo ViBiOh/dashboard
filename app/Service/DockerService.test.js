@@ -147,4 +147,38 @@ describe('DockerService', () => {
       );
     });
   });
+
+  it('should send auth on logs opening', () => {
+    const onMessage = sinon.spy();
+    const wsSend = sinon.spy();
+    const getItemSpy = sinon.stub(localStorageService, 'getItem', () => 'token');
+
+    global.WebSocket = () => ({
+      send: wsSend,
+      onmessage: onMessage,
+    });
+
+    DockerService.logs('test', onMessage).onopen();
+    localStorageService.getItem.restore();
+
+    expect(wsSend.calledWith('token')).to.equal(true);
+    expect(getItemSpy.calledWith(authStorage)).to.equal(true);
+  });
+
+  it('should send auth on events opening', () => {
+    const onMessage = sinon.spy();
+    const wsSend = sinon.spy();
+    const getItemSpy = sinon.stub(localStorageService, 'getItem', () => 'token');
+
+    global.WebSocket = () => ({
+      send: wsSend,
+      onmessage: onMessage,
+    });
+
+    DockerService.events(onMessage).onopen();
+    localStorageService.getItem.restore();
+
+    expect(wsSend.calledWith('token')).to.equal(true);
+    expect(getItemSpy.calledWith(authStorage)).to.equal(true);
+  });
 });
