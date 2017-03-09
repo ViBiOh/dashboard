@@ -19,4 +19,12 @@ describe('ContainerLogs', () => {
   it('should always render as a span', () => {
     expect(wrapper.type()).to.equal('span');
   });
+
+  it('should display logs if given', () => {
+    wrapper.setProps({ logs: [] });
+
+    expect(wrapper.type()).to.equal('span');
+    expect(wrapper.find('h3').text()).to.equal('Logs');
+    expect(wrapper.find('pre').length).to.equal(1);
+  });
 });

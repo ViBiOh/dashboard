@@ -16,6 +16,7 @@ const ContainerNetwork = ({ container }) => {
           .filter(network => network.Links)
           .map(network => network.Links))
           .map(link => link.split(':'))
+          .filter(parts => parts.length > 1)
           .map(parts => (
             <span key={parts[1]} className={style.item}>
               {parts[0]} | {parts[1]}
