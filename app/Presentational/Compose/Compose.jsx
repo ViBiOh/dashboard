@@ -1,5 +1,6 @@
 import React from 'react';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
+import onKeyDown from '../../Tools/input';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import Button from '../../Presentational/Button/Button';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
@@ -9,15 +10,11 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
   let nameInput;
   let composeInput;
 
+  /**
+   * Submit form with saved information.
+   */
   function submit() {
-    return onCompose(nameInput.value, composeInput.value);
-  }
-
-  function onKeyDown(event) {
-    if (event.keyCode === 13) {
-      return submit();
-    }
-    return undefined;
+    onCompose(nameInput.value, composeInput.value);
   }
 
   return (
@@ -35,7 +32,7 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
           name="name"
           type="text"
           placeholder="name"
-          onKeyDown={onKeyDown}
+          onKeyDown={e => onKeyDown(e, submit)}
         />
       </span>
       <span>
@@ -45,7 +42,7 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
           placeholder="compose file yaml v2"
           className={style.code}
           rows={20}
-          onKeyDown={onKeyDown}
+          onKeyDown={e => onKeyDown(e, submit)}
         />
       </span>
       <span>

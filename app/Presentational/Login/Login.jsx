@@ -1,4 +1,5 @@
 import React from 'react';
+import onKeyDown from '../../Tools/input';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Login.css';
@@ -8,14 +9,7 @@ const Login = ({ pending, onLogin, error }) => {
   let passwordInput;
 
   function submit() {
-    return onLogin(loginInput.value, passwordInput.value);
-  }
-
-  function onKeyDown(event) {
-    if (event.keyCode === 13) {
-      return submit();
-    }
-    return undefined;
+    onLogin(loginInput.value, passwordInput.value);
   }
 
   return (
@@ -26,14 +20,14 @@ const Login = ({ pending, onLogin, error }) => {
         name="login"
         type="text"
         placeholder="login"
-        onKeyDown={onKeyDown}
+        onKeyDown={e => onKeyDown(e, submit)}
       />
       <input
         ref={e => (passwordInput = e)}
         name="password"
         type="password"
         placeholder="password"
-        onKeyDown={onKeyDown}
+        onKeyDown={e => onKeyDown(e, submit)}
       />
       <Toolbar className={style.center} error={error}>
         <ThrobberButton onClick={submit} pending={pending}>Login</ThrobberButton>

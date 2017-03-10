@@ -6,6 +6,11 @@ const BYTES_SIZE = 1024;
 const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
 const ENV_PARSER = /(.*?)=(.*)/;
 
+/**
+ * Convert bytes size to human readable size.
+ * @param  {int} size Bytes size
+ * @return {string}   Human readable bytes size
+ */
 function humanFileSize(size) {
   const i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
   // eslint-disable-next-line no-restricted-properties

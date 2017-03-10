@@ -7,6 +7,11 @@ const API_HOST = 'docker-api.vibioh.fr';
 const API = `https://${API_HOST}/`;
 export const authStorage = 'auth';
 
+/**
+ * Error handler for Fetch that redirect to login on HTTP/401.
+ * @param  {Object} response Response from Fetch
+ * @return {Object}          Same response
+ */
 export function authRedirect(response) {
   if (response.status === 401) {
     browserHistory.push('/login');
@@ -14,6 +19,11 @@ export function authRedirect(response) {
   return errorHandler(response);
 }
 
+/**
+ * Generate FetchBuilder for given URL with auth and error handler.
+ * @param  {String} url   Wanted URL
+ * @return {FetchBuilder} FetchBuilder pre-configured
+ */
 function auth(url) {
   return Fetch.url(url)
     .auth(localStorageService.getItem(authStorage))

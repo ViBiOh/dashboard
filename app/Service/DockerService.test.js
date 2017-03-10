@@ -8,7 +8,6 @@ import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 import DockerService, { authStorage, authRedirect } from './DockerService';
 
-/** @test {DockerService} */
 describe('DockerService', () => {
   let data;
 
@@ -49,7 +48,6 @@ describe('DockerService', () => {
     localStorageService.isEnabled.restore();
   });
 
-  /** @test {DockerService#isLogged} */
   it('should determine if already logged', () => {
     sinon.stub(localStorageService, 'getItem', () => 'token');
 
@@ -57,7 +55,6 @@ describe('DockerService', () => {
     localStorageService.getItem.restore();
   });
 
-  /** @test {DockerService#isLogged} */
   it('should determine if not already logged', () => {
     sinon.stub(localStorageService, 'getItem', () => '');
 
@@ -65,14 +62,12 @@ describe('DockerService', () => {
     localStorageService.getItem.restore();
   });
 
-  /** @test {DockerService#login} */
   it('should login with given username and password', () =>
     DockerService.login('admin', 'password').then((result) => {
       expect(result.url).to.match(/auth$/);
       expect(result.auth).to.eql(`Basic ${btoa('admin:password')}`);
     }));
 
-  /** @test {DockerService#login} */
   it('should store token in localStorage on login', () => {
     const setItemSpy = sinon.spy(localStorageService, 'setItem');
 
@@ -82,7 +77,6 @@ describe('DockerService', () => {
     });
   });
 
-  /** @test {DockerService#logout} */
   it('should drop stored token from localStorage on logout', () => {
     const removeItemSpy = sinon.spy(localStorageService, 'removeItem');
 
@@ -92,7 +86,6 @@ describe('DockerService', () => {
     });
   });
 
-  /** @test {DockerService#containers} */
   it('should list containers with auth', () => {
     const getItemSpy = sinon.spy(localStorageService, 'getItem');
 
@@ -102,7 +95,6 @@ describe('DockerService', () => {
     });
   });
 
-  /** @test {DockerService#containers} */
   it('should return results when listing containers', () => {
     data = {
       results: [{
@@ -113,7 +105,6 @@ describe('DockerService', () => {
     return DockerService.containers().then(value => expect(value).to.be.eql([{ id: 1 }]));
   });
 
-  /** @test {DockerService#create} */
   it('should create container with given args', () =>
     DockerService.create('test', 'composeFileContent').then((result) => {
       expect(result.url).to.match(/containers\/test\/$/);
@@ -188,7 +179,6 @@ describe('DockerService', () => {
     });
   });
 
-  /** @test {DockerService#logs} */
   it('should send auth on logs opening', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
@@ -206,7 +196,6 @@ describe('DockerService', () => {
     expect(getItemSpy.calledWith(authStorage)).to.equal(true);
   });
 
-  /** @test {DockerService#logs} */
   it('should call onMessage when receiving', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
@@ -223,7 +212,6 @@ describe('DockerService', () => {
     expect(onMessage.calledWith('test')).to.equal(true);
   });
 
-  /** @test {DockerService#events} */
   it('should send auth on events opening', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
@@ -241,7 +229,6 @@ describe('DockerService', () => {
     expect(getItemSpy.calledWith(authStorage)).to.equal(true);
   });
 
-  /** @test {DockerService#events} */
   it('should send auth on events opening', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
