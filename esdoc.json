@@ -1,0 +1,19 @@
+{
+  "source": "./app",
+  "includes": [".(js|jsx)$"],
+  "excludes": [".test\\.(js|jsx)$"],
+  "destination": "./doc",
+  "test": {
+    "type": "mocha",
+    "source": "./app",
+    "includes": [".test\\.(js|jsx)$"]
+  },
+  "experimentalProposal": {
+    "classProperties": true,
+    "objectRestSpread": true,
+    "functionBind": true,
+    "asyncGenerators": true,
+    "exportExtensions": true,
+    "dynamicImport": true
+  }
+}

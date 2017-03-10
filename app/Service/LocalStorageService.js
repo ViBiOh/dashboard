@@ -6,6 +6,10 @@ export class LocalStorageService {
     this.storageEnabled = undefined;
   }
 
+  /**
+   * Check if LocalStorage is available.
+   * @return {Boolean} True if LocalStorage is available, false otherwise
+   */
   isEnabled() {
     if (typeof this.storageEnabled === 'undefined') {
       try {
@@ -20,10 +24,20 @@ export class LocalStorageService {
     return this.storageEnabled;
   }
 
+  /**
+   * Return item from LocalStorage
+   * @param  {String} key Searched key
+   * @return {Object}     Value found or undefined
+   */
   getItem(key) {
     return this.isEnabled() ? localStorage.getItem(key) : this.storage[key];
   }
 
+  /**
+   * Store a value with a key from LocalStorage.
+   * @param {String} key   Key stored
+   * @param {Object} value Value stored
+   */
   setItem(key, value) {
     if (this.isEnabled()) {
       localStorage.setItem(key, value);
@@ -32,6 +46,10 @@ export class LocalStorageService {
     }
   }
 
+  /**
+   * Remove entry from LocalStorage for given key.
+   * @param  {String} key Searched key
+   */
   removeItem(key) {
     if (this.isEnabled()) {
       localStorage.removeItem(key);
