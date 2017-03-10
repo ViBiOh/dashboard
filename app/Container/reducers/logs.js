@@ -1,6 +1,7 @@
 import actions from '../actions';
 
-export default (state = null, action) => {
+const initialState = null;
+export default (state = initialState, action) => {
   if (action.type === actions.OPEN_LOGS) {
     return [];
   }
@@ -8,7 +9,7 @@ export default (state = null, action) => {
     return [...state, action.log];
   }
   if (action.type === actions.CLOSE_LOGS) {
-    return null;
+    return initialState;
   }
   return state;
 };

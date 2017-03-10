@@ -5,6 +5,15 @@ import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 
+/**
+ * Saga of Login action :
+ * - Login
+ * - Fetch containers on succeed
+ * - Open events stream
+ * - Redirect to home
+ * @param {Object} action        Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* loginSaga(action) {
   try {
     yield call(DockerService.login, action.username, action.password);
@@ -19,6 +28,13 @@ export function* loginSaga(action) {
   }
 }
 
+/**
+ * Saga of Logout action :
+ * - Logout
+ * - Close both streams (logs and events)
+ * - Redirect to login
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* logoutSaga() {
   try {
     yield call(DockerService.logout);
@@ -33,6 +49,11 @@ export function* logoutSaga() {
   }
 }
 
+/**
+ * Saga of Fetch containers action :
+ * - Fetch containers
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* fetchContainersSaga() {
   try {
     const containers = yield call(DockerService.containers);
@@ -42,6 +63,12 @@ export function* fetchContainersSaga() {
   }
 }
 
+/**
+ * Saga of Fetch container action :
+ * - Fetch container
+ * @param {Object} action        Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* fetchContainerSaga(action) {
   try {
     const container = yield call(DockerService.infos, action.id);
@@ -51,6 +78,14 @@ export function* fetchContainerSaga(action) {
   }
 }
 
+/**
+ * Saga of make an action on a container :
+ * - Execute action on container
+ * - Fetch container if non-destructive action
+ * - Redirect to home otherwise
+ * @param {Object} action        Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* actionContainerSaga(action) {
   try {
     yield call(DockerService[action.action], action.id);
