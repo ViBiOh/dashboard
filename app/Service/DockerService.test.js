@@ -232,7 +232,7 @@ describe('DockerService', () => {
   it('should send auth on events opening', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
-    const getItemSpy = sinon.stub(localStorageService, 'getItem', () => 'token');
+    sinon.stub(localStorageService, 'getItem', () => 'token');
 
     global.WebSocket = () => ({
       send: wsSend,
