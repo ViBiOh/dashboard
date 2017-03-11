@@ -12,7 +12,7 @@ install:
 - npm i
 - npm run build
 script: |
-  curl 'https://doc.esdoc.org/api/create' -X POST --data-urlencode git@github.com:ViBiOh/docker-deploy.git &&
+  curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/docker-deploy.git" https://doc.esdoc.org/api/create &&
   docker build -t ${DOCKER_USER}/docker-front -f Dockerfile_front . &&
   docker build -t ${DOCKER_USER}/docker-api -f Dockerfile_api .
 after_success: |
