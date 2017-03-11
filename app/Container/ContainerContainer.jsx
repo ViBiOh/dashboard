@@ -6,7 +6,7 @@ import Container from '../Presentational/Container/Container';
 
 class ContainerComponent extends Component {
   componentDidMount() {
-    this.props.fetchContainer(this.props.params.containerId);
+    this.props.fetchContainer(this.props.containerId);
   }
 
   componentWillUnmount() {
@@ -36,9 +36,7 @@ class ContainerComponent extends Component {
 }
 
 ContainerComponent.propTypes = {
-  params: React.PropTypes.shape({
-    containerId: React.PropTypes.string.isRequired,
-  }).isRequired,
+  containerId: React.PropTypes.string.isRequired,
   pending: React.PropTypes.bool.isRequired,
   pendingAction: React.PropTypes.bool.isRequired,
   container: React.PropTypes.shape({}),
@@ -56,12 +54,13 @@ ContainerComponent.defaultProps = {
   logs: null,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, props) => ({
   pending: !!state.pending[actions.FETCH_CONTAINER],
   pendingAction: !!state.pending[actions.ACTION_CONTAINER],
   container: state.container,
   logs: state.logs,
   error: state.error,
+  containerId: props.match.params.containerId,
 });
 
 const mapDispatchToProps = dispatch => ({

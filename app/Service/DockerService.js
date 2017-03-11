@@ -1,5 +1,4 @@
-import { browserHistory } from 'react-router';
-import Fetch, { errorHandler } from 'js-fetch';
+import Fetch from 'js-fetch';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 
@@ -8,26 +7,13 @@ const API = `https://${API_HOST}/`;
 export const authStorage = 'auth';
 
 /**
- * Error handler for Fetch that redirect to login on HTTP/401.
- * @param  {Object} response Response from Fetch
- * @return {Object}          Same response
- */
-export function authRedirect(response) {
-  if (response.status === 401) {
-    browserHistory.push('/login');
-  }
-  return errorHandler(response);
-}
-
-/**
  * Generate FetchBuilder for given URL with auth and error handler.
  * @param  {String} url   Wanted URL
  * @return {FetchBuilder} FetchBuilder pre-configured
  */
 function auth(url) {
   return Fetch.url(url)
-    .auth(localStorageService.getItem(authStorage))
-    .error(authRedirect);
+    .auth(localStorageService.getItem(authStorage));
 }
 
 export default class DockerService {

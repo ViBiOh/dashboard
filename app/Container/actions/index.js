@@ -40,7 +40,7 @@ export const makeActionAndTypeCreator = (type, action, inputs = []) => ({
  * @param  {Array}  outputs       Properties' names of response action
  * @return {object}               An object container constants and functions for requesting API
  */
-export function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
+export const makeApiActionCreator = (camelCaseName, inputs = [], outputs = []) => {
   const typeName = toTypeName(camelCaseName);
 
   return {
@@ -48,7 +48,7 @@ export function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
     ...makeActionAndTypeCreator(`${typeName}_SUCCEEDED`, `${camelCaseName}Succeeded`, outputs),
     ...makeActionAndTypeCreator(`${typeName}_FAILED`, `${camelCaseName}Failed`, ['error']),
   };
-}
+};
 
 /**
  * Action creator for an WebSocket call (open, close)
@@ -57,7 +57,7 @@ export function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
  * @param  {Array}  closes        Properties' names of close action
  * @return {[type]}               An object container constants and functions for requesting WS
  */
-export function makeOpenCloseActionCreator(camelCaseName, opens = [], closes = []) {
+export const makeOpenCloseActionCreator = (camelCaseName, opens = [], closes = []) => {
   const typeName = toTypeName(camelCaseName);
   const camelSuffix = camelCaseName.replace(/^(.)/, (all, char) => char.toUpperCase());
 
@@ -65,7 +65,7 @@ export function makeOpenCloseActionCreator(camelCaseName, opens = [], closes = [
     ...makeActionAndTypeCreator(`OPEN_${typeName}`, `open${camelSuffix}`, opens),
     ...makeActionAndTypeCreator(`CLOSE_${typeName}`, `close${camelSuffix}`, closes),
   };
-}
+};
 
 export default {
   ...makeApiActionCreator('login', ['username', 'password']),

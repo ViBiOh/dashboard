@@ -1,17 +1,17 @@
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { browserHistory } from 'react-router';
 import { routerMiddleware } from 'react-router-redux';
 import appReducers from './Container/reducers';
-import appSaga from './Container/sagas';
+import appSagas from './Container/sagas';
+import history from './History';
 
 const sagaMiddleware = createSagaMiddleware();
 
 const appStore = createStore(
   appReducers,
-  applyMiddleware(routerMiddleware(browserHistory), sagaMiddleware),
+  applyMiddleware(routerMiddleware(history), sagaMiddleware),
 );
 
-sagaMiddleware.run(appSaga);
+sagaMiddleware.run(appSagas);
 
 export default appStore;

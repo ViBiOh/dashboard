@@ -38,8 +38,8 @@ describe('Logout Saga', () => {
 
     expect(
       iterator.throw(new Error('Test')).value,
-    ).to.deep.equal(
+    ).to.deep.equal([
       put(actions.logoutFailed('Error: Test')),
-    );
+    ]);
   });
 });

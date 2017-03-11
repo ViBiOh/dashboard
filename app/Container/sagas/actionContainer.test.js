@@ -73,8 +73,8 @@ describe('ActionContainer Saga', () => {
 
     expect(
       iterator.throw(new Error('Test')).value,
-    ).to.deep.equal(
+    ).to.deep.equal([
       put(actions.actionContainerFailed('Error: Test')),
-    );
+    ]);
   });
 });

@@ -5,6 +5,17 @@ import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 
+export function onErrorActions(calledAction, error) {
+  const errorActions = [];
+
+  if (error.status === 401) {
+    errorActions.push(push('/login'));
+  }
+  errorActions.push(actions[calledAction](String(error)));
+
+  return errorActions;
+}
+
 /**
  * Saga of Login action :
  * - Login
@@ -45,7 +56,7 @@ export function* logoutSaga() {
       put(push('/login')),
     ];
   } catch (e) {
-    yield put(actions.logoutFailed(String(e)));
+    yield onErrorActions('logoutFailed', e).map(a => put(a));
   }
 }
 
@@ -59,7 +70,7 @@ export function* fetchContainersSaga() {
     const containers = yield call(DockerService.containers);
     yield put(actions.fetchContainersSucceeded(containers));
   } catch (e) {
-    yield put(actions.fetchContainersFailed(String(e)));
+    yield onErrorActions('fetchContainersFailed', e).map(a => put(a));
   }
 }
 
@@ -74,7 +85,7 @@ export function* fetchContainerSaga(action) {
     const container = yield call(DockerService.infos, action.id);
     yield put(actions.fetchContainerSucceeded(container));
   } catch (e) {
-    yield put(actions.fetchContainerFailed(String(e)));
+    yield onErrorActions('fetchContainerFailed', e).map(a => put(a));
   }
 }
 
@@ -97,7 +108,7 @@ export function* actionContainerSaga(action) {
       yield put(push('/'));
     }
   } catch (e) {
-    yield put(actions.actionContainerFailed(String(e)));
+    yield onErrorActions('actionContainerFailed', e).map(a => put(a));
   }
 }
 
@@ -117,7 +128,7 @@ export function* composeSaga(action) {
       put(push('/')),
     ];
   } catch (e) {
-    yield put(actions.composeFailed(String(e)));
+    yield onErrorActions('composeFailed', e).map(a => put(a));
   }
 }
 

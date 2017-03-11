@@ -3,10 +3,9 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import Fetch from 'js-fetch';
-import { browserHistory } from 'react-router';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
-import DockerService, { authStorage, authRedirect } from './DockerService';
+import DockerService, { authStorage } from './DockerService';
 
 describe('DockerService', () => {
   let data;
@@ -111,36 +110,6 @@ describe('DockerService', () => {
       expect(result.content).to.equal('composeFileContent');
     }),
   );
-
-  it('should redirect to login on 401', () => {
-    const pushSpy = sinon.stub(browserHistory, 'push');
-
-    authRedirect({
-      status: 401,
-      headers: {
-        get: () => 'text/plain',
-      },
-      text: () => Promise.reject(new Error('Mocha Text Error')),
-    });
-
-    expect(pushSpy.calledWith('/login')).to.equal(true);
-    browserHistory.push.restore();
-  });
-
-  it('should not to login if not 401', () => {
-    const pushSpy = sinon.stub(browserHistory, 'push');
-
-    authRedirect({
-      status: 403,
-      headers: {
-        get: () => 'text/plain',
-      },
-      text: () => Promise.reject(new Error('Mocha Text Error')),
-    });
-
-    expect(pushSpy.called).to.equal(false);
-    browserHistory.push.restore();
-  });
 
   describe('should call API with auth', () => {
     let getItemSpy;
