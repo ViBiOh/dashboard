@@ -101,6 +101,13 @@ export function* actionContainerSaga(action) {
   }
 }
 
+/**
+ * Saga of creating new Docker's container from Compose file :
+ * - Create a new app from Compose
+ * - Redirect to home otherwise
+ * @param {Object} action        Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* composeSaga(action) {
   try {
     yield call(DockerService.create, action.name, action.file);
@@ -114,6 +121,13 @@ export function* composeSaga(action) {
   }
 }
 
+/**
+ * Saga of reading logs' stream :
+ * - Create a channel to handle every log
+ * - Add log to state
+ * @param {Object} action        Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* readLogsSaga(action) {
   const chan = eventChannel((emit) => {
     const websocket = DockerService.logs(action.id, emit);
@@ -131,6 +145,13 @@ export function* readLogsSaga(action) {
   }
 }
 
+/**
+ * Saga of handling logs' stream:
+ * - Fork the reading channel
+ * - Handle close request
+ * @param {Object} action        Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* logsSaga(action) {
   const task = yield fork(readLogsSaga, action);
 
@@ -138,11 +159,22 @@ export function* logsSaga(action) {
   yield cancel(task);
 }
 
+/**
+ * Debounced fetch of containers.
+ * Duration is based on the sleep servier-side before renaming containers.
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* debounceFetchContainers() {
   yield call(delay, 5555);
   yield put(actions.fetchContainers());
 }
 
+/**
+ * Saga of reading events' stream :
+ * - Create a channel to handle every events
+ * - Debounced fetch containers
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* readEventsSaga() {
   const chan = eventChannel((emit) => {
     const websocket = DockerService.events(emit);
@@ -164,6 +196,13 @@ export function* readEventsSaga() {
   }
 }
 
+/**
+ * Saga of handling events' stream:
+ * - Fork the reading channel
+ * - Handle close request
+ * @param {Object} action        Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* eventsSaga(action) {
   const task = yield fork(readEventsSaga, action);
 
@@ -171,6 +210,10 @@ export function* eventsSaga(action) {
   yield cancel(task);
 }
 
+/**
+ * Sagas of app.
+ * @yield {Function} Sagas
+ */
 export default function* appSaga() {
   yield takeLatest(actions.LOGIN, loginSaga);
   yield takeLatest(actions.LOGOUT, logoutSaga);

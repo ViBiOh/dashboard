@@ -5,7 +5,7 @@
  * @return {func}                Function that generate action with type and properties given the
  *                               params
  */
-const makeActionCreator = (type, ...argNames) => (...args) => {
+export const makeActionCreator = (type, ...argNames) => (...args) => {
   const action = { type };
   argNames.forEach((arg, index) => {
     action[argNames[index]] = args[index];
@@ -19,7 +19,7 @@ const makeActionCreator = (type, ...argNames) => (...args) => {
  * @param  {string} name A camel case action name
  * @return {string}      Snake upper case type name
  */
-const toTypeName = name => String(name).replace(/([A-Z])/g, '_$1').toUpperCase();
+export const toTypeName = name => String(name).replace(/([A-Z])/g, '_$1').toUpperCase();
 
 /**
  * Action creator : return the function and the constant for the given action
@@ -28,7 +28,7 @@ const toTypeName = name => String(name).replace(/([A-Z])/g, '_$1').toUpperCase()
  * @param  {Array}  inputs Properties' names of action
  * @return {object}        An object containing both function and constant
  */
-const makeActionAndTypeCreator = (type, action, inputs = []) => ({
+export const makeActionAndTypeCreator = (type, action, inputs = []) => ({
   [type]: type,
   [action]: makeActionCreator(type, ...inputs),
 });
@@ -40,7 +40,7 @@ const makeActionAndTypeCreator = (type, action, inputs = []) => ({
  * @param  {Array}  outputs       Properties' names of response action
  * @return {object}               An object container constants and functions for requesting API
  */
-function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
+export function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
   const typeName = toTypeName(camelCaseName);
 
   return {
@@ -57,7 +57,7 @@ function makeApiActionCreator(camelCaseName, inputs = [], outputs = []) {
  * @param  {Array}  closes        Properties' names of close action
  * @return {[type]}               An object container constants and functions for requesting WS
  */
-function makeOpenCloseActionCreator(camelCaseName, opens = [], closes = []) {
+export function makeOpenCloseActionCreator(camelCaseName, opens = [], closes = []) {
   const typeName = toTypeName(camelCaseName);
   const camelSuffix = camelCaseName.replace(/^(.)/, (all, char) => char.toUpperCase());
 
