@@ -31,7 +31,7 @@ describe('ContainerVolumes', () => {
         }],
       },
     });
-    
+
     expect(wrapper.type()).to.equal('span');
     expect(wrapper.find('h3').text()).to.equal('Volumes');
   });
