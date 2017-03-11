@@ -5,6 +5,12 @@ import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 
+/**
+ * Handle error on sagas. Redirect to login if status is 401.
+ * @param  {String} calledAction Action to call with given error
+ * @param  {Error} error         Error summoned
+ * @return {Array}               List of actions to put
+ */
 export function onErrorActions(calledAction, error) {
   const errorActions = [];
 
