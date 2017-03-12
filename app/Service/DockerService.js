@@ -2,8 +2,8 @@ import Fetch from 'js-fetch';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 
-const API_HOST = 'docker-api.vibioh.fr';
-const API = `https://${API_HOST}/`;
+const API = `https://${API_HOST}/`; // eslint-disable-line no-undef
+const WS = `wss://${API_HOST}/ws/`; // eslint-disable-line no-undef
 export const authStorage = 'auth';
 
 /**
@@ -127,7 +127,7 @@ export default class DockerService {
    * @return {Websocket}          Opened and authentified Websocket
    */
   static logs(containerId, onMessage) {
-    const socket = new WebSocket(`wss://${API_HOST}/ws/containers/${containerId}/logs`);
+    const socket = new WebSocket(`${WS}containers/${containerId}/logs`);
 
     socket.onmessage = event => onMessage(event.data);
     socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
@@ -141,7 +141,7 @@ export default class DockerService {
    * @return {Websocket}          Opened and authentified Websocket
    */
   static events(onMessage) {
-    const socket = new WebSocket(`wss://${API_HOST}/ws/events`);
+    const socket = new WebSocket(`${WS}events`);
 
     socket.onmessage = event => onMessage(event.data);
     socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
