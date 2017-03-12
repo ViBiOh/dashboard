@@ -2,8 +2,8 @@ import Fetch from 'js-fetch';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 
-const API = `https://${API_HOST}/`; // eslint-disable-line no-undef
-const WS = `wss://${API_HOST}/ws/`; // eslint-disable-line no-undef
+const API = 'https://API_HOST/';
+const WS = 'wss://API_HOST/ws/';
 export const authStorage = 'auth';
 
 /**
