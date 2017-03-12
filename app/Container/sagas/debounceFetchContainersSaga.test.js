@@ -17,7 +17,7 @@ describe('Debounced FetchContainers Saga', () => {
     );
   });
 
-  it('should put fetchCOntainers action', () => {
+  it('should put fetchContainers action', () => {
     const iterator = debounceFetchContainersSaga();
     iterator.next();
 
