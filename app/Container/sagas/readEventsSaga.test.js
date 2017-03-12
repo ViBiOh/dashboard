@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import { fork, cancel } from 'redux-saga/effects';
 import { createMockTask } from 'redux-saga/utils';
 import DockerService from '../../Service/DockerService';
-import { readEventsSaga, debounceFetchContainers } from './';
+import { readEventsSaga, debounceFetchContainersSaga } from './';
 
 describe('ReadEvents Saga', () => {
   it('should call DockerService.events', () => {
@@ -32,7 +32,7 @@ describe('ReadEvents Saga', () => {
     expect(
       iterator.next('content').value,
     ).to.deep.equal(
-      fork(debounceFetchContainers),
+      fork(debounceFetchContainersSaga),
     );
   });
 

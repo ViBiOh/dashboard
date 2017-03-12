@@ -181,7 +181,7 @@ export function* logsSaga(action) {
  * Duration is based on the sleep servier-side before renaming containers.
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* debounceFetchContainers() {
+export function* debounceFetchContainersSaga() {
   yield call(delay, 5555);
   yield put(actions.fetchContainers());
 }
@@ -206,7 +206,7 @@ export function* readEventsSaga() {
       if (task) {
         yield cancel(task);
       }
-      task = yield fork(debounceFetchContainers);
+      task = yield fork(debounceFetchContainersSaga);
     }
   } finally {
     chan.close();
@@ -220,8 +220,8 @@ export function* readEventsSaga() {
  * @param {Object} action        Action dispatched
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* eventsSaga(action) {
-  const task = yield fork(readEventsSaga, action);
+export function* eventsSaga() {
+  const task = yield fork(readEventsSaga);
 
   yield take(actions.CLOSE_EVENTS);
   yield cancel(task);
