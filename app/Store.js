@@ -14,4 +14,7 @@ const appStore = createStore(
 
 sagaMiddleware.run(appSagas);
 
+/**
+ * Redux's store of application.
+ */
 export default appStore;

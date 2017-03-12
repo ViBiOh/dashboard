@@ -217,7 +217,6 @@ export function* readEventsSaga() {
  * Saga of handling events' stream:
  * - Fork the reading channel
  * - Handle close request
- * @param {Object} action        Action dispatched
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* eventsSaga() {

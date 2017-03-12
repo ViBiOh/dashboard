@@ -51,7 +51,7 @@ export default class DockerService {
   }
 
   /**
-   * List Dcoker's containers.
+   * List Docker's containers.
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static containers() {
