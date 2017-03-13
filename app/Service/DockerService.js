@@ -2,8 +2,9 @@ import Fetch from 'js-fetch';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 
-const API = 'https://API_HOST/';
-const WS = 'wss://API_HOST/ws/';
+const API_HOST = 'docker-api.vibioh.fr';
+const API = `https://${API_HOST}/`;
+const WS = `wss://${API_HOST}/ws/`;
 export const authStorage = 'auth';
 
 /**
