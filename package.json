@@ -22,9 +22,16 @@
   "keywords": [
     "react",
     "react-router",
+    "react-router-dom",
+    "react-router-redux",
+    "history",
     "redux",
     "redux-saga",
-    "docker"
+    "docker",
+    "nyc",
+    "eslint",
+    "webpack",
+    "babel"
   ],
   "author": "Vincent Boutour",
   "license": "ISC",

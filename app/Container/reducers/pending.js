@@ -9,8 +9,7 @@ const pendingActions = [
 ];
 const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
 
-const initialState = {};
-export default (state = initialState, action) => {
+export default (state = {}, action) => {
   if (pendingActions.includes(action.type)) {
     return { ...state, [action.type]: true };
   }

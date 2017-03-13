@@ -1,7 +1,6 @@
 import actions from '../actions';
 
-const initialState = null;
-export default (state = initialState, action) => {
+export default (state = null, action) => {
   if (action.type === actions.FETCH_CONTAINER_SUCCEEDED) {
     return action.container;
   }
