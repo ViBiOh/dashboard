@@ -1,6 +1,11 @@
 import React from 'react';
 import style from './ContainerNetwork.css';
 
+/**
+ * Container's network informations.
+ * @param {Object} props Props of the component.
+ * @return {React.Component} Container's network information.
+ */
 const ContainerNetwork = ({ container }) => {
   const networkContent = container.NetworkSettings.Networks &&
         Object.keys(container.NetworkSettings.Networks)

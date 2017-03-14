@@ -1,6 +1,13 @@
 import actions from '../actions';
 
 const initialState = null;
+
+/**
+ * Logs's reducer.
+ * @param  {Object} state  Existing logs's state
+ * @param  {Object} action Action dispatched
+ * @return {Object}        New state
+ */
 export default (state = initialState, action) => {
   if (action.type === actions.OPEN_LOGS) {
     return [];

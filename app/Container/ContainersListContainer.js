@@ -20,4 +20,8 @@ const ContainersListContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(ContainersList);
+
+/**
+ * Container for handling list view.
+ */
 export default ContainersListContainer;

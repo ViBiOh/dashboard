@@ -67,6 +67,9 @@ export const makeOpenCloseActionCreator = (camelCaseName, opens = [], closes = [
   };
 };
 
+/**
+ * App's actions.
+ */
 export default {
   ...makeApiActionCreator('login', ['username', 'password']),
   ...makeApiActionCreator('logout'),

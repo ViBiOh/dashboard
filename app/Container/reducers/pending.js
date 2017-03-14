@@ -9,6 +9,12 @@ const pendingActions = [
 ];
 const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
 
+/**
+ * Pendings' reducer.
+ * @param  {Object} state  Existing pendings' state
+ * @param  {Object} action Action dispatched
+ * @return {Object}        New state
+ */
 export default (state = {}, action) => {
   if (pendingActions.includes(action.type)) {
     return { ...state, [action.type]: true };

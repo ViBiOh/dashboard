@@ -2,6 +2,11 @@ import React from 'react';
 import Button from '../Button/Button';
 import style from './ContainerLogs.css';
 
+/**
+ * Container's logs.
+ * @param {Object} props Props of the component.
+ * @return {React.Component} Container's logs.
+ */
 const ContainerLogs = ({ logs, openLogs }) => {
   if (!logs) {
     return (

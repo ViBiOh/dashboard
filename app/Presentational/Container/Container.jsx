@@ -15,6 +15,11 @@ import ContainerVolumes from './ContainerVolumes';
 import ContainerLogs from './ContainerLogs';
 import style from './Container.css';
 
+/**
+ * Container.
+ * @param {Object} props Props of the component.
+ * @return {React.Component} Container informations.
+ */
 const Container = (props) => {
   const {
     pending,

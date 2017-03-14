@@ -6,6 +6,11 @@ import Button from '../../Presentational/Button/Button';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Compose.css';
 
+/**
+ * Compose form.
+ * @param {Object} props Props of the component.
+ * @return {React.Component} Compose form with inputs.
+ */
 const Compose = ({ onCompose, onBack, pending, error }) => {
   let nameInput;
   let composeInput;

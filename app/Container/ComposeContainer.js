@@ -18,4 +18,7 @@ const ComposeContainer = connect(
   mapDispatchToProps,
 )(Compose);
 
+/**
+ * Container for handling compose view.
+ */
 export default ComposeContainer;

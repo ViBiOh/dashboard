@@ -4,6 +4,9 @@ import { push } from 'react-router-redux';
 import actions from './actions';
 import Container from '../Presentational/Container/Container';
 
+/**
+ * Container for handling container view.
+ */
 class ContainerComponent extends Component {
   componentDidMount() {
     this.props.fetchContainer(this.props.containerId);

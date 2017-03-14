@@ -13,4 +13,7 @@ const appReducers = combineReducers({
   error,
 });
 
+/**
+ * App's reducers.
+ */
 export default appReducers;

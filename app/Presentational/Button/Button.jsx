@@ -2,6 +2,11 @@ import React from 'react';
 import classnames from 'classnames';
 import style from './Button.css';
 
+/**
+ * Button.
+ * @param Object} props Props of the component.
+ * @return {React.Component} Button with rendered children.
+ */
 const Button = ({ children, type, active, className, ...buttonProps }) => {
   let content = children;
   if (Array.isArray(children)) {

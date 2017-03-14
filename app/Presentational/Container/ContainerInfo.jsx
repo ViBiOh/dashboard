@@ -17,6 +17,11 @@ function humanFileSize(size) {
   return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(0)} ${BYTES_NAMES[i]}`;
 }
 
+/**
+ * Container's basic informations.
+ * @param {Object} props Props of the component.
+ * @return {React.Component} Container's basic informations.
+ */
 const ContainerInfo = ({ container }) => {
   let labelContent = null;
   if (Object.keys(container.Config.Labels).length > 0) {

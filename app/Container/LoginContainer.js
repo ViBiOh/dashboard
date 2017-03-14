@@ -16,4 +16,7 @@ const LoginContainer = connect(
   mapDispatchToProps,
 )(Login);
 
+/**
+ * Container for handling login view.
+ */
 export default LoginContainer;

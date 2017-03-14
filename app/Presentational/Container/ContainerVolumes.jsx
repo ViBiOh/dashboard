@@ -1,6 +1,11 @@
 import React from 'react';
 import style from './ContainerVolumes.css';
 
+/**
+ * Container's volumes informations.
+ * @param {Object} props Props of the component.
+ * @return {React.Component} Container's volumes information.
+ */
 const ContainerVolumes = ({ container }) => {
   if (container.Mounts.length === 0) {
     return null;
