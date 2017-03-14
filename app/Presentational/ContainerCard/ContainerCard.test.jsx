@@ -11,15 +11,16 @@ describe('ContainerCard', () => {
   let wrapper;
   let onClick;
 
+  const container = {
+    Id: 1,
+    Image: '',
+    Created: 0,
+    Status: 'up',
+    Names: [],
+  };
+
   beforeEach(() => {
     onClick = sinon.spy();
-    const container = {
-      Id: 1,
-      Image: '',
-      Created: 0,
-      Status: 'up',
-      Names: [],
-    };
 
     wrapper = shallow((
       <ContainerCard onClick={onClick} container={container} />
@@ -37,7 +38,7 @@ describe('ContainerCard', () => {
   });
 
   it('should have red color on up', () => {
-    wrapper.setProps({ Status: 'down' });
+    wrapper.setProps({ container: { ...container, Status: 'down' } });
 
     expect(wrapper.find('div').hasClass('undefined')).to.equal(true);
   });
