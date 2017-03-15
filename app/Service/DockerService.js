@@ -21,6 +21,9 @@ function auth(url) {
     .auth(localStorageService.getItem(authStorage));
 }
 
+/**
+ * Docker API Service.
+ */
 export default class DockerService {
   /**
    * Check if User is already logged.

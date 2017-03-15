@@ -46,7 +46,6 @@
     "babel-preset-es2015": "latest",
     "babel-preset-react": "latest",
     "chai": "latest",
-    "coveralls": "latest",
     "css-loader": "latest",
     "enzyme": "latest",
     "esdoc": "latest",
