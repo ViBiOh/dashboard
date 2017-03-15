@@ -4,6 +4,11 @@ import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Login.css';
 
+/**
+ * Login form.
+ * @param {Object} props Props of the component.
+ * @return {React.Component} Login with username/password
+ */
 const Login = ({ pending, onLogin, error }) => {
   let loginInput;
   let passwordInput;
