@@ -12,7 +12,7 @@ export class LocalStorageService {
      * Map to store Key/Value data
      */
     this.storage = {};
-    
+
     /**
      * Boolean to determine is native LocalStorage is enabled or not.
      */
