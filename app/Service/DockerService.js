@@ -5,6 +5,10 @@ import localStorageService from './LocalStorageService';
 const API_HOST = process.env.API_HOST || 'localhost';
 const API = `https://${API_HOST}/`;
 const WS = `wss://${API_HOST}/ws/`;
+
+/**
+ * Storage key name for authentification token.
+ */
 export const authStorage = 'auth';
 
 /**
