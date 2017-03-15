@@ -47,7 +47,7 @@
     "babel-preset-es2015": "latest",
     "babel-preset-react": "latest",
     "chai": "latest",
-    "codecov": "^2.0.1",
+    "codecov": "latest",
     "css-loader": "latest",
     "enzyme": "latest",
     "esdoc": "latest",
