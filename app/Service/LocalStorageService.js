@@ -8,7 +8,14 @@ export class LocalStorageService {
    * Initialize local storage with undefined enabled flag.
    */
   constructor() {
+    /**
+     * Map to store Key/Value data
+     */
     this.storage = {};
+    
+    /**
+     * Boolean to determine is native LocalStorage is enabled or not.
+     */
     this.storageEnabled = undefined;
   }
 
