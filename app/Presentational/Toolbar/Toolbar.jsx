@@ -1,6 +1,11 @@
 import React from 'react';
 import style from './Toolbar.css';
 
+/**
+ * Toolbar for buttons and error message.
+ * @param {Object} props Props of the component.
+ * @return {React.Component} Toolbar with children and message if provided
+ */
 const Toolbar = ({ children, className, error }) => (
   <span className={`${style.flex} ${className}`}>
     {children}
