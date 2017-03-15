@@ -3,8 +3,6 @@ sudo: required
 services:
 - docker
 go: 1.8
-addons:
-  srcclr: true
 before_install:
 - openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv -in deploy_rsa.enc -out deploy_rsa -d
 install:
@@ -15,6 +13,7 @@ install:
 - npm run build
 script: |
   curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/docker-deploy.git" https://doc.esdoc.org/api/create &&
+  npm run coverage &&
   docker build -t ${DOCKER_USER}/docker-front -f Dockerfile_front . &&
   docker build -t ${DOCKER_USER}/docker-api -f Dockerfile_api .
 after_success: |
