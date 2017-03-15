@@ -8,6 +8,11 @@ import Throbber from '../../Presentational/Throbber/Throbber';
 import ContainerCard from '../../Presentational/ContainerCard/ContainerCard';
 import style from './ContainersList.css';
 
+/**
+ * Container's list.
+ * @param {Object} props Props of the component.
+ * @return {React.Component} List view of containers
+ */
 const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect, onLogout }) => {
   let content;
 
