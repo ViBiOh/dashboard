@@ -4,6 +4,9 @@ const localStorageKeyCheck = 'localStorageKeyCheck'.split('').reverse();
  * LocalStorage proxy that handles not available localStorage (e.g. Safari Private).
  */
 export class LocalStorageService {
+  /**
+   * Initialize local storage with undefined enabled flag.
+   */
   constructor() {
     this.storage = {};
     this.storageEnabled = undefined;
