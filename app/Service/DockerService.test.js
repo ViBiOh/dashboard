@@ -33,8 +33,8 @@ describe('DockerService', () => {
       delete: () => send(url, auth, 'delete'),
     });
 
-    sinon.stub(localStorageService, 'isEnabled', () => false);
-    sinon.stub(Fetch, 'url', url => ({
+    sinon.stub(localStorageService, 'isEnabled').callsFake(() => false);
+    sinon.stub(Fetch, 'url').callsFake(url => ({
       auth: auth => ({
         ...fetch(url, auth),
         error: () => fetch(url, auth),
@@ -48,14 +48,14 @@ describe('DockerService', () => {
   });
 
   it('should determine if already logged', () => {
-    sinon.stub(localStorageService, 'getItem', () => 'token');
+    sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
     expect(DockerService.isLogged()).to.equal(true);
     localStorageService.getItem.restore();
   });
 
   it('should determine if not already logged', () => {
-    sinon.stub(localStorageService, 'getItem', () => '');
+    sinon.stub(localStorageService, 'getItem').callsFake(() => '');
 
     expect(DockerService.isLogged()).to.equal(false);
     localStorageService.getItem.restore();
@@ -151,7 +151,7 @@ describe('DockerService', () => {
   it('should send auth on logs opening', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
-    const getItemSpy = sinon.stub(localStorageService, 'getItem', () => 'token');
+    const getItemSpy = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
     global.WebSocket = () => ({
       send: wsSend,
@@ -168,7 +168,7 @@ describe('DockerService', () => {
   it('should call onMessage when receiving', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
-    sinon.stub(localStorageService, 'getItem', () => 'token');
+    sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
     global.WebSocket = () => ({
       send: wsSend,
@@ -184,7 +184,7 @@ describe('DockerService', () => {
   it('should send auth on events opening', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
-    const getItemSpy = sinon.stub(localStorageService, 'getItem', () => 'token');
+    const getItemSpy = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
     global.WebSocket = () => ({
       send: wsSend,
@@ -201,7 +201,7 @@ describe('DockerService', () => {
   it('should send auth on events opening', () => {
     const onMessage = sinon.spy();
     const wsSend = sinon.spy();
-    sinon.stub(localStorageService, 'getItem', () => 'token');
+    sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
     global.WebSocket = () => ({
       send: wsSend,
