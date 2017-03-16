@@ -12,7 +12,7 @@ test.describe('Google Search', function sequence() {
   beforeEach(() => {
     driver = new webdriver.Builder()
       .withCapabilities(webdriver.Capabilities.chrome())
-      .usingServer('http://localhost:4445/wd/hub')
+      .usingServer('http://163.172.36.243:4444/wd/hub')
       .build();
   });
 
