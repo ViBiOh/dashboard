@@ -9,7 +9,7 @@ import { readLogsSaga } from './';
 
 describe('ReadLogs Saga', () => {
   it('should call DockerService.logs with given id', () => {
-    const logsSpy = sinon.stub(DockerService, 'logs', () => ({
+    const logsSpy = sinon.stub(DockerService, 'logs').callsFake(() => ({
       close: () => null,
     }));
 
@@ -38,7 +38,7 @@ describe('ReadLogs Saga', () => {
 
   it('should close channel and websocket on error/cancel', () => {
     const close = sinon.spy();
-    sinon.stub(DockerService, 'logs', () => ({
+    sinon.stub(DockerService, 'logs').callsFake(() => ({
       close,
     }));
 

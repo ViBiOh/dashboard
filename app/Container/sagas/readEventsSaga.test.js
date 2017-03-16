@@ -9,7 +9,7 @@ import { readEventsSaga, debounceFetchContainersSaga } from './';
 
 describe('ReadEvents Saga', () => {
   it('should call DockerService.events', () => {
-    const eventsSpy = sinon.stub(DockerService, 'events', () => ({
+    const eventsSpy = sinon.stub(DockerService, 'events').callsFake(() => ({
       close: () => null,
     }));
 
@@ -55,7 +55,7 @@ describe('ReadEvents Saga', () => {
 
   it('should close channel and websocket on error/cancel', () => {
     const close = sinon.spy();
-    sinon.stub(DockerService, 'events', () => ({
+    sinon.stub(DockerService, 'events').callsFake(() => ({
       close,
     }));
 
