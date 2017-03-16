@@ -12,7 +12,7 @@ test.describe('Google Search', function sequence() {
   beforeEach(() => {
     driver = new webdriver.Builder()
       .withCapabilities(webdriver.Capabilities.chrome())
-      .usingServer('http://ondemand.saucelabs.com:80/wd/hub')
+      .usingServer('http://localhost:4445/wd/hub')
       .build();
   });
 
