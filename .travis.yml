@@ -13,7 +13,6 @@ install:
 - npm run build
 script: |
   curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/docker-deploy.git" https://doc.esdoc.org/api/create &&
-  npm run e2e &&
   npm run coverage &&
   docker build -t ${DOCKER_USER}/docker-front -f Dockerfile_front . &&
   docker build -t ${DOCKER_USER}/docker-api -f Dockerfile_api .
