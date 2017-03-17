@@ -74,7 +74,7 @@
     "sinon": "latest",
     "style-loader": "latest",
     "webpack": "latest",
-    "webpack-dev-server": "latest",
+    "webpack-dev-server": "latest"
   },
   "dependencies": {
     "babel-polyfill": "latest",
