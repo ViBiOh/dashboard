@@ -49,4 +49,3 @@ networks:
   default:
     external:
       name: traefik
-
