@@ -1,7 +1,5 @@
 @font-face {
   font-family: 'Open Sans';
-  font-style: medium;
-  font-weight: 400;
   src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
 }
 
@@ -31,6 +29,9 @@ body {
 
 html, button {
   font-family: 'Open Sans', sans-serif;
+  font-size: initial;
+  font-style: normal;
+  font-weight: 400;
 }
 
 header {
