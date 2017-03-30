@@ -1,43 +1,28 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-env mocha */
-import { expect } from 'chai';
+import test from 'ava';
 import { call, put } from 'redux-saga/effects';
 import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 import { fetchContainerSaga } from './';
 
-describe('FetchContainer Saga', () => {
-  it('should call DockerService.infos with given id', () => {
-    const iterator = fetchContainerSaga({
-      id: 'test',
-    });
-
-    expect(
-      iterator.next().value,
-    ).to.deep.equal(
-      call(DockerService.infos, 'test'),
-    );
+test('should call DockerService.infos with given id', (t) => {
+  const iterator = fetchContainerSaga({
+    id: 'test',
   });
 
-  it('should put success after API call', () => {
-    const iterator = fetchContainerSaga({});
-    iterator.next();
+  t.deepEqual(iterator.next().value, call(DockerService.infos, 'test'));
+});
 
-    expect(
-      iterator.next().value,
-    ).to.deep.equal(
-      put(actions.fetchContainerSucceeded()),
-    );
-  });
+test('should put success after API call', (t) => {
+  const iterator = fetchContainerSaga({});
+  iterator.next();
 
-  it('should put error on failure', () => {
-    const iterator = fetchContainerSaga({});
-    iterator.next();
+  t.deepEqual(iterator.next().value, put(actions.fetchContainerSucceeded()));
+});
 
-    expect(
-      iterator.throw(new Error('Test')).value,
-    ).to.deep.equal([
-      put(actions.fetchContainerFailed('Error: Test')),
-    ]);
-  });
+test('should put error on failure', (t) => {
+  const iterator = fetchContainerSaga({});
+  iterator.next();
+
+  t.deepEqual(iterator.throw(new Error('Test')).value,
+    [put(actions.fetchContainerFailed('Error: Test'))]);
 });

@@ -1,14 +1,10 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-env mocha */
-import { expect } from 'chai';
+import test from 'ava';
 import { takeLatest } from 'redux-saga/effects';
 import actions from '../actions';
 import appSaga, { loginSaga } from './';
 
-describe('App Saga', () => {
-  it('should take latest LOGIN request', () => {
-    const iterator = appSaga();
+test('should take latest LOGIN request', (t) => {
+  const iterator = appSaga();
 
-    expect(iterator.next().value).to.deep.equal(takeLatest(actions.LOGIN, loginSaga));
-  });
+  t.deepEqual(iterator.next().value, takeLatest(actions.LOGIN, loginSaga));
 });

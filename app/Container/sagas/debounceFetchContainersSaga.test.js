@@ -1,30 +1,18 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-env mocha */
-import { expect } from 'chai';
+import test from 'ava';
 import { call, put } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 import actions from '../actions';
 import { debounceFetchContainersSaga } from './';
 
-describe('Debounced FetchContainers Saga', () => {
-  it('should start with a delay', () => {
-    const iterator = debounceFetchContainersSaga();
+test('should start with a delay', (t) => {
+  const iterator = debounceFetchContainersSaga();
 
-    expect(
-      iterator.next().value,
-    ).to.deep.equal(
-      call(delay, 5555),
-    );
-  });
+  t.deepEqual(iterator.next().value, call(delay, 5555));
+});
 
-  it('should put fetchContainers action', () => {
-    const iterator = debounceFetchContainersSaga();
-    iterator.next();
+test('should put fetchContainers action', (t) => {
+  const iterator = debounceFetchContainersSaga();
+  iterator.next();
 
-    expect(
-      iterator.next().value,
-    ).to.deep.equal(
-      put(actions.fetchContainers()),
-    );
-  });
+  t.deepEqual(iterator.next().value, put(actions.fetchContainers()));
 });
