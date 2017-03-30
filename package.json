@@ -12,7 +12,7 @@
     "lint": "npm run eslint && npm run sassLint",
     "doc": "./node_modules/.bin/esdoc -c esdoc.json",
     "start": "npm run copy:html && ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
-    "test": "./node_modules/.bin/nyc --reporter html --reporter text --reporter lcov --exclude **/*.test.js* --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
+    "test": "./node_modules/.bin/nyc --reporter html --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
     "coverage": "./node_modules/.bin/codecov -f ./coverage/lcov.info",
     "build": "npm run lint && npm test && npm run mustache && npm run copy:web && ./node_modules/.bin/webpack --progress -p"
   },
@@ -91,7 +91,7 @@
   },
   "ava": {
     "files": [
-      "app/**/*.test.js"
+      "app/**/*.test.*"
     ],
     "require": [
       "ignore-styles",

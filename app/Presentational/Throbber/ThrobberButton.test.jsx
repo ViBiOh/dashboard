@@ -1,6 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-env mocha */
-import { expect } from 'chai';
+import test from 'ava';
 import sinon from 'sinon';
 import React from 'react';
 import { shallow } from 'enzyme';
@@ -8,43 +6,36 @@ import ThrobberButton from './ThrobberButton';
 import Button from '../Button/Button';
 import Throbber from './Throbber';
 
-describe('ThrobberButton', () => {
-  let wrapper;
-  let onClick;
+test('should render as a Button', (t) => {
+  t.is(shallow(<ThrobberButton />).type(), Button);
+});
 
-  beforeEach(() => {
-    onClick = sinon.spy();
+test('should render with a Throbber if pending', (t) => {
+  t.is(shallow(<ThrobberButton pending />).find(Throbber).length, 1);
+});
 
-    wrapper = shallow(<ThrobberButton onClick={onClick} />);
-  });
+test('should render with children if not pending', (t) => {
+  const wrapper = shallow(
+    <ThrobberButton>
+      <span>Test</span>
+    </ThrobberButton>,
+  );
 
-  it('should render as a Button', () => {
-    expect(wrapper.type()).to.equal(Button);
-  });
+  t.is(wrapper.find('span').length, 1);
+});
 
-  it('should render with a Throbber if pending', () => {
-    wrapper.setProps({ pending: true });
-    expect(wrapper.find(Throbber).length).to.equal(1);
-  });
+test('should call onClick at click', (t) => {
+  const onClick = sinon.spy();
+  const wrapper = shallow(<ThrobberButton onClick={onClick} />);
+  wrapper.simulate('click');
 
-  it('should render with children if not pending', () => {
-    wrapper.setProps({
-      children: <span>Test</span>,
-    });
+  t.true(onClick.called);
+});
 
-    expect(wrapper.find('span').length).to.equal(1);
-  });
+test('should not call onClick if pending', (t) => {
+  const onClick = sinon.spy();
+  const wrapper = shallow(<ThrobberButton pending onClick={onClick} />);
+  wrapper.simulate('click');
 
-  it('should call onClick at click', () => {
-    wrapper.simulate('click');
-
-    expect(onClick.called).to.equal(true);
-  });
-
-  it('should not call onClick if pending', () => {
-    wrapper.setProps({ pending: true });
-    wrapper.simulate('click');
-
-    expect(onClick.called).to.equal(false);
-  });
+  t.false(onClick.called);
 });

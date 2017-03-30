@@ -1,28 +1,16 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-env mocha */
-import { expect } from 'chai';
+import test from 'ava';
 import React from 'react';
 import { shallow } from 'enzyme';
 import Throbber from './Throbber';
 
-describe('Throbber', () => {
-  let wrapper;
+test('should render into a div', (t) => {
+  t.is(shallow(<Throbber />).type(), 'div');
+});
 
-  beforeEach(() => {
-    wrapper = shallow(<Throbber />);
-  });
+test('should have no label by default', (t) => {
+  t.is(shallow(<Throbber />).find('span').length, 0);
+});
 
-  it('should render into a div', () => {
-    expect(wrapper.type()).to.equal('div');
-  });
-
-  it('should have no label by default', () => {
-    expect(wrapper.find('span').length).to.equal(0);
-  });
-
-  it('should have label when given', () => {
-    wrapper.setProps({ label: 'test' });
-
-    expect(wrapper.find('span').text()).to.equal('test');
-  });
+test('should have label when given', (t) => {
+  t.is(shallow(<Throbber label="test" />).find('span').text(), 'test');
 });

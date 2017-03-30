@@ -1,37 +1,29 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-env mocha */
-import { expect } from 'chai';
+import test from 'ava';
 import React from 'react';
 import { shallow } from 'enzyme';
 import Button from './Button';
 
-describe('Button', () => {
-  let wrapper;
+test('should always render as a button', (t) => {
+  t.is(shallow(<Button />).type(), 'button');
+});
 
-  beforeEach(() => {
-    wrapper = shallow(<Button />);
-  });
+test('should not wrap child', (t) => {
+  const wrapper = shallow(
+    <Button>
+      <span>First</span>
+    </Button>,
+  );
 
-  it('should always render as a button', () => {
-    expect(wrapper.type()).to.equal('button');
-  });
+  t.is(wrapper.find('span').length, 1);
+});
 
-  it('should not wrap child', () => {
-    wrapper.setProps({
-      children: <span>First</span>,
-    });
+test('should wrap children in div', (t) => {
+  const wrapper = shallow(
+    <Button>
+      <span>First</span>
+      <span>Second</span>
+    </Button>,
+  );
 
-    expect(wrapper.find('span').length).to.equal(1);
-  });
-
-  it('should wrap children in div', () => {
-    wrapper.setProps({
-      children: [
-        <span key="first">First</span>,
-        <span key="second">Second</span>,
-      ],
-    });
-
-    expect(wrapper.find('div').length).to.equal(1);
-  });
+  t.is(wrapper.find('div').length, 1);
 });
