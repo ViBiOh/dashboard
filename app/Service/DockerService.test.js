@@ -62,7 +62,7 @@ test.serial('should determine if not already logged', (t) => {
   localStorageService.getItem.restore();
 });
 
-test.serial('should login with given username and password', () =>
+test.serial('should login with given username and password', (t) =>
   DockerService.login('admin', 'password').then((result) => {
     t.true(/auth$/.test(result.url));
     t.is(result.auth, `Basic ${btoa('admin:password')}`);
@@ -87,8 +87,6 @@ test.serial('should drop stored token from localStorage on logout', (t) => {
 });
 
 test.serial('should list containers with auth', (t) => {
-  const getItemSpy = sinon.spy(localStorageService, 'getItem');
-
   return DockerService.containers().then(() => {
     localStorageService.getItem.restore();
     t.true(getItemSpy.calledWith(authStorage));
@@ -105,7 +103,7 @@ test.serial('should return results when listing containers', (t) => {
   return DockerService.containers().then(value => t.deepEqual(value, [{ id: 1 }]));
 });
 
-test.serial('should create container with given args', () =>
+test.serial('should create container with given args', (t) =>
   DockerService.create('test', 'composeFileContent').then((result) => {
     t.is(result.url).to.match(/containers\/test\/$/);
     t.is(result.content, 'composeFileContent');
@@ -128,7 +126,7 @@ test.serial('should create container with given args', () =>
   { method: 'restart', args: ['test'], httpMethod: 'post', url: /containers\/test\/restart$/ },
   { method: 'delete', args: ['test'], httpMethod: 'delete', url: /containers\/test\/$/ },
 ].forEach((param) => {
-  test.serial(`for ${param.method}`, () => DockerService[param.method].apply(null, param.args)
+  test.serial(`for ${param.method}`, (t) => DockerService[param.method].apply(null, param.args)
     .then((result) => {
       t.is(result.method, param.httpMethod);
       t.true(param.url.test(result.url));
@@ -140,7 +138,7 @@ test.serial('should create container with given args', () =>
 test.serial('should send auth on logs opening', (t) => {
   const onMessage = sinon.spy();
   const wsSend = sinon.spy();
-  const getItemSpy = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
+  const getItemStub = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
   global.WebSocket = () => ({
     send: wsSend,
@@ -148,10 +146,10 @@ test.serial('should send auth on logs opening', (t) => {
   });
 
   DockerService.logs('test', onMessage).onopen();
-  localStorageService.getItem.restore();
+  localStorageService.getItemStub.restore();
 
   t.true(wsSend.calledWith('token'));
-  t.true(getItemSpy.calledWith(authStorage));
+  t.true(getItemStub.calledWith(authStorage));
 });
 
 test.serial('should call onMessage when receiving', (t) => {
@@ -173,7 +171,7 @@ test.serial('should call onMessage when receiving', (t) => {
 test.serial('should send auth on events opening', (t) => {
   const onMessage = sinon.spy();
   const wsSend = sinon.spy();
-  const getItemSpy = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
+  const getItemStub = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
   global.WebSocket = () => ({
     send: wsSend,
@@ -181,10 +179,10 @@ test.serial('should send auth on events opening', (t) => {
   });
 
   DockerService.events(onMessage).onopen();
-  localStorageService.getItem.restore();
+  localStorageService.getItemStub.restore();
 
   t.true(wsSend.calledWith('token'));
-  t.true(getItemSpy.calledWith(authStorage));
+  t.true(getItemStub.calledWith(authStorage));
 });
 
 test.serial('should send auth on events opening', (t) => {
