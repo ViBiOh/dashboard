@@ -90,7 +90,7 @@ test.serial('should list containers with auth', t => DockerService.containers()
   .then(() => {
     localStorageService.getItem.restore();
     t.true(getItemSpy.calledWith(authStorage));
-  });
+  }),
 );
 
 test.serial('should return results when listing containers', (t) => {
