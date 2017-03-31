@@ -64,7 +64,7 @@ test.serial('should determine if not already logged', (t) => {
 
 test.serial('should login with given username and password', () =>
   DockerService.login('admin', 'password').then((result) => {
-    t.true(/auth$/.test(result.url);
+    t.true(/auth$/.test(result.url));
     t.is(result.auth, `Basic ${btoa('admin:password')}`);
   }));
 
