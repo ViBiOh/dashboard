@@ -131,7 +131,7 @@ test.serial('should create container with given args', () =>
   test.serial(`for ${param.method}`, () => DockerService[param.method].apply(null, param.args)
     .then((result) => {
       t.is(result.method, param.httpMethod);
-      t.true(param.url.test(result.url);
+      t.true(param.url.test(result.url));
       t.true(getItemSpy.calledWith(authStorage));
     }),
   );
