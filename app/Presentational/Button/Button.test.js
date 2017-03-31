@@ -11,8 +11,7 @@ test('should not wrap child', (t) => {
   const wrapper = shallow(
     <Button>
       <span>First</span>
-    </Button>,
-  );
+    </Button>);
 
   t.is(wrapper.find('span').length, 1);
 });
@@ -22,8 +21,7 @@ test('should wrap children in div', (t) => {
     <Button>
       <span>First</span>
       <span>Second</span>
-    </Button>,
-  );
+    </Button>);
 
   t.is(wrapper.find('div').length, 1);
 });

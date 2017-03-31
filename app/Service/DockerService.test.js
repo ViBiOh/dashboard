@@ -8,6 +8,8 @@ import DockerService, { authStorage } from './DockerService';
 let data;
 let getItemSpy;
 
+sinon.stub(localStorageService, 'isEnabled').callsFake(() => false);
+
 test.beforeEach(() => {
   data = null;
 
@@ -31,8 +33,7 @@ test.beforeEach(() => {
     delete: () => send(url, auth, 'delete'),
   });
 
-  sinon.stub(localStorageService, 'isEnabled').callsFake(() => false);
-  getItemSpy = sinon.spy(localStorageService, 'getItem');
+  getItemSpy = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
   sinon.stub(Fetch, 'url').callsFake(url => ({
     auth: auth => ({
@@ -44,22 +45,18 @@ test.beforeEach(() => {
 
 test.afterEach(() => {
   Fetch.url.restore();
-  localStorageService.isEnabled.restore();
   localStorageService.getItem.restore();
 });
 
 test.serial('should determine if already logged', (t) => {
-  sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
-
   t.true(DockerService.isLogged());
-  localStorageService.getItem.restore();
 });
 
 test.serial('should determine if not already logged', (t) => {
+  localStorageService.getItem.restore();
   sinon.stub(localStorageService, 'getItem').callsFake(() => '');
 
   t.false(DockerService.isLogged());
-  localStorageService.getItem.restore();
 });
 
 test.serial('should login with given username and password', t =>
@@ -88,7 +85,6 @@ test.serial('should drop stored token from localStorage on logout', (t) => {
 
 test.serial('should list containers with auth', t => DockerService.containers()
   .then(() => {
-    localStorageService.getItem.restore();
     t.true(getItemSpy.calledWith(authStorage));
   }),
 );
@@ -105,7 +101,7 @@ test.serial('should return results when listing containers', (t) => {
 
 test.serial('should create container with given args', t =>
   DockerService.create('test', 'composeFileContent').then((result) => {
-    t.is(result.url).to.match(/containers\/test\/$/);
+    t.true(/containers\/test\/$/.test(result.url));
     t.is(result.content, 'composeFileContent');
   }),
 );
@@ -138,7 +134,6 @@ test.serial('should create container with given args', t =>
 test.serial('should send auth on logs opening', (t) => {
   const onMessage = sinon.spy();
   const wsSend = sinon.spy();
-  const getItemStub = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
   global.WebSocket = () => ({
     send: wsSend,
@@ -146,16 +141,14 @@ test.serial('should send auth on logs opening', (t) => {
   });
 
   DockerService.logs('test', onMessage).onopen();
-  localStorageService.getItemStub.restore();
 
   t.true(wsSend.calledWith('token'));
-  t.true(getItemStub.calledWith(authStorage));
+  t.true(getItemSpy.calledWith(authStorage));
 });
 
 test.serial('should call onMessage when receiving', (t) => {
   const onMessage = sinon.spy();
   const wsSend = sinon.spy();
-  sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
   global.WebSocket = () => ({
     send: wsSend,
@@ -163,7 +156,6 @@ test.serial('should call onMessage when receiving', (t) => {
   });
 
   DockerService.logs('test', onMessage).onmessage({ data: 'test' });
-  localStorageService.getItem.restore();
 
   t.true(onMessage.calledWith('test'));
 });
@@ -171,7 +163,6 @@ test.serial('should call onMessage when receiving', (t) => {
 test.serial('should send auth on events opening', (t) => {
   const onMessage = sinon.spy();
   const wsSend = sinon.spy();
-  const getItemStub = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
   global.WebSocket = () => ({
     send: wsSend,
@@ -179,16 +170,14 @@ test.serial('should send auth on events opening', (t) => {
   });
 
   DockerService.events(onMessage).onopen();
-  localStorageService.getItemStub.restore();
 
   t.true(wsSend.calledWith('token'));
-  t.true(getItemStub.calledWith(authStorage));
+  t.true(getItemSpy.calledWith(authStorage));
 });
 
-test.serial('should send auth on events opening', (t) => {
+test.serial('should call onMessage callback', (t) => {
   const onMessage = sinon.spy();
   const wsSend = sinon.spy();
-  sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
   global.WebSocket = () => ({
     send: wsSend,
@@ -196,7 +185,6 @@ test.serial('should send auth on events opening', (t) => {
   });
 
   DockerService.events(onMessage).onmessage({ data: 'test' });
-  localStorageService.getItem.restore();
 
   t.true(onMessage.calledWith('test'));
 });

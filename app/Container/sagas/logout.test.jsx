@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import test from 'ava';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
