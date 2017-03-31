@@ -62,7 +62,7 @@ test.serial('should determine if not already logged', (t) => {
   localStorageService.getItem.restore();
 });
 
-test.serial('should login with given username and password', (t) =>
+test.serial('should login with given username and password', t =>
   DockerService.login('admin', 'password').then((result) => {
     t.true(/auth$/.test(result.url));
     t.is(result.auth, `Basic ${btoa('admin:password')}`);
@@ -86,12 +86,12 @@ test.serial('should drop stored token from localStorage on logout', (t) => {
   });
 });
 
-test.serial('should list containers with auth', (t) => {
-  return DockerService.containers().then(() => {
+test.serial('should list containers with auth', t => DockerService.containers()
+  .then(() => {
     localStorageService.getItem.restore();
     t.true(getItemSpy.calledWith(authStorage));
   });
-});
+);
 
 test.serial('should return results when listing containers', (t) => {
   data = {
@@ -103,7 +103,7 @@ test.serial('should return results when listing containers', (t) => {
   return DockerService.containers().then(value => t.deepEqual(value, [{ id: 1 }]));
 });
 
-test.serial('should create container with given args', (t) =>
+test.serial('should create container with given args', t =>
   DockerService.create('test', 'composeFileContent').then((result) => {
     t.is(result.url).to.match(/containers\/test\/$/);
     t.is(result.content, 'composeFileContent');
@@ -126,7 +126,7 @@ test.serial('should create container with given args', (t) =>
   { method: 'restart', args: ['test'], httpMethod: 'post', url: /containers\/test\/restart$/ },
   { method: 'delete', args: ['test'], httpMethod: 'delete', url: /containers\/test\/$/ },
 ].forEach((param) => {
-  test.serial(`for ${param.method}`, (t) => DockerService[param.method].apply(null, param.args)
+  test.serial(`for ${param.method}`, t => DockerService[param.method].apply(null, param.args)
     .then((result) => {
       t.is(result.method, param.httpMethod);
       t.true(param.url.test(result.url));
