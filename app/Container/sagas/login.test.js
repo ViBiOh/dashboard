@@ -1,48 +1,34 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-env mocha */
-import { expect } from 'chai';
+import test from 'ava';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 import { loginSaga } from './';
 
-describe('Login Saga', () => {
-  it('should call DockerService.login with given username and password', () => {
-    const iterator = loginSaga({
-      username: 'Test',
-      password: 'secret',
-    });
-
-    expect(
-      iterator.next().value,
-    ).to.deep.equal(
-      call(DockerService.login, 'Test', 'secret'),
-    );
+test('should call DockerService.login with given username and password', (t) => {
+  const iterator = loginSaga({
+    username: 'Test',
+    password: 'secret',
   });
 
-  it('should put success, fetch containers, open event stream and go home after API call', () => {
-    const iterator = loginSaga({});
-    iterator.next();
+  t.deepEqual(iterator.next().value, call(DockerService.login, 'Test', 'secret'));
+});
 
-    expect(
-      iterator.next().value,
-    ).to.deep.equal([
-      put(actions.loginSucceeded()),
-      put(actions.fetchContainers()),
-      put(actions.openEvents()),
-      put(push('/')),
-    ]);
-  });
+test('should put success, fetch containers, open event stream and go home after API call', (t) => {
+  const iterator = loginSaga({});
+  iterator.next();
 
-  it('should put error on failure', () => {
-    const iterator = loginSaga({});
-    iterator.next();
+  t.deepEqual(iterator.next().value, [
+    put(actions.loginSucceeded()),
+    put(actions.fetchContainers()),
+    put(actions.openEvents()),
+    put(push('/')),
+  ]);
+});
 
-    expect(
-      iterator.throw(new Error('Test')).value,
-    ).to.deep.equal(
-      put(actions.loginFailed('Error: Test')),
-    );
-  });
+test('should put error on failure', (t) => {
+  const iterator = loginSaga({});
+  iterator.next();
+
+  t.deepEqual(iterator.throw(new Error('Test')).value, put(actions.loginFailed('Error: Test')));
 });

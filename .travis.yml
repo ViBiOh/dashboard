@@ -17,7 +17,7 @@ script: |
   docker build -t ${DOCKER_USER}/docker-api -f Dockerfile_api .
 after_success: |
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
-      npm run coverage
+    npm run coverage
     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && docker push ${DOCKER_USER}/docker-front && docker push ${DOCKER_USER}/docker-api
   fi
 notifications:
