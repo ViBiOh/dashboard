@@ -8,7 +8,7 @@ test('should determine localStorage not available on error', (t) => {
     },
   };
 
-  t.is(new LocalStorageService().isEnabled(), false);
+  t.false(new LocalStorageService().isEnabled());
 });
 
 test('should determine localStorage not available on error', (t) => {
@@ -19,7 +19,7 @@ test('should determine localStorage not available on error', (t) => {
     },
   };
 
-  t.is(new LocalStorageService().isEnabled(), false);
+  t.false(new LocalStorageService().isEnabled());
 });
 
 test('should determine localStorage is available if all success', (t) => {
