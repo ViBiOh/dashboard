@@ -28,7 +28,7 @@ test('should determine localStorage is available if all success', (t) => {
     removeItem: () => null,
   };
 
-  t.is(new LocalStorageService().isEnabled(), true);
+  t.true(new LocalStorageService().isEnabled());
 });
 
 test('should use cached value for isEnabled', (t) => {
@@ -40,8 +40,8 @@ test('should use cached value for isEnabled', (t) => {
 
   const localStorageService = new LocalStorageService();
 
-  t.is(localStorageService.isEnabled(), true);
-  t.is(localStorageService.isEnabled(), true);
+  t.true(localStorageService.isEnabled());
+  t.true(localStorageService.isEnabled());
   t.is(count, 1);
 });
 
