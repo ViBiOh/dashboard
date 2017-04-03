@@ -14,8 +14,8 @@ const ContainerCard = ({ container, onClick }) => (
   <Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
     <div className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`} />
     <span className={style.column}>
-      <span>Image: <em>{container.Image}</em></span>
-      <span>Names: <strong>{container.Names.join(', ')}</strong></span>
+      <em>{container.Image}</em>
+      <strong>{container.Names.join(', ')}</strong>
     </span>
     <span>
       {moment.unix(container.Created).fromNow()}

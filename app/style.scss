@@ -46,6 +46,11 @@ h1 {
   margin: 0;
 }
 
+svg {
+  height: 22px;
+  width: 22px;
+}
+
 @media screen and (max-width: 669px) {
   h1 {
     font-size: 1em;
