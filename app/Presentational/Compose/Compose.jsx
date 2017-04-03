@@ -45,7 +45,7 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
           name="compose"
           placeholder="compose file yaml v2"
           className={style.code}
-          rows={20}
+          rows={19}
           onKeyDown={e => onKeyDown(e, submit)}
         />
       </span>
