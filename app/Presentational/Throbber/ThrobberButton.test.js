@@ -7,16 +7,16 @@ import Button from '../Button/Button';
 import Throbber from './Throbber';
 
 test('should render as a Button', (t) => {
-  t.is(shallow(<ThrobberButton />).type(), Button);
+  t.is(shallow(<ThrobberButton onClick={() => null} />).type(), Button);
 });
 
 test('should render with a Throbber if pending', (t) => {
-  t.is(shallow(<ThrobberButton pending />).find(Throbber).length, 1);
+  t.is(shallow(<ThrobberButton onClick={() => null} pending />).find(Throbber).length, 1);
 });
 
 test('should render with children if not pending', (t) => {
   const wrapper = shallow(
-    <ThrobberButton>
+    <ThrobberButton onClick={() => null}>
       <span>Test</span>
     </ThrobberButton>,
   );
