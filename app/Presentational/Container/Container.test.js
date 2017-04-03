@@ -149,8 +149,8 @@ test('should have a two action button if up', (t) => {
   );
 
   t.true(wrapper.find(ThrobberButton).length >= 2);
-  t.is(wrapper.find(ThrobberButton).at(1).find('span').text(), 'Restart');
-  t.is(wrapper.find(ThrobberButton).at(2).find('span').text(), 'Stop');
+  t.is(wrapper.find('FaRetweet').length, 1);
+  t.is(wrapper.find('FaStopCircle').length, 1);
 });
 
 test('should have a two action button if not up', (t) => {
@@ -180,6 +180,6 @@ test('should have a two action button if not up', (t) => {
   );
 
   t.true(wrapper.find(ThrobberButton).length >= 2);
-  t.is(wrapper.find(ThrobberButton).at(1).find('span').text(), 'Start');
-  t.is(wrapper.find(ThrobberButton).at(2).find('span').text(), 'Delete');
+  t.is(wrapper.find('FaPlay').length, 1);
+  t.is(wrapper.find('FaTrash').length, 1);
 });

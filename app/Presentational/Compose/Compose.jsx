@@ -27,7 +27,6 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
       <Toolbar error={error}>
         <Button onClick={onBack}>
           <FaArrowLeft />
-          <span>Back</span>
         </Button>
       </Toolbar>
       <h2>Create an app</h2>

@@ -53,26 +53,22 @@ const Container = (props) => {
       buttons.push(
         <ThrobberButton key="restart" onClick={onRestart} pending={pendingAction}>
           <FaRetweet />
-          <span>Restart</span>
         </ThrobberButton>,
       );
       buttons.push(
         <ThrobberButton key="stop" type="danger" onClick={onStop} pending={pendingAction}>
           <FaStopCircle />
-          <span>Stop</span>
         </ThrobberButton>,
       );
     } else {
       buttons.push(
         <ThrobberButton key="start" onClick={onStart} pending={pendingAction}>
           <FaPlay />
-          <span>Start</span>
         </ThrobberButton>,
       );
       buttons.push(
         <ThrobberButton key="delete" type="danger" onClick={onDelete} pending={pendingAction}>
           <FaTrash />
-          <span>Delete</span>
         </ThrobberButton>,
       );
     }
@@ -83,11 +79,9 @@ const Container = (props) => {
       <Toolbar error={error}>
         <Button onClick={onBack}>
           <FaArrowLeft />
-          <span>Back</span>
         </Button>
         <ThrobberButton onClick={onRefresh} pending={pendingAction}>
           <FaRefresh />
-          <span>Refresh</span>
         </ThrobberButton>
         <span className={style.fill} />
         {buttons}

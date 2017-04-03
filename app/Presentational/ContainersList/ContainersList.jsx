@@ -35,16 +35,13 @@ const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect
       <Toolbar error={error}>
         <Button onClick={onRefresh}>
           <FaRefresh />
-          <span>Refresh</span>
         </Button>
         <Button onClick={onAdd}>
           <FaPlus />
-          <span>Add an app</span>
         </Button>
         <span className={style.fill} />
         <Button onClick={onLogout} type="danger">
           <FaUserTimes />
-          <span>Disconnect</span>
         </Button>
       </Toolbar>
       {content}
