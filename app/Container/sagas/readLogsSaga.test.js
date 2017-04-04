@@ -39,7 +39,7 @@ test('should close channel and websocket on error/cancel', (t) => {
   iterator.next();
   DockerService.logs.restore();
   try {
-    iterator.throw(new Error('Mocha test'));
+    iterator.throw(new Error('Error test'));
   } catch (e) {} // eslint-disable-line no-empty
 
   t.true(close.called);

@@ -4,14 +4,14 @@ import actions from '../actions';
 import { onErrorActions } from './';
 
 test('should not redirect on login', (t) => {
-  t.deepEqual(onErrorActions('logoutFailed', { toString: () => 'Mocha failed' }), [
-    actions.logoutFailed('Mocha failed'),
+  t.deepEqual(onErrorActions('logoutFailed', { toString: () => 'Test failed' }), [
+    actions.logoutFailed('Test failed'),
   ]);
 });
 
 test('should redirect to login if 401', (t) => {
-  t.deepEqual(onErrorActions('logoutFailed', { toString: () => 'Mocha failed', status: 401 }), [
+  t.deepEqual(onErrorActions('logoutFailed', { toString: () => 'Test failed', status: 401 }), [
     push('/login'),
-    actions.logoutFailed('Mocha failed'),
+    actions.logoutFailed('Test failed'),
   ]);
 });
