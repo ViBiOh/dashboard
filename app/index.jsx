@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route, Switch } from 'react-router-dom';
+import Route from 'react-router-dom/Route';
+import Router from 'react-router-dom/Router';
+import Switch from 'react-router-dom/Switch';
 import actions from './Container/actions';
 import appStore from './Store';
 import history from './History';
