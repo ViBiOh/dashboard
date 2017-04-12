@@ -79,6 +79,7 @@
     "history": "latest",
     "js-fetch": "git+https://github.com/ViBiOh/js-fetch.git",
     "moment": "latest",
+    "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-icons": "latest",

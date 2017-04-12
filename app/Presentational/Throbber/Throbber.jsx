@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import style from './Throbber.css';
 
 /**
@@ -20,9 +21,9 @@ const Throbber = ({ label, title, className }) => (
 Throbber.displayname = 'Throbber';
 
 Throbber.propTypes = {
-  label: React.PropTypes.string,
-  title: React.PropTypes.string,
-  className: React.PropTypes.string,
+  label: PropTypes.string,
+  title: PropTypes.string,
+  className: PropTypes.string,
 };
 
 Throbber.defaultProps = {

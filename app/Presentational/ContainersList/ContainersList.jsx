@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
@@ -52,13 +53,13 @@ const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect
 ContainersList.displayName = 'ContainersList';
 
 ContainersList.propTypes = {
-  pending: React.PropTypes.bool,
-  containers: React.PropTypes.arrayOf(React.PropTypes.shape({})),
-  error: React.PropTypes.string,
-  onRefresh: React.PropTypes.func.isRequired,
-  onAdd: React.PropTypes.func.isRequired,
-  onSelect: React.PropTypes.func.isRequired,
-  onLogout: React.PropTypes.func.isRequired,
+  pending: PropTypes.bool,
+  containers: PropTypes.arrayOf(PropTypes.shape({})),
+  error: PropTypes.string,
+  onRefresh: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
 };
 
 ContainersList.defaultProps = {

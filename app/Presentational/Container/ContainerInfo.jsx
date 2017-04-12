@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import style from './ContainerInfo.css';
 
@@ -123,28 +124,28 @@ const ContainerInfo = ({ container }) => {
 ContainerInfo.displayName = 'ContainerInfo';
 
 ContainerInfo.propTypes = {
-  container: React.PropTypes.shape({
-    Id: React.PropTypes.string,
-    Name: React.PropTypes.string,
-    Args: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    Created: React.PropTypes.string,
-    State: React.PropTypes.shape({
-      Running: React.PropTypes.bool,
+  container: PropTypes.shape({
+    Id: PropTypes.string,
+    Name: PropTypes.string,
+    Args: PropTypes.arrayOf(PropTypes.string).isRequired,
+    Created: PropTypes.string,
+    State: PropTypes.shape({
+      Running: PropTypes.bool,
     }).isRequired,
-    Config: React.PropTypes.shape({
-      Image: React.PropTypes.string,
-      Labels: React.PropTypes.shape({}).isRequired,
-      Env: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    Config: PropTypes.shape({
+      Image: PropTypes.string,
+      Labels: PropTypes.shape({}).isRequired,
+      Env: PropTypes.arrayOf(PropTypes.string).isRequired,
     }).isRequired,
-    HostConfig: React.PropTypes.shape({
-      ReadonlyRootfs: React.PropTypes.bool,
-      RestartPolicy: React.PropTypes.shape({
-        Name: React.PropTypes.string,
-        MaximumRetryCount: React.PropTypes.number,
+    HostConfig: PropTypes.shape({
+      ReadonlyRootfs: PropTypes.bool,
+      RestartPolicy: PropTypes.shape({
+        Name: PropTypes.string,
+        MaximumRetryCount: PropTypes.number,
       }),
-      CpuShares: React.PropTypes.number,
-      Memory: React.PropTypes.number,
-      SecurityOpt: React.PropTypes.arrayOf(React.PropTypes.string),
+      CpuShares: PropTypes.number,
+      Memory: PropTypes.number,
+      SecurityOpt: PropTypes.arrayOf(PropTypes.string),
     }).isRequired,
   }).isRequired,
 };

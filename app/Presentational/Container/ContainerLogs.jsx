@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '../Button/Button';
 import style from './ContainerLogs.css';
 
@@ -29,8 +30,8 @@ const ContainerLogs = ({ logs, openLogs }) => {
 ContainerLogs.displayName = 'ContainerLogs';
 
 ContainerLogs.propTypes = {
-  logs: React.PropTypes.arrayOf(React.PropTypes.string),
-  openLogs: React.PropTypes.func.isRequired,
+  logs: PropTypes.arrayOf(PropTypes.string),
+  openLogs: PropTypes.func.isRequired,
 };
 
 ContainerLogs.defaultProps = {

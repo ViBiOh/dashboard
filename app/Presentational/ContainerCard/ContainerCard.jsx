@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import Button from '../../Presentational/Button/Button';
 import style from './ContainerCard.css';
@@ -26,13 +27,13 @@ const ContainerCard = ({ container, onClick }) => (
 ContainerCard.displayName = 'ContainerCard';
 
 ContainerCard.propTypes = {
-  container: React.PropTypes.shape({
-    Image: React.PropTypes.string.isRequired,
-    Created: React.PropTypes.number.isRequired,
-    Status: React.PropTypes.string.isRequired,
-    Names: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  container: PropTypes.shape({
+    Image: PropTypes.string.isRequired,
+    Created: PropTypes.number.isRequired,
+    Status: PropTypes.string.isRequired,
+    Names: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
-  onClick: React.PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default ContainerCard;

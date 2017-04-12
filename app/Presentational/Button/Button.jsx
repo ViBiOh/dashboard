@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import style from './Button.css';
 
@@ -34,11 +35,11 @@ const Button = ({ children, type, active, className, ...buttonProps }) => {
 Button.displayName = 'Button';
 
 Button.propTypes = {
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
   ]),
-  type: React.PropTypes.oneOf([
+  type: PropTypes.oneOf([
     'transparent',
     'primary',
     'success',
@@ -47,8 +48,8 @@ Button.propTypes = {
     'danger',
     'none',
   ]).isRequired,
-  active: React.PropTypes.bool,
-  className: React.PropTypes.string,
+  active: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 Button.defaultProps = {

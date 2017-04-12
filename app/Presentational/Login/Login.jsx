@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import onKeyDown from '../../Tools/input';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
@@ -44,9 +45,9 @@ const Login = ({ pending, onLogin, error }) => {
 Login.displayName = 'Login';
 
 Login.propTypes = {
-  pending: React.PropTypes.bool,
-  onLogin: React.PropTypes.func.isRequired,
-  error: React.PropTypes.string,
+  pending: PropTypes.bool,
+  onLogin: PropTypes.func.isRequired,
+  error: PropTypes.string,
 };
 
 Login.defaultProps = {

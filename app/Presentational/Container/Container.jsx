@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
 import FaPlay from 'react-icons/lib/fa/play';
 import FaStopCircle from 'react-icons/lib/fa/stop-circle';
@@ -94,22 +95,22 @@ const Container = (props) => {
 Container.displayName = 'Container';
 
 Container.propTypes = {
-  pending: React.PropTypes.bool,
-  pendingAction: React.PropTypes.bool,
-  container: React.PropTypes.shape({
-    State: React.PropTypes.shape({
-      Running: React.PropTypes.bool,
+  pending: PropTypes.bool,
+  pendingAction: PropTypes.bool,
+  container: PropTypes.shape({
+    State: PropTypes.shape({
+      Running: PropTypes.bool,
     }).isRequired,
   }),
-  logs: React.PropTypes.arrayOf(React.PropTypes.string),
-  openLogs: React.PropTypes.func.isRequired,
-  onBack: React.PropTypes.func.isRequired,
-  onRefresh: React.PropTypes.func.isRequired,
-  onStart: React.PropTypes.func.isRequired,
-  onRestart: React.PropTypes.func.isRequired,
-  onStop: React.PropTypes.func.isRequired,
-  onDelete: React.PropTypes.func.isRequired,
-  error: React.PropTypes.string,
+  logs: PropTypes.arrayOf(PropTypes.string),
+  openLogs: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired,
+  onStart: PropTypes.func.isRequired,
+  onRestart: PropTypes.func.isRequired,
+  onStop: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  error: PropTypes.string,
 };
 
 Container.defaultProps = {

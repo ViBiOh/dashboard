@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
 import onKeyDown from '../../Tools/input';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
@@ -59,10 +60,10 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
 Compose.displayName = 'Compose';
 
 Compose.propTypes = {
-  onCompose: React.PropTypes.func.isRequired,
-  onBack: React.PropTypes.func.isRequired,
-  pending: React.PropTypes.bool,
-  error: React.PropTypes.string,
+  onCompose: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
+  pending: PropTypes.bool,
+  error: PropTypes.string,
 };
 
 Compose.defaultProps = {

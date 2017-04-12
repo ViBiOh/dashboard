@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import style from './ContainerNetwork.css';
 
 /**
@@ -70,10 +71,10 @@ const ContainerNetwork = ({ container }) => {
 ContainerNetwork.displayName = 'ContainerNetwork';
 
 ContainerNetwork.propTypes = {
-  container: React.PropTypes.shape({
-    NetworkSettings: React.PropTypes.shape({
-      Ports: React.PropTypes.shape({}),
-      Networks: React.PropTypes.shape({}),
+  container: PropTypes.shape({
+    NetworkSettings: PropTypes.shape({
+      Ports: PropTypes.shape({}),
+      Networks: PropTypes.shape({}),
     }).isRequired,
   }).isRequired,
 };

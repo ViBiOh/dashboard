@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '../../Presentational/Button/Button';
 import Throbber from './Throbber';
 import style from './ThrobberButton.css';
@@ -17,11 +18,11 @@ const ThrobberButton = ({ pending, onClick, children, ...buttonProps }) => (
 ThrobberButton.displayName = 'ThrobberButton';
 
 ThrobberButton.propTypes = {
-  pending: React.PropTypes.bool,
-  onClick: React.PropTypes.func.isRequired,
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node,
+  pending: PropTypes.bool,
+  onClick: PropTypes.func.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
   ]),
 };
 

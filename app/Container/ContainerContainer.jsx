@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import actions from './actions';
@@ -36,17 +37,17 @@ class ContainerComponent extends Component {
 }
 
 ContainerComponent.propTypes = {
-  containerId: React.PropTypes.string.isRequired,
-  pending: React.PropTypes.bool.isRequired,
-  pendingAction: React.PropTypes.bool.isRequired,
-  container: React.PropTypes.shape({}),
-  logs: React.PropTypes.arrayOf(React.PropTypes.string),
-  error: React.PropTypes.string.isRequired,
-  fetchContainer: React.PropTypes.func.isRequired,
-  actionContainer: React.PropTypes.func.isRequired,
-  onBack: React.PropTypes.func.isRequired,
-  openLogs: React.PropTypes.func.isRequired,
-  closeLogs: React.PropTypes.func.isRequired,
+  containerId: PropTypes.string.isRequired,
+  pending: PropTypes.bool.isRequired,
+  pendingAction: PropTypes.bool.isRequired,
+  container: PropTypes.shape({}),
+  logs: PropTypes.arrayOf(PropTypes.string),
+  error: PropTypes.string.isRequired,
+  fetchContainer: PropTypes.func.isRequired,
+  actionContainer: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
+  openLogs: PropTypes.func.isRequired,
+  closeLogs: PropTypes.func.isRequired,
 };
 
 ContainerComponent.defaultProps = {

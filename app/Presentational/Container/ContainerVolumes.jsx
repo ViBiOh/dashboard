@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import style from './ContainerVolumes.css';
 
 /**
@@ -30,8 +31,8 @@ const ContainerVolumes = ({ container }) => {
 ContainerVolumes.displayName = 'ContainerVolumes';
 
 ContainerVolumes.propTypes = {
-  container: React.PropTypes.shape({
-    Mounts: React.PropTypes.arrayOf(React.PropTypes.shape({})).isRequired,
+  container: PropTypes.shape({
+    Mounts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   }).isRequired,
 };
 

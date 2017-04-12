@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import style from './Toolbar.css';
 
 /**
@@ -20,12 +21,12 @@ const Toolbar = ({ children, className, error }) => (
 );
 
 Toolbar.propTypes = {
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
   ]),
-  className: React.PropTypes.string,
-  error: React.PropTypes.string,
+  className: PropTypes.string,
+  error: PropTypes.string,
 };
 
 Toolbar.defaultProps = {
