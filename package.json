@@ -66,6 +66,7 @@
     "normalize.css": "latest",
     "nyc": "latest",
     "react-addons-test-utils": "latest",
+    "react-test-renderer": "latest",
     "sass-lint": "latest",
     "sass-loader": "latest",
     "sinon": "latest",
