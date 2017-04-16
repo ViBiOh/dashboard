@@ -66,6 +66,7 @@
     "node-sass": "latest",
     "normalize.css": "latest",
     "nyc": "latest",
+    "prettier": "latest",
     "react-addons-test-utils": "latest",
     "react-test-renderer": "latest",
     "sass-lint": "latest",
