@@ -10,21 +10,15 @@ import style from './Toolbar.css';
 const Toolbar = ({ children, className, error }) => (
   <span className={`${style.flex} ${className}`}>
     {children}
-    {
-      error && (
-        <span className={style.error}>
-          {error}
-        </span>
-      )
-    }
+    {error &&
+      <span className={style.error}>
+        {error}
+      </span>}
   </span>
 );
 
 Toolbar.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   className: PropTypes.string,
   error: PropTypes.string,
 };

@@ -17,8 +17,7 @@ export const authStorage = 'auth';
  * @return {FetchBuilder} FetchBuilder pre-configured
  */
 function auth(url) {
-  return Fetch.url(url)
-    .auth(localStorageService.getItem(authStorage));
+  return Fetch.url(url).auth(localStorageService.getItem(authStorage));
 }
 
 /**
@@ -42,11 +41,10 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return Fetch.url(`${API}auth`).auth(hash).get()
-      .then((result) => {
-        localStorageService.setItem(authStorage, hash);
-        return result;
-      });
+    return Fetch.url(`${API}auth`).auth(hash).get().then((result) => {
+      localStorageService.setItem(authStorage, hash);
+      return result;
+    });
   }
 
   /**
@@ -63,9 +61,7 @@ export default class DockerService {
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static containers() {
-    return auth(`${API}containers`)
-      .get()
-      .then(({ results }) => results);
+    return auth(`${API}containers`).get().then(({ results }) => results);
   }
 
   /**
@@ -74,8 +70,7 @@ export default class DockerService {
    * @return {Promise}            Information wrapped in a Promise
    */
   static infos(containerId) {
-    return auth(`${API}containers/${containerId}/`)
-      .get();
+    return auth(`${API}containers/${containerId}/`).get();
   }
 
   /**
@@ -85,8 +80,7 @@ export default class DockerService {
    * @return {Promise}            Array of created containers wrapped in a Promise
    */
   static create(name, composeFile) {
-    return auth(`${API}containers/${name}/`)
-      .post(composeFile);
+    return auth(`${API}containers/${name}/`).post(composeFile);
   }
 
   /**
@@ -95,8 +89,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static start(containerId) {
-    return auth(`${API}containers/${containerId}/start`)
-      .post();
+    return auth(`${API}containers/${containerId}/start`).post();
   }
 
   /**
@@ -105,8 +98,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static stop(containerId) {
-    return auth(`${API}containers/${containerId}/stop`)
-      .post();
+    return auth(`${API}containers/${containerId}/stop`).post();
   }
 
   /**
@@ -115,8 +107,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static restart(containerId) {
-    return auth(`${API}containers/${containerId}/restart`)
-      .post();
+    return auth(`${API}containers/${containerId}/restart`).post();
   }
 
   /**

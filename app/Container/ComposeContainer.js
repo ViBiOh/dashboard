@@ -13,10 +13,7 @@ const mapDispatchToProps = dispatch => ({
   onBack: () => dispatch(push('/')),
 });
 
-const ComposeContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Compose);
+const ComposeContainer = connect(mapStateToProps, mapDispatchToProps)(Compose);
 
 /**
  * Container for handling compose view.

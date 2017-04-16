@@ -35,19 +35,9 @@ const Button = ({ children, type, active, className, ...buttonProps }) => {
 Button.displayName = 'Button';
 
 Button.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
-  type: PropTypes.oneOf([
-    'transparent',
-    'primary',
-    'success',
-    'info',
-    'warning',
-    'danger',
-    'none',
-  ]).isRequired,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  type: PropTypes.oneOf(['transparent', 'primary', 'success', 'info', 'warning', 'danger', 'none'])
+    .isRequired,
   active: PropTypes.bool,
   className: PropTypes.string,
 };

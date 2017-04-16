@@ -16,10 +16,7 @@ const mapDispatchToProps = dispatch => ({
   onLogout: () => dispatch(actions.logout()),
 });
 
-const ContainersListContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ContainersList);
+const ContainersListContainer = connect(mapStateToProps, mapDispatchToProps)(ContainersList);
 
 /**
  * Container for handling list view.

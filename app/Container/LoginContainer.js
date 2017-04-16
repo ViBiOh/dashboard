@@ -11,10 +11,7 @@ const mapDispatchToProps = dispatch => ({
   onLogin: (username, password) => dispatch(actions.login(username, password)),
 });
 
-const LoginContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Login);
+const LoginContainer = connect(mapStateToProps, mapDispatchToProps)(Login);
 
 /**
  * Container for handling login view.

@@ -34,7 +34,10 @@ test('should determine localStorage is available if all success', (t) => {
 test('should use cached value for isEnabled', (t) => {
   let count = 0;
   global.localStorage = {
-    setItem: () => (count += 1),
+    setItem: () => {
+      count += 1;
+      return undefined;
+    },
     removeItem: () => null,
   };
 
@@ -58,7 +61,10 @@ test('should return asked key from global localStorage', (t) => {
 test('should set key to global localStorage', (t) => {
   const localStorage = {};
   global.localStorage = {
-    setItem: (key, value) => (localStorage[key] = value),
+    setItem: (key, value) => {
+      localStorage[key] = value;
+      return undefined;
+    },
     removeItem: () => null,
     getItem: () => 'Test',
   };

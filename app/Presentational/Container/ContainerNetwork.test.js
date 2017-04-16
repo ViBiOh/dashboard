@@ -36,7 +36,8 @@ test('should render Networks if present', (t) => {
           },
         },
       }}
-    />);
+    />,
+  );
 
   t.is(wrapper.find('h3').filterWhere(n => n.text() === 'Networks').length, 1);
   t.is(wrapper.find('span').filterWhere(n => /^bridge\s*\|\s*8.8.8.8$/.test(n.text())).length, 1);
@@ -63,7 +64,8 @@ test('should render Links if present', (t) => {
           },
         },
       }}
-    />);
+    />,
+  );
 
   t.is(wrapper.find('h3').filterWhere(n => n.text() === 'Links').length, 1);
   t.is(wrapper.find('span').filterWhere(n => /^mysql\s*\|\s*db$/.test(n.text())).length, 2);
@@ -83,15 +85,19 @@ test('should render Ports if present', (t) => {
         NetworkSettings: {
           ...container.NetworkSettings,
           Ports: {
-            8080: [{
-              HostPort: '80',
-            }, {
-              HostPort: '443',
-            }],
+            8080: [
+              {
+                HostPort: '80',
+              },
+              {
+                HostPort: '443',
+              },
+            ],
           },
         },
       }}
-    />);
+    />,
+  );
 
   t.is(wrapper.find('h3').filterWhere(n => n.text() === 'Ports').length, 1);
   t.is(wrapper.find('span').filterWhere(n => /^8080\s*\|\s*80, 443$/.test(n.text())).length, 2);

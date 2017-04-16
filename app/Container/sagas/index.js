@@ -129,10 +129,7 @@ export function* composeSaga(action) {
   try {
     yield call(DockerService.create, action.name, action.file);
 
-    yield [
-      put(actions.composeSucceeded()),
-      put(push('/')),
-    ];
+    yield [put(actions.composeSucceeded()), put(push('/'))];
   } catch (e) {
     yield onErrorActions('composeFailed', e).map(a => put(a));
   }
@@ -153,7 +150,8 @@ export function* readLogsSaga(action) {
   });
 
   try {
-    while (true) { // eslint-disable-line no-constant-condition
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
       const log = yield take(chan);
       yield put(actions.addLog(log));
     }
@@ -201,7 +199,8 @@ export function* readEventsSaga() {
 
   let task;
   try {
-    while (true) { // eslint-disable-line no-constant-condition
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
       yield take(chan);
       if (task) {
         yield cancel(task);

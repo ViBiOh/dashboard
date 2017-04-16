@@ -47,7 +47,7 @@ const Container = (props) => {
       <ContainerInfo key="info" container={container} />,
       <ContainerNetwork key="network" container={container} />,
       <ContainerVolumes key="volumes" container={container} />,
-      <ContainerLogs key="logs "logs={logs} openLogs={openLogs} />,
+      <ContainerLogs key="logs " logs={logs} openLogs={openLogs} />,
     ];
 
     if (container.State.Running) {

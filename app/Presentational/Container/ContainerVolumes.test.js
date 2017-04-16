@@ -16,13 +16,16 @@ test('should always render in a span and have a h3 title', (t) => {
     <ContainerVolumes
       container={{
         ...container,
-        Mounts: [{
-          Destination: '/www/',
-          Source: '/home',
-          Mode: 'ro',
-        }],
+        Mounts: [
+          {
+            Destination: '/www/',
+            Source: '/home',
+            Mode: 'ro',
+          },
+        ],
       }}
-    />);
+    />,
+  );
 
   t.is(wrapper.type(), 'span');
   t.is(wrapper.find('h3').text(), 'Volumes');

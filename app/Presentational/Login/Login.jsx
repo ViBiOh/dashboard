@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import onKeyDown from '../../Tools/input';
+import setRef from '../../Tools/ref';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
 import style from './Login.css';
@@ -11,25 +12,24 @@ import style from './Login.css';
  * @return {React.Component} Login with username/password
  */
 const Login = ({ pending, onLogin, error }) => {
-  let loginInput;
-  let passwordInput;
+  const refs = {};
 
   function submit() {
-    onLogin(loginInput.value, passwordInput.value);
+    onLogin(refs.loginInput.value, refs.passwordInput.value);
   }
 
   return (
     <span className={style.flex}>
       <h2>Login</h2>
       <input
-        ref={e => (loginInput = e)}
+        ref={e => setRef(refs, 'loginInput', e)}
         name="login"
         type="text"
         placeholder="login"
         onKeyDown={e => onKeyDown(e, submit)}
       />
       <input
-        ref={e => (passwordInput = e)}
+        ref={e => setRef(refs, 'passwordInput', e)}
         name="password"
         type="password"
         placeholder="password"

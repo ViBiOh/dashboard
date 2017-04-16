@@ -20,10 +20,7 @@ ThrobberButton.displayName = 'ThrobberButton';
 ThrobberButton.propTypes = {
   pending: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
 ThrobberButton.defaultProps = {

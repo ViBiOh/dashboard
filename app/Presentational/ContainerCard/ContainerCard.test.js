@@ -20,7 +20,7 @@ test('should always render as a Button', (t) => {
   t.is(wrapper.type(), Button);
 });
 
-test('should call onClick with container\'s Id', (t) => {
+test("should call onClick with container's Id", (t) => {
   const onClick = sinon.spy();
   const wrapper = shallow(<ContainerCard onClick={onClick} container={container} />);
   wrapper.simulate('click');
@@ -30,7 +30,9 @@ test('should call onClick with container\'s Id', (t) => {
 
 test('should have red color on up', (t) => {
   const onClick = sinon.spy();
-  const wrapper = shallow(<ContainerCard onClick={onClick} container={{ ...container, Status: 'down' }} />);
+  const wrapper = shallow(
+    <ContainerCard onClick={onClick} container={{ ...container, Status: 'down' }} />,
+  );
 
   t.true(wrapper.find('div').hasClass('undefined'));
 });

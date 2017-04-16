@@ -22,11 +22,9 @@ const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect
   } else {
     content = (
       <div key="list" className={style.flex}>
-        {
-          containers.map(container => (
-            <ContainerCard key={container.Id} container={container} onClick={onSelect} />
-          ))
-        }
+        {containers.map(container => (
+          <ContainerCard key={container.Id} container={container} onClick={onSelect} />
+        ))}
       </div>
     );
   }

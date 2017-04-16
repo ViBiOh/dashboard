@@ -52,6 +52,7 @@ test('should put error on failure', (t) => {
   });
   iterator.next();
 
-  t.deepEqual(iterator.throw(new Error('Test')).value,
-    [put(actions.actionContainerFailed('Error: Test'))]);
+  t.deepEqual(iterator.throw(new Error('Test')).value, [
+    put(actions.actionContainerFailed('Error: Test')),
+  ]);
 });

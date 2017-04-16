@@ -63,7 +63,8 @@ test.serial('should login with given username and password', t =>
   DockerService.login('admin', 'password').then((result) => {
     t.true(/auth$/.test(result.url));
     t.is(result.auth, `Basic ${btoa('admin:password')}`);
-  }));
+  }),
+);
 
 test.serial('should store token in localStorage on login', (t) => {
   const setItemSpy = sinon.spy(localStorageService, 'setItem');
@@ -83,17 +84,19 @@ test.serial('should drop stored token from localStorage on logout', (t) => {
   });
 });
 
-test.serial('should list containers with auth', t => DockerService.containers()
-  .then(() => {
+test.serial('should list containers with auth', t =>
+  DockerService.containers().then(() => {
     t.true(getItemSpy.calledWith(authStorage));
   }),
 );
 
 test.serial('should return results when listing containers', (t) => {
   data = {
-    results: [{
-      id: 1,
-    }],
+    results: [
+      {
+        id: 1,
+      },
+    ],
   };
 
   return DockerService.containers().then(value => t.deepEqual(value, [{ id: 1 }]));
@@ -110,10 +113,7 @@ test.serial('should create container with given args', t =>
   { method: 'infos', args: ['test'], httpMethod: 'get', url: /containers\/test\/$/ },
   {
     method: 'create',
-    args: [
-      'test',
-      'composeFileContent',
-    ],
+    args: ['test', 'composeFileContent'],
     httpMethod: 'post',
     url: /containers\/test\/$/,
   },
@@ -122,8 +122,8 @@ test.serial('should create container with given args', t =>
   { method: 'restart', args: ['test'], httpMethod: 'post', url: /containers\/test\/restart$/ },
   { method: 'delete', args: ['test'], httpMethod: 'delete', url: /containers\/test\/$/ },
 ].forEach((param) => {
-  test.serial(`for ${param.method}`, t => DockerService[param.method].apply(null, param.args)
-    .then((result) => {
+  test.serial(`for ${param.method}`, t =>
+    DockerService[param.method].apply(null, param.args).then((result) => {
       t.is(result.method, param.httpMethod);
       t.true(param.url.test(result.url));
       t.true(getItemSpy.calledWith(authStorage));

@@ -75,8 +75,5 @@ const mapDispatchToProps = dispatch => ({
 /**
  * Container for handling container view.
  */
-const ContainerContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ContainerComponent);
+const ContainerContainer = connect(mapStateToProps, mapDispatchToProps)(ContainerComponent);
 export default ContainerContainer;
