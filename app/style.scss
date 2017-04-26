@@ -56,3 +56,13 @@ svg {
     font-size: 1em;
   }
 }
+
+@media print {
+  body:after {
+    content: 'Save ink, share link.';
+  }
+
+  body > * {
+    display: none;
+  }
+}
