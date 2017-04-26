@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { jsdom } from 'jsdom';
+import { JSDOM } from 'jsdom';
 
-global.document = jsdom('<html><body></body></html>');
+global.document = new JSDOM('<html><body></body></html>').window.document;
 global.window = document.defaultView;
 global.navigator = window.navigator;
