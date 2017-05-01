@@ -57,20 +57,4 @@ const config = {
   },
 };
 
-if (process.env.PRODUCTION) {
-  const production = new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: JSON.stringify('production'),
-    },
-  });
-  config.plugins.push(production);
-
-  const uglify = new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false,
-    },
-  });
-  config.plugins.push(uglify);
-}
-
 module.exports = config;
