@@ -1,14 +1,13 @@
-$success: #5cb85c;
-$danger: #d9534f;
-$card-border: #ddd;
+@success: #5cb85c;
+@danger: #d9534f;
+@card-border: #ddd;
+@card-margin: 2px;
 
-$card-margin: 2px;
-
-@mixin small-padding {
+.small-padding {
   padding: 5px;
 }
 
-@mixin pastille {
+.pastille {
   border-radius: 50%;
   height: 20px;
   margin: 5px;
@@ -16,26 +15,29 @@ $card-margin: 2px;
 }
 
 .card {
-  @include small-padding;
+  .small-padding;
+
   align-items: center;
   background-color: transparent;
-  border: 1px solid $card-border;
+  border: 1px solid @card-border;
   display: inline-flex;
-  flex: 0 0 calc((100% - (#{$card-margin} * 3) - #{$card-margin}) / 3);
+  flex: 0 0 calc(~'(100% - @{card-margin} * 3 - @{card-margin}) / 3');
   flex-wrap: wrap;
-  margin: 0 0 $card-margin $card-margin;
+  margin: 0 0 @card-margin @card-margin;
   min-width: 400px;
   width: 200px;
 }
 
 .green {
-  @include pastille;
-  background-color: $success;
+  .pastille;
+
+  background-color: @success;
 }
 
 .red {
-  @include pastille;
-  background-color: $danger;
+  .pastille;
+
+  background-color: @danger;
 }
 
 .column {
@@ -53,18 +55,18 @@ $card-margin: 2px;
 }
 
 .column > * {
-  @include small-padding;
+  .small-padding;
 }
 
 @media screen and (min-width: 800px) and (max-width: 1199px) {
   .card {
-    flex: 0 0 calc((100% - (#{$card-margin} * 2) - #{$card-margin}) / 2);
+    flex: 0 0 calc(~'(100% - @{card-margin} * 2 - @{card-margin}) / 2');
   }
 }
 
 @media screen and (max-width: 799px) {
   .card {
-    flex: 0 0 calc(100% - (#{$card-margin} * 2));
+    flex: 0 0 calc(~'100% - @{card-margin} * 2');
     min-width: 0;
     width: 99vw;
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './ContainerNetwork.css';
+import style from './ContainerNetwork.less';
 
 /**
  * Container's network informations.

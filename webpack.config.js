@@ -4,7 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
   context: path.join(__dirname, 'app'),
-  entry: ['./index.jsx', './style.scss'],
+  entry: ['./index.jsx', './style.css'],
 
   resolve: {
     modules: ['node_modules', 'src'],
@@ -12,27 +12,32 @@ const config = {
   },
 
   module: {
-    rules: [{
-      test: /\.jsx?$/,
-      enforce: 'pre',
-      exclude: /node_modules/,
-      use: 'eslint-loader',
-    }, {
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      use: 'babel-loader',
-    }, {
-      test: /\.scss$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: 'css-loader!sass-loader',
-      }),
-    }, {
-      test: /\.css$/,
-      use: ExtractTextPlugin.extract({
-        use: 'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!sass-loader',
-      }),
-    }],
+    rules: [
+      {
+        test: /\.jsx?$/,
+        enforce: 'pre',
+        exclude: /node_modules/,
+        use: 'eslint-loader',
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: 'babel-loader',
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader',
+        }),
+      },
+      {
+        test: /\.less$/,
+        use: ExtractTextPlugin.extract({
+          use: 'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!less-loader',
+        }),
+      },
+    ],
   },
 
   plugins: [
@@ -52,13 +57,20 @@ const config = {
   },
 };
 
-
 if (process.env.PRODUCTION) {
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin({
+  const production = new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: JSON.stringify('production'),
+    },
+  });
+  config.plugins.push(production);
+
+  const uglify = new webpack.optimize.UglifyJsPlugin({
     compress: {
       warnings: false,
     },
-  }));
+  });
+  config.plugins.push(uglify);
 }
 
 module.exports = config;

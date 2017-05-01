@@ -1,4 +1,4 @@
-$dark: #3a3a3a;
+@dark: #3a3a3a;
 
 .container {
   margin: auto;
@@ -13,7 +13,7 @@ $dark: #3a3a3a;
 
 .throbber > div {
   animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-  background-color: $dark;
+  background-color: @dark;
   border-radius: 100%;
   display: inline-block;
   height: 14px;
@@ -21,11 +21,11 @@ $dark: #3a3a3a;
 }
 
 .throbber .bounce1 {
-  animation-delay: -.32s;
+  animation-delay: -0.32s;
 }
 
 .throbber .bounce2 {
-  animation-delay: -.16s;
+  animation-delay: -0.16s;
 }
 
 @keyframes sk-bouncedelay {

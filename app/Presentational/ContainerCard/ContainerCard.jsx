@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import Button from '../../Presentational/Button/Button';
-import style from './ContainerCard.css';
+import style from './ContainerCard.less';
 
 const GREEN_STATUS = /up/i;
 

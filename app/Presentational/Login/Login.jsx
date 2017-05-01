@@ -4,7 +4,7 @@ import onKeyDown from '../../Tools/input';
 import setRef from '../../Tools/ref';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
-import style from './Login.css';
+import style from './Login.less';
 
 /**
  * Login form.

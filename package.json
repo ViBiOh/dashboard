@@ -8,9 +8,9 @@
     "copy:web": "cp ./web/*.txt ./web/*.html ./dist/ && cp ./web/favicon/* ./dist/",
     "mustache": "./node_modules/js-index-builder/index.js -t \"./app/*.html\" -b `git log --pretty=format:'%h' -n 1` -o ./dist/",
     "prettier": "./node_modules/.bin/prettier --print-width 100 --single-quote --trailing-comma all --color --write \"./app/**/*.{js,jsx}\"",
+    "stylelint": "./node_modules/.bin/stylelint \"app/**/*.{css,less}\"",
     "eslint": "./node_modules/.bin/eslint --fix --ext .jsx \"./app/**/*.{js,jsx}\"",
-    "sassLint": "./node_modules/.bin/sass-lint \"app/**/*.css\" -v -s scss",
-    "codestyle": "npm run prettier && npm run eslint && npm run sassLint",
+    "codestyle": "npm run prettier && npm run eslint && npm run stylelint",
     "doc": "./node_modules/.bin/esdoc -c esdoc.json",
     "start": "npm run copy:html && ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test": "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
@@ -63,16 +63,17 @@
     "ignore-styles": "latest",
     "js-index-builder": "git+https://github.com/ViBiOh/js-index-builder.git",
     "jsdom": "latest",
-    "node-sass": "latest",
+    "less": "latest",
+    "less-loader": "latest",
     "normalize.css": "latest",
     "nyc": "latest",
     "prettier": "latest",
     "react-addons-test-utils": "latest",
     "react-test-renderer": "latest",
-    "sass-lint": "latest",
-    "sass-loader": "latest",
     "sinon": "latest",
     "style-loader": "latest",
+    "stylelint": "latest",
+    "stylelint-config-standard": "latest",
     "webpack": "latest",
     "webpack-dev-server": "latest"
   },
@@ -103,5 +104,8 @@
     ],
     "concurrency": 4,
     "babel": "inherit"
+  },
+  "stylelint": {
+    "extends": "stylelint-config-standard"
   }
 }

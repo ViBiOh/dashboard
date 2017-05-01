@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import style from './ContainerInfo.css';
+import style from './ContainerInfo.less';
 
 const BYTES_SIZE = 1024;
 const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];

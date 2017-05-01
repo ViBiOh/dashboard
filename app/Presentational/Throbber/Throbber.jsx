@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './Throbber.css';
+import style from './Throbber.less';
 
 /**
  * Throbber for displaying background task.

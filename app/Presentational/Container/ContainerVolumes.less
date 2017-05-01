@@ -1,10 +1,11 @@
-@mixin flex-wrap {
+.flex-wrap {
   display: inline-flex;
   flex-wrap: wrap;
 }
 
 .container {
-  @include flex-wrap;
+  .flex-wrap;
+
   width: 100%;
 }
 
@@ -15,7 +16,7 @@
 }
 
 .labels {
-  @include flex-wrap;
+  .flex-wrap;
 }
 
 .item {

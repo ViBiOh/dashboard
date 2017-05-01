@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './Main.css';
+import style from './Main.less';
 
 /**
  * Component wrapper for App.

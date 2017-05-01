@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import style from './Button.css';
+import style from './Button.less';
 
 /**
  * Button.

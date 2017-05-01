@@ -7,7 +7,7 @@ import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import Button from '../../Presentational/Button/Button';
 import Throbber from '../../Presentational/Throbber/Throbber';
 import ContainerCard from '../../Presentational/ContainerCard/ContainerCard';
-import style from './ContainersList.css';
+import style from './ContainersList.less';
 
 /**
  * Container's list.

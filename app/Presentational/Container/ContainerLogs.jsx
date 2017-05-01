@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '../Button/Button';
-import style from './ContainerLogs.css';
+import style from './ContainerLogs.less';
 
 /**
  * Container's logs.

@@ -1,35 +1,37 @@
-$primary: #337ab7;
-$success: #5cb85c;
-$info: #5bc0de;
-$warning: #f0ad4e;
-$danger: #d9534f;
-$white: #fff;
-$shadow: rgba(0, 0, 0, .5);
+@primary: #337ab7;
+@success: #5cb85c;
+@info: #5bc0de;
+@warning: #f0ad4e;
+@danger: #d9534f;
+@white: #fff;
+@shadow: rgba(0, 0, 0, 0.5);
 
-@mixin flex-wrap {
+.flex-wrap {
   align-items: center;
   display: inline-flex;
   flex-wrap: nowrap;
 }
 
 .button {
-  @include flex-wrap;
+  .flex-wrap;
+
   background-color: transparent;
   border: 0;
   border-radius: 2px;
-  color: $white;
+  color: white;
   cursor: pointer;
   padding: 10px;
 }
 
 .wrapper {
-  @include flex-wrap;
+  .flex-wrap;
+
   justify-content: center;
   width: 100%;
 }
 
 .wrapper svg {
-  color: $white;
+  color: white;
 }
 
 .wrapper > * {
@@ -41,7 +43,7 @@ $shadow: rgba(0, 0, 0, .5);
 }
 
 .active {
-  box-shadow: inset 0 0 10px $shadow;
+  box-shadow: inset 0 0 10px @shadow;
 }
 
 .transparent,
@@ -56,21 +58,21 @@ $shadow: rgba(0, 0, 0, .5);
 }
 
 .primary {
-  background-color: $primary;
+  background-color: @primary;
 }
 
 .success {
-  background-color: $success;
+  background-color: @success;
 }
 
 .info {
-  background-color: $info;
+  background-color: @info;
 }
 
 .warning {
-  background-color: $warning;
+  background-color: @warning;
 }
 
 .danger {
-  background-color: $danger;
+  background-color: @danger;
 }

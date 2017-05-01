@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './ContainerVolumes.css';
+import style from './ContainerVolumes.less';
 
 /**
  * Container's volumes informations.

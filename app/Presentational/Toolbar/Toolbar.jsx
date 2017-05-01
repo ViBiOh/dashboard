@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './Toolbar.css';
+import style from './Toolbar.less';
 
 /**
  * Toolbar for buttons and error message.

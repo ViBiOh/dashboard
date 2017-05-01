@@ -6,7 +6,7 @@ import onKeyDown from '../../Tools/input';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import Button from '../../Presentational/Button/Button';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
-import style from './Compose.css';
+import style from './Compose.less';
 
 /**
  * Compose form.

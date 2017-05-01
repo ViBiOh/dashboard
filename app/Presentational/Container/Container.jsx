@@ -14,7 +14,7 @@ import ContainerInfo from './ContainerInfo';
 import ContainerNetwork from './ContainerNetwork';
 import ContainerVolumes from './ContainerVolumes';
 import ContainerLogs from './ContainerLogs';
-import style from './Container.css';
+import style from './Container.less';
 
 /**
  * Container.

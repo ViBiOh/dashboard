@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../Presentational/Button/Button';
 import Throbber from './Throbber';
-import style from './ThrobberButton.css';
+import style from './ThrobberButton.less';
 
 /**
  * Throbber wrapped in a Button for displaying background task on click.
