@@ -2,17 +2,17 @@ version: '2'
 
 services:
   api:
-    image: vibioh/docker-api
+    image: vibioh/dashboard-api
     environment:
       DOCKER_HOST: 'unix:///var/run/docker.sock'
       DOCKER_VERSION: '1.24'
     labels:
       traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: docker-api.vibioh.fr'
+      traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
       traefik.port: '1080'
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
-    - /home/vibioh/code/src/github.com/ViBiOh/docker-deploy/users:/users:ro
+    - /home/vibioh/code/src/github.com/ViBiOh/docker-dashboard/users:/users:ro
     logging:
       driver: json-file
       options:
@@ -25,14 +25,14 @@ services:
     - no-new-privileges
 
   front:
-    image: vibioh/docker-front
+    image: vibioh/dashboard-front
     command:
     - -spa
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com fonts.googleapis.com; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; img-src 'self' data:; font-src 'self' 'unsafe-inline' data: fonts.gstatic.com cdnjs.cloudflare.com; connect-src 'self' wss: docker-api.vibioh.fr;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com fonts.googleapis.com; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; img-src 'self' data:; font-src 'self' 'unsafe-inline' data: fonts.gstatic.com cdnjs.cloudflare.com; connect-src 'self' wss: docker-dashboard.vibioh.fr;"
     labels:
       traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: docker.vibioh.fr, docker.l3miage.fr'
+      traefik.frontend.rule: 'Host: dashboard.vibioh.fr, dashboard.l3miage.fr'
       traefik.port: '1080'
     logging:
       driver: json-file
