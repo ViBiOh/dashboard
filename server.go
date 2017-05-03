@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ViBiOh/docker-deploy/docker"
+	"github.com/ViBiOh/docker-dashboard/docker"
 	"log"
 	"net/http"
 	"runtime"
