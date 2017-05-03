@@ -20,7 +20,7 @@
   background-color: transparent;
   border: 1px solid @card-border;
   display: inline-flex;
-  flex: 0 0 calc(~'(100% - @{card-margin} * 3 - @{card-margin}) / 3');
+  flex: 0 0 calc(~'(100% - @{card-margin} * 4 - @{card-margin}) / 4');
   flex-wrap: wrap;
   margin: 0 0 @card-margin @card-margin;
   min-width: 400px;
@@ -57,13 +57,19 @@
   .small-padding;
 }
 
-@media screen and (min-width: 800px) and (max-width: 1199px) {
+@media screen and (min-width: 1208px) and (max-width: 1609px) {
+  .card {
+    flex: 0 0 calc(~'(100% - @{card-margin} * 3 - @{card-margin}) / 3');
+  }
+}
+
+@media screen and (min-width: 806px) and (max-width: 1207px) {
   .card {
     flex: 0 0 calc(~'(100% - @{card-margin} * 2 - @{card-margin}) / 2');
   }
 }
 
-@media screen and (max-width: 799px) {
+@media screen and (max-width: 805px) {
   .card {
     flex: 0 0 calc(~'100% - @{card-margin} * 2');
     min-width: 0;
