@@ -47,7 +47,7 @@ const config = {
       allChunks: true,
     }),
     new webpack.DefinePlugin({
-      'process.env.API_HOST': JSON.stringify(process.env.API_HOST || 'docker-api.vibioh.fr'),
+      'process.env.API_HOST': JSON.stringify(process.env.API_HOST || 'dashboard-api.vibioh.fr'),
     }),
   ],
 
