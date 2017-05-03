@@ -3,7 +3,7 @@ package docker
 import (
 	"context"
 	"fmt"
-	"github.com/ViBiOh/docker-dashboard/jsonHttp"
+	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"io"

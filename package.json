@@ -1,5 +1,5 @@
 {
-  "name": "docker-deploy",
+  "name": "dashboard",
   "version": "0.0.1",
   "description": "Docker management",
   "main": "index.js",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ViBiOh/docker-deploy.git"
+    "url": "git://github.com/ViBiOh/dashboard.git"
   },
   "keywords": [
     "react",
@@ -38,9 +38,9 @@
   "author": "Vincent Boutour",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ViBiOh/docker-deploy/issues"
+    "url": "https://github.com/ViBiOh/dashboard/issues"
   },
-  "homepage": "https://github.com/ViBiOh/docker-deploy",
+  "homepage": "https://github.com/ViBiOh/dashboard",
   "devDependencies": {
     "ava": "latest",
     "babel-core": "latest",

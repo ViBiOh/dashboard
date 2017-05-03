@@ -76,7 +76,7 @@ Docker deploy helps you to manage Docker containers on a host.
                   ],
                   "Image": "vibioh/docker-front",
                   "ImageID": "sha256:56f28e909d399cbf0b95d3270b94762206feebd90f0079a2a1606ff5faec92e0",
-                  "Command": "/server -spa -csp 'default-src 'self'; font-src 'self' fonts.gstatic.com; connect-src 'self' wss: docker-api.vibioh.fr;'",
+                  "Command": "/server -spa -csp 'default-src 'self'; font-src 'self' fonts.gstatic.com; connect-src 'self' wss: dashboard-api.vibioh.fr;'",
                   "Created": 1485466754,
                   "Ports": [
                     {
@@ -92,7 +92,7 @@ Docker deploy helps you to manage Docker containers on a host.
                     "com.docker.compose.service": "front",
                     "com.docker.compose.version": "1.8.0",
                     "traefik.frontend.passHostHeader": "true",
-                    "traefik.frontend.rule": "Host: docker.vibioh.fr, docker.l3miage.fr",
+                    "traefik.frontend.rule": "Host: dashboard.vibioh.fr, dashboard.l3miage.fr",
                     "traefik.port": "1080"
                   },
                   "State": "running",

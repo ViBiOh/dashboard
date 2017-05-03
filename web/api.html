@@ -168,7 +168,7 @@
                   <h3>GET</h3>
                 </div>
                 <a class="ui basic fluid green label">
-                  <code>https://docker-api.vibioh.fr/containers</code>
+                  <code>https://dashboard-api.vibioh.fr/containers</code>
                 </a>
               </div>
               
@@ -243,7 +243,7 @@
                   <h3>GET</h3>
                 </div>
                 <a class="ui basic fluid green label">
-                  <code>https://docker-api.vibioh.fr/containers</code>
+                  <code>https://dashboard-api.vibioh.fr/containers</code>
                 </a>
               </div>
               
@@ -359,7 +359,7 @@
           ],
           &#34;Image&#34;: &#34;vibioh/docker-front&#34;,
           &#34;ImageID&#34;: &#34;sha256:56f28e909d399cbf0b95d3270b94762206feebd90f0079a2a1606ff5faec92e0&#34;,
-          &#34;Command&#34;: &#34;/server -spa -csp &#39;default-src &#39;self&#39;; font-src &#39;self&#39; fonts.gstatic.com; connect-src &#39;self&#39; wss: docker-api.vibioh.fr;&#39;&#34;,
+          &#34;Command&#34;: &#34;/server -spa -csp &#39;default-src &#39;self&#39;; font-src &#39;self&#39; fonts.gstatic.com; connect-src &#39;self&#39; wss: dashboard-api.vibioh.fr;&#39;&#34;,
           &#34;Created&#34;: 1485466754,
           &#34;Ports&#34;: [
             {
@@ -375,7 +375,7 @@
             &#34;com.docker.compose.service&#34;: &#34;front&#34;,
             &#34;com.docker.compose.version&#34;: &#34;1.8.0&#34;,
             &#34;traefik.frontend.passHostHeader&#34;: &#34;true&#34;,
-            &#34;traefik.frontend.rule&#34;: &#34;Host: docker.vibioh.fr, docker.l3miage.fr&#34;,
+            &#34;traefik.frontend.rule&#34;: &#34;Host: dashboard.vibioh.fr, dashboard.l3miage.fr&#34;,
             &#34;traefik.port&#34;: &#34;1080&#34;
           },
           &#34;State&#34;: &#34;running&#34;,
@@ -442,7 +442,7 @@
                   <h3>POST</h3>
                 </div>
                 <a class="ui basic fluid blue label">
-                  <code>https://docker-api.vibioh.fr/containers/{app_name}</code>
+                  <code>https://dashboard-api.vibioh.fr/containers/{app_name}</code>
                 </a>
               </div>
               
@@ -565,7 +565,7 @@ networks:
                   <h3>POST</h3>
                 </div>
                 <a class="ui basic fluid blue label">
-                  <code>https://docker-api.vibioh.fr/containers/{app_name}</code>
+                  <code>https://dashboard-api.vibioh.fr/containers/{app_name}</code>
                 </a>
               </div>
               
@@ -688,7 +688,7 @@ networks:
                   <h3>POST</h3>
                 </div>
                 <a class="ui basic fluid blue label">
-                  <code>https://docker-api.vibioh.fr/containers/{app_name}</code>
+                  <code>https://dashboard-api.vibioh.fr/containers/{app_name}</code>
                 </a>
               </div>
               
