@@ -12,13 +12,13 @@ install:
 - npm i
 - npm run build
 script: |
-  curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/docker-deploy.git" https://doc.esdoc.org/api/create &&
-  docker build -t ${DOCKER_USER}/docker-front -f Dockerfile_front . &&
-  docker build -t ${DOCKER_USER}/docker-api -f Dockerfile_api .
+  docker build -t ${DOCKER_USER}/dashboard-front -f Dockerfile_front . &&
+  docker build -t ${DOCKER_USER}/dashboard-api -f Dockerfile_api .
 after_success: |
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
     npm run coverage
-    docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && docker push ${DOCKER_USER}/docker-front && docker push ${DOCKER_USER}/docker-api
+    curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/docker-dashboard.git" https://doc.esdoc.org/api/create &&
+    docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && docker push ${DOCKER_USER}/dashboard-front && docker push ${DOCKER_USER}/dashboard-api
   fi
 notifications:
   email: false
@@ -29,6 +29,6 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "bash -s" 2>/dev/null -- < ./deploy.sh manager https://github.com/ViBiOh/docker-deploy.git vibioh.fr
+  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "bash -s" 2>/dev/null -- < ./deploy.sh dashboard https://github.com/ViBiOh/docker-dashboard.git vibioh.fr
   on:
     branch: master
