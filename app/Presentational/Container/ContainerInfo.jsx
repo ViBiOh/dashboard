@@ -78,7 +78,7 @@ const ContainerInfo = ({ container }) => {
       </span>
       <span key="command" className={style.info}>
         <span className={style.label}>Command</span>
-        <span>{`${container.Path} ${container.Args.join(' ')}`}</span>
+        <pre className={style.code}>{`${container.Path} ${container.Args.join(' ')}`}</pre>
       </span>
       <h3 key="hostConfig">HostConfig</h3>
       <span key="hostLabels" className={style.labels}>
