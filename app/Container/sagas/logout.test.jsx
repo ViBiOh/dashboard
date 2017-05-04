@@ -28,5 +28,5 @@ test('should put error on failure', (t) => {
   const iterator = logoutSaga();
   iterator.next();
 
-  t.deepEqual(iterator.throw(new Error('Test')).value, [put(actions.logoutFailed('Error: Test'))]);
+  t.deepEqual(iterator.throw(new Error('Test')).value, put(actions.logoutFailed('Error: Test')));
 });

@@ -23,7 +23,8 @@ test('should put error on failure', (t) => {
   const iterator = fetchContainerSaga({});
   iterator.next();
 
-  t.deepEqual(iterator.throw(new Error('Test')).value, [
+  t.deepEqual(
+    iterator.throw(new Error('Test')).value,
     put(actions.fetchContainerFailed('Error: Test')),
-  ]);
+  );
 });

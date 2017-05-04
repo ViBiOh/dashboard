@@ -82,6 +82,7 @@
 
 .code {
   background: @dark;
+  border-radius: 2px;
   color: @grey;
   flex: 1 1;
   font-size: 12px;
@@ -89,4 +90,14 @@
   padding: 5px;
   white-space: pre-wrap;
   word-break: break-all;
+}
+
+@media screen and (max-width: 800px) {
+  .info {
+    flex-wrap: wrap;
+  }
+
+  .code {
+    flex-basis: 100%;
+  }
 }

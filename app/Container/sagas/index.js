@@ -9,17 +9,13 @@ import actions from '../actions';
  * Handle error on sagas. Redirect to login if status is 401.
  * @param  {String} calledAction Action to call with given error
  * @param  {Error} error         Error summoned
- * @return {Array}               List of actions to put
+ * @return {Object}              Actions to perform
  */
-export function onErrorActions(calledAction, error) {
-  const errorActions = [];
-
+export function onErrorAction(calledAction, error) {
   if (error.status === 401) {
-    errorActions.push(push('/login'));
+    return push('/login');
   }
-  errorActions.push(actions[calledAction](String(error)));
-
-  return errorActions;
+  return actions[calledAction](String(error));
 }
 
 /**
@@ -62,7 +58,7 @@ export function* logoutSaga() {
       put(push('/login')),
     ];
   } catch (e) {
-    yield onErrorActions('logoutFailed', e).map(a => put(a));
+    yield put(onErrorAction('logoutFailed', e));
   }
 }
 
@@ -76,7 +72,7 @@ export function* fetchContainersSaga() {
     const containers = yield call(DockerService.containers);
     yield put(actions.fetchContainersSucceeded(containers));
   } catch (e) {
-    yield onErrorActions('fetchContainersFailed', e).map(a => put(a));
+    yield put(onErrorAction('fetchContainersFailed', e));
   }
 }
 
@@ -91,7 +87,7 @@ export function* fetchContainerSaga(action) {
     const container = yield call(DockerService.infos, action.id);
     yield put(actions.fetchContainerSucceeded(container));
   } catch (e) {
-    yield onErrorActions('fetchContainerFailed', e).map(a => put(a));
+    yield put(onErrorAction('fetchContainerFailed', e));
   }
 }
 
@@ -114,7 +110,7 @@ export function* actionContainerSaga(action) {
       yield put(push('/'));
     }
   } catch (e) {
-    yield onErrorActions('actionContainerFailed', e).map(a => put(a));
+    yield put(onErrorAction('actionContainerFailed', e));
   }
 }
 
@@ -131,7 +127,7 @@ export function* composeSaga(action) {
 
     yield [put(actions.composeSucceeded()), put(push('/'))];
   } catch (e) {
-    yield onErrorActions('composeFailed', e).map(a => put(a));
+    yield put(onErrorAction('composeFailed', e));
   }
 }
 

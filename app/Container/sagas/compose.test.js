@@ -25,5 +25,5 @@ test('should put error on failure', (t) => {
   const iterator = composeSaga({});
   iterator.next();
 
-  t.deepEqual(iterator.throw(new Error('Test')).value, [put(actions.composeFailed('Error: Test'))]);
+  t.deepEqual(iterator.throw(new Error('Test')).value, put(actions.composeFailed('Error: Test')));
 });
