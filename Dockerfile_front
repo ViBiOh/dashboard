@@ -1,3 +1,3 @@
-FROM vibioh/http
+FROM vibioh/viws
 
 COPY dist/ /www/

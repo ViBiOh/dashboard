@@ -56,7 +56,7 @@
     "eslint-config-airbnb": "latest",
     "eslint-loader": "latest",
     "eslint-plugin-import": "latest",
-    "eslint-plugin-jsx-a11y": "latest",
+    "eslint-plugin-jsx-a11y": "^4",
     "eslint-plugin-react": "latest",
     "extract-text-webpack-plugin": "latest",
     "identity-obj-proxy": "latest",
@@ -80,8 +80,8 @@
   "dependencies": {
     "babel-polyfill": "latest",
     "classnames": "latest",
+    "funtch": "latest",
     "history": "latest",
-    "js-fetch": "git+https://github.com/ViBiOh/js-fetch.git",
     "moment": "latest",
     "prop-types": "latest",
     "react": "latest",

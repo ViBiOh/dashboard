@@ -1,4 +1,4 @@
-import Fetch from 'js-fetch';
+import funtch from 'funtch';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 
@@ -17,7 +17,7 @@ export const authStorage = 'auth';
  * @return {FetchBuilder} FetchBuilder pre-configured
  */
 function auth(url) {
-  return Fetch.url(url).auth(localStorageService.getItem(authStorage));
+  return funtch.url(url).auth(localStorageService.getItem(authStorage));
 }
 
 /**
@@ -41,7 +41,7 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return Fetch.url(`${API}auth`).auth(hash).get().then((result) => {
+    return funtch.url(`${API}auth`).auth(hash).get().then((result) => {
       localStorageService.setItem(authStorage, hash);
       return result;
     });

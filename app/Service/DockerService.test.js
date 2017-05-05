@@ -1,6 +1,6 @@
 import test from 'ava';
 import sinon from 'sinon';
-import Fetch from 'js-fetch';
+import funtch from 'funtch';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 import DockerService, { authStorage } from './DockerService';
@@ -35,7 +35,7 @@ test.beforeEach(() => {
 
   getItemSpy = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
-  sinon.stub(Fetch, 'url').callsFake(url => ({
+  sinon.stub(funtch, 'url').callsFake(url => ({
     auth: auth => ({
       ...fetch(url, auth),
       error: () => fetch(url, auth),
@@ -44,7 +44,7 @@ test.beforeEach(() => {
 });
 
 test.afterEach(() => {
-  Fetch.url.restore();
+  funtch.url.restore();
   localStorageService.getItem.restore();
 });
 
