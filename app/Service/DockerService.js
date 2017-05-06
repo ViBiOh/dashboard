@@ -12,23 +12,17 @@ const WS = `wss://${API_HOST}/ws/`;
 export const authStorage = 'auth';
 
 function customError(response) {
-  return new Promise((resolve, reject) => {
-    const funtchResponse = errorHandler(response);
-    if (funtchResponse instanceof Promise) {
-      return funtchResponse.catch(err =>
-        reject({
-          ...err,
-          toString: () => {
-            if (typeof err.content === 'string') {
-              return err.content;
-            }
-            return JSON.stringify(err.content);
-          },
-        }),
-      );
-    }
-    return resolve(funtchResponse);
-  });
+  return new Promise((resolve, reject) =>
+    errorHandler(response).then(resolve).catch(err =>
+      reject({
+        ...err,
+        toString: () => {
+          if (typeof err.content === 'string') {
+            return err.content;
+          }
+          return JSON.stringify(err.content);
+        },
+       })));
 }
 
 /**
