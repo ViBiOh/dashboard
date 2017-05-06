@@ -105,6 +105,24 @@
     "concurrency": 4,
     "babel": "inherit"
   },
+  "babel": {
+    "presets": [
+      "es2015",
+      "react"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "airbnb",
+    "env": {
+      "browser": true
+    },
+    "rules": {
+      "react/jsx-filename-extension": 1
+    }
+  },
   "stylelint": {
     "extends": "stylelint-config-standard"
   }

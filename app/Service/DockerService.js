@@ -1,4 +1,4 @@
-import funtch from 'funtch';
+import funtch, { errorHandler } from 'funtch';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 
@@ -11,13 +11,29 @@ const WS = `wss://${API_HOST}/ws/`;
  */
 export const authStorage = 'auth';
 
+function toStringErr(response) {
+  return new Promise((resolve, reject) => {
+    errorHandler(response).catch(err =>
+      reject({
+        ...err,
+        toString: () => {
+          if (typeof err.content === 'string') {
+            return err.content;
+          }
+          return JSON.stringify(err.content);
+        },
+      }),
+    );
+  });
+}
+
 /**
  * Generate FetchBuilder for given URL with auth and error handler.
  * @param  {String} url   Wanted URL
  * @return {FetchBuilder} FetchBuilder pre-configured
  */
 function auth(url) {
-  return funtch.url(url).auth(localStorageService.getItem(authStorage));
+  return funtch.url(url).auth(localStorageService.getItem(authStorage)).error(toStringErr);
 }
 
 /**
