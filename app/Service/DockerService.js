@@ -11,19 +11,23 @@ const WS = `wss://${API_HOST}/ws/`;
  */
 export const authStorage = 'auth';
 
-function toStringErr(response) {
+function customError(response) {
   return new Promise((resolve, reject) => {
-    errorHandler(response).catch(err =>
-      reject({
-        ...err,
-        toString: () => {
-          if (typeof err.content === 'string') {
-            return err.content;
-          }
-          return JSON.stringify(err.content);
-        },
-      }),
-    );
+    const funtchResponse = errorHandler(response);
+    if (funtchResponse instanceof Promise) {
+      return funtchResponse.catch(err =>
+        reject({
+          ...err,
+          toString: () => {
+            if (typeof err.content === 'string') {
+              return err.content;
+            }
+            return JSON.stringify(err.content);
+          },
+        }),
+      );
+    }
+    return resolve(funtchResponse);
   });
 }
 
@@ -33,7 +37,7 @@ function toStringErr(response) {
  * @return {FetchBuilder} FetchBuilder pre-configured
  */
 function auth(url) {
-  return funtch.url(url).auth(localStorageService.getItem(authStorage)).error(toStringErr);
+  return funtch.url(url).auth(localStorageService.getItem(authStorage)).error(customError);
 }
 
 /**
