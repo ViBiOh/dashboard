@@ -36,9 +36,11 @@ test.beforeEach(() => {
   getItemSpy = sinon.stub(localStorageService, 'getItem').callsFake(() => 'token');
 
   sinon.stub(funtch, 'url').callsFake(url => ({
-    auth: auth => ({
-      ...fetch(url, auth),
-      error: () => fetch(url, auth),
+    error: () => ({
+      auth: auth => ({
+        ...fetch(url, auth),
+        error: () => fetch(url, auth),
+      }),
     }),
   }));
 });

@@ -22,16 +22,19 @@ function customError(response) {
           }
           return JSON.stringify(err.content);
         },
-       })));
+      }),
+    ),
+  );
 }
 
 /**
  * Generate FetchBuilder for given URL with auth and error handler.
- * @param  {String} url   Wanted URL
+ * @param  {String} url              Wanted URL
+ * @param  {String} authentification Auth value
  * @return {FetchBuilder} FetchBuilder pre-configured
  */
-function auth(url) {
-  return funtch.url(url).auth(localStorageService.getItem(authStorage)).error(customError);
+function auth(url, authentification = localStorageService.getItem(authStorage)) {
+  return funtch.url(url).error(customError).auth(authentification);
 }
 
 /**
@@ -55,7 +58,7 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return funtch.url(`${API}auth`).auth(hash).get().then((result) => {
+    return auth(`${API}auth`, hash).get().then((result) => {
       localStorageService.setItem(authStorage, hash);
       return result;
     });
