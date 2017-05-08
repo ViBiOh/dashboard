@@ -5,18 +5,20 @@ import style from './ContainerInfo.less';
 
 const BYTES_SIZE = 1024;
 const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
+
 const ENV_PARSER = /(.*?)=(.*)/;
 
 /**
  * Convert bytes size to human readable size.
  * @param  {int} size Bytes size
+ * @param  {int} precision Decimal count
  * @return {string}   Human readable bytes size
  */
-function humanFileSize(size) {
+export const humanFileSize = (size, precision = 0) => {
   const i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
   // eslint-disable-next-line no-restricted-properties
-  return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(0)} ${BYTES_NAMES[i]}`;
-}
+  return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(precision)} ${BYTES_NAMES[i]}`;
+};
 
 /**
  * Container's basic informations.

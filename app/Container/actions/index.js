@@ -78,6 +78,8 @@ export default {
   ...makeApiActionCreator('actionContainer', ['action', 'id']),
   ...makeApiActionCreator('compose', ['name', 'file']),
   ...makeOpenCloseActionCreator('logs', ['id']),
+  ...makeOpenCloseActionCreator('stats', ['id']),
   ...makeOpenCloseActionCreator('events'),
   ...makeActionAndTypeCreator('ADD_LOG', 'addLog', ['log']),
+  ...makeActionAndTypeCreator('ADD_STAT', 'addStat', ['stat']),
 };

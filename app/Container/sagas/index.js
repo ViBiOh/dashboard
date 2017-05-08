@@ -139,7 +139,7 @@ export function* composeSaga(action) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readLogsSaga(action) {
-  const chan = eventChannel((emit) => {
+  const chan = eventChannel(emit => {
     const websocket = DockerService.logs(action.id, emit);
 
     return () => websocket.close();
@@ -171,6 +171,45 @@ export function* logsSaga(action) {
 }
 
 /**
+ * Saga of reading stats' stream :
+ * - Create a channel to handle every log
+ * - Add log to state
+ * @param {Object} action Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
+export function* readStatsSaga(action) {
+  const chan = eventChannel(emit => {
+    const websocket = DockerService.stats(action.id, emit);
+
+    return () => websocket.close();
+  });
+
+  try {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const log = yield take(chan);
+      yield put(actions.addStat(JSON.parse(log)));
+    }
+  } finally {
+    chan.close();
+  }
+}
+
+/**
+ * Saga of handling stats' stream:
+ * - Fork the reading channel
+ * - Handle close request
+ * @param {Object} action Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
+export function* statsSaga(action) {
+  const task = yield fork(readStatsSaga, action);
+
+  yield take(actions.CLOSE_STATS);
+  yield cancel(task);
+}
+
+/**
  * Debounced fetch of containers.
  * Duration is based on the sleep servier-side before renaming containers.
  * @yield {Function} Saga effects to sequence flow of work
@@ -187,7 +226,7 @@ export function* debounceFetchContainersSaga() {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readEventsSaga() {
-  const chan = eventChannel((emit) => {
+  const chan = eventChannel(emit => {
     const websocket = DockerService.events(emit);
 
     return () => websocket.close();
@@ -233,5 +272,6 @@ export default function* appSaga() {
   yield takeLatest(actions.ACTION_CONTAINER, actionContainerSaga);
   yield takeLatest(actions.COMPOSE, composeSaga);
   yield takeLatest(actions.OPEN_LOGS, logsSaga);
+  yield takeLatest(actions.OPEN_STATS, statsSaga);
   yield takeLatest(actions.OPEN_EVENTS, eventsSaga);
 }

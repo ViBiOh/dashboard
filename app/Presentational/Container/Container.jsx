@@ -11,6 +11,7 @@ import Button from '../Button/Button';
 import Throbber from '../Throbber/Throbber';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import ContainerInfo from './ContainerInfo';
+import ContainerStats from './ContainerStats';
 import ContainerNetwork from './ContainerNetwork';
 import ContainerVolumes from './ContainerVolumes';
 import ContainerLogs from './ContainerLogs';
@@ -21,12 +22,13 @@ import style from './Container.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Container informations.
  */
-const Container = (props) => {
+const Container = props => {
   const {
     pending,
     pendingAction,
     container,
     logs,
+    stats,
     onBack,
     onRefresh,
     onRestart,
@@ -45,6 +47,7 @@ const Container = (props) => {
   } else {
     content = [
       <ContainerInfo key="info" container={container} />,
+      <ContainerStats key="stats" stats={stats} />,
       <ContainerNetwork key="network" container={container} />,
       <ContainerVolumes key="volumes" container={container} />,
       <ContainerLogs key="logs " logs={logs} openLogs={openLogs} />,
@@ -125,6 +128,7 @@ Container.propTypes = {
     }).isRequired,
   }),
   logs: PropTypes.arrayOf(PropTypes.string),
+  stats: PropTypes.arrayOf(PropTypes.shape({})),
   openLogs: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired,
@@ -139,7 +143,8 @@ Container.defaultProps = {
   pending: false,
   pendingAction: false,
   container: null,
-  logs: undefined,
+  logs: null,
+  stats: null,
   error: '',
 };
 

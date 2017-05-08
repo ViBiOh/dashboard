@@ -58,7 +58,7 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${API}auth`, hash).get().then((result) => {
+    return auth(`${API}auth`, hash).get().then(result => {
       localStorageService.setItem(authStorage, hash);
       return result;
     });
@@ -144,6 +144,21 @@ export default class DockerService {
    */
   static logs(containerId, onMessage) {
     const socket = new WebSocket(`${WS}containers/${containerId}/logs`);
+
+    socket.onmessage = event => onMessage(event.data);
+    socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
+
+    return socket;
+  }
+
+  /**
+   * Open WebSocket with auth token for reading stats of a Docker's container.
+   * @param  {String} containerId Container's id
+   * @param  {Function} onMessage Callback for each input receive from socket
+   * @return {Websocket}          Opened and authentified Websocket
+   */
+  static stats(containerId, onMessage) {
+    const socket = new WebSocket(`${WS}containers/${containerId}/stats`);
 
     socket.onmessage = event => onMessage(event.data);
     socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
