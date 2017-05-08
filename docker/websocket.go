@@ -16,6 +16,7 @@ const ignoredByteLogSize = 8
 const tailSize = `100`
 
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
+var statsWebsocketRequest = regexp.MustCompile(`containers/([^/]+/stats`)
 var eventsWebsocketRequest = regexp.MustCompile(`events`)
 var hostCheck = regexp.MustCompile(`vibioh\.fr$`)
 
@@ -58,7 +59,10 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	}
 	defer ws.Close()
 
-	logs, err := docker.ContainerLogs(context.Background(), string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
+	context := context.Background()
+	defer context.Done()
+
+	logs, err := docker.ContainerLogs(context, string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	if err != nil {
 		log.Print(err)
 		return
@@ -120,9 +124,9 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	context := context.Background()
+	defer context.Done()
 	messages, errors := docker.Events(context, types.EventsOptions{Filters: filtersArgs})
 
-	defer context.Done()
 	done := make(chan struct{})
 
 	go func() {
@@ -168,6 +172,58 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
+	ws, _, err := upgradeAndAuth(w, r)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer ws.Close()
+
+	context := context.Background()
+	defer context.Done()
+
+	stats, err := docker.ContainerStats(context, string(containerID), true)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer stats.Body.Close()
+
+	done := make(chan struct{})
+
+	go func() {
+		scanner := bufio.NewScanner(stats.Body)
+		for scanner.Scan() {
+			select {
+			case <-done:
+				return
+
+			default:
+				if err = ws.WriteMessage(websocket.TextMessage, scanner.Bytes()); err != nil {
+					log.Printf(`Error while writing to stats socket: %v`, err)
+					close(done)
+					return
+				}
+			}
+		}
+	}()
+
+	for {
+		select {
+		case <-done:
+			return
+
+		default:
+			if _, _, err := ws.NextReader(); err != nil {
+				log.Printf(`Error while reading from stats socket: %v`, err)
+				close(done)
+				return
+			}
+		}
+	}
+}
+
 // WebsocketHandler for Docker Websocket request. Should be use with net/http
 type WebsocketHandler struct {
 }
@@ -179,5 +235,7 @@ func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		logsContainerWebsocketHandler(w, r, logWebsocketRequest.FindSubmatch(urlPath)[1])
 	} else if eventsWebsocketRequest.Match((urlPath)) {
 		eventsWebsocketHandler(w, r)
+	} else if statsWebsocketRequest.Match(urlPath) {
+		statsWebsocketHandler(w, r, statsWebsocketRequest.FindSubmatch(urlPath)[1])
 	}
 }
