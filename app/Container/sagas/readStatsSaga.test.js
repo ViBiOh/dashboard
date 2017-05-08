@@ -20,7 +20,9 @@ test('should call DockerService.stats with given id', t => {
 });
 
 test('should addLog when content is in channel', t => {
-  sinon.stub(DockerService, 'stats');
+  sinon.stub(DockerService, 'stats').callsFake(() => ({
+    close: () => null,
+  });
 
   const iterator = readStatsSaga({ id: 'Test' });
   iterator.next();
