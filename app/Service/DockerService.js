@@ -11,7 +11,12 @@ const WS = `wss://${API_HOST}/ws/`;
  */
 export const authStorage = 'auth';
 
-function customError(response) {
+/**
+ * Custom error handler that add toString to error object.
+ * @param  {Object} response Response from funtch
+ * @return {Promise} Error with toString or valid reponse
+ */
+export function customError(response) {
   return new Promise((resolve, reject) =>
     errorHandler(response).then(resolve).catch(err =>
       reject({
@@ -58,7 +63,7 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${API}auth`, hash).get().then(result => {
+    return auth(`${API}auth`, hash).get().then((result) => {
       localStorageService.setItem(authStorage, hash);
       return result;
     });

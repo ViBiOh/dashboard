@@ -22,7 +22,7 @@ import style from './Container.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Container informations.
  */
-const Container = props => {
+const Container = (props) => {
   const {
     pending,
     pendingAction,

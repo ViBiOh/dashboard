@@ -5,7 +5,7 @@ import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 import { readStatsSaga } from './';
 
-test('should call DockerService.stats with given id', t => {
+test('should call DockerService.stats with given id', (t) => {
   const statsSpy = sinon.stub(DockerService, 'stats').callsFake(() => ({
     close: () => null,
   }));
@@ -19,7 +19,7 @@ test('should call DockerService.stats with given id', t => {
   t.truthy(value.TAKE.channel);
 });
 
-test('should addLog when content is in channel', t => {
+test('should addLog when content is in channel', (t) => {
   sinon.stub(DockerService, 'stats').callsFake(() => ({
     close: () => null,
   }));
@@ -31,7 +31,7 @@ test('should addLog when content is in channel', t => {
   t.deepEqual(iterator.next('content').value, put(actions.addStat('content')));
 });
 
-test('should close channel and websocket on error/cancel', t => {
+test('should close channel and websocket on error/cancel', (t) => {
   const close = sinon.spy();
   sinon.stub(DockerService, 'stats').callsFake(() => ({
     close,

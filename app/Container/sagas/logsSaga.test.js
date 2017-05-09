@@ -4,20 +4,20 @@ import { createMockTask } from 'redux-saga/utils';
 import actions from '../actions';
 import { logsSaga, readLogsSaga } from './';
 
-test('should fork reading', t => {
+test('should fork reading', (t) => {
   const iterator = logsSaga({ id: 'Test' });
 
   t.deepEqual(iterator.next().value, fork(readLogsSaga, { id: 'Test' }));
 });
 
-test('should wait for close signal', t => {
+test('should wait for close signal', (t) => {
   const iterator = logsSaga({ id: 'Test' });
   iterator.next();
 
   t.deepEqual(iterator.next().value, take(actions.CLOSE_LOGS));
 });
 
-test('should cancel forked task', t => {
+test('should cancel forked task', (t) => {
   const mockTask = createMockTask();
   const iterator = logsSaga({ id: 'Test' });
   iterator.next();

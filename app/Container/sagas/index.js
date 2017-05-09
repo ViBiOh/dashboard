@@ -139,7 +139,7 @@ export function* composeSaga(action) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readLogsSaga(action) {
-  const chan = eventChannel(emit => {
+  const chan = eventChannel((emit) => {
     const websocket = DockerService.logs(action.id, emit);
 
     return () => websocket.close();
@@ -178,7 +178,7 @@ export function* logsSaga(action) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readStatsSaga(action) {
-  const chan = eventChannel(emit => {
+  const chan = eventChannel((emit) => {
     const websocket = DockerService.stats(action.id, emit);
 
     return () => websocket.close();
@@ -187,8 +187,8 @@ export function* readStatsSaga(action) {
   try {
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const log = yield take(chan);
-      yield put(actions.addStat(JSON.parse(log)));
+      const stat = yield take(chan);
+      yield put(actions.addStat(stat));
     }
   } finally {
     chan.close();
@@ -226,7 +226,7 @@ export function* debounceFetchContainersSaga() {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readEventsSaga() {
-  const chan = eventChannel(emit => {
+  const chan = eventChannel((emit) => {
     const websocket = DockerService.events(emit);
 
     return () => websocket.close();
