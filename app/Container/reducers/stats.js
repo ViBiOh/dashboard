@@ -1,4 +1,5 @@
 import actions from '../actions';
+import { humanSize, computeCpuPercentage } from '../../Tools/statHelper';
 
 const MAX_STATS = 30;
 
@@ -15,7 +16,14 @@ export default (state = initialState, action) => {
     return [];
   }
   if (action.type === actions.ADD_STAT) {
-    const stats = [...state, action.stat];
+    const stats = [
+      ...state,
+      {
+        cpu: computeCpuPercentage(action.stat),
+        memory: humanSize(action.stat.memory_stats.usage),
+        memoryLimit: humanSize(action.stat.memory_stats.limit),
+      },
+    ];
     if (stats.length > MAX_STATS) {
       stats.shift();
     }

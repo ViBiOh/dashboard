@@ -1,24 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { humanSize } from '../../Tools/statHelper';
 import style from './ContainerInfo.less';
 
-const BYTES_SIZE = 1024;
-const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
-
 const ENV_PARSER = /(.*?)=(.*)/;
-
-/**
- * Convert bytes size to human readable size.
- * @param  {int} size Bytes size
- * @param  {int} precision Decimal count
- * @return {string}   Human readable bytes size
- */
-export const humanFileSize = (size, precision = 0) => {
-  const i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
-  // eslint-disable-next-line no-restricted-properties
-  return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(precision)} ${BYTES_NAMES[i]}`;
-};
 
 /**
  * Container's basic informations.
@@ -99,7 +85,7 @@ const ContainerInfo = ({ container }) => {
           </span>}
         {container.HostConfig.Memory > 0 &&
           <span key="memory" className={style.item}>
-            Memory limit | {humanFileSize(container.HostConfig.Memory)}
+            Memory limit | {humanSize(container.HostConfig.Memory)}
           </span>}
         {container.HostConfig.SecurityOpt &&
           container.HostConfig.SecurityOpt.length > 0 &&
