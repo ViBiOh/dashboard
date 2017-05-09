@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Graph from './Graph';
 import style from './ContainerStats.less';
 
 /**
@@ -12,19 +13,72 @@ const ContainerStats = ({ stats }) => {
     return null;
   }
 
-  const stat = stats[stats.length - 1];
+  const data = {
+    labels: [],
+    datasets: [
+      {
+        label: 'CPU %',
+        data: [],
+        backgroundColor: '#5bc0de',
+        borderColor: '#5bc0de',
+        fill: false,
+      },
+      {
+        label: 'Memory usage',
+        data: [],
+        backgroundColor: '#d9534f',
+        borderColor: '#d9534f',
+        fill: false,
+      },
+    ],
+  };
+
+  const options = {
+    animation: {
+      duration: 0,
+    },
+    scales: {
+      xAxes: [
+        {
+          display: false,
+        },
+        {
+          display: false,
+        },
+      ],
+      yAxes: [
+        {
+          legend: {
+            color: 'red',
+          },
+          ticks: {
+            beginAtZero: true,
+            max: 100,
+          },
+        },
+        {
+          position: 'right',
+          ticks: {
+            beginAtZero: true,
+            max: parseFloat(stats[stats.length - 1].memoryLimit, 10),
+          },
+        },
+      ],
+    },
+  };
+
+  stats.forEach(stat => {
+    data.labels.push(stat.ts);
+    data.datasets[0].data.push(stat.cpu);
+    data.datasets[1].data.push(parseFloat(stat.memory, 10));
+  });
 
   return (
     <span className={style.container}>
       <h3>Monitoring</h3>
-      <span key="cpu">
-        <span className={style.label}>CPU</span>
-        <span>{stat.cpu}%</span>
-      </span>
-      <span key="memory">
-        <span className={style.label}>Memory</span>
-        <span>{stat.memory} / {stat.memoryLimit}</span>
-      </span>
+      <div className={style.graph}>
+        <Graph type="line" data={data} options={options} />
+      </div>
     </span>
   );
 };

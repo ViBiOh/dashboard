@@ -19,6 +19,7 @@ export default (state = initialState, action) => {
     const stats = [
       ...state,
       {
+        ts: new Date(Date.parse(action.stat.read)),
         cpu: computeCpuPercentage(action.stat),
         memory: humanSize(action.stat.memory_stats.usage),
         memoryLimit: humanSize(action.stat.memory_stats.limit),

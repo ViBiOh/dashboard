@@ -1,6 +1,7 @@
 .container {
   display: inline-flex;
   flex-wrap: wrap;
+  justify-content: center;
   width: 100%;
 }
 
@@ -18,4 +19,15 @@
   display: inline-block;
   padding: 5px;
   width: 170px;
+}
+
+.graph {
+  height: 300px;
+  width: 600px;
+}
+
+@media screen and (max-width: 800px) {
+  .graph {
+    width: 100%;
+  }
 }

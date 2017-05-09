@@ -79,6 +79,7 @@
   },
   "dependencies": {
     "babel-polyfill": "latest",
+    "chart.js": "latest",
     "classnames": "latest",
     "funtch": "latest",
     "history": "latest",
@@ -116,8 +117,12 @@
   },
   "esdoc": {
     "source": "./app",
-    "includes": [".(js|jsx)$"],
-    "excludes": [".test\\.(js|jsx)$"],
+    "includes": [
+      ".(js|jsx)$"
+    ],
+    "excludes": [
+      ".test\\.(js|jsx)$"
+    ],
     "destination": "./doc",
     "experimentalProposal": {
       "classProperties": true,
