@@ -188,7 +188,7 @@ export function* readStatsSaga(action) {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const stat = yield take(chan);
-      yield put(actions.addStat(stat));
+      yield put(actions.addStat(JSON.parse(stat)));
     }
   } finally {
     chan.close();

@@ -19,7 +19,7 @@ test('should call DockerService.stats with given id', (t) => {
   t.truthy(value.TAKE.channel);
 });
 
-test('should addLog when content is in channel', (t) => {
+test('should addStat when content is in channel', (t) => {
   sinon.stub(DockerService, 'stats').callsFake(() => ({
     close: () => null,
   }));
@@ -28,7 +28,10 @@ test('should addLog when content is in channel', (t) => {
   iterator.next();
   DockerService.stats.restore();
 
-  t.deepEqual(iterator.next('content').value, put(actions.addStat('content')));
+  t.deepEqual(
+    iterator.next('{ "stat": "content" }').value,
+    put(actions.addStat({ stat: 'content' })),
+  );
 });
 
 test('should close channel and websocket on error/cancel', (t) => {
