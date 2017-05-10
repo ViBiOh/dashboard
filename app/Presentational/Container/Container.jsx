@@ -47,9 +47,9 @@ const Container = (props) => {
   } else {
     content = [
       <ContainerInfo key="info" container={container} />,
-      <ContainerStats key="stats" stats={stats} />,
       <ContainerNetwork key="network" container={container} />,
       <ContainerVolumes key="volumes" container={container} />,
+      <ContainerStats key="stats" stats={stats} />,
       <ContainerLogs key="logs " logs={logs} openLogs={openLogs} />,
     ];
 
