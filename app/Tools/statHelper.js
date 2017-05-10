@@ -2,18 +2,22 @@ const BYTES_SIZE = 1024;
 const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
 
 /**
+ * Compute size scale of given size.
+ * @param  {int} size Bytes size
+ * @return {int} Size scale
+ */
+export const humanSizeScale = size => Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
+
+/**
  * Convert bytes size to human readable size.
  * @param  {int} size Bytes size
  * @param  {int} precision Decimal count
+ * @param  {int} scale Human size scale
  * @return {string}   Human readable bytes size
  */
 export const humanSize = (size, precision = 0, scale) => {
-  let i = scale;
-  if (!scale) {
-    i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
-  }
   // eslint-disable-next-line no-restricted-properties
-  return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(precision)} ${BYTES_NAMES[i]}`;
+  return `${(size / Math.pow(BYTES_SIZE, scale || humanSizeScale(size))).toFixed(precision)} ${BYTES_NAMES[i]}`;
 };
 
 /**
