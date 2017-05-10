@@ -18,7 +18,7 @@ const ContainerStats = ({ stats }) => {
     datasets: [
       {
         label: 'CPU %',
-        data: stats.map(stat => stat.cpu);,
+        data: stats.map(stat => stat.cpu),
         backgroundColor: '#5bc0de',
         borderColor: '#5bc0de',
         fill: false,
