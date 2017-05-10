@@ -25,7 +25,7 @@ const ContainerStats = ({ stats }) => {
       },
       {
         label: 'Memory usage',
-        data: stats.map(stat => parseFloat(stat.memory, 10));,
+        data: stats.map(stat => parseFloat(stat.memory, 10)),
         backgroundColor: '#d9534f',
         borderColor: '#d9534f',
         fill: false,
