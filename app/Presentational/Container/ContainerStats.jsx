@@ -48,12 +48,9 @@ const ContainerStats = ({ stats }) => {
       ],
       yAxes: [
         {
-          legend: {
-            color: 'red',
-          },
           ticks: {
             beginAtZero: true,
-            max: 100,
+            color: '#5bc0de',
           },
         },
         {
@@ -61,6 +58,7 @@ const ContainerStats = ({ stats }) => {
           ticks: {
             beginAtZero: true,
             max: parseFloat(stats[stats.length - 1].memoryLimit, 10),
+            color: '#d9534f',
           },
         },
       ],
