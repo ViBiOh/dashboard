@@ -1,5 +1,10 @@
 const BYTES_SIZE = 1024;
-const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
+
+/**
+ * Bytes names in human size.
+ * @type {Array}
+ */
+export const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
 
 /**
  * Compute size scale of given size.
@@ -26,7 +31,7 @@ export const humanSize = (size, precision = 0, scale) => {
  * @param  {Object} stat Container's stat
  * @return {Number} Maximum CPU percentage
  */
-export const cpuPercentageMax = stat => stat.cpu_stats.cpu_usage.percpu_usage.length * 100
+export const cpuPercentageMax = stat => stat.cpu_stats.cpu_usage.percpu_usage.length * 100;
 
 /**
  * Compute CPU percentage of containers.

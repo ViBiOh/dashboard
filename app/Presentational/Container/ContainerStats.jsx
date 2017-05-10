@@ -24,7 +24,7 @@ const ContainerStats = ({ stats }) => {
         fill: false,
       },
       {
-        label: 'Memory usage',
+        label: `Memory usage (${stats[stats.length - 1].memoryScale})`,
         data: stats.map(stat => parseFloat(stat.memory, 10)),
         backgroundColor: '#d9534f',
         borderColor: '#d9534f',
@@ -50,7 +50,7 @@ const ContainerStats = ({ stats }) => {
         {
           ticks: {
             beginAtZero: true,
-            max: 100,
+            max: stats[stats.length - 1].cpuLimit,
           },
         },
         {
@@ -67,7 +67,7 @@ const ContainerStats = ({ stats }) => {
   return (
     <span className={style.container}>
       <h3>Monitoring</h3>
-      <div className={style.graph}>
+      <div>
         <Graph type="line" data={data} options={options} />
       </div>
     </span>

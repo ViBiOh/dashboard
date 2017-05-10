@@ -40,6 +40,8 @@ export default class Graph extends Component {
       this.chart.data.labels = data.labels;
       this.chart.update();
     } else if (this.graph) {
+      this.graph.width = Math.min(window.innerWidth - 20, 600);
+
       this.chart = new Chart(this.graph, {
         type,
         data,
@@ -64,12 +66,6 @@ export default class Graph extends Component {
    * @return {ReactComponent} chart.js in a canvas
    */
   render() {
-    return (
-      <canvas
-        ref={e => setRef(this, 'graph', e)}
-        height={300}
-        style={{ padding: '5px', width: '100%' }}
-      />
-    );
+    return <canvas ref={e => setRef(this, 'graph', e)} height={300} />;
   }
 }

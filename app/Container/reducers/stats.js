@@ -1,5 +1,11 @@
 import actions from '../actions';
-import { humanSizeScale, humanSize, computeCpuPercentage } from '../../Tools/statHelper';
+import {
+  BYTES_NAMES,
+  humanSizeScale,
+  humanSize,
+  cpuPercentageMax,
+  computeCpuPercentage,
+} from '../../Tools/statHelper';
 
 const MAX_STATS = 30;
 
@@ -16,13 +22,15 @@ export default (state = initialState, action) => {
     return [];
   }
   if (action.type === actions.ADD_STAT) {
-    const scale = humanSizeScale(action.stat.memory_stats.limit)
+    const scale = humanSizeScale(action.stat.memory_stats.limit);
     const stats = [
       ...state,
       {
         ts: new Date(Date.parse(action.stat.read)),
         cpu: computeCpuPercentage(action.stat),
+        cpuLimit: cpuPercentageMax(action.stat),
         memory: humanSize(action.stat.memory_stats.usage, 2, scale),
+        memoryScale: BYTES_NAMES[scale],
         memoryLimit: humanSize(action.stat.memory_stats.limit, 0, scale),
       },
     ];
