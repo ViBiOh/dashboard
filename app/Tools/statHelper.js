@@ -7,8 +7,11 @@ const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
  * @param  {int} precision Decimal count
  * @return {string}   Human readable bytes size
  */
-export const humanSize = (size, precision = 0) => {
-  const i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
+export const humanSize = (size, precision = 0, scale) => {
+  let i = scale;
+  if (!scale) {
+    i = Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
+  }
   // eslint-disable-next-line no-restricted-properties
   return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(precision)} ${BYTES_NAMES[i]}`;
 };
