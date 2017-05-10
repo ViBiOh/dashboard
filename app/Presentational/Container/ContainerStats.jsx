@@ -14,18 +14,18 @@ const ContainerStats = ({ stats }) => {
   }
 
   const data = {
-    labels: [],
+    labels: stats.map(stat => stat.ts),
     datasets: [
       {
         label: 'CPU %',
-        data: [],
+        data: stats.map(stat => stat.cpu);,
         backgroundColor: '#5bc0de',
         borderColor: '#5bc0de',
         fill: false,
       },
       {
         label: 'Memory usage',
-        data: [],
+        data: stats.map(stat => parseFloat(stat.memory, 10));,
         backgroundColor: '#d9534f',
         borderColor: '#d9534f',
         fill: false,
@@ -50,7 +50,7 @@ const ContainerStats = ({ stats }) => {
         {
           ticks: {
             beginAtZero: true,
-            color: '#5bc0de',
+            max: 100,
           },
         },
         {
@@ -58,18 +58,11 @@ const ContainerStats = ({ stats }) => {
           ticks: {
             beginAtZero: true,
             max: parseFloat(stats[stats.length - 1].memoryLimit, 10),
-            color: '#d9534f',
           },
         },
       ],
     },
   };
-
-  stats.forEach(stat => {
-    data.labels.push(stat.ts);
-    data.datasets[0].data.push(stat.cpu);
-    data.datasets[1].data.push(parseFloat(stat.memory, 10));
-  });
 
   return (
     <span className={style.container}>
