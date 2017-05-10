@@ -16,8 +16,9 @@ export const humanSizeScale = size => Math.floor(Math.log(size) / Math.log(BYTES
  * @return {string}   Human readable bytes size
  */
 export const humanSize = (size, precision = 0, scale) => {
+  const i = scale || humanSizeScale(size);
   // eslint-disable-next-line no-restricted-properties
-  return `${(size / Math.pow(BYTES_SIZE, scale || humanSizeScale(size))).toFixed(precision)} ${BYTES_NAMES[i]}`;
+  return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(precision)} ${BYTES_NAMES[i]}`;
 };
 
 /**
