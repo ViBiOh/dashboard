@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import Graph from './Graph';
 import style from './ContainerStats.less';
 
+const CPU_COLOR = '#5bc0de';
+const MEMORY_COLOR = '#d9534f';
+
 /**
  * Show container stats.
  * @param  {Array<Object>} stats Container stats
@@ -19,16 +22,16 @@ const ContainerStats = ({ stats }) => {
       {
         label: 'CPU %',
         data: stats.map(stat => stat.cpu),
-        backgroundColor: '#5bc0de',
-        borderColor: '#5bc0de',
+        backgroundColor: CPU_COLOR,
+        borderColor: CPU_COLOR,
         fill: false,
         yAxisID: 'cpu',
       },
       {
         label: `Memory usage (${stats[stats.length - 1].memoryScale})`,
         data: stats.map(stat => parseFloat(stat.memory, 10)),
-        backgroundColor: '#d9534f',
-        borderColor: '#d9534f',
+        backgroundColor: MEMORY_COLOR,
+        borderColor: MEMORY_COLOR,
         fill: false,
         yAxisID: 'memory',
       },
@@ -55,6 +58,9 @@ const ContainerStats = ({ stats }) => {
             beginAtZero: true,
             max: stats[stats.length - 1].cpuLimit,
           },
+          scaleLabel: {
+            fontColor: CPU_COLOR,
+          },
         },
         {
           id: 'memory',
@@ -62,6 +68,9 @@ const ContainerStats = ({ stats }) => {
           ticks: {
             beginAtZero: true,
             max: parseFloat(stats[stats.length - 1].memoryLimit, 10),
+          },
+          scaleLabel: {
+            fontColor: MEMORY_COLOR,
           },
         },
       ],
