@@ -7,24 +7,36 @@ const BYTES_SIZE = 1024;
 export const BYTES_NAMES = ['Bytes', 'kB', 'MB', 'GB', 'TB'];
 
 /**
- * Compute size scale of given size.
- * @param  {int} size Bytes size
- * @return {int} Size scale
+ * Determine best human size scale for bytes size.
+ * @param  {Number} size Bytes size
+ * @return {Number} Human size scale best matching
  */
-export const humanSizeScale = size => Math.floor(Math.log(size) / Math.log(BYTES_SIZE));
+export const humanSizeScale = size =>
+  Math.floor(Math.log(Math.max(size, 1)) / Math.log(BYTES_SIZE));
 
 /**
- * Convert bytes size to human readable size.
- * @param  {Number} size Bytes size
- * @param  {Number} precision Decimal count
- * @param  {Number} scale Human size scale
- * @return {string}   Human readable bytes size
+ * Convert bytes size to the given scale.
+ * @param  {Number} size  Bytes size
+ * @param  {Number} scale Bytes size scale
+ * @return {Number} Bytes size converted to the given scale
  */
-export const humanSize = (size, precision = 0, scale) => {
+export const scaleSize = (size, scale) => {
   const i = scale || humanSizeScale(size);
+
   // eslint-disable-next-line no-restricted-properties
-  return `${(size / Math.pow(BYTES_SIZE, i)).toFixed(precision)} ${BYTES_NAMES[i]}`;
+  const rawSize = size / Math.pow(BYTES_SIZE, i);
+
+  return parseInt(rawSize * 100, 10) / 100;
 };
+
+/**
+ * Convert bytes size to human scale
+ * @param  {Number} size  Bytes size
+ * @param  {Number} scale Bytes size scale
+ * @return {String} Human readable size
+ */
+export const humanSize = (size, scale = humanSizeScale(size)) =>
+  `${scaleSize(size, scale)} ${BYTES_NAMES[scale]}`;
 
 /**
  * Compute CPU maximum percentage for given stat (100% * number of CPU).

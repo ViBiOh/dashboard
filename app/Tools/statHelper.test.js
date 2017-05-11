@@ -1,6 +1,7 @@
 import test from 'ava';
 import {
   humanSizeScale,
+  scaleSize,
   humanSize,
   cpuPercentageMax,
   computeCpuPercentage,
@@ -23,10 +24,21 @@ const stat = {
   },
 };
 
-test('humanSize', t => t.is(humanSizeScale(1024 * 1024 * 4), 2));
+test('humanSizeScale with undefined value', t => t.true(isNaN(humanSizeScale(undefined))));
 
-test('humanSize', t => t.is(humanSize(10240), `10 ${BYTES_NAMES[1]}`));
-test('humanSize', t => t.is(humanSize(102400, 2, 2), `0.10 ${BYTES_NAMES[2]}`));
+test('humanSizeScale with no value', t => t.is(humanSizeScale(0), 0));
+
+test('humanSizeScale with 4kb', t => t.is(humanSizeScale(1024 * 1024 * 4), 2));
+
+test('scaleSize with undefined values', t => t.true(isNaN(scaleSize())));
+
+test('scaleSize with with no value', t => t.is(scaleSize(0), 0));
+
+test('scaleSize', t => t.is(scaleSize(102400, 2), 0.09));
+
+test('scaleSize with scale and precision', t => t.is(scaleSize(10240, 1, 0), 10));
+
+test('humanSize', t => t.is(humanSize(102400, 2), `0.09 ${BYTES_NAMES[2]}`));
 
 test('cpuPercentageMax', t => t.is(cpuPercentageMax(stat), 800));
 

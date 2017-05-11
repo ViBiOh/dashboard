@@ -2,7 +2,7 @@ import actions from '../actions';
 import {
   BYTES_NAMES,
   humanSizeScale,
-  humanSize,
+  scaleSize,
   cpuPercentageMax,
   computeCpuPercentage,
 } from '../../Tools/statHelper';
@@ -19,28 +19,42 @@ const initialState = null;
  */
 export default (state = initialState, action) => {
   if (action.type === actions.OPEN_STATS) {
-    return [];
+    return {
+      entries: [],
+    };
   }
   if (action.type === actions.ADD_STAT) {
-    const scale = humanSizeScale(action.stat.memory_stats.limit);
-    const stats = [
-      ...state,
+    const nextState = { ...state };
+
+    if (!nextState.memoryScale && action.stat.memory_stats.limit) {
+      nextState.memoryScale = humanSizeScale(action.stat.memory_stats.limit);
+      nextState.memoryScaleNames = BYTES_NAMES[nextState.memoryScale];
+      nextState.memoryLimit = scaleSize(action.stat.memory_stats.limit, nextState.memoryScale);
+    }
+
+    if (!nextState.cpuLimit) {
+      nextState.cpuLimit = cpuPercentageMax(action.stat);
+    }
+
+    nextState.entries = [
+      ...state.entries,
       {
         ts: new Date(Date.parse(action.stat.read)),
         cpu: computeCpuPercentage(action.stat),
-        cpuLimit: cpuPercentageMax(action.stat),
-        memory: humanSize(action.stat.memory_stats.usage, 2, scale),
-        memoryScale: BYTES_NAMES[scale],
-        memoryLimit: humanSize(action.stat.memory_stats.limit, 0, scale),
+        memory: scaleSize(action.stat.memory_stats.usage, nextState.memoryScale),
       },
     ];
-    if (stats.length > MAX_STATS) {
-      stats.shift();
+
+    if (nextState.entries.length > MAX_STATS) {
+      nextState.entries.shift();
     }
-    return stats;
+
+    return nextState;
   }
   if (action.type === actions.CLOSE_STATS) {
-    return initialState;
+    return {
+      entries: [],
+    };
   }
   return state;
 };

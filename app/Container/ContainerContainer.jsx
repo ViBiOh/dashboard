@@ -45,7 +45,7 @@ ContainerComponent.propTypes = {
   pendingAction: PropTypes.bool.isRequired,
   container: PropTypes.shape({}),
   logs: PropTypes.arrayOf(PropTypes.string),
-  stats: PropTypes.arrayOf(PropTypes.shape({})),
+  stats: PropTypes.shape({}),
   error: PropTypes.string.isRequired,
   fetchContainer: PropTypes.func.isRequired,
   actionContainer: PropTypes.func.isRequired,

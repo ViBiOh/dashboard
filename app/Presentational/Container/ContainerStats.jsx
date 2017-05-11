@@ -12,24 +12,26 @@ const MEMORY_COLOR = '#d9534f';
  * @return {ReactComponent} Section with stats informations
  */
 const ContainerStats = ({ stats }) => {
-  if (!Array.isArray(stats) || stats.length === 0) {
+  if (!stats || !Array.isArray(stats.entries) || stats.entries.length === 0) {
     return null;
   }
 
+  const { entries, memoryScaleNames, memoryLimit, cpuLimit } = stats;
+
   const data = {
-    labels: stats.map(stat => stat.ts),
+    labels: entries.map(stat => stat.ts),
     datasets: [
       {
         label: 'CPU %',
-        data: stats.map(stat => stat.cpu),
+        data: entries.map(stat => stat.cpu),
         backgroundColor: CPU_COLOR,
         borderColor: CPU_COLOR,
         fill: false,
         yAxisID: 'cpu',
       },
       {
-        label: `Memory usage (${stats[stats.length - 1].memoryScale})`,
-        data: stats.map(stat => parseFloat(stat.memory, 10)),
+        label: `Memory usage (${memoryScaleNames})`,
+        data: entries.map(stat => stat.memory),
         backgroundColor: MEMORY_COLOR,
         borderColor: MEMORY_COLOR,
         fill: false,
@@ -56,9 +58,7 @@ const ContainerStats = ({ stats }) => {
           id: 'cpu',
           ticks: {
             beginAtZero: true,
-            max: stats[stats.length - 1].cpuLimit,
-          },
-          scaleLabel: {
+            max: cpuLimit,
             fontColor: CPU_COLOR,
           },
         },
@@ -67,9 +67,7 @@ const ContainerStats = ({ stats }) => {
           position: 'right',
           ticks: {
             beginAtZero: true,
-            max: parseFloat(stats[stats.length - 1].memoryLimit, 10),
-          },
-          scaleLabel: {
+            max: memoryLimit,
             fontColor: MEMORY_COLOR,
           },
         },
@@ -90,7 +88,7 @@ const ContainerStats = ({ stats }) => {
 ContainerStats.displayName = 'ContainerStats';
 
 ContainerStats.propTypes = {
-  stats: PropTypes.arrayOf(PropTypes.shape({})),
+  stats: PropTypes.shape({}),
 };
 
 ContainerStats.defaultProps = {

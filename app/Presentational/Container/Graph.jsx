@@ -42,6 +42,9 @@ export default class Graph extends Component {
     } else if (this.graph) {
       this.graph.width = Math.min(window.innerWidth - 20, 600);
 
+      /**
+       * Chart component ref.
+       */
       this.chart = new Chart(this.graph, {
         type,
         data,

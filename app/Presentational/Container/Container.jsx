@@ -128,7 +128,7 @@ Container.propTypes = {
     }).isRequired,
   }),
   logs: PropTypes.arrayOf(PropTypes.string),
-  stats: PropTypes.arrayOf(PropTypes.shape({})),
+  stats: PropTypes.shape({}),
   openLogs: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired,
