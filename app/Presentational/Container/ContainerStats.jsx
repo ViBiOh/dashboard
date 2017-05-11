@@ -22,6 +22,7 @@ const ContainerStats = ({ stats }) => {
         backgroundColor: '#5bc0de',
         borderColor: '#5bc0de',
         fill: false,
+        yAxisID: 'cpu',
       },
       {
         label: `Memory usage (${stats[stats.length - 1].memoryScale})`,
@@ -29,6 +30,7 @@ const ContainerStats = ({ stats }) => {
         backgroundColor: '#d9534f',
         borderColor: '#d9534f',
         fill: false,
+        yAxisID: 'memory',
       },
     ],
   };
@@ -48,12 +50,14 @@ const ContainerStats = ({ stats }) => {
       ],
       yAxes: [
         {
+          id: 'cpu',
           ticks: {
             beginAtZero: true,
             max: stats[stats.length - 1].cpuLimit,
           },
         },
         {
+          id: 'memory',
           position: 'right',
           ticks: {
             beginAtZero: true,
