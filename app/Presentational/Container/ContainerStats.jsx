@@ -46,6 +46,7 @@ const ContainerStats = ({ stats }) => {
     },
     scales: {
       xAxes: [{
+        display: false,
         ticks: {
           min: 0,
           max: 30,
