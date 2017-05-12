@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import Graph from './Graph';
 import style from './ContainerStats.less';
 
-const CPU_COLOR = '#5bc0de';
-const MEMORY_COLOR = '#d9534f';
+const CPU_COLOR = '#337ab7';
+const MEMORY_COLOR = '#5cb85c';
 
 /**
  * Show container stats.
@@ -45,14 +45,12 @@ const ContainerStats = ({ stats }) => {
       duration: 0,
     },
     scales: {
-      xAxes: [
-        {
-          display: false,
-        },
-        {
-          display: false,
-        },
-      ],
+      xAxes: [{
+        ticks: {
+          min: 0,
+          max: 30,
+        }
+      }],
       yAxes: [
         {
           id: 'cpu',
