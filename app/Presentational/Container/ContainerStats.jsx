@@ -1,10 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { STATS_COUNT } from '../../Container/reducers/stats';
 import Graph from './Graph';
 import style from './ContainerStats.less';
 
 const CPU_COLOR = '#337ab7';
 const MEMORY_COLOR = '#5cb85c';
+
+const labels = [];
+for (let i = 0; i < STATS_COUNT; i += 1) {
+  labels.push('');
+}
 
 /**
  * Show container stats.
@@ -19,7 +25,7 @@ const ContainerStats = ({ stats }) => {
   const { entries, memoryScaleNames, memoryLimit, cpuLimit } = stats;
 
   const data = {
-    labels: entries.map(stat => stat.ts),
+    labels,
     datasets: [
       {
         label: 'CPU %',
@@ -45,13 +51,11 @@ const ContainerStats = ({ stats }) => {
       duration: 0,
     },
     scales: {
-      xAxes: [{
-        display: false,
-        ticks: {
-          min: 0,
-          max: 30,
-        }
-      }],
+      xAxes: [
+        {
+          display: false,
+        },
+      ],
       yAxes: [
         {
           id: 'cpu',

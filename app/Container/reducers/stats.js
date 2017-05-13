@@ -7,7 +7,11 @@ import {
   computeCpuPercentage,
 } from '../../Tools/statHelper';
 
-const MAX_STATS = 30;
+/**
+ * Maximum number of stats stored (one per second)
+ * @type {Number}
+ */
+export const STATS_COUNT = 60;
 
 const initialState = null;
 
@@ -23,6 +27,7 @@ export default (state = initialState, action) => {
       entries: [],
     };
   }
+
   if (action.type === actions.ADD_STAT) {
     const nextState = { ...state };
 
@@ -45,16 +50,18 @@ export default (state = initialState, action) => {
       },
     ];
 
-    if (nextState.entries.length > MAX_STATS) {
+    if (nextState.entries.length > STATS_COUNT) {
       nextState.entries.shift();
     }
 
     return nextState;
   }
+
   if (action.type === actions.CLOSE_STATS) {
     return {
       entries: [],
     };
   }
+
   return state;
 };
