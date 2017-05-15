@@ -6,11 +6,17 @@ import (
 	"regexp"
 )
 
+type results struct {
+	Results interface{} `json:"results"`
+}
+
 var containersRequest = regexp.MustCompile(`containers/?$`)
 var containerRequest = regexp.MustCompile(`containers/([^/]+)/?$`)
-var startRequest = regexp.MustCompile(`containers/([^/]+)/start`)
-var stopRequest = regexp.MustCompile(`containers/([^/]+)/stop`)
-var restartRequest = regexp.MustCompile(`containers/([^/]+)/restart`)
+var containerStartRequest = regexp.MustCompile(`containers/([^/]+)/start`)
+var containerStopRequest = regexp.MustCompile(`containers/([^/]+)/stop`)
+var containerRestartRequest = regexp.MustCompile(`containers/([^/]+)/restart`)
+
+var servicesRequest = regexp.MustCompile(`services/?$`)
 
 func errorHandler(w http.ResponseWriter, err error) {
 	log.Print(err)
@@ -52,12 +58,12 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		listContainersHandler(w, loggedUser)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
-	} else if startRequest.Match(urlPath) && r.Method == http.MethodPost {
-		basicActionHandler(w, loggedUser, startRequest.FindSubmatch(urlPath)[1], startContainer)
-	} else if stopRequest.Match(urlPath) && r.Method == http.MethodPost {
-		basicActionHandler(w, loggedUser, stopRequest.FindSubmatch(urlPath)[1], stopContainer)
-	} else if restartRequest.Match(urlPath) && r.Method == http.MethodPost {
-		basicActionHandler(w, loggedUser, restartRequest.FindSubmatch(urlPath)[1], restartContainer)
+	} else if containerStartRequest.Match(urlPath) && r.Method == http.MethodPost {
+		basicActionHandler(w, loggedUser, containerStartRequest.FindSubmatch(urlPath)[1], startContainer)
+	} else if containerStopRequest.Match(urlPath) && r.Method == http.MethodPost {
+		basicActionHandler(w, loggedUser, containerStopRequest.FindSubmatch(urlPath)[1], stopContainer)
+	} else if containerRestartRequest.Match(urlPath) && r.Method == http.MethodPost {
+		basicActionHandler(w, loggedUser, containerRestartRequest.FindSubmatch(urlPath)[1], restartContainer)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
 		basicActionHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], rmContainer)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
@@ -66,5 +72,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else {
 			createAppHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 		}
+	} else if servicesRequest.Match(urlPath) && r.Method == http.MethodGet {
+		listContainersHandler(w, loggedUser)
 	}
 }

@@ -11,13 +11,6 @@ import (
 	"net/http"
 )
 
-const ownerLabel = `owner`
-const appLabel = `app`
-
-type results struct {
-	Results interface{} `json:"results"`
-}
-
 func listContainers(loggedUser *user, appName *string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
