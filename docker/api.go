@@ -18,6 +18,8 @@ var containerRestartRequest = regexp.MustCompile(`containers/([^/]+)/restart`)
 
 var servicesRequest = regexp.MustCompile(`services/?$`)
 
+var infoRequest = regexp.MustCompile(`info/?$`)
+
 func errorHandler(w http.ResponseWriter, err error) {
 	log.Print(err)
 	http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -29,6 +31,14 @@ func unauthorized(w http.ResponseWriter, err error) {
 
 func forbidden(w http.ResponseWriter) {
 	http.Error(w, `Forbidden`, http.StatusForbidden)
+}
+
+func infoHandler(w http.ResponseWriter) {
+	if info, err := docker.Info(context.Background()); err != nil {
+		errorHandler(w, err)
+	} else {
+		jsonHttp.ResponseJSON(w, info)
+	}
 }
 
 // Handler for Docker request. Should be use with net/http
@@ -54,7 +64,9 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	urlPath := []byte(r.URL.Path)
 
-	if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
+	if infoRequest.Match(urlPath) && r.Method == http.MethodGet {
+		infoHandler(w)
+	} else if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
 		listContainersHandler(w, loggedUser)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
