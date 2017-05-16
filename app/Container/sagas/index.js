@@ -63,6 +63,19 @@ export function* logoutSaga() {
 }
 
 /**
+ * Saga of Info action
+ * @yield {Function} Saga effects to sequence flow of work
+ */
+export function* infoSaga() {
+  try {
+    const infos = yield call(DockerService.info);
+    yield put(actions.infoSucceeded(infos));
+  } catch (e) {
+    yield put(onErrorAction('infoFailed', e));
+  }
+}
+
+/**
  * Saga of Fetch containers action :
  * - Fetch containers
  * @yield {Function} Saga effects to sequence flow of work
@@ -267,6 +280,7 @@ export function* eventsSaga() {
 export default function* appSaga() {
   yield takeLatest(actions.LOGIN, loginSaga);
   yield takeLatest(actions.LOGOUT, logoutSaga);
+  yield takeLatest(actions.INFO, infoSaga);
   yield takeLatest(actions.FETCH_CONTAINERS, fetchContainersSaga);
   yield takeLatest(actions.FETCH_CONTAINER, fetchContainerSaga);
   yield takeLatest(actions.ACTION_CONTAINER, actionContainerSaga);

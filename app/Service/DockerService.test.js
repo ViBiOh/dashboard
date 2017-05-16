@@ -138,6 +138,7 @@ test.serial('should create container with given args', t =>
 );
 
 [
+  { method: 'info', args: [], httpMethod: 'get', url: /info$/ },
   { method: 'infos', args: ['test'], httpMethod: 'get', url: /containers\/test\/$/ },
   {
     method: 'create',

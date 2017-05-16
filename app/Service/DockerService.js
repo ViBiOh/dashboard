@@ -79,6 +79,14 @@ export default class DockerService {
   }
 
   /**
+   * Docker's daemon information.
+   * @return {Promise} Information of daemon
+   */
+  static info() {
+    return auth(`${API}info`).get();
+  }
+
+  /**
    * List Docker's containers.
    * @return {Promise} Array of informations wrapped in a Promise
    */

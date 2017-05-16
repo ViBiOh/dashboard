@@ -73,6 +73,7 @@ export const makeOpenCloseActionCreator = (camelCaseName, opens = [], closes = [
 export default {
   ...makeApiActionCreator('login', ['username', 'password']),
   ...makeApiActionCreator('logout'),
+  ...makeApiActionCreator('info', [], ['infos']),
   ...makeApiActionCreator('fetchContainers', [], ['containers']),
   ...makeApiActionCreator('fetchContainer', ['id'], ['container']),
   ...makeApiActionCreator('actionContainer', ['action', 'id']),
