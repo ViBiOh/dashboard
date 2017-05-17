@@ -14,7 +14,16 @@ import style from './ContainersList.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} List view of containers
  */
-const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect, onLogout }) => {
+const ContainersList = ({
+  pending,
+  containers,
+  infos,
+  error,
+  onRefresh,
+  onAdd,
+  onSelect,
+  onLogout,
+}) => {
   let content;
 
   if (pending || !Array.isArray(containers)) {
@@ -38,7 +47,9 @@ const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect
         <Button onClick={onAdd}>
           <FaPlus />
         </Button>
-        <span className={style.fill} />
+        <span className={style.fill}>
+          {infos && infos.ServerVersion && `Docker: ${infos.ServerVersion}`}
+        </span>
         <Button onClick={onLogout} type="danger">
           <FaUserTimes />
         </Button>
@@ -53,6 +64,7 @@ ContainersList.displayName = 'ContainersList';
 ContainersList.propTypes = {
   pending: PropTypes.bool,
   containers: PropTypes.arrayOf(PropTypes.shape({})),
+  infos: PropTypes.shape({}),
   error: PropTypes.string,
   onRefresh: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
@@ -63,6 +75,7 @@ ContainersList.propTypes = {
 ContainersList.defaultProps = {
   pending: false,
   containers: null,
+  infos: null,
   error: '',
 };
 

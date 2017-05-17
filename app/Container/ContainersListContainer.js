@@ -6,6 +6,7 @@ import ContainersList from '../Presentational/ContainersList/ContainersList';
 const mapStateToProps = state => ({
   pending: !!state.pending[actions.FETCH_CONTAINERS],
   containers: state.containers,
+  infos: state.infos,
   error: state.error,
 });
 
