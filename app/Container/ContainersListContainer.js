@@ -11,7 +11,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onRefresh: () => dispatch(actions.fetchContainers()),
+  onRefresh: () => dispatch(actions.info()),
   onAdd: () => dispatch(push('/containers/New')),
   onSelect: id => dispatch(push(`/containers/${id}`)),
   onLogout: () => dispatch(actions.logout()),
