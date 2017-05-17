@@ -14,13 +14,13 @@ test('should call DockerService.login with given username and password', (t) => 
   t.deepEqual(iterator.next().value, call(DockerService.login, 'Test', 'secret'));
 });
 
-test('should put success, fetch containers, open event stream and go home after API call', (t) => {
+test('should put success, info, open event stream and go home after API call', (t) => {
   const iterator = loginSaga({});
   iterator.next();
 
   t.deepEqual(iterator.next().value, [
     put(actions.loginSucceeded()),
-    put(actions.fetchContainers()),
+    put(actions.info()),
     put(actions.openEvents()),
     put(push('/')),
   ]);

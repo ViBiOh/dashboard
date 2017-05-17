@@ -29,5 +29,5 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-appStore.dispatch(actions.fetchContainers());
+appStore.dispatch(actions.info());
 appStore.dispatch(actions.openEvents());

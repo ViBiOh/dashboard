@@ -32,7 +32,7 @@ export function* loginSaga(action) {
     yield call(DockerService.login, action.username, action.password);
     yield [
       put(actions.loginSucceeded()),
-      put(actions.fetchContainers()),
+      put(actions.info()),
       put(actions.openEvents()),
       put(push('/')),
     ];
@@ -69,7 +69,13 @@ export function* logoutSaga() {
 export function* infoSaga() {
   try {
     const infos = yield call(DockerService.info);
-    yield put(actions.infoSucceeded(infos));
+
+    const nextActions = [actions.infoSucceeded(infos)];
+    if (!infos.Swarm || !infos.Swarm.NodeID) {
+      nextActions.push(actions.fetchContainers());
+    }
+
+    yield nextActions.map(a => put(a));
   } catch (e) {
     yield put(onErrorAction('infoFailed', e));
   }

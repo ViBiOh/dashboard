@@ -5,16 +5,28 @@ import actions from '../actions';
 import { infoSaga } from './';
 
 test('should call DockerService.info', (t) => {
-  const iterator = infoSaga({});
+  const iterator = infoSaga();
 
   t.deepEqual(iterator.next().value, call(DockerService.info));
 });
 
-test('should put success after API call', (t) => {
-  const iterator = infoSaga({});
+test('should put success and fetchContaines after API call', (t) => {
+  const iterator = infoSaga();
   iterator.next();
 
-  t.deepEqual(iterator.next().value, put(actions.infoSucceeded()));
+  t.deepEqual(iterator.next({}).value, [
+    put(actions.infoSucceeded({})),
+    put(actions.fetchContainers()),
+  ]);
+});
+
+test('should put success and not fetchContaines if Swarm', (t) => {
+  const iterator = infoSaga();
+  iterator.next();
+
+  const fakeInfos = { Swarm: { NodeID: 1 } };
+
+  t.deepEqual(iterator.next(fakeInfos).value, [put(actions.infoSucceeded(fakeInfos))]);
 });
 
 test('should put error on failure', (t) => {
