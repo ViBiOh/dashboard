@@ -27,11 +27,11 @@ class ContainerComponent extends Component {
         logs={this.props.logs}
         stats={this.props.stats}
         onBack={this.props.onBack}
-        onRefresh={() => this.props.actionContainer('infos', container.Id)}
-        onStart={() => this.props.actionContainer('start', container.Id)}
-        onRestart={() => this.props.actionContainer('restart', container.Id)}
-        onStop={() => this.props.actionContainer('stop', container.Id)}
-        onDelete={() => this.props.actionContainer('delete', container.Id)}
+        onRefresh={() => this.props.actionContainer('containerInfos', container.Id)}
+        onStart={() => this.props.actionContainer('containerStart', container.Id)}
+        onRestart={() => this.props.actionContainer('containerRestart', container.Id)}
+        onStop={() => this.props.actionContainer('containerStop', container.Id)}
+        onDelete={() => this.props.actionContainer('containerDelete', container.Id)}
         openLogs={() => this.props.openLogs(container.Id)}
         error={this.props.error}
       />

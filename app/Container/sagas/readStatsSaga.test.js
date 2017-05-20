@@ -5,28 +5,28 @@ import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 import { readStatsSaga } from './';
 
-test('should call DockerService.stats with given id', (t) => {
-  const statsSpy = sinon.stub(DockerService, 'stats').callsFake(() => ({
+test('should call DockerService.stats with given id', t => {
+  const statsSpy = sinon.stub(DockerService, 'containerStats').callsFake(() => ({
     close: () => null,
   }));
 
   const iterator = readStatsSaga({ id: 'Test' });
   const value = iterator.next().value;
-  DockerService.stats.restore();
+  DockerService.containerStats.restore();
 
   t.true(statsSpy.called);
   t.truthy(value.TAKE);
   t.truthy(value.TAKE.channel);
 });
 
-test('should addStat when content is in channel', (t) => {
-  sinon.stub(DockerService, 'stats').callsFake(() => ({
+test('should addStat when content is in channel', t => {
+  sinon.stub(DockerService, 'containerStats').callsFake(() => ({
     close: () => null,
   }));
 
   const iterator = readStatsSaga({ id: 'Test' });
   iterator.next();
-  DockerService.stats.restore();
+  DockerService.containerStats.restore();
 
   t.deepEqual(
     iterator.next('{ "stat": "content" }').value,
@@ -34,15 +34,15 @@ test('should addStat when content is in channel', (t) => {
   );
 });
 
-test('should close channel and websocket on error/cancel', (t) => {
+test('should close channel and websocket on error/cancel', t => {
   const close = sinon.spy();
-  sinon.stub(DockerService, 'stats').callsFake(() => ({
+  sinon.stub(DockerService, 'containerStats').callsFake(() => ({
     close,
   }));
 
   const iterator = readStatsSaga({ id: 'Test' });
   iterator.next();
-  DockerService.stats.restore();
+  DockerService.containerStats.restore();
   try {
     iterator.throw(new Error('Error test'));
   } catch (e) {} // eslint-disable-line no-empty

@@ -63,7 +63,7 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${API}auth`, hash).get().then((result) => {
+    return auth(`${API}auth`, hash).get().then(result => {
       localStorageService.setItem(authStorage, hash);
       return result;
     });
@@ -99,7 +99,7 @@ export default class DockerService {
    * @param  {String} containerId Container's id
    * @return {Promise}            Information wrapped in a Promise
    */
-  static infos(containerId) {
+  static containerInfos(containerId) {
     return auth(`${API}containers/${containerId}/`).get();
   }
 
@@ -109,7 +109,7 @@ export default class DockerService {
    * @param  {String} composeFile Docker Compose file content
    * @return {Promise}            Array of created containers wrapped in a Promise
    */
-  static create(name, composeFile) {
+  static containerCreate(name, composeFile) {
     return auth(`${API}containers/${name}/`).post(composeFile);
   }
 
@@ -118,7 +118,7 @@ export default class DockerService {
    * @param  {String} containerId Container's id
    * @return {Promise}            Resolved promise
    */
-  static start(containerId) {
+  static containerStart(containerId) {
     return auth(`${API}containers/${containerId}/start`).post();
   }
 
@@ -127,7 +127,7 @@ export default class DockerService {
    * @param  {String} containerId Container's id
    * @return {Promise}            Resolved promise
    */
-  static stop(containerId) {
+  static containerStop(containerId) {
     return auth(`${API}containers/${containerId}/stop`).post();
   }
 
@@ -136,7 +136,7 @@ export default class DockerService {
    * @param  {String} containerId Container's id
    * @return {Promise}            Resolved promise
    */
-  static restart(containerId) {
+  static containerRestart(containerId) {
     return auth(`${API}containers/${containerId}/restart`).post();
   }
 
@@ -145,7 +145,7 @@ export default class DockerService {
    * @param  {String} containerId Container's id
    * @return {Promise}            Resolved promise
    */
-  static delete(containerId) {
+  static containerDelete(containerId) {
     return auth(`${API}containers/${containerId}/`).delete();
   }
 
@@ -155,7 +155,7 @@ export default class DockerService {
    * @param  {Function} onMessage Callback for each input receive from socket
    * @return {Websocket}          Opened and authentified Websocket
    */
-  static logs(containerId, onMessage) {
+  static containerLogs(containerId, onMessage) {
     const socket = new WebSocket(`${WS}containers/${containerId}/logs`);
 
     socket.onmessage = event => onMessage(event.data);
@@ -170,7 +170,7 @@ export default class DockerService {
    * @param  {Function} onMessage Callback for each input receive from socket
    * @return {Websocket}          Opened and authentified Websocket
    */
-  static stats(containerId, onMessage) {
+  static containerStats(containerId, onMessage) {
     const socket = new WebSocket(`${WS}containers/${containerId}/stats`);
 
     socket.onmessage = event => onMessage(event.data);

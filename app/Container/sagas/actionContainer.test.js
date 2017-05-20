@@ -5,27 +5,27 @@ import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 import { actionContainerSaga } from './';
 
-test('should call DockerService service from given name with given id', (t) => {
+test('should call DockerService service from given name with given id', t => {
   const iterator = actionContainerSaga({
-    action: 'start',
+    action: 'containerStart',
     id: 'test',
   });
 
-  t.deepEqual(iterator.next().value, call(DockerService.start, 'test'));
+  t.deepEqual(iterator.next().value, call(DockerService.containerStart, 'test'));
 });
 
-test('should put success after API call', (t) => {
+test('should put success after API call', t => {
   const iterator = actionContainerSaga({
-    action: 'start',
+    action: 'containerStart',
   });
   iterator.next();
 
   t.deepEqual(iterator.next().value, put(actions.actionContainerSucceeded()));
 });
 
-test('should put fetch container after API call', (t) => {
+test('should put fetch container after API call', t => {
   const iterator = actionContainerSaga({
-    action: 'start',
+    action: 'containerStart',
     id: 'test',
   });
   iterator.next();
@@ -34,9 +34,9 @@ test('should put fetch container after API call', (t) => {
   t.deepEqual(iterator.next().value, put(actions.fetchContainer('test')));
 });
 
-test('should go home after delete API call', (t) => {
+test('should go home after delete API call', t => {
   const iterator = actionContainerSaga({
-    action: 'delete',
+    action: 'containerDelete',
     id: 'test',
   });
   iterator.next();
@@ -45,9 +45,9 @@ test('should go home after delete API call', (t) => {
   t.deepEqual(iterator.next().value, put(push('/')));
 });
 
-test('should put error on failure', (t) => {
+test('should put error on failure', t => {
   const iterator = actionContainerSaga({
-    action: 'delete',
+    action: 'containerDelete',
     id: 'test',
   });
   iterator.next();

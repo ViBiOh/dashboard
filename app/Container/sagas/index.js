@@ -103,7 +103,7 @@ export function* fetchContainersSaga() {
  */
 export function* fetchContainerSaga(action) {
   try {
-    const container = yield call(DockerService.infos, action.id);
+    const container = yield call(DockerService.containerInfos, action.id);
     yield put(actions.fetchContainerSucceeded(container));
   } catch (e) {
     yield put(onErrorAction('fetchContainerFailed', e));
@@ -123,7 +123,7 @@ export function* actionContainerSaga(action) {
     yield call(DockerService[action.action], action.id);
     yield put(actions.actionContainerSucceeded());
 
-    if (action.action !== 'delete') {
+    if (!/delete$/i.test(action.action)) {
       yield put(actions.fetchContainer(action.id));
     } else {
       yield put(push('/'));
@@ -142,7 +142,7 @@ export function* actionContainerSaga(action) {
  */
 export function* composeSaga(action) {
   try {
-    yield call(DockerService.create, action.name, action.file);
+    yield call(DockerService.containerCreate, action.name, action.file);
 
     yield [put(actions.composeSucceeded()), put(push('/'))];
   } catch (e) {
@@ -158,8 +158,8 @@ export function* composeSaga(action) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readLogsSaga(action) {
-  const chan = eventChannel((emit) => {
-    const websocket = DockerService.logs(action.id, emit);
+  const chan = eventChannel(emit => {
+    const websocket = DockerService.containerLogs(action.id, emit);
 
     return () => websocket.close();
   });
@@ -197,8 +197,8 @@ export function* logsSaga(action) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readStatsSaga(action) {
-  const chan = eventChannel((emit) => {
-    const websocket = DockerService.stats(action.id, emit);
+  const chan = eventChannel(emit => {
+    const websocket = DockerService.containerStats(action.id, emit);
 
     return () => websocket.close();
   });
@@ -245,7 +245,7 @@ export function* debounceFetchContainersSaga() {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readEventsSaga() {
-  const chan = eventChannel((emit) => {
+  const chan = eventChannel(emit => {
     const websocket = DockerService.events(emit);
 
     return () => websocket.close();
