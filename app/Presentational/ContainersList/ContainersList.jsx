@@ -30,11 +30,17 @@ const ContainersList = ({
     content = <Throbber label="Loading containers" error={error} />;
   } else {
     content = (
-      <div key="containers" className={style.flex}>
+      <div className={style.flex}>
         <div className={style.header}>
-          <Button className={style.containers}>
+          <Button key="containers" className={style.version}>
             Containers{infos && infos.ServerVersion && `, daemon: ${infos.ServerVersion}`}
           </Button>
+          {infos &&
+            infos.Swarm &&
+            infos.Swarm.NodeID &&
+            <Button key="swarm" className={style.version}>
+              Swarm, nodes: {infos.Swarm.Nodes}
+            </Button>}
         </div>
         {containers.map(container => (
           <ContainerCard key={container.Id} container={container} onClick={onSelect} />

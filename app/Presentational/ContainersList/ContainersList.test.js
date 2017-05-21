@@ -125,3 +125,32 @@ test('should render docker version if provided', (t) => {
   t.is(wrapper.find('div Button').length, 1);
   t.is(wrapper.find('div Button').dive().text(), 'Containers, daemon: 1.12');
 });
+
+test('should render docker swarm node if provided', (t) => {
+  const containers = [
+    {
+      Id: 1,
+      Image: 'test',
+      Created: 0,
+      Status: 'up',
+      Names: [],
+    },
+  ];
+
+  const infos = { ServerVersion: 1.12, Swarm: { NodeID: 1, Nodes: 1 } };
+
+  const wrapper = shallow(
+    <ContainersList
+      onRefresh={fn}
+      onAdd={fn}
+      onSelect={fn}
+      onLogout={fn}
+      containers={containers}
+      infos={infos}
+    />,
+  );
+
+  t.is(wrapper.find('div Button').length, 2);
+  t.is(wrapper.find('div Button').at(0).dive().text(), 'Containers, daemon: 1.12');
+  t.is(wrapper.find('div Button').at(1).dive().text(), 'Swarm, nodes: 1');
+});
