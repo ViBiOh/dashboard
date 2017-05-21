@@ -158,7 +158,7 @@ export function* composeSaga(action) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readLogsSaga(action) {
-  const chan = eventChannel(emit => {
+  const chan = eventChannel((emit) => {
     const websocket = DockerService.containerLogs(action.id, emit);
 
     return () => websocket.close();
@@ -197,7 +197,7 @@ export function* logsSaga(action) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readStatsSaga(action) {
-  const chan = eventChannel(emit => {
+  const chan = eventChannel((emit) => {
     const websocket = DockerService.containerStats(action.id, emit);
 
     return () => websocket.close();
@@ -245,7 +245,7 @@ export function* debounceFetchContainersSaga() {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readEventsSaga() {
-  const chan = eventChannel(emit => {
+  const chan = eventChannel((emit) => {
     const websocket = DockerService.events(emit);
 
     return () => websocket.close();

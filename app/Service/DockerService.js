@@ -63,7 +63,7 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${API}auth`, hash).get().then(result => {
+    return auth(`${API}auth`, hash).get().then((result) => {
       localStorageService.setItem(authStorage, hash);
       return result;
     });
@@ -177,6 +177,14 @@ export default class DockerService {
     socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
 
     return socket;
+  }
+
+  /**
+   * List Docker's Swarm services.
+   * @return {Promise} Array of informations wrapped in a Promise
+   */
+  static services() {
+    return auth(`${API}services`).get().then(({ results }) => results);
   }
 
   /**

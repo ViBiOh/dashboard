@@ -87,6 +87,6 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			createAppHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 		}
 	} else if servicesRequest.Match(urlPath) && r.Method == http.MethodGet {
-		listContainersHandler(w, loggedUser)
+		listServicesHandler(w, loggedUser)
 	}
 }
