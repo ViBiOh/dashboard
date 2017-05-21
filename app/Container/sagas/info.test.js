@@ -20,13 +20,17 @@ test('should put success and fetchContaines after API call', (t) => {
   ]);
 });
 
-test('should put success and not fetchContaines if Swarm', (t) => {
+test('should put success, fetchContaines and fetchServices if Swarm', (t) => {
   const iterator = infoSaga();
   iterator.next();
 
   const fakeInfos = { Swarm: { NodeID: 1 } };
 
-  t.deepEqual(iterator.next(fakeInfos).value, [put(actions.infoSucceeded(fakeInfos))]);
+  t.deepEqual(iterator.next(fakeInfos).value, [
+    put(actions.infoSucceeded(fakeInfos)),
+    put(actions.fetchContainers()),
+    put(actions.fetchServices()),
+  ]);
 });
 
 test('should put error on failure', (t) => {

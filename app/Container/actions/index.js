@@ -74,6 +74,7 @@ export default {
   ...makeApiActionCreator('login', ['username', 'password']),
   ...makeApiActionCreator('logout'),
   ...makeApiActionCreator('info', [], ['infos']),
+  ...makeApiActionCreator('fetchServices', [], ['services']),
   ...makeApiActionCreator('fetchContainers', [], ['containers']),
   ...makeApiActionCreator('fetchContainer', ['id'], ['container']),
   ...makeApiActionCreator('actionContainer', ['action', 'id']),

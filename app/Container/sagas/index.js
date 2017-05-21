@@ -71,13 +71,28 @@ export function* infoSaga() {
     const infos = yield call(DockerService.info);
 
     const nextActions = [actions.infoSucceeded(infos)];
-    if (!infos.Swarm || !infos.Swarm.NodeID) {
-      nextActions.push(actions.fetchContainers());
+    nextActions.push(actions.fetchContainers());
+    if (infos.Swarm && infos.Swarm.NodeID) {
+      nextActions.push(actions.fetchServices());
     }
 
     yield nextActions.map(a => put(a));
   } catch (e) {
     yield put(onErrorAction('infoFailed', e));
+  }
+}
+
+/**
+ * Saga of Fetch services action :
+ * - Fetch containers
+ * @yield {Function} Saga effects to sequence flow of work
+ */
+export function* fetchServicesSaga() {
+  try {
+    const services = yield call(DockerService.services);
+    yield put(actions.fetchServicesSucceeded(services));
+  } catch (e) {
+    yield put(onErrorAction('fetchServicesFailed', e));
   }
 }
 
@@ -287,6 +302,7 @@ export default function* appSaga() {
   yield takeLatest(actions.LOGIN, loginSaga);
   yield takeLatest(actions.LOGOUT, logoutSaga);
   yield takeLatest(actions.INFO, infoSaga);
+  yield takeLatest(actions.FETCH_SERVICES, fetchServicesSaga);
   yield takeLatest(actions.FETCH_CONTAINERS, fetchContainersSaga);
   yield takeLatest(actions.FETCH_CONTAINER, fetchContainerSaga);
   yield takeLatest(actions.ACTION_CONTAINER, actionContainerSaga);
