@@ -12,10 +12,12 @@ import (
 )
 
 const configurationFile = `./users`
-const admin = `admin`
 const basicPrefix = `Basic `
 
 var commaByte = []byte(`,`)
+
+const adminUser = `admin`
+const multiAppUser = `multi`
 
 type user struct {
 	username string
@@ -105,7 +107,14 @@ func isAuthenticated(username string, password string, ok bool) (*user, error) {
 
 func isAdmin(loggedUser *user) bool {
 	if loggedUser != nil {
-		return loggedUser.role == admin
+		return loggedUser.role == adminUser
+	}
+	return false
+}
+
+func isMultiApp(loggedUser *user) bool {
+	if loggedUser != nil {
+		return loggedUser.role == multiAppUser
 	}
 	return false
 }

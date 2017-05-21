@@ -23,7 +23,7 @@ func init() {
 }
 
 func labelFilters(filtersArgs *filters.Args, loggedUser *user, appName *string) error {
-	if !isAdmin(loggedUser) {
+	if !isAdmin(loggedUser) && !isMultiApp(loggedUser) {
 		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, *filtersArgs); err != nil {
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
