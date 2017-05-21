@@ -23,12 +23,12 @@ func init() {
 }
 
 func labelFilters(filtersArgs *filters.Args, loggedUser *user, appName *string) error {
-	if !isAdmin(loggedUser) && !isMultiApp(loggedUser) {
-		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, *filtersArgs); err != nil {
+	if appName != nil && *appName != `` && isMultiApp(loggedUser) {
+		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, *filtersArgs); err != nil {
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
-	} else if appName != nil && *appName != `` {
-		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, *filtersArgs); err != nil {
+	} else if !isAdmin(loggedUser) {
+		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, *filtersArgs); err != nil {
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
 	}

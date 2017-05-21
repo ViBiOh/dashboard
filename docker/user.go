@@ -114,7 +114,7 @@ func isAdmin(loggedUser *user) bool {
 
 func isMultiApp(loggedUser *user) bool {
 	if loggedUser != nil {
-		return loggedUser.role == multiAppUser
+		return loggedUser.role == multiAppUser || loggedUser.role == adminUser
 	}
 	return false
 }
