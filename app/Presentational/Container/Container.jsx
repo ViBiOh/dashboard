@@ -55,45 +55,23 @@ const Container = (props) => {
 
     if (container.State.Running) {
       buttons.push(
-        <ThrobberButton
-          className={style.button}
-          key="restart"
-          onClick={onRestart}
-          pending={pendingAction}
-        >
+        <ThrobberButton key="restart" onClick={onRestart} pending={pendingAction}>
           <FaRetweet />
         </ThrobberButton>,
       );
       buttons.push(
-        <ThrobberButton
-          className={style.button}
-          key="stop"
-          type="danger"
-          onClick={onStop}
-          pending={pendingAction}
-        >
+        <ThrobberButton key="stop" type="danger" onClick={onStop} pending={pendingAction}>
           <FaStopCircle />
         </ThrobberButton>,
       );
     } else {
       buttons.push(
-        <ThrobberButton
-          className={style.button}
-          key="start"
-          onClick={onStart}
-          pending={pendingAction}
-        >
+        <ThrobberButton key="start" onClick={onStart} pending={pendingAction}>
           <FaPlay />
         </ThrobberButton>,
       );
       buttons.push(
-        <ThrobberButton
-          className={style.button}
-          key="delete"
-          type="danger"
-          onClick={onDelete}
-          pending={pendingAction}
-        >
+        <ThrobberButton key="delete" type="danger" onClick={onDelete} pending={pendingAction}>
           <FaTrash />
         </ThrobberButton>,
       );
@@ -106,7 +84,7 @@ const Container = (props) => {
         <Button onClick={onBack}>
           <FaArrowLeft />
         </Button>
-        <ThrobberButton className={style.button} onClick={onRefresh} pending={pendingAction}>
+        <ThrobberButton onClick={onRefresh} pending={pendingAction}>
           <FaRefresh />
         </ThrobberButton>
         <span className={style.fill} />
