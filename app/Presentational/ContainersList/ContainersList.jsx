@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
+import FaServer from 'react-icons/lib/fa/server';
+import GoVersions from 'react-icons/lib/go/versions';
 import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
 import Throbber from '../Throbber/Throbber';
@@ -31,17 +33,6 @@ const ContainersList = ({
   } else {
     content = (
       <div className={style.flex}>
-        <div className={style.header}>
-          <Button key="containers" className={style.version}>
-            Containers{infos && infos.ServerVersion && `, daemon: ${infos.ServerVersion}`}
-          </Button>
-          {infos &&
-            infos.Swarm &&
-            infos.Swarm.NodeID &&
-            <Button key="swarm" className={style.version}>
-              Swarm, nodes: {infos.Swarm.Nodes}
-            </Button>}
-        </div>
         {containers.map(container => (
           <ContainerCard key={container.Id} container={container} onClick={onSelect} />
         ))}
@@ -59,6 +50,17 @@ const ContainersList = ({
           <FaPlus />
         </Button>
         <span className={style.fill} />
+        {infos &&
+          infos.ServerVersion &&
+          <Button title="Daemon version">
+            <GoVersions />&nbsp;{infos.ServerVersion}
+          </Button>}
+        {infos &&
+          infos.Swarm &&
+          infos.Swarm.NodeID &&
+          <Button title="Number of nodes">
+            <FaServer />&nbsp;{infos.Swarm.Nodes}
+          </Button>}
         <Button onClick={onLogout} type="danger">
           <FaUserTimes />
         </Button>

@@ -41,7 +41,7 @@ test('should render a div list with ContainerCard if not pending', (t) => {
     />,
   );
 
-  t.is(wrapper.find('div').length, 2);
+  t.is(wrapper.find('div').length, 1);
   t.is(wrapper.find('ContainerCard').length, 1);
 });
 
@@ -66,8 +66,7 @@ test('should not render docker version if no infos', (t) => {
     />,
   );
 
-  t.is(wrapper.find('div Button').length, 1);
-  t.is(wrapper.find('div Button').dive().text(), 'Containers');
+  t.is(wrapper.find('Toolbar Button').length, 3);
 });
 
 test('should not render docker version if no version', (t) => {
@@ -94,8 +93,7 @@ test('should not render docker version if no version', (t) => {
     />,
   );
 
-  t.is(wrapper.find('div Button').length, 1);
-  t.is(wrapper.find('div Button').dive().text(), 'Containers');
+  t.is(wrapper.find('Toolbar Button').length, 3);
 });
 
 test('should render docker version if provided', (t) => {
@@ -122,8 +120,8 @@ test('should render docker version if provided', (t) => {
     />,
   );
 
-  t.is(wrapper.find('div Button').length, 1);
-  t.is(wrapper.find('div Button').dive().text(), 'Containers, daemon: 1.12');
+  t.is(wrapper.find('Toolbar Button').length, 4);
+  t.is(wrapper.find('Toolbar Button').at(2).dive().text(), '<GoVersions /> 1.12');
 });
 
 test('should render docker swarm node if provided', (t) => {
@@ -150,7 +148,7 @@ test('should render docker swarm node if provided', (t) => {
     />,
   );
 
-  t.is(wrapper.find('div Button').length, 2);
-  t.is(wrapper.find('div Button').at(0).dive().text(), 'Containers, daemon: 1.12');
-  t.is(wrapper.find('div Button').at(1).dive().text(), 'Swarm, nodes: 1');
+  t.is(wrapper.find('Toolbar Button').length, 5);
+  t.is(wrapper.find('Toolbar Button').at(2).dive().text(), '<GoVersions /> 1.12');
+  t.is(wrapper.find('Toolbar Button').at(3).dive().text(), '<FaServer /> 1');
 });
