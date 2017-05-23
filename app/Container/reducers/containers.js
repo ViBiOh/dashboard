@@ -7,8 +7,13 @@ import actions from '../actions';
  * @return {Object}        New state
  */
 export default (state = null, action) => {
-  if (action.type === actions.FETCH_CONTAINERS_SUCCEEDED) {
-    return action.containers;
+  switch (action.type) {
+    case actions.FETCH_CONTAINERS_SUCCEEDED:
+      return action.containers;
+    case actions.LOGIN:
+    case actions.LOGOUT:
+      return null;
+    default:
+      return state;
   }
-  return state;
 };

@@ -20,11 +20,10 @@
   background-color: transparent;
   border: 1px solid @card-border;
   display: inline-flex;
-  flex: 0 0 calc(~'(100% - @{card-margin} * 4 - @{card-margin}) / 4');
+  flex: 1 1 calc(~'100% / 4 - @{card-margin}');
   flex-wrap: wrap;
-  margin: 0 0 @card-margin @card-margin;
-  min-width: 400px;
-  width: 200px;
+  margin: @card-margin / 2;
+  max-width: calc(~'100% / 4 - @{card-margin}');
 }
 
 .green {
@@ -59,20 +58,21 @@
 
 @media screen and (min-width: 1208px) and (max-width: 1609px) {
   .card {
-    flex: 0 0 calc(~'(100% - @{card-margin} * 3 - @{card-margin}) / 3');
+    flex: 1 1 calc(~'100% / 3 - @{card-margin}');
+    max-width: calc(~'100% / 3 - @{card-margin}');
   }
 }
 
 @media screen and (min-width: 806px) and (max-width: 1207px) {
   .card {
-    flex: 0 0 calc(~'(100% - @{card-margin} * 2 - @{card-margin}) / 2');
+    flex: 1 1 calc(~'100% / 2 - @{card-margin}');
+    max-width: calc(~'100% / 2 - @{card-margin}');
   }
 }
 
 @media screen and (max-width: 805px) {
   .card {
-    flex: 0 0 calc(~'100% - @{card-margin} * 2');
-    min-width: 0;
-    width: 99vw;
+    flex: 1 1 calc(~'100% - @{card-margin}');
+    max-width: calc(~'100% - @{card-margin}');
   }
 }
