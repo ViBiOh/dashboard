@@ -33,6 +33,9 @@ const ContainersList = ({
   } else {
     content = (
       <div className={style.flex}>
+        <span className={style.size}>
+          {containers.length} Container{containers.length > 1 && 's'}
+        </span>
         {containers.map(container => (
           <ContainerCard key={container.Id} container={container} onClick={onSelect} />
         ))}

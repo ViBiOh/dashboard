@@ -43,6 +43,42 @@ test('should render a div list with ContainerCard if not pending', (t) => {
 
   t.is(wrapper.find('div').length, 1);
   t.is(wrapper.find('ContainerCard').length, 1);
+  t.is(wrapper.find('span').length, 3);
+  t.is(wrapper.find('span').at(2).text(), '1 Container');
+});
+
+test('should append a "s" if multiple containers', (t) => {
+  const containers = [
+    {
+      Id: 1,
+      Image: 'test',
+      Created: 0,
+      Status: 'up',
+      Names: [],
+    },
+    {
+      Id: 2,
+      Image: 'test',
+      Created: 0,
+      Status: 'up',
+      Names: [],
+    },
+  ];
+
+  const wrapper = shallow(
+    <ContainersList
+      onRefresh={fn}
+      onAdd={fn}
+      onSelect={fn}
+      onLogout={fn}
+      containers={containers}
+    />,
+  );
+
+  t.is(wrapper.find('div').length, 1);
+  t.is(wrapper.find('ContainerCard').length, 2);
+  t.is(wrapper.find('span').length, 3);
+  t.is(wrapper.find('span').at(2).text(), '2 Containers');
 });
 
 test('should not render docker version if no infos', (t) => {
