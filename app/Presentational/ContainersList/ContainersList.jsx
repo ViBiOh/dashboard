@@ -5,6 +5,7 @@ import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
 import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
+import ThrobberButton from '../Throbber/ThrobberButton';
 import Throbber from '../Throbber/Throbber';
 import ErrorBanner from '../ErrorBanner/ErrorBanner';
 import ContainerCard from '../ContainerCard/ContainerCard';
@@ -15,7 +16,16 @@ import style from './ContainersList.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} List view of containers
  */
-const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect, onLogout }) => {
+const ContainersList = ({
+  pending,
+  pendingInfo,
+  containers,
+  error,
+  onRefresh,
+  onAdd,
+  onSelect,
+  onLogout,
+}) => {
   let content;
 
   if (pending || !Array.isArray(containers)) {
@@ -34,9 +44,9 @@ const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect
   return (
     <span className={style.container}>
       <Toolbar>
-        <Button onClick={onRefresh} title="Refresh containers list">
+        <ThrobberButton pending={pendingInfo} onClick={onRefresh} title="Refresh containers list">
           <FaRefresh />
-        </Button>
+        </ThrobberButton>
         <Button onClick={onAdd} title="Deploy a new stack">
           <FaPlus />
         </Button>
@@ -57,6 +67,7 @@ ContainersList.displayName = 'ContainersList';
 
 ContainersList.propTypes = {
   pending: PropTypes.bool,
+  pendingInfo: PropTypes.bool,
   containers: PropTypes.arrayOf(PropTypes.shape({})),
   error: PropTypes.string,
   onRefresh: PropTypes.func.isRequired,
@@ -67,6 +78,7 @@ ContainersList.propTypes = {
 
 ContainersList.defaultProps = {
   pending: false,
+  pendingInfo: false,
   containers: null,
   infos: null,
   error: '',
