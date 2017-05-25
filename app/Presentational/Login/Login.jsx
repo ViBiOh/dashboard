@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import onKeyDown from '../../Tools/input';
 import setRef from '../../Tools/ref';
-import Toolbar from '../../Presentational/Toolbar/Toolbar';
-import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
+import ThrobberButton from '../Throbber/ThrobberButton';
+import ErrorBanner from '../ErrorBanner/ErrorBanner';
 import style from './Login.less';
 
 /**
@@ -20,6 +20,7 @@ const Login = ({ pending, onLogin, error }) => {
 
   return (
     <span className={style.flex}>
+      <ErrorBanner error={error} />
       <h2>Login</h2>
       <input
         ref={e => setRef(refs, 'loginInput', e)}
@@ -35,9 +36,9 @@ const Login = ({ pending, onLogin, error }) => {
         placeholder="password"
         onKeyDown={e => onKeyDown(e, submit)}
       />
-      <Toolbar className={style.center} error={error}>
+      <div className={style.center}>
         <ThrobberButton onClick={submit} pending={pending}>Login</ThrobberButton>
-      </Toolbar>
+      </div>
     </span>
   );
 };

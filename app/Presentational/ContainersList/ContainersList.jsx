@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
-import FaServer from 'react-icons/lib/fa/server';
-import GoVersions from 'react-icons/lib/go/versions';
 import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
 import Throbber from '../Throbber/Throbber';
+import ErrorBanner from '../ErrorBanner/ErrorBanner';
 import ContainerCard from '../ContainerCard/ContainerCard';
 import style from './ContainersList.less';
 
@@ -16,59 +15,40 @@ import style from './ContainersList.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} List view of containers
  */
-const ContainersList = ({
-  pending,
-  containers,
-  infos,
-  error,
-  onRefresh,
-  onAdd,
-  onSelect,
-  onLogout,
-}) => {
+const ContainersList = ({ pending, containers, error, onRefresh, onAdd, onSelect, onLogout }) => {
   let content;
 
   if (pending || !Array.isArray(containers)) {
     content = <Throbber label="Loading containers" />;
   } else {
-    content = (
-      <div className={style.flex}>
-        <span className={style.size}>
-          {containers.length} Container{containers.length > 1 && 's'}
-        </span>
-        {containers.map(container => (
-          <ContainerCard key={container.Id} container={container} onClick={onSelect} />
-        ))}
-      </div>
-    );
+    content = [
+      <span key="size" className={style.size}>
+        {containers.length} Container{containers.length > 1 && 's'}
+      </span>,
+      containers.map(container => (
+        <ContainerCard key={container.Id} container={container} onClick={onSelect} />
+      )),
+    ];
   }
 
   return (
-    <span>
-      <Toolbar error={error}>
-        <Button onClick={onRefresh}>
+    <span className={style.container}>
+      <Toolbar>
+        <Button onClick={onRefresh} title="Refresh containers list">
           <FaRefresh />
         </Button>
-        <Button onClick={onAdd}>
+        <Button onClick={onAdd} title="Deploy a new stack">
           <FaPlus />
         </Button>
         <span className={style.fill} />
-        {infos &&
-          infos.ServerVersion &&
-          <Button title="Daemon version">
-            <GoVersions />&nbsp;{infos.ServerVersion}
-          </Button>}
-        {infos &&
-          infos.Swarm &&
-          infos.Swarm.NodeID &&
-          <Button title="Number of nodes">
-            <FaServer />&nbsp;{infos.Swarm.Nodes}
-          </Button>}
-        <Button onClick={onLogout} type="danger">
+        <Button onClick={onLogout} title="Logout" type="danger">
           <FaUserTimes />
         </Button>
       </Toolbar>
-      {content}
+      <div className={style.content}>
+        <ErrorBanner error={error} />
+        {content}
+      </div>
     </span>
   );
 };
@@ -78,7 +58,6 @@ ContainersList.displayName = 'ContainersList';
 ContainersList.propTypes = {
   pending: PropTypes.bool,
   containers: PropTypes.arrayOf(PropTypes.shape({})),
-  infos: PropTypes.shape({}),
   error: PropTypes.string,
   onRefresh: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
