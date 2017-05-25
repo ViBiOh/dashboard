@@ -13,5 +13,6 @@ export default (state = '', action) => {
   if (/SUCCEEDED/.test(action.type)) {
     return '';
   }
+
   return state;
 };

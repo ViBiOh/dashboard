@@ -6,10 +6,22 @@
 }
 
 .throbber {
+  align-items: center;
   margin: auto;
-  text-align: center;
+  display: flex;
+  justify-content: center;
   padding: 2px;
-  width: 70px;
+  width: auto;
+}
+
+.column {
+  flex-direction: column;
+}
+
+@media screen and (max-width: 669px) {
+  .row-responsive {
+    flex-direction: row;
+  }
 }
 
 .throbber > div {
