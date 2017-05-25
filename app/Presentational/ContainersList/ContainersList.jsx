@@ -29,7 +29,7 @@ const ContainersList = ({
   let content;
 
   if (pending || !Array.isArray(containers)) {
-    content = <Throbber label="Loading containers" error={error} />;
+    content = <Throbber label="Loading containers" />;
   } else {
     content = (
       <div className={style.flex}>
