@@ -59,6 +59,8 @@ const Container = (props) => {
         <ThrobberButton
           key="restart"
           onClick={onRestart}
+          vertical
+          horizontalSm
           pending={pendingAction}
           title="Restart container"
         >
@@ -70,6 +72,8 @@ const Container = (props) => {
           key="stop"
           type="danger"
           onClick={onStop}
+          vertical
+          horizontalSm
           pending={pendingAction}
           title="Stop container"
         >
@@ -81,6 +85,8 @@ const Container = (props) => {
         <ThrobberButton
           key="start"
           onClick={onStart}
+          vertical
+          horizontalSm
           pending={pendingAction}
           title="Start container"
         >
@@ -92,6 +98,8 @@ const Container = (props) => {
           key="delete"
           type="danger"
           onClick={onDelete}
+          vertical
+          horizontalSm
           pending={pendingAction}
           title="Delete container"
         >
@@ -107,7 +115,13 @@ const Container = (props) => {
         <Button onClick={onBack} title="Back to containers list">
           <FaArrowLeft />
         </Button>
-        <ThrobberButton onClick={onRefresh} pending={pendingAction} title="Refresh container infos">
+        <ThrobberButton
+          onClick={onRefresh}
+          vertical
+          horizontalSm
+          pending={pendingAction}
+          title="Refresh container infos"
+        >
           <FaRefresh />
         </ThrobberButton>
         <span className={style.fill} />

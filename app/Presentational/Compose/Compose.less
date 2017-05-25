@@ -1,6 +1,18 @@
 @import '../../style.less';
 
+.container {
+  display: flex;
+  width: 100%;
+}
+
+@media screen and (max-width: 669px) {
+  .container {
+    flex-wrap: wrap;
+  }
+}
+
 .flex {
+  padding-top: 2px;
   align-items: center;
   display: inline-flex;
   flex-wrap: wrap;
