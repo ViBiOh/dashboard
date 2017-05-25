@@ -1,17 +1,33 @@
-.flex {
-  display: inline-flex;
-  flex-wrap: wrap;
-  padding: 0 2px;
+.container {
+  display: flex;
   width: 100%;
 }
 
 .fill {
-  flex: 1 1 auto;
-  text-align: center;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  display: inline-flex;
+  flex-wrap: wrap;
+  padding-top: 2px;
+  width: 100%;
 }
 
 .size {
-  padding: 8px 0;
+  padding: 6px 0 8px;
   text-align: center;
   width: 100%;
+}
+
+@media screen and (max-width: 669px) {
+  .container {
+    flex-wrap: wrap;
+  }
+
+  .fill {
+    flex: 1 1 auto;
+  }
 }

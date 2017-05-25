@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
 import setRef from '../../Tools/ref';
 import onKeyDown from '../../Tools/input';
+import ErrorBanner from '../ErrorBanner/ErrorBanner';
 import Toolbar from '../../Presentational/Toolbar/Toolbar';
 import Button from '../../Presentational/Button/Button';
 import ThrobberButton from '../../Presentational/Throbber/ThrobberButton';
@@ -24,36 +25,39 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
   }
 
   return (
-    <div className={style.flex}>
-      <Toolbar error={error}>
-        <Button onClick={onBack}>
+    <span className={style.container}>
+      <Toolbar>
+        <Button onClick={onBack} title="Back to containers list">
           <FaArrowLeft />
         </Button>
       </Toolbar>
-      <h2>Create an app</h2>
-      <span>
-        <input
-          ref={e => setRef(refs, 'nameInput', e)}
-          name="name"
-          type="text"
-          placeholder="name"
-          onKeyDown={e => onKeyDown(e, submit)}
-        />
-      </span>
-      <span>
-        <textarea
-          ref={e => setRef(refs, 'composeInput', e)}
-          name="compose"
-          placeholder="compose file yaml v2"
-          className={style.code}
-          rows={19}
-          onKeyDown={e => onKeyDown(e, submit)}
-        />
-      </span>
-      <span>
-        <ThrobberButton onClick={submit} pending={pending}>Create</ThrobberButton>
-      </span>
-    </div>
+      <div className={style.flex}>
+        <ErrorBanner error={error} />
+        <h2>Create an app</h2>
+        <span>
+          <input
+            ref={e => setRef(refs, 'nameInput', e)}
+            name="name"
+            type="text"
+            placeholder="name"
+            onKeyDown={e => onKeyDown(e, submit)}
+          />
+        </span>
+        <span>
+          <textarea
+            ref={e => setRef(refs, 'composeInput', e)}
+            name="compose"
+            placeholder="compose file yaml v2"
+            className={style.code}
+            rows={19}
+            onKeyDown={e => onKeyDown(e, submit)}
+          />
+        </span>
+        <span>
+          <ThrobberButton onClick={submit} pending={pending}>Create</ThrobberButton>
+        </span>
+      </div>
+    </span>
   );
 };
 

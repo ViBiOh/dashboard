@@ -1,24 +1,16 @@
-@import '../../style.less';
-
 .flex {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  padding: 1px;
 }
 
 .flex > * {
-  margin: 2px 0 2px 2px;
+  margin: 1px;
 }
 
-.flex > *:last-child {
-  margin: 2px;
-}
-
-.error {
-  background-color: @danger;
-  color: @white;
-  margin-bottom: 2px;
-  padding: 16px;
-  width: 100%;
+@media screen and (max-width: 669px) {
+  .flex {
+    flex-direction: row;
+    width: 100%;
+  }
 }
