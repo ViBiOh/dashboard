@@ -8,6 +8,7 @@ import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaRetweet from 'react-icons/lib/fa/retweet';
 import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
+import ErrorBanner from '../ErrorBanner/ErrorBanner';
 import Throbber from '../Throbber/Throbber';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import ContainerInfo from './ContainerInfo';
@@ -55,23 +56,45 @@ const Container = (props) => {
 
     if (container.State.Running) {
       buttons.push(
-        <ThrobberButton key="restart" onClick={onRestart} pending={pendingAction}>
+        <ThrobberButton
+          key="restart"
+          onClick={onRestart}
+          pending={pendingAction}
+          title="Restart container"
+        >
           <FaRetweet />
         </ThrobberButton>,
       );
       buttons.push(
-        <ThrobberButton key="stop" type="danger" onClick={onStop} pending={pendingAction}>
+        <ThrobberButton
+          key="stop"
+          type="danger"
+          onClick={onStop}
+          pending={pendingAction}
+          title="Stop container"
+        >
           <FaStopCircle />
         </ThrobberButton>,
       );
     } else {
       buttons.push(
-        <ThrobberButton key="start" onClick={onStart} pending={pendingAction}>
+        <ThrobberButton
+          key="start"
+          onClick={onStart}
+          pending={pendingAction}
+          title="Start container"
+        >
           <FaPlay />
         </ThrobberButton>,
       );
       buttons.push(
-        <ThrobberButton key="delete" type="danger" onClick={onDelete} pending={pendingAction}>
+        <ThrobberButton
+          key="delete"
+          type="danger"
+          onClick={onDelete}
+          pending={pendingAction}
+          title="Delete container"
+        >
           <FaTrash />
         </ThrobberButton>,
       );
@@ -79,18 +102,21 @@ const Container = (props) => {
   }
 
   return (
-    <span>
-      <Toolbar error={error}>
-        <Button onClick={onBack}>
+    <span className={style.container}>
+      <Toolbar>
+        <Button onClick={onBack} title="Back to containers list">
           <FaArrowLeft />
         </Button>
-        <ThrobberButton onClick={onRefresh} pending={pendingAction}>
+        <ThrobberButton onClick={onRefresh} pending={pendingAction} title="Refresh container infos">
           <FaRefresh />
         </ThrobberButton>
         <span className={style.fill} />
         {buttons}
       </Toolbar>
-      {content}
+      <span className={style.content}>
+        <ErrorBanner error={error} />
+        {content}
+      </span>
     </span>
   );
 };
