@@ -11,15 +11,19 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 62.5%;
+}
+
 body {
   margin: 0;
 }
 
-html,
+body,
 button,
 input {
   font-family: 'Open Sans', sans-serif;
-  font-size: initial;
+  font-size: 1.6rem;
   font-style: normal;
   font-weight: 400;
 }
@@ -32,17 +36,17 @@ header {
 }
 
 h1 {
-  font-size: 2em;
+  font-size: 3.2rem;
   margin: 0;
-  padding: 10px;
+  padding: 1rem;
 }
 
 svg {
-  height: 22px;
-  width: 22px;
+  height: 2.2rem;
+  width: 2.2rem;
 }
 
-@media screen and (max-width: 669px) {
+@media screen and (max-width: 66.9rem) {
   h1 {
     font-size: 1em;
   }

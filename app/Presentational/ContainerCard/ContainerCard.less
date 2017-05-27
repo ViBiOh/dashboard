@@ -1,16 +1,16 @@
 @import '../../style.less';
 
-@card-margin: 2px;
+@card-margin: 0.2rem;
 
 .small-padding {
-  padding: 4px;
+  padding: 0.4rem;
 }
 
 .pastille {
   border-radius: 50%;
-  height: 20px;
-  margin: 4px;
-  width: 20px;
+  height: 2.0rem;
+  margin: 0.4rem;
+  width: 2.0rem;
 }
 
 .card {
@@ -18,7 +18,7 @@
 
   align-items: center;
   background-color: transparent;
-  border: 1px solid @card-border;
+  border: 0.1rem solid @card-border;
   display: inline-flex;
   flex: 1 1 calc(~'100% / 4 - @{card-margin}');
   flex-wrap: wrap;
@@ -56,21 +56,21 @@
   .small-padding;
 }
 
-@media screen and (min-width: 1208px) and (max-width: 1609px) {
+@media screen and (min-width: 120.8rem) and (max-width: 160.9rem) {
   .card {
     flex: 1 1 calc(~'100% / 3 - @{card-margin}');
     max-width: calc(~'100% / 3 - @{card-margin}');
   }
 }
 
-@media screen and (min-width: 806px) and (max-width: 1207px) {
+@media screen and (min-width: 80.6rem) and (max-width: 120.7rem) {
   .card {
     flex: 1 1 calc(~'100% / 2 - @{card-margin}');
     max-width: calc(~'100% / 2 - @{card-margin}');
   }
 }
 
-@media screen and (max-width: 805px) {
+@media screen and (max-width: 80.5rem) {
   .card {
     flex: 1 1 calc(~'100% - @{card-margin}');
     max-width: calc(~'100% - @{card-margin}');
