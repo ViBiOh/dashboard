@@ -2,7 +2,8 @@ import funtch, { errorHandler } from 'funtch';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 
-const API_HOST = process.env.API_HOST || 'localhost';
+const API_HOST =
+  process.env.API_HOST || document.location.host.replace(/dashboard/i, 'dashboard-api');
 const API = `https://${API_HOST}/`;
 const WS = `wss://${API_HOST}/ws/`;
 
@@ -63,7 +64,7 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${API}auth`, hash).get().then((result) => {
+    return auth(`${API}auth`, hash).get().then(result => {
       localStorageService.setItem(authStorage, hash);
       return result;
     });
