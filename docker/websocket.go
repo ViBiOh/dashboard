@@ -18,7 +18,7 @@ const tailSize = `100`
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
 var statsWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/stats`)
 var eventsWebsocketRequest = regexp.MustCompile(`events`)
-var hostCheck = regexp.MustCompile(`vibioh\.fr$`)
+var hostCheck = regexp.MustCompile(`^dashboard`)
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
