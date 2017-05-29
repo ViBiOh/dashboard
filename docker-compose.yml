@@ -8,7 +8,7 @@ services:
       DOCKER_VERSION: '1.24'
     labels:
       traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
+      traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr, dashboard-api.l3miage.fr'
       traefik.port: '1080'
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
