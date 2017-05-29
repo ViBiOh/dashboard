@@ -29,7 +29,7 @@ services:
     command:
     - -spa
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com ajax.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' data: ; connect-src 'self' wss: dashboard-api.vibioh.fr;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com ajax.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' data: ; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-api.l3miage.fr;"
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr, dashboard.l3miage.fr'
