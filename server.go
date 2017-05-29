@@ -11,8 +11,6 @@ const port = `1080`
 
 const restPrefix = `/`
 const websocketPrefix = `/ws/`
-const host = `DOCKER_HOST`
-const version = `DOCKER_VERSION`
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
