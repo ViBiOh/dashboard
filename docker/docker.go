@@ -27,7 +27,7 @@ func init() {
 		docker = client
 	}
 	
-	hostCheck = regexp.MustCompile(&websocketOrigin)
+	hostCheck = regexp.MustCompile(*websocketOrigin)
 }
 
 func labelFilters(filtersArgs *filters.Args, loggedUser *user, appName *string) error {
