@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"flag"
 	"fmt"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
@@ -11,9 +12,13 @@ import (
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
 
+var websocketOrigin string
 var docker *client.Client
 
 func init() {
+	flag.BoolVar(&websocketOrigin, `ws`, '^dashboard', `Allowed WebSocket Origin pattern`)
+	flag.Parse()
+
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
 	if err != nil {
 		log.Fatal(err)
