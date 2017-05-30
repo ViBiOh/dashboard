@@ -36,5 +36,3 @@ Role can be `admin`, `multi` or anything else.
 ### Running
 
 Docker's images are available, `vibioh/dashboard-front` et `vibioh/dashboard-api` and `docker-compose.yml` provided is almost configured, only tweak domain's name if you use [Traefik](https://traefik.io).
-
-Your origin domain name has to start with `dashboard` (e.g. dashboard.vibioh.fr) in order to allow websockets to work.
