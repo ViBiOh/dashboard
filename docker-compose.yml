@@ -6,6 +6,8 @@ services:
     command:
     - -ws
     - ^dashboard(?:-api)?\.(?:vibioh|l3miage)\.fr
+    - -auth
+    - /users
     environment:
       DOCKER_HOST: 'unix:///var/run/docker.sock'
       DOCKER_VERSION: '1.24'

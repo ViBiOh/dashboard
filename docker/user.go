@@ -11,7 +11,6 @@ import (
 	"strings"
 )
 
-const configurationFile = `./users`
 const basicPrefix = `Basic `
 
 var commaByte = []byte(`,`)
@@ -28,7 +27,7 @@ type user struct {
 var users map[string]*user
 
 func init() {
-	users = readConfiguration(configurationFile)
+	users = readConfiguration(authFile)
 }
 
 func readConfiguration(path string) map[string]*user {
