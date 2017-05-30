@@ -17,7 +17,7 @@ var hostCheck *regexp.Regexp
 var docker *client.Client
 
 func init() {
-	websocketOrigin := flag.String(`ws`, '^dashboard', `Allowed WebSocket Origin pattern`)
+	websocketOrigin := flag.String(`ws`, `^dashboard`, `Allowed WebSocket Origin pattern`)
 	flag.Parse()
 
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
