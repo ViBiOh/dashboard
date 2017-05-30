@@ -1,25 +1,33 @@
 package docker
 
 import (
+	"flag"
 	"fmt"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"log"
 	"os"
+	"regexp"
 )
 
 const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
 
+var hostCheck *regexp.Regexp
 var docker *client.Client
 
 func init() {
+	websocketOrigin := flag.String(`ws`, `^dashboard`, `Allowed WebSocket Origin pattern`)
+	flag.Parse()
+
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
 	if err != nil {
 		log.Fatal(err)
 	} else {
 		docker = client
 	}
+	
+	hostCheck = regexp.MustCompile(*websocketOrigin)
 }
 
 func labelFilters(filtersArgs *filters.Args, loggedUser *user, appName *string) error {
