@@ -5,7 +5,7 @@ services:
     image: vibioh/dashboard-api
     command:
     - -ws
-    - ^dashboard.(vibioh|l3miage).fr$
+    - "^dashboard.(vibioh|l3miage).fr$"
     environment:
       DOCKER_HOST: 'unix:///var/run/docker.sock'
       DOCKER_VERSION: '1.24'
