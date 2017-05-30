@@ -4,7 +4,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import ComposeTypeSelector from './ComposeTypeSelector';
 
-test('should render into a span', t => {
+test('should render into a span', (t) => {
   const wrapper = shallow(
     <ComposeTypeSelector onCompose={sinon.spy()} onComposeChange={sinon.spy()} />,
   );
@@ -12,7 +12,7 @@ test('should render into a span', t => {
   t.is(wrapper.type(), 'div');
 });
 
-test('should render into a span', t => {
+test('should render into a span', (t) => {
   const wrapper = shallow(
     <ComposeTypeSelector onCompose={sinon.spy()} onComposeChange={sinon.spy()} />,
   );

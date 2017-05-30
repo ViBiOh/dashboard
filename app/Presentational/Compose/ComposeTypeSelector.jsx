@@ -7,7 +7,7 @@ const COMPOSE_TYPES = [
   {
     type: 'text',
     label: 'Text',
-    component: <ComposeText />,
+    component: ComposeText,
   },
 ];
 
@@ -46,7 +46,10 @@ export default class ComposeTypeSelector extends Component {
           ))}
         </aside>
         <article>
-          {React.cloneElement(this.state.composeType.component, { onCompose, onComposeChange })}
+          <this.state.composeType.component
+            onCompose={onCompose}
+            onComposeChange={onComposeChange}
+          />
         </article>
       </div>
     );

@@ -66,7 +66,7 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${API}auth`, hash).get().then(result => {
+    return auth(`${API}auth`, hash).get().then((result) => {
       localStorageService.setItem(authStorage, hash);
       return result;
     });

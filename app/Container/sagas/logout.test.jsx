@@ -6,13 +6,13 @@ import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 import { logoutSaga } from './';
 
-test('should call DockerService.logout', t => {
+test('should call DockerService.logout', (t) => {
   const iterator = logoutSaga();
 
   t.deepEqual(iterator.next().value, call(DockerService.logout));
 });
 
-test('should put success, close streams and redirect to login after API call', t => {
+test('should put success, close streams and redirect to login after API call', (t) => {
   const iterator = logoutSaga();
   iterator.next();
 
@@ -25,7 +25,7 @@ test('should put success, close streams and redirect to login after API call', t
   ]);
 });
 
-test('should put error on failure', t => {
+test('should put error on failure', (t) => {
   const iterator = logoutSaga();
   iterator.next();
 

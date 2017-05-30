@@ -4,7 +4,7 @@ import React from 'react';
 import { mount, shallow } from 'enzyme';
 import ComposeText from './ComposeText';
 
-test('should render as a div', t => {
+test('should render as a div', (t) => {
   t.is(
     shallow(
       <ComposeText onCompose={sinon.spy()} onComposeChange={sinon.spy()} onBack={sinon.spy()} />,
@@ -13,7 +13,7 @@ test('should render as a div', t => {
   );
 });
 
-test('should call onChange on input', t => {
+test('should call onChange on input', (t) => {
   const onComposeChange = sinon.spy();
   const wrapper = mount(
     <ComposeText onCompose={sinon.spy()} onComposeChange={onComposeChange} onBack={sinon.spy()} />,
@@ -24,7 +24,7 @@ test('should call onChange on input', t => {
   t.true(onComposeChange.called);
 });
 
-test('should call submit on enter key down', t => {
+test('should call submit on enter key down', (t) => {
   const onCompose = sinon.spy();
   const wrapper = mount(
     <ComposeText onCompose={onCompose} onComposeChange={sinon.spy()} onBack={sinon.spy()} />,
@@ -35,7 +35,7 @@ test('should call submit on enter key down', t => {
   t.true(onCompose.called);
 });
 
-test('should not call submit on other key down', t => {
+test('should not call submit on other key down', (t) => {
   const onCompose = sinon.spy();
   const wrapper = mount(
     <ComposeText onCompose={onCompose} onComposeChange={sinon.spy()} onBack={sinon.spy()} />,
