@@ -78,10 +78,11 @@ export default {
   ...makeApiActionCreator('fetchContainers', [], ['containers']),
   ...makeApiActionCreator('fetchContainer', ['id'], ['container']),
   ...makeApiActionCreator('actionContainer', ['action', 'id']),
-  ...makeApiActionCreator('compose', ['name', 'file']),
+  ...makeApiActionCreator('compose'),
   ...makeOpenCloseActionCreator('logs', ['id']),
   ...makeOpenCloseActionCreator('stats', ['id']),
   ...makeOpenCloseActionCreator('events'),
+  ...makeActionAndTypeCreator('COMPOSE_CHANGE', 'composeChange', ['name', 'file']),
   ...makeActionAndTypeCreator('ADD_LOG', 'addLog', ['log']),
   ...makeActionAndTypeCreator('ADD_STAT', 'addStat', ['stat']),
 };

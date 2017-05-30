@@ -9,7 +9,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onCompose: (name, file) => dispatch(actions.compose(name, file)),
+  onCompose: () => dispatch(actions.compose()),
+  onComposeChange: (name, file) => dispatch(actions.composeChange(name, file)),
   onBack: () => dispatch(push('/')),
 });
 

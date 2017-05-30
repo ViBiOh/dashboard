@@ -2,7 +2,7 @@ import funtch, { errorHandler } from 'funtch';
 import btoa from '../Tools/btoa';
 import localStorageService from './LocalStorageService';
 
-const isSecure = /^https/.test(document.location.origin);
+const isSecure = process.env.API_SECURE || /^https/.test(document.location.origin);
 
 const API_HOST =
   process.env.API_HOST || document.location.host.replace(/dashboard/i, 'dashboard-api');

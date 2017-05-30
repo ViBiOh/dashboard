@@ -1,0 +1,26 @@
+@import '../../../style.less';
+
+.container {
+  width: 100%;
+}
+
+.container input[type='text'],
+.container textarea {
+  border: 0.1rem solid @grey;
+  border-radius: 0.2rem;
+  display: block;
+  margin: 0 auto 0.5rem;
+  padding: 2rem;
+  width: 50%;
+}
+
+.code {
+  font-family: monospace;
+}
+
+@media screen and (max-width: 102.3rem) {
+  .container input[type='text'],
+  .container textarea {
+    width: 90%;
+  }
+}

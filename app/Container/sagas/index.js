@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
+import { call, put, fork, take, takeLatest, cancel, select } from 'redux-saga/effects';
 import { eventChannel, delay } from 'redux-saga';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
@@ -55,6 +55,7 @@ export function* logoutSaga() {
       put(actions.logoutSucceeded()),
       put(actions.closeEvents()),
       put(actions.closeLogs()),
+      put(actions.closeStats()),
       put(push('/login')),
     ];
   } catch (e) {
@@ -152,12 +153,12 @@ export function* actionContainerSaga(action) {
  * Saga of creating new Docker's container from Compose file :
  * - Create a new app from Compose
  * - Redirect to home otherwise
- * @param {Object} action        Action dispatched
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* composeSaga(action) {
+export function* composeSaga() {
   try {
-    yield call(DockerService.containerCreate, action.name, action.file);
+    const { compose } = yield select();
+    yield call(DockerService.containerCreate, compose.name, compose.file);
 
     yield [put(actions.composeSucceeded()), put(push('/'))];
   } catch (e) {
@@ -173,7 +174,7 @@ export function* composeSaga(action) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readLogsSaga(action) {
-  const chan = eventChannel((emit) => {
+  const chan = eventChannel(emit => {
     const websocket = DockerService.containerLogs(action.id, emit);
 
     return () => websocket.close();
@@ -212,7 +213,7 @@ export function* logsSaga(action) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readStatsSaga(action) {
-  const chan = eventChannel((emit) => {
+  const chan = eventChannel(emit => {
     const websocket = DockerService.containerStats(action.id, emit);
 
     return () => websocket.close();
@@ -260,7 +261,7 @@ export function* debounceFetchContainersSaga() {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* readEventsSaga() {
-  const chan = eventChannel((emit) => {
+  const chan = eventChannel(emit => {
     const websocket = DockerService.events(emit);
 
     return () => websocket.close();

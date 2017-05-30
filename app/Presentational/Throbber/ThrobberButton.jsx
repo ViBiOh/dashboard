@@ -11,7 +11,9 @@ import style from './ThrobberButton.less';
  */
 const ThrobberButton = ({ pending, vertical, horizontalSm, onClick, children, ...buttonProps }) => (
   <Button {...buttonProps} onClick={e => (pending ? null : onClick(e))}>
-    {pending ? <Throbber className={style.white} vertical={vertical} horizontalSm={horizontalSm} /> : children}
+    {pending
+      ? <Throbber className={style.white} vertical={vertical} horizontalSm={horizontalSm} />
+      : children}
   </Button>
 );
 

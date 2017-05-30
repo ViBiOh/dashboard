@@ -44,7 +44,13 @@ const ContainersList = ({
   return (
     <span className={style.container}>
       <Toolbar>
-        <ThrobberButton pending={pendingInfo} onClick={onRefresh} title="Refresh containers list" vertical horizontalSm>
+        <ThrobberButton
+          pending={pendingInfo}
+          onClick={onRefresh}
+          title="Refresh containers list"
+          vertical
+          horizontalSm
+        >
           <FaRefresh />
         </ThrobberButton>
         <Button onClick={onAdd} title="Deploy a new stack">

@@ -48,6 +48,7 @@ const config = {
     }),
     new webpack.DefinePlugin({
       'process.env.API_HOST': JSON.stringify(process.env.API_HOST),
+      'process.env.API_SECURE': process.env.API_SECURE,
     }),
   ],
 

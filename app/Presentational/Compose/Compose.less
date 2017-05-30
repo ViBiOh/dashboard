@@ -11,35 +11,17 @@
   }
 }
 
-.flex {
-  padding-top: 0.2rem;
+.content {
   align-items: center;
-  display: inline-flex;
-  flex-wrap: wrap;
   text-align: center;
   width: 100%;
 }
 
-.flex > * {
+.content aside {
+  padding: 1rem 0;
+}
+
+.content > h2,
+.content > span {
   width: 100%;
-}
-
-.flex input[type='text'],
-.flex textarea {
-  border: 0.1rem solid @grey;
-  border-radius: 0.2rem;
-  margin-bottom: 0.5rem;
-  padding: 2rem;
-  width: 50%;
-}
-
-.code {
-  font-family: monospace;
-}
-
-@media screen and (max-width: 102.3rem) {
-  .flex input[type='text'],
-  .flex textarea {
-    width: 90%;
-  }
 }
