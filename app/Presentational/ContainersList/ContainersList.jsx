@@ -33,7 +33,7 @@ const ContainersList = ({
     content = <Throbber label="Loading containers" />;
   } else {
     content = [
-      <span key="size" className={style.size}>
+      <span key="size" className={style.size} title="Number of containers">
         {containers.length}&nbsp;<FaCubes />
       </span>,
       containers.map(container => (
