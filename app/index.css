@@ -13,14 +13,10 @@
 
 html {
   font-size: 62.5%;
-  height: 100%;
-  overflow: hidden;
 }
 
 body {
-  height: 100%;
   margin: 0;
-  overflow: hidden;
 }
 
 body,
@@ -35,7 +31,6 @@ input {
 header {
   background-color: #3a3a3a;
   color: #f8f8f8;
-  height: 5.6rem;
   text-align: center;
   width: 100%;
 }
@@ -51,22 +46,9 @@ svg {
   width: 2.2rem;
 }
 
-#root {
-  height: calc(100% - 5.6rem);
-  overflow: auto;
-}
-
 @media screen and (max-width: 66.9rem) {
-  header {
-    height: 4.2rem;
-  }
-
   h1 {
     font-size: 2rem;
-  }
-
-  #root {
-    height: calc(100% - 4.2rem);
   }
 }
 
