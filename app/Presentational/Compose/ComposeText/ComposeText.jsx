@@ -9,7 +9,7 @@ import style from './ComposeText.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} ComposeText inputs.
  */
-const ComposeText = ({ onCompose, onComposeChange }) => {
+const ComposeText = ({ compose, onCompose, onComposeChange }) => {
   const refs = {};
 
   /**
@@ -25,6 +25,7 @@ const ComposeText = ({ onCompose, onComposeChange }) => {
         ref={e => setRef(refs, 'nameInput', e)}
         name="name"
         type="text"
+        value={compose.name && compose.name}
         placeholder="name"
         onChange={onChange}
         onKeyDown={e => onKeyDown(e, onCompose)}
@@ -32,6 +33,7 @@ const ComposeText = ({ onCompose, onComposeChange }) => {
       <textarea
         ref={e => setRef(refs, 'composeInput', e)}
         name="compose"
+        value={compose.file && compose.file}
         placeholder="compose file yaml v2"
         className={style.code}
         rows={19}
@@ -45,6 +47,7 @@ const ComposeText = ({ onCompose, onComposeChange }) => {
 ComposeText.displayName = 'ComposeText';
 
 ComposeText.propTypes = {
+  compose: PropTypes.shape({}).isRequired,
   onCompose: PropTypes.func.isRequired,
   onComposeChange: PropTypes.func.isRequired,
 };

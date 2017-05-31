@@ -6,6 +6,7 @@ import Compose from '../Presentational/Compose/Compose';
 const mapStateToProps = state => ({
   pending: !!state.pending[actions.COMPOSE],
   error: state.error,
+  compose: state.compose,
 });
 
 const mapDispatchToProps = dispatch => ({

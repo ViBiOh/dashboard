@@ -13,7 +13,7 @@ import style from './Compose.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Compose form with inputs.
  */
-const Compose = ({ onCompose, onComposeChange, onBack, pending, error }) => (
+const Compose = ({ compose, onCompose, onComposeChange, onBack, pending, error }) => (
   <div className={style.container}>
     <Toolbar>
       <Button onClick={onBack} title="Back to containers list">
@@ -23,7 +23,11 @@ const Compose = ({ onCompose, onComposeChange, onBack, pending, error }) => (
     <div className={style.content}>
       <ErrorBanner error={error} />
       <h2>Create an app</h2>
-      <ComposeTypeSelector onCompose={onCompose} onComposeChange={onComposeChange} />
+      <ComposeTypeSelector
+        compose={compose}
+        onCompose={onCompose}
+        onComposeChange={onComposeChange}
+      />
       <span>
         <ThrobberButton onClick={onCompose} pending={pending}>Create</ThrobberButton>
       </span>
@@ -34,6 +38,7 @@ const Compose = ({ onCompose, onComposeChange, onBack, pending, error }) => (
 Compose.displayName = 'Compose';
 
 Compose.propTypes = {
+  compose: PropTypes.shape({}).isRequired,
   onCompose: PropTypes.func.isRequired,
   onComposeChange: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,

@@ -46,4 +46,3 @@ test('should render a div list with ContainerCard if not pending', (t) => {
   t.is(wrapper.find('span').length, 3);
   t.is(wrapper.find('span').at(2).text(), '1 <FaCubes />');
 });
-

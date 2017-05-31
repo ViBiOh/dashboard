@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ComposeText from './ComposeText/ComposeText';
+import ComposeForm from './ComposeForm/ComposeForm';
 import style from './ComposeTypeSelector.less';
 
 const COMPOSE_TYPES = [
@@ -8,6 +9,11 @@ const COMPOSE_TYPES = [
     type: 'text',
     label: 'Text',
     component: ComposeText,
+  },
+  {
+    type: 'form',
+    label: 'Form',
+    component: ComposeForm,
   },
 ];
 
@@ -27,7 +33,7 @@ export default class ComposeTypeSelector extends Component {
   }
 
   render() {
-    const { onCompose, onComposeChange } = this.props;
+    const { compose, onCompose, onComposeChange } = this.props;
 
     return (
       <div>
@@ -47,6 +53,7 @@ export default class ComposeTypeSelector extends Component {
         </aside>
         <article>
           <this.state.composeType.component
+            compose={compose}
             onCompose={onCompose}
             onComposeChange={onComposeChange}
           />
@@ -57,6 +64,7 @@ export default class ComposeTypeSelector extends Component {
 }
 
 ComposeTypeSelector.propTypes = {
+  compose: PropTypes.shape({}).isRequired,
   onCompose: PropTypes.func.isRequired,
   onComposeChange: PropTypes.func.isRequired,
 };
