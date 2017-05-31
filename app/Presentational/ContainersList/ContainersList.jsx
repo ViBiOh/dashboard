@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import FaPlus from 'react-icons/lib/fa/plus';
 import FaRefresh from 'react-icons/lib/fa/refresh';
 import FaUserTimes from 'react-icons/lib/fa/user-times';
+import FaCubes from 'react-icons/lib/fa/cubes';
 import Toolbar from '../Toolbar/Toolbar';
 import Button from '../Button/Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
@@ -33,7 +34,7 @@ const ContainersList = ({
   } else {
     content = [
       <span key="size" className={style.size}>
-        {containers.length} Container{containers.length > 1 && 's'}
+        {containers.length}&nbsp;<FaCubes />
       </span>,
       containers.map(container => (
         <ContainerCard key={container.Id} container={container} onClick={onSelect} />
