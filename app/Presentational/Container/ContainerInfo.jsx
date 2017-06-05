@@ -17,11 +17,11 @@ const ContainerInfo = ({ container }) => {
     labelContent = [
       <h3 key="labelsHeader">Labels</h3>,
       <span key="labels" className={style.labels}>
-        {Object.keys(container.Config.Labels).map(label => (
-          <span key={label} className={style.item}>
+        {Object.keys(container.Config.Labels).map(label =>
+          (<span key={label} className={style.item}>
             {label} | {container.Config.Labels[label]}
-          </span>
-        ))}
+          </span>),
+        )}
       </span>,
     ];
   }
@@ -35,11 +35,11 @@ const ContainerInfo = ({ container }) => {
           .filter(e => !!e)
           .map(env => ENV_PARSER.exec(env))
           .filter(parts => parts !== null && parts.length > 2)
-          .map(parts => (
-            <span key={parts[1]} className={style.item}>
+          .map(parts =>
+            (<span key={parts[1]} className={style.item}>
               {parts[1]} | {parts[2]}
-            </span>
-          ))}
+            </span>),
+          )}
       </span>,
     ];
   }

@@ -11,8 +11,8 @@ const GREEN_STATUS = /up/i;
  * @param {Object} props Props of the component.
  * @return {React.Component} Card with summarized details of container.
  */
-const ContainerCard = ({ container, onClick }) => (
-  <Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
+const ContainerCard = ({ container, onClick }) =>
+  (<Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
     <div className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`} />
     <span className={style.column}>
       <em>{container.Image}</em>
@@ -21,8 +21,7 @@ const ContainerCard = ({ container, onClick }) => (
     <span>
       {moment.unix(container.Created).fromNow()}
     </span>
-  </Button>
-);
+  </Button>);
 
 ContainerCard.displayName = 'ContainerCard';
 

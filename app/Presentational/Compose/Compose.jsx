@@ -13,8 +13,8 @@ import style from './Compose.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Compose form with inputs.
  */
-const Compose = ({ compose, onCompose, onComposeChange, onBack, pending, error }) => (
-  <div className={style.container}>
+const Compose = ({ compose, onCompose, onComposeChange, onBack, pending, error }) =>
+  (<div className={style.container}>
     <Toolbar>
       <Button onClick={onBack} title="Back to containers list">
         <FaArrowLeft />
@@ -32,8 +32,7 @@ const Compose = ({ compose, onCompose, onComposeChange, onBack, pending, error }
         <ThrobberButton onClick={onCompose} pending={pending}>Create</ThrobberButton>
       </span>
     </div>
-  </div>
-);
+  </div>);
 
 Compose.displayName = 'Compose';
 

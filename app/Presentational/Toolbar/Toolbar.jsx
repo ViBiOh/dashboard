@@ -7,11 +7,10 @@ import style from './Toolbar.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Toolbar with children and message if provided
  */
-const Toolbar = ({ children, className }) => (
-  <span className={`${style.flex} ${className}`}>
+const Toolbar = ({ children, className }) =>
+  (<span className={`${style.flex} ${className}`}>
     {children}
-  </span>
-);
+  </span>);
 
 Toolbar.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),

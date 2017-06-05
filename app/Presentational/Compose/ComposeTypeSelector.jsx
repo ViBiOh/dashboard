@@ -38,8 +38,8 @@ export default class ComposeTypeSelector extends Component {
     return (
       <div>
         <aside>
-          {COMPOSE_TYPES.map(c => (
-            <span key={c.type} className={style.type}>
+          {COMPOSE_TYPES.map(c =>
+            (<span key={c.type} className={style.type}>
               <input
                 id={c.type}
                 type="radio"
@@ -48,8 +48,8 @@ export default class ComposeTypeSelector extends Component {
                 checked={this.state.composeType === c}
               />
               <label htmlFor={c.type}>{c.label}</label>
-            </span>
-          ))}
+            </span>),
+          )}
         </aside>
         <article>
           <this.state.composeType.component

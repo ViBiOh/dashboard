@@ -36,9 +36,9 @@ const ContainersList = ({
       <span key="size" className={style.size} title="Number of containers">
         {containers.length}&nbsp;<FaCubes />
       </span>,
-      containers.map(container => (
-        <ContainerCard key={container.Id} container={container} onClick={onSelect} />
-      )),
+      containers.map(container =>
+        <ContainerCard key={container.Id} container={container} onClick={onSelect} />,
+      ),
     ];
   }
 

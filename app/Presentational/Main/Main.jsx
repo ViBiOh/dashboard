@@ -7,11 +7,10 @@ import style from './Main.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Wrapper of App
  */
-const Main = ({ children }) => (
-  <span className={style.layout}>
+const Main = ({ children }) =>
+  (<span className={style.layout}>
     <article className={style.article}>{children}</article>
-  </span>
-);
+  </span>);
 
 Main.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,

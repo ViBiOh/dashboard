@@ -7,18 +7,18 @@ import style from './Throbber.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Throbber with label and title if provided
  */
-const Throbber = ({ label, title, className, vertical, horizontalSm }) => (
-  <div className={style.container} title={title}>
+const Throbber = ({ label, title, className, vertical, horizontalSm }) =>
+  (<div className={style.container} title={title}>
     {!vertical && label ? <span>{label}</span> : null}
     <div
-      className={`${style.throbber} ${vertical && style.column} ${horizontalSm && style['row-responsive']} ${className}`}
+      className={`${style.throbber} ${vertical && style.column} ${horizontalSm &&
+        style['row-responsive']} ${className}`}
     >
       <div className={style.bounce1} />
       <div className={style.bounce2} />
       <div className={style.bounce3} />
     </div>
-  </div>
-);
+  </div>);
 
 Throbber.displayname = 'Throbber';
 
