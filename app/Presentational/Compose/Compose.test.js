@@ -5,9 +5,7 @@ import { mount } from 'enzyme';
 import Compose from './Compose';
 
 const defaultProps = {
-  compose: {},
   onCompose: sinon.spy(),
-  onComposeChange: sinon.spy(),
   onBack: sinon.spy(),
 };
 
@@ -30,4 +28,22 @@ test('should call given onCompose method', (t) => {
   wrapper.find('ThrobberButton').simulate('click');
 
   t.true(onCompose.called);
+});
+
+test('should call submit on enter key down', (t) => {
+  const onCompose = sinon.spy();
+  const wrapper = mount(<Compose {...defaultProps} onCompose={onCompose} />);
+
+  wrapper.find('input').simulate('keyDown', { keyCode: 13 });
+
+  t.true(onCompose.called);
+});
+
+test('should not call submit on other key down', (t) => {
+  const onCompose = sinon.spy();
+  const wrapper = mount(<Compose {...defaultProps} onCompose={onCompose} />);
+
+  wrapper.find('textarea').simulate('keyDown', { keyCode: 10 });
+
+  t.false(onCompose.called);
 });

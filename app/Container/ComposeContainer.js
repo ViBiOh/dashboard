@@ -1,18 +1,15 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import actions from './actions';
 import Compose from '../Presentational/Compose/Compose';
 
 const mapStateToProps = state => ({
   pending: !!state.pending[actions.COMPOSE],
   error: state.error,
-  compose: state.compose,
 });
 
 const mapDispatchToProps = dispatch => ({
-  onCompose: () => dispatch(actions.compose()),
-  onComposeChange: (name, file) => dispatch(actions.composeChange(name, file)),
-  onBack: () => dispatch(push('/')),
+  onCompose: (name, file) => dispatch(actions.compose(name, file)),
+  onBack: () => dispatch(actions.goHome()),
 });
 
 const ComposeContainer = connect(mapStateToProps, mapDispatchToProps)(Compose);

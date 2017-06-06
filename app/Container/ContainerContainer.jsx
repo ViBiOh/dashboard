@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import actions from './actions';
 import Container from '../Presentational/Container/Container';
 
@@ -75,7 +74,7 @@ const mapStateToProps = (state, props) => ({
 const mapDispatchToProps = dispatch => ({
   fetchContainer: id => dispatch(actions.fetchContainer(id)),
   actionContainer: (action, id) => dispatch(actions.actionContainer(action, id)),
-  onBack: () => dispatch(push('/')),
+  onBack: () => dispatch(actions.goHome()),
   openLogs: id => dispatch(actions.openLogs(id)),
   closeLogs: () => dispatch(actions.closeLogs()),
   openStats: id => dispatch(actions.openStats(id)),

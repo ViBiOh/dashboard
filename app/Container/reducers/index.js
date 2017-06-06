@@ -4,7 +4,6 @@ import containers from './containers';
 import container from './container';
 import logs from './logs';
 import stats from './stats';
-import compose from './compose';
 import pending from './pending';
 import error from './error';
 
@@ -14,7 +13,6 @@ const appReducers = combineReducers({
   container,
   logs,
   stats,
-  compose,
   pending,
   error,
 });

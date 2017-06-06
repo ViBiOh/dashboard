@@ -5,10 +5,8 @@
   width: 100%;
 }
 
-@media screen and (max-width: @small) {
-  .container {
-    flex-wrap: wrap;
-  }
+.code {
+  font-family: monospace;
 }
 
 .content {
@@ -17,11 +15,29 @@
   width: 100%;
 }
 
-.content aside {
-  padding: 1rem 0;
+.content h2, .content > span {
+  width: 100%;
 }
 
-.content > h2,
-.content > span {
-  width: 100%;
+.content input[type='text'], .content textarea {
+  border: 0.1rem solid @grey;
+  border-radius: 0.2rem;
+  display: block;
+  margin: 0 auto 0.5rem;
+  padding: 2rem;
+  width: 50%;
+}
+
+.content textarea {
+  resize: vertical;
+}
+
+@media screen and (max-width: @small) {
+  .container {
+    flex-wrap: wrap;
+  }
+
+  .content input[type='text'], .content textarea {
+    width: 90%;
+  }
 }

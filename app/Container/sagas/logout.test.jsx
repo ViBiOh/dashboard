@@ -21,6 +21,7 @@ test('should put success, close streams and redirect to login after API call', (
     put(actions.closeEvents()),
     put(actions.closeLogs()),
     put(actions.closeStats()),
+    put(actions.setError('')),
     put(push('/login')),
   ]);
 });

@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import { call, put, fork, take, takeLatest, cancel, select } from 'redux-saga/effects';
+import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
 import { eventChannel, delay } from 'redux-saga';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
@@ -16,6 +16,14 @@ export function onErrorAction(calledAction, error) {
     return push('/login');
   }
   return actions[calledAction](String(error));
+}
+
+/**
+ * Saga of Going back action :
+ * @yield {Function} Saga effects to sequence flow of work
+ */
+export function* goHomeSaga() {
+  yield [put(actions.setError('')), put(push('/'))];
 }
 
 /**
@@ -56,6 +64,7 @@ export function* logoutSaga() {
       put(actions.closeEvents()),
       put(actions.closeLogs()),
       put(actions.closeStats()),
+      put(actions.setError('')),
       put(push('/login')),
     ];
   } catch (e) {
@@ -155,11 +164,9 @@ export function* actionContainerSaga(action) {
  * - Redirect to home otherwise
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* composeSaga() {
+export function* composeSaga(action) {
   try {
-    const { compose } = yield select();
-    yield call(DockerService.containerCreate, compose.name, compose.file);
-
+    yield call(DockerService.containerCreate, action.name, action.file);
     yield [put(actions.composeSucceeded()), put(push('/'))];
   } catch (e) {
     yield put(onErrorAction('composeFailed', e));
@@ -300,6 +307,7 @@ export function* eventsSaga() {
  * @yield {Function} Sagas
  */
 export default function* appSaga() {
+  yield takeLatest(actions.GO_HOME, goHomeSaga);
   yield takeLatest(actions.LOGIN, loginSaga);
   yield takeLatest(actions.LOGOUT, logoutSaga);
   yield takeLatest(actions.INFO, infoSaga);
