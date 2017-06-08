@@ -16,6 +16,7 @@ test('should put success and fetchContaines after API call', (t) => {
 
   t.deepEqual(iterator.next({}).value, [
     put(actions.infoSucceeded({})),
+    put(actions.openEvents()),
     put(actions.fetchContainers()),
   ]);
 });
@@ -28,6 +29,7 @@ test('should put success, fetchContaines and fetchServices if Swarm', (t) => {
 
   t.deepEqual(iterator.next(fakeInfos).value, [
     put(actions.infoSucceeded(fakeInfos)),
+    put(actions.openEvents()),
     put(actions.fetchContainers()),
     put(actions.fetchServices()),
   ]);
