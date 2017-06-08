@@ -14,12 +14,10 @@ const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
 
 var hostCheck *regexp.Regexp
-var authFile string
 var docker *client.Client
 
 func init() {
 	websocketOrigin := flag.String(`ws`, `^dashboard`, `Allowed WebSocket Origin pattern`)
-  flag.StringVar(&authFile, `auth`, ``, `Path of authentification configuration file`)
 	flag.Parse()
 
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
@@ -28,7 +26,7 @@ func init() {
 	} else {
 		docker = client
 	}
-	
+
 	hostCheck = regexp.MustCompile(*websocketOrigin)
 }
 
