@@ -41,7 +41,6 @@ export function* loginSaga(action) {
     yield [
       put(actions.loginSucceeded()),
       put(actions.info()),
-      put(actions.openEvents()),
       put(push('/')),
     ];
   } catch (e) {
@@ -81,6 +80,7 @@ export function* infoSaga() {
     const infos = yield call(DockerService.info);
 
     const nextActions = [actions.infoSucceeded(infos)];
+    nextActions.push(actions.openEvents());
     nextActions.push(actions.fetchContainers());
     if (infos.Swarm && infos.Swarm.NodeID) {
       nextActions.push(actions.fetchServices());
