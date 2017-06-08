@@ -15,7 +15,9 @@ make
 
 It will compile both API server and password encrypter.
 
-API server run without options, use `/var/run/docker.sock` to connect to Docker's daemon and read user's credentials file from `./users`;
+API server uses `/var/run/docker.sock` to connect to Docker's daemon and have two more options on CLI :
+* user's credentials file location, e.g. `-auth ./users`
+* domain websocket validation refex, e.g?. `-ws ^dashboard(?:-api)?\.(?:vibioh|l3miage)\.fr`
 
 Password encrypter accepts one argument, the password, and output the bcrypted one.
 
