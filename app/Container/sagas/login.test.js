@@ -21,7 +21,6 @@ test('should put success, info, open event stream and go home after API call', (
   t.deepEqual(iterator.next().value, [
     put(actions.loginSucceeded()),
     put(actions.info()),
-    put(actions.openEvents()),
     put(push('/')),
   ]);
 });
