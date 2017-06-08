@@ -30,4 +30,3 @@ ReactDOM.render(
 );
 
 appStore.dispatch(actions.info());
-appStore.dispatch(actions.openEvents());
