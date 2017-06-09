@@ -26,7 +26,7 @@ type User struct {
 var users map[string]*User
 
 func init() {
-	authFile := flag.StringVar(`auth`, ``, `Path of authentification configuration file`)
+	authFile := flag.String(`auth`, ``, `Path of authentification configuration file`)
 	flag.Parse()
 
 	users = readConfiguration(authFile)
