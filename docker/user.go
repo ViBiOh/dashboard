@@ -21,15 +21,15 @@ func isMultiApp(user *auth.User) bool {
   return false
 }
 
-func isAllowed(loggedUser *User, containerID string) (bool, error) {
-	if !isAdmin(loggedUser) {
+func isAllowed(user *auth.User, containerID string) (bool, error) {
+	if !isAdmin(user) {
 		container, err := inspectContainer(string(containerID))
 		if err != nil {
 			return false, err
 		}
 
 		owner, ok := container.Config.Labels[ownerLabel]
-		if !ok || owner != loggedUser.username {
+		if !ok || owner != user.username {
 			return false, nil
 		}
 	}
