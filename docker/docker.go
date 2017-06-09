@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
+	"github.com/ViBiOh/dashboard/auth"
 	"log"
 	"os"
 	"regexp"
@@ -30,13 +31,13 @@ func init() {
 	hostCheck = regexp.MustCompile(*websocketOrigin)
 }
 
-func labelFilters(filtersArgs *filters.Args, loggedUser *user, appName *string) error {
-	if appName != nil && *appName != `` && isMultiApp(loggedUser) {
+func labelFilters(filtersArgs *filters.Args, user *User, appName *string) error {
+	if appName != nil && *appName != `` && isMultiApp(user) {
 		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, *filtersArgs); err != nil {
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
-	} else if !isAdmin(loggedUser) {
-		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, *filtersArgs); err != nil {
+	} else if !isAdmin(user) {
+		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+user.username, *filtersArgs); err != nil {
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
 	}
