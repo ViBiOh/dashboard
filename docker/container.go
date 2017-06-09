@@ -6,16 +6,17 @@ import (
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
+	"github.com/ViBiOh/dashboard/auth"
 	"io"
 	"io/ioutil"
 	"net/http"
 )
 
-func listContainers(loggedUser *user, appName *string) ([]types.Container, error) {
+func listContainers(user *auth.User, appName *string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
 	options.Filters = filters.NewArgs()
-	if err := labelFilters(&options.Filters, loggedUser, appName); err != nil {
+	if err := labelFilters(&options.Filters, user, appName); err != nil {
 		return nil, err
 	}
 
@@ -66,10 +67,10 @@ func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
-func basicActionHandler(w http.ResponseWriter, loggedUser *user, containerID []byte, handle func(string) error) {
+func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID []byte, handle func(string) error) {
 	id := string(containerID)
 
-	allowed, err := isAllowed(loggedUser, id)
+	allowed, err := isAllowed(user, id)
 	if !allowed {
 		forbidden(w)
 	} else if err != nil {
@@ -83,8 +84,8 @@ func basicActionHandler(w http.ResponseWriter, loggedUser *user, containerID []b
 	}
 }
 
-func listContainersHandler(w http.ResponseWriter, loggerUser *user) {
-	if containers, err := listContainers(loggerUser, nil); err != nil {
+func listContainersHandler(w http.ResponseWriter, user *auth.User) {
+	if containers, err := listContainers(user, nil); err != nil {
 		errorHandler(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{containers})
