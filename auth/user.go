@@ -27,7 +27,6 @@ var users map[string]*User
 
 func init() {
 	authFile := flag.String(`auth`, ``, `Path of authentification configuration file`)
-	flag.Parse()
 
 	users = readConfiguration(*authFile)
 }
