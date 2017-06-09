@@ -3,6 +3,7 @@ package auth
 import (
 	"bufio"
 	"bytes"
+	"flag"
 	"encoding/base64"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
@@ -22,7 +23,7 @@ type User struct {
 	profile  string
 }
 
-var users map[string]*user
+var users map[string]*User
 
 func init() {
 	authFile := flag.StringVar(`auth`, ``, `Path of authentification configuration file`)
@@ -31,7 +32,7 @@ func init() {
 	users = readConfiguration(authFile)
 }
 
-func readConfiguration(path string) map[string]*user {
+func readConfiguration(path string) map[string]*User {
 	configFile, err := os.Open(path)
 	defer configFile.Close()
 
@@ -40,7 +41,7 @@ func readConfiguration(path string) map[string]*user {
 		return nil
 	}
 
-	users := make(map[string]*user)
+	users := make(map[string]*User)
 
 	scanner := bufio.NewScanner(configFile)
 	for scanner.Scan() {
@@ -53,23 +54,7 @@ func readConfiguration(path string) map[string]*user {
 	return users
 }
 
-func isAllowed(loggedUser *user, containerID string) (bool, error) {
-	if !isAdmin(loggedUser) {
-		container, err := inspectContainer(string(containerID))
-		if err != nil {
-			return false, err
-		}
-
-		owner, ok := container.Config.Labels[ownerLabel]
-		if !ok || owner != loggedUser.username {
-			return false, nil
-		}
-	}
-
-	return true, nil
-}
-
-func isAuthenticatedByBasicAuth(authContent string) (*user, error) {
+func isAuthenticatedByBasicAuth(authContent string) (*User, error) {
 	if !strings.HasPrefix(authContent, basicPrefix) {
 		return nil, fmt.Errorf(`Unable to read authentication type`)
 	}
@@ -89,7 +74,7 @@ func isAuthenticatedByBasicAuth(authContent string) (*user, error) {
 	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:], true)
 }
 
-func isAuthenticated(username string, password string, ok bool) (*user, error) {
+func isAuthenticated(username string, password string, ok bool) (*User, error) {
 	if ok {
 		user, ok := users[strings.ToLower(username)]
 
