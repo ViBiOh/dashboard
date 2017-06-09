@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"github.com/ViBiOh/dashboard/auth"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/gorilla/websocket"
@@ -27,7 +28,7 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *user, error) {
+func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		defer ws.Close()
@@ -40,14 +41,14 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *u
 		return nil, nil, err
 	}
 
-	loggedUser, err := isAuthenticatedByBasicAuth(string(basicAuth))
+	user, err := auth.IsAuthenticatedByBasicAuth(string(basicAuth))
 	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
 		defer ws.Close()
 		return nil, nil, err
 	}
 
-	return ws, loggedUser, nil
+	return ws, user, nil
 }
 
 func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
@@ -106,14 +107,14 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 }
 
 func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
-	ws, loggedUser, err := upgradeAndAuth(w, r)
+	ws, user, err := upgradeAndAuth(w, r)
 	if err != nil {
 		return
 	}
 	defer ws.Close()
 
 	filtersArgs := filters.NewArgs()
-	if labelFilters(&filtersArgs, loggedUser, nil) != nil {
+	if labelFilters(&filtersArgs, user, nil) != nil {
 		log.Printf(`Error while defining label filters: %v`, err)
 		return
 	}

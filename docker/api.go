@@ -2,6 +2,7 @@ package docker
 
 import (
 	"context"
+	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"log"
 	"net/http"
@@ -58,7 +59,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loggedUser, err := isAuthenticated(r.BasicAuth())
+	user, err := auth.IsAuthenticated(r.BasicAuth())
 	if err != nil {
 		unauthorized(w, err)
 		return
@@ -69,24 +70,24 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if infoRequest.Match(urlPath) && r.Method == http.MethodGet {
 		infoHandler(w)
 	} else if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
-		listContainersHandler(w, loggedUser)
+		listContainersHandler(w, user)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
 	} else if containerStartRequest.Match(urlPath) && r.Method == http.MethodPost {
-		basicActionHandler(w, loggedUser, containerStartRequest.FindSubmatch(urlPath)[1], startContainer)
+		basicActionHandler(w, user, containerStartRequest.FindSubmatch(urlPath)[1], startContainer)
 	} else if containerStopRequest.Match(urlPath) && r.Method == http.MethodPost {
-		basicActionHandler(w, loggedUser, containerStopRequest.FindSubmatch(urlPath)[1], stopContainer)
+		basicActionHandler(w, user, containerStopRequest.FindSubmatch(urlPath)[1], stopContainer)
 	} else if containerRestartRequest.Match(urlPath) && r.Method == http.MethodPost {
-		basicActionHandler(w, loggedUser, containerRestartRequest.FindSubmatch(urlPath)[1], restartContainer)
+		basicActionHandler(w, user, containerRestartRequest.FindSubmatch(urlPath)[1], restartContainer)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
-		basicActionHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], rmContainer)
+		basicActionHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], rmContainer)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
 		if composeBody, err := readBody(r.Body); err != nil {
 			errorHandler(w, err)
 		} else {
-			createAppHandler(w, loggedUser, containerRequest.FindSubmatch(urlPath)[1], composeBody)
+			createAppHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 		}
 	} else if servicesRequest.Match(urlPath) && r.Method == http.MethodGet {
-		listServicesHandler(w, loggedUser)
+		listServicesHandler(w, user)
 	}
 }

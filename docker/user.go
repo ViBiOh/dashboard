@@ -1,119 +1,38 @@
 package docker
 
 import (
-	"bufio"
-	"bytes"
-	"encoding/base64"
-	"fmt"
-	"golang.org/x/crypto/bcrypt"
-	"log"
-	"os"
-	"strings"
+	"github.com/ViBiOh/dashboard/auth"
 )
-
-const basicPrefix = `Basic `
-
-var commaByte = []byte(`,`)
 
 const adminUser = `admin`
 const multiAppUser = `multi`
 
-type user struct {
-	username string
-	password []byte
-	role     string
-}
-
-var users map[string]*user
-
-func init() {
-	users = readConfiguration(authFile)
-}
-
-func readConfiguration(path string) map[string]*user {
-	configFile, err := os.Open(path)
-	defer configFile.Close()
-
-	if err != nil {
-		log.Print(err)
-		return nil
+func isAdmin(user *auth.User) bool {
+	if user != nil {
+		return user.Profile == adminUser
 	}
-
-	users := make(map[string]*user)
-
-	scanner := bufio.NewScanner(configFile)
-	for scanner.Scan() {
-		parts := bytes.Split(scanner.Bytes(), commaByte)
-		user := user{string(parts[0]), parts[1], string(parts[2])}
-
-		users[strings.ToLower(user.username)] = &user
-	}
-
-	return users
+	return false
 }
 
-func isAllowed(loggedUser *user, containerID string) (bool, error) {
-	if !isAdmin(loggedUser) {
+func isMultiApp(user *auth.User) bool {
+	if user != nil {
+		return user.Profile == multiAppUser || user.Profile == adminUser
+	}
+	return false
+}
+
+func isAllowed(user *auth.User, containerID string) (bool, error) {
+	if !isAdmin(user) {
 		container, err := inspectContainer(string(containerID))
 		if err != nil {
 			return false, err
 		}
 
 		owner, ok := container.Config.Labels[ownerLabel]
-		if !ok || owner != loggedUser.username {
+		if !ok || owner != user.Username {
 			return false, nil
 		}
 	}
 
 	return true, nil
-}
-
-func isAuthenticatedByBasicAuth(authContent string) (*user, error) {
-	if !strings.HasPrefix(authContent, basicPrefix) {
-		return nil, fmt.Errorf(`Unable to read authentication type`)
-	}
-
-	data, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(authContent, basicPrefix))
-	if err != nil {
-		return nil, fmt.Errorf(`Unable to read basic authentication`)
-	}
-
-	dataStr := string(data)
-
-	sepIndex := strings.IndexByte(dataStr, ':')
-	if sepIndex < 0 {
-		return nil, fmt.Errorf(`Unable to read basic authentication`)
-	}
-
-	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:], true)
-}
-
-func isAuthenticated(username string, password string, ok bool) (*user, error) {
-	if ok {
-		user, ok := users[strings.ToLower(username)]
-
-		if ok {
-			if err := bcrypt.CompareHashAndPassword(user.password, []byte(password)); err == nil {
-				return user, nil
-			}
-		}
-
-		return nil, fmt.Errorf(`Invalid credentials for ` + username)
-	}
-
-	return nil, fmt.Errorf(`Unable to read basic authentication`)
-}
-
-func isAdmin(loggedUser *user) bool {
-	if loggedUser != nil {
-		return loggedUser.role == adminUser
-	}
-	return false
-}
-
-func isMultiApp(loggedUser *user) bool {
-	if loggedUser != nil {
-		return loggedUser.role == multiAppUser || loggedUser.role == adminUser
-	}
-	return false
 }

@@ -3,6 +3,7 @@ package docker
 import (
 	"flag"
 	"fmt"
+	"github.com/ViBiOh/dashboard/auth"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"log"
@@ -14,12 +15,10 @@ const host = `DOCKER_HOST`
 const version = `DOCKER_VERSION`
 
 var hostCheck *regexp.Regexp
-var authFile string
 var docker *client.Client
 
 func init() {
 	websocketOrigin := flag.String(`ws`, `^dashboard`, `Allowed WebSocket Origin pattern`)
-  flag.StringVar(&authFile, `auth`, ``, `Path of authentification configuration file`)
 	flag.Parse()
 
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
@@ -28,17 +27,17 @@ func init() {
 	} else {
 		docker = client
 	}
-	
+
 	hostCheck = regexp.MustCompile(*websocketOrigin)
 }
 
-func labelFilters(filtersArgs *filters.Args, loggedUser *user, appName *string) error {
-	if appName != nil && *appName != `` && isMultiApp(loggedUser) {
+func labelFilters(filtersArgs *filters.Args, user *auth.User, appName *string) error {
+	if appName != nil && *appName != `` && isMultiApp(user) {
 		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, *filtersArgs); err != nil {
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
-	} else if !isAdmin(loggedUser) {
-		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+loggedUser.username, *filtersArgs); err != nil {
+	} else if !isAdmin(user) {
+		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+user.Username, *filtersArgs); err != nil {
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
 	}
