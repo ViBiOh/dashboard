@@ -31,7 +31,7 @@ func init() {
 	hostCheck = regexp.MustCompile(*websocketOrigin)
 }
 
-func labelFilters(filtersArgs *filters.Args, user *User, appName *string) error {
+func labelFilters(filtersArgs *filters.Args, user *auth.User, appName *string) error {
 	if appName != nil && *appName != `` && isMultiApp(user) {
 		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, *filtersArgs); err != nil {
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
