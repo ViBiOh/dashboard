@@ -2,7 +2,7 @@ package docker
 
 import (
   "github.com/ViBiOh/dashboard/auth"
-}
+)
 
 const adminUser = `admin`
 const multiAppUser = `multi`
