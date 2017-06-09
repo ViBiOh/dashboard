@@ -12,7 +12,6 @@ func ResponseJSON(w http.ResponseWriter, obj interface{}) {
 	if err == nil {
 		w.Header().Set(`Content-Type`, `application/json`)
 		w.Header().Set(`Cache-Control`, `no-cache`)
-		w.Header().Set(`Access-Control-Allow-Origin`, `*`)
 		w.Write(objJSON)
 	} else {
 		http.Error(w, `Error while marshalling JSON response`, http.StatusInternalServerError)
