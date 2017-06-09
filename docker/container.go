@@ -3,10 +3,10 @@ package docker
 import (
 	"context"
 	"fmt"
+	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
-	"github.com/ViBiOh/dashboard/auth"
 	"io"
 	"io/ioutil"
 	"net/http"

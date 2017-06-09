@@ -2,11 +2,11 @@ package docker
 
 import (
 	"context"
+	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/swarm"
-	"github.com/ViBiOh/dashboard/auth"
 	"net/http"
 )
 
