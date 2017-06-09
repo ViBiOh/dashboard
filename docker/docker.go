@@ -3,9 +3,9 @@ package docker
 import (
 	"flag"
 	"fmt"
+	"github.com/ViBiOh/dashboard/auth"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
-	"github.com/ViBiOh/dashboard/auth"
 	"log"
 	"os"
 	"regexp"
@@ -37,7 +37,7 @@ func labelFilters(filtersArgs *filters.Args, user *auth.User, appName *string) e
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
 	} else if !isAdmin(user) {
-		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+user.username, *filtersArgs); err != nil {
+		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+user.Username, *filtersArgs); err != nil {
 			return fmt.Errorf(`Error while parsing label for user: %v`, err)
 		}
 	}

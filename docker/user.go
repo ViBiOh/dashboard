@@ -1,24 +1,24 @@
 package docker
 
 import (
-  "github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/dashboard/auth"
 )
 
 const adminUser = `admin`
 const multiAppUser = `multi`
 
 func isAdmin(user *auth.User) bool {
-  if user != nil {
-    return user.role == adminUser
-  }
-  return false
+	if user != nil {
+		return user.Profile == adminUser
+	}
+	return false
 }
 
 func isMultiApp(user *auth.User) bool {
-  if user != nil {
-    return user.role == multiAppUser || user.role == adminUser
-  }
-  return false
+	if user != nil {
+		return user.Profile == multiAppUser || user.Profile == adminUser
+	}
+	return false
 }
 
 func isAllowed(user *auth.User, containerID string) (bool, error) {
@@ -29,7 +29,7 @@ func isAllowed(user *auth.User, containerID string) (bool, error) {
 		}
 
 		owner, ok := container.Config.Labels[ownerLabel]
-		if !ok || owner != user.username {
+		if !ok || owner != user.Username {
 			return false, nil
 		}
 	}

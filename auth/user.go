@@ -3,8 +3,8 @@ package auth
 import (
 	"bufio"
 	"bytes"
-	"flag"
 	"encoding/base64"
+	"flag"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -18,9 +18,9 @@ var commaByte = []byte(`,`)
 
 // User of the app
 type User struct {
-	username string
-	password []byte
-	profile  string
+	Username string
+	Password []byte
+	Profile  string
 }
 
 var users map[string]*User
@@ -48,13 +48,14 @@ func readConfiguration(path string) map[string]*User {
 		parts := bytes.Split(scanner.Bytes(), commaByte)
 		user := User{string(parts[0]), parts[1], string(parts[2])}
 
-		users[strings.ToLower(user.username)] = &user
+		users[strings.ToLower(user.Username)] = &user
 	}
 
 	return users
 }
 
-func isAuthenticatedByBasicAuth(authContent string) (*User, error) {
+// IsAuthenticatedByBasicAuth check if Autorization Header matches a User
+func IsAuthenticatedByBasicAuth(authContent string) (*User, error) {
 	if !strings.HasPrefix(authContent, basicPrefix) {
 		return nil, fmt.Errorf(`Unable to read authentication type`)
 	}
@@ -71,15 +72,16 @@ func isAuthenticatedByBasicAuth(authContent string) (*User, error) {
 		return nil, fmt.Errorf(`Unable to read basic authentication`)
 	}
 
-	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:], true)
+	return IsAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:], true)
 }
 
-func isAuthenticated(username string, password string, ok bool) (*User, error) {
+// IsAuthenticated check if given params matche a User
+func IsAuthenticated(username string, password string, ok bool) (*User, error) {
 	if ok {
 		user, ok := users[strings.ToLower(username)]
 
 		if ok {
-			if err := bcrypt.CompareHashAndPassword(user.password, []byte(password)); err == nil {
+			if err := bcrypt.CompareHashAndPassword(user.Password, []byte(password)); err == nil {
 				return user, nil
 			}
 		}

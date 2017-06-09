@@ -3,11 +3,11 @@ package docker
 import (
 	"context"
 	"fmt"
+	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
-	"github.com/ViBiOh/dashboard/auth"
 	"gopkg.in/yaml.v2"
 	"log"
 	"net/http"
@@ -57,7 +57,7 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) *
 		service.Labels = make(map[string]string)
 	}
 
-	service.Labels[ownerLabel] = user.username
+	service.Labels[ownerLabel] = user.Username
 	service.Labels[appLabel] = appName
 
 	config := container.Config{
@@ -137,22 +137,22 @@ func pullImage(image string, user *auth.User) error {
 		image = image + defaultTag
 	}
 
-	log.Print(user.username + ` starts pulling for ` + image)
+	log.Print(user.Username + ` starts pulling for ` + image)
 	pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
 	if err != nil {
 		return fmt.Errorf(`Error while pulling image: %v`, err)
 	}
 
 	readBody(pull)
-	log.Print(user.username + ` ends pulling for ` + image)
+	log.Print(user.Username + ` ends pulling for ` + image)
 	return nil
 }
 
-func cleanContainers(containers *[]types.Container, user *user) {
+func cleanContainers(containers *[]types.Container, user *auth.User) {
 	for _, container := range *containers {
-		log.Print(user.username + ` stops ` + strings.Join(container.Names, `, `))
+		log.Print(user.Username + ` stops ` + strings.Join(container.Names, `, `))
 		stopContainer(container.ID)
-		log.Print(user.username + ` rm ` + strings.Join(container.Names, `, `))
+		log.Print(user.Username + ` rm ` + strings.Join(container.Names, `, `))
 		rmContainer(container.ID)
 	}
 }
@@ -188,7 +188,7 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	}
 
 	appNameStr := string(appName)
-	log.Print(user.username + ` deploys ` + appNameStr)
+	log.Print(user.Username + ` deploys ` + appNameStr)
 
 	ownerContainers, err := listContainers(user, &appNameStr)
 	if err != nil {
@@ -204,7 +204,7 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 		}
 
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
-		log.Print(user.username + ` starts ` + serviceFullName)
+		log.Print(user.Username + ` starts ` + serviceFullName)
 
 		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, user, appNameStr), getHostConfig(&service), getNetworkConfig(&service, &deployedServices), serviceFullName)
 		if err != nil {
