@@ -1,7 +1,6 @@
 package docker
 
 import (
-	"flag"
 	"fmt"
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/docker/docker/api/types/filters"
@@ -18,8 +17,6 @@ var hostCheck *regexp.Regexp
 var docker *client.Client
 
 func init() {
-	websocketOrigin := flag.String(`ws`, `^dashboard`, `Allowed WebSocket Origin pattern`)
-	flag.Parse()
 
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
 	if err != nil {
@@ -27,8 +24,11 @@ func init() {
 	} else {
 		docker = client
 	}
+}
 
-	hostCheck = regexp.MustCompile(*websocketOrigin)
+// Init docker
+func Init(websocketOrigin string) {
+	hostCheck = regexp.MustCompile(websocketOrigin)
 }
 
 func labelFilters(filtersArgs *filters.Args, user *auth.User, appName *string) error {

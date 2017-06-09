@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/base64"
-	"flag"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -25,10 +24,9 @@ type User struct {
 
 var users map[string]*User
 
-func init() {
-	authFile := flag.String(`auth`, ``, `Path of authentification configuration file`)
-
-	users = readConfiguration(*authFile)
+// Init auth
+func Init(authFile string) {
+	users = readConfiguration(authFile)
 }
 
 func readConfiguration(path string) map[string]*User {
