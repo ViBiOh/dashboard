@@ -41,7 +41,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 		return nil, nil, err
 	}
 
-	user, err := auth.IsAuthenticatedByBasicAuth(string(basicAuth))
+	user, err := auth.IsAuthenticatedByAuth(string(basicAuth))
 	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
 		defer ws.Close()

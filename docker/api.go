@@ -9,6 +9,8 @@ import (
 	"regexp"
 )
 
+const authorizationHeader = `Authorization`
+
 type results struct {
 	Results interface{} `json:"results"`
 }
@@ -59,7 +61,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := auth.IsAuthenticated(r.BasicAuth())
+	user, err := auth.IsAuthenticatedByAuth(r.Header.Get(authorizationHeader))
 	if err != nil {
 		unauthorized(w, err)
 		return

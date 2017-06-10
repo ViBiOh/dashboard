@@ -18,8 +18,13 @@ var commaByte = []byte(`,`)
 // User of the app
 type User struct {
 	Username string
-	Password []byte
-	Profile  string
+	password []byte
+	profiles string
+}
+
+// HasProfile check if given User has given profile
+func (user *User) HasProfile(profile string) bool {
+	return strings.Contains(user.profiles, profile)
 }
 
 var users map[string]*User
@@ -51,8 +56,20 @@ func readConfiguration(path string) map[string]*User {
 	return users
 }
 
-// IsAuthenticatedByBasicAuth check if Autorization Header matches a User
-func IsAuthenticatedByBasicAuth(authContent string) (*User, error) {
+func isAuthenticated(username string, password string) (*User, error) {
+	user, ok := users[strings.ToLower(username)]
+
+	if ok {
+		if err := bcrypt.CompareHashAndPassword(user.password, []byte(password)); err == nil {
+			return user, nil
+		}
+	}
+
+	return nil, fmt.Errorf(`Invalid credentials for ` + username)
+}
+
+// IsAuthenticatedByAuth check if Autorization Header matches a User
+func IsAuthenticatedByAuth(authContent string) (*User, error) {
 	if !strings.HasPrefix(authContent, basicPrefix) {
 		return nil, fmt.Errorf(`Unable to read authentication type`)
 	}
@@ -69,22 +86,5 @@ func IsAuthenticatedByBasicAuth(authContent string) (*User, error) {
 		return nil, fmt.Errorf(`Unable to read basic authentication`)
 	}
 
-	return IsAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:], true)
-}
-
-// IsAuthenticated check if given params matche a User
-func IsAuthenticated(username string, password string, ok bool) (*User, error) {
-	if ok {
-		user, ok := users[strings.ToLower(username)]
-
-		if ok {
-			if err := bcrypt.CompareHashAndPassword(user.Password, []byte(password)); err == nil {
-				return user, nil
-			}
-		}
-
-		return nil, fmt.Errorf(`Invalid credentials for ` + username)
-	}
-
-	return nil, fmt.Errorf(`Unable to read basic authentication`)
+	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:])
 }
