@@ -12,7 +12,7 @@ import actions from '../actions';
  * @return {Object}              Actions to perform
  */
 export function onErrorAction(calledAction, error) {
-  if (error.status === 401) {
+  if (error.status === 401 || error.noAuth) {
     return push('/login');
   }
   return actions[calledAction](String(error));
@@ -38,11 +38,7 @@ export function* goHomeSaga() {
 export function* loginSaga(action) {
   try {
     yield call(DockerService.login, action.username, action.password);
-    yield [
-      put(actions.loginSucceeded()),
-      put(actions.info()),
-      put(push('/')),
-    ];
+    yield [put(actions.loginSucceeded()), put(actions.info()), put(push('/'))];
   } catch (e) {
     yield put(actions.loginFailed(String(e)));
   }

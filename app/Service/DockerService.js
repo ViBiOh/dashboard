@@ -42,6 +42,12 @@ export function customError(response) {
  * @return {FetchBuilder} FetchBuilder pre-configured
  */
 function auth(url, authentification = localStorageService.getItem(authStorage)) {
+  if (!authentification) {
+    const authError = new Error('Authentification not find');
+    authError.noAuth = true;
+    throw authError;
+  }
+
   return funtch.url(url).error(customError).auth(authentification);
 }
 
