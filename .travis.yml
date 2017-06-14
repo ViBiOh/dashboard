@@ -8,7 +8,7 @@ before_install:
 install:
 - make
 - nvm install node
-- npm i -g npm@4
+- npm i -g npm
 - npm i
 - npm run build
 script: |
