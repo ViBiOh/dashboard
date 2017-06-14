@@ -6,6 +6,7 @@ tmp/
 dist/
 .nyc_output
 doc/
+package-lock.json
 
 # Go binary
 server

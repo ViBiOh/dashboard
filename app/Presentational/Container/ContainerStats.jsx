@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { STATS_COUNT } from '../../Container/reducers/stats';
+import Throbber from '../Throbber/Throbber';
 import Graph from './Graph';
 import style from './ContainerStats.less';
 
@@ -18,10 +19,6 @@ for (let i = 0; i < STATS_COUNT; i += 1) {
  * @return {ReactComponent} Section with stats informations
  */
 const ContainerStats = ({ stats }) => {
-  if (!stats || !Array.isArray(stats.entries) || stats.entries.length === 0) {
-    return null;
-  }
-
   const { entries, memoryScaleNames, memoryLimit, cpuLimit } = stats;
 
   const data = {
@@ -81,8 +78,10 @@ const ContainerStats = ({ stats }) => {
   return (
     <span className={style.container}>
       <h3>Monitoring</h3>
-      <div>
-        <Graph type="line" data={data} options={options} />
+      <div className={style.content}>
+        {entries.length > 0
+          ? <Graph type="line" data={data} options={options} />
+          : <Throbber label="Loading graph" />}
       </div>
     </span>
   );
@@ -95,7 +94,9 @@ ContainerStats.propTypes = {
 };
 
 ContainerStats.defaultProps = {
-  stats: null,
+  stats: {
+    entries: [],
+  },
 };
 
 export default ContainerStats;

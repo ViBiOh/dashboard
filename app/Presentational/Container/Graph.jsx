@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Chart from 'chart.js';
 import setRef from '../../Tools/ref';
+import style from './Graph.less';
 
 /**
  * Rendering Chart.js Graph.
@@ -40,8 +41,6 @@ export default class Graph extends Component {
       this.chart.data.labels = data.labels;
       this.chart.update();
     } else if (this.graph) {
-      this.graph.width = Math.min(window.innerWidth - 20, 600);
-
       /**
        * Chart component ref.
        */
@@ -69,6 +68,6 @@ export default class Graph extends Component {
    * @return {ReactComponent} chart.js in a canvas
    */
   render() {
-    return <canvas ref={e => setRef(this, 'graph', e)} height={300} />;
+    return <canvas ref={e => setRef(this, 'graph', e)} className={style.canvas} />;
   }
 }

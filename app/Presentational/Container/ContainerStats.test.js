@@ -3,16 +3,16 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import ContainerStats from './ContainerStats';
 
-test('should not render if stats is not provided', (t) => {
-  const wrapper = shallow(<ContainerStats stats={null} />);
+test('should render as a span', (t) => {
+  const wrapper = shallow(<ContainerStats />);
 
-  t.is(wrapper.type(), null);
+  t.is(wrapper.type(), 'span');
 });
 
-test('should not render if entries ar empty is not provided', (t) => {
-  const wrapper = shallow(<ContainerStats stats={{ entries: [] }} />);
+test('should not render Graph if entries are empty is not provided', (t) => {
+  const wrapper = shallow(<ContainerStats />);
 
-  t.is(wrapper.type(), null);
+  t.is(wrapper.find('Graph').length, 0);
 });
 
 test('should display logs if given', (t) => {

@@ -13,7 +13,9 @@ import {
  */
 export const STATS_COUNT = 60;
 
-const initialState = null;
+const initialState = {
+  entries: [],
+};
 
 /**
  * Logs's reducer.
@@ -23,9 +25,7 @@ const initialState = null;
  */
 export default (state = initialState, action) => {
   if (action.type === actions.OPEN_STATS) {
-    return {
-      entries: [],
-    };
+    return initialState;
   }
 
   if (action.type === actions.ADD_STAT) {
@@ -58,9 +58,7 @@ export default (state = initialState, action) => {
   }
 
   if (action.type === actions.CLOSE_STATS) {
-    return {
-      entries: [],
-    };
+    return initialState;
   }
 
   return state;

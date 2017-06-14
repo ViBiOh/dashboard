@@ -1,6 +1,6 @@
 import actions from '../actions';
 
-const initialState = null;
+const initialState = [];
 
 /**
  * Logs's reducer.
@@ -10,7 +10,7 @@ const initialState = null;
  */
 export default (state = initialState, action) => {
   if (action.type === actions.OPEN_LOGS) {
-    return [];
+    return initialState;
   }
   if (action.type === actions.ADD_LOG) {
     return [...state, action.log];

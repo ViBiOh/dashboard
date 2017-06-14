@@ -24,7 +24,8 @@ const stat = {
   },
 };
 
-test('should have a null default state', t => t.is(reducer(undefined, {}), null));
+test('should have an empty default state', t =>
+  t.deepEqual(reducer(undefined, {}), { entries: [] }));
 
 test('should create empty array on OPEN_STATS', t =>
   t.deepEqual(reducer(undefined, { type: actions.OPEN_STATS }), { entries: [] }));

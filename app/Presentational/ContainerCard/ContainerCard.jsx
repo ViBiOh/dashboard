@@ -20,6 +20,9 @@ const ContainerCard = ({ container, onClick }) =>
     </span>
     <span>
       {moment.unix(container.Created).fromNow()}
+      {container.Labels && container.Labels.owner
+        ? <div className={style.owner}>by {container.Labels.owner}</div>
+        : null}
     </span>
   </Button>);
 
