@@ -7,6 +7,7 @@ import Container from '../Presentational/Container/Container';
 class ContainerComponent extends Component {
   componentDidMount() {
     this.props.fetchContainer(this.props.containerId);
+    this.props.openLogs(this.props.containerId);
     this.props.openStats(this.props.containerId);
   }
 
@@ -31,7 +32,6 @@ class ContainerComponent extends Component {
         onRestart={() => this.props.actionContainer('containerRestart', container.Id)}
         onStop={() => this.props.actionContainer('containerStop', container.Id)}
         onDelete={() => this.props.actionContainer('containerDelete', container.Id)}
-        openLogs={() => this.props.openLogs(container.Id)}
         error={this.props.error}
       />
     );

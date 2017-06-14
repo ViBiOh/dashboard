@@ -36,7 +36,6 @@ const Container = (props) => {
     onStop,
     onStart,
     onDelete,
-    openLogs,
     error,
   } = props;
 
@@ -51,7 +50,7 @@ const Container = (props) => {
       <ContainerNetwork key="network" container={container} />,
       <ContainerVolumes key="volumes" container={container} />,
       <ContainerStats key="stats" stats={stats} />,
-      <ContainerLogs key="logs " logs={logs} openLogs={openLogs} />,
+      <ContainerLogs key="logs " logs={logs} />,
     ];
 
     if (container.State.Running) {
@@ -147,7 +146,6 @@ Container.propTypes = {
   }),
   logs: PropTypes.arrayOf(PropTypes.string),
   stats: PropTypes.shape({}),
-  openLogs: PropTypes.func.isRequired,
   onBack: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
