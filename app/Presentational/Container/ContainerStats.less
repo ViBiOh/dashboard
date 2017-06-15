@@ -1,7 +1,7 @@
 @import '../../style.less';
 
 .container {
-  flex: 1 1 @statsWidth;
+  width: @statsWidth;
 }
 
 .container h3 {
@@ -17,10 +17,4 @@
   display: inline-block;
   padding: 0.4rem;
   width: 17.6rem;
-}
-
-@media screen and (max-width: @small) {
-  .graph {
-    width: 100%;
-  }
 }
