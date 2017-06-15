@@ -1,4 +1,12 @@
+@import '../../style.less';
+
 .canvas {
   max-height: 30rem;
   max-width: 60rem;
+}
+
+@media screen and (max-width: @small) {
+  .canvas {
+    max-width: 100%;
+  }		
 }
