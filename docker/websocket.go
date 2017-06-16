@@ -44,6 +44,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 	user, err := auth.IsAuthenticatedByAuth(string(basicAuth))
 	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
+
 		defer ws.Close()
 		return nil, nil, err
 	}
@@ -97,8 +98,8 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 			return
 
 		default:
-			if _, _, err := ws.NextReader(); err != nil {
-				log.Printf(`Error while reading from logs socket: %v`, err)
+			if messageType, content, err := ws.NextReader(); err != nil {
+				log.Printf(`Error while reading from logs socket: %v | %v | %v`, err, messageType, content)
 				close(done)
 				return
 			}
