@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -21,7 +22,10 @@ const maxMemory = 805306368
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
+const traefikHeatlhCheckLabel = `traefik.backend.healthcheck.path`
+const traefikPortLabel = `traefik.port`
 const linkSeparator = `:`
+const waitTime = 5
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
@@ -148,6 +152,26 @@ func pullImage(image string, user *auth.User) error {
 	return nil
 }
 
+func healthCheckContainer(container *types.Container) bool {
+	if container.Labels[traefikHeatlhCheckLabel] != `` {
+		log.Printf(`Checking health of container %s`, strings.Join(container.Names, `,`))
+
+		response, err := http.Get(container.NetworkSettings.Networks[networkMode].IPAddress + container.Labels[traefikPortLabel] + container.Labels[traefikHeatlhCheckLabel])
+
+		if err != nil {
+			log.Printf(`Unable to health check for container %s : %v`, strings.Join(container.Names, `,`), err)
+			return false
+		}
+
+		if response.StatusCode != http.StatusOK {
+			log.Printf(`Health check failed for container %s : HTTP/%d`, strings.Join(container.Names, `,`), response.StatusCode)
+			return false
+		}
+	}
+
+	return true
+}
+
 func cleanContainers(containers *[]types.Container, user *auth.User) {
 	for _, container := range *containers {
 		log.Print(user.Username + ` stops ` + strings.Join(container.Names, `, `))
@@ -197,6 +221,8 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	}
 
 	deployedServices := make(map[string]deployedService)
+
+	var creationError = false
 	for serviceName, service := range compose.Services {
 		if err := pullImage(service.Image, user); err != nil {
 			errorHandler(w, err)
@@ -204,26 +230,42 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 		}
 
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
-		log.Print(user.Username + ` starts ` + serviceFullName)
+		log.Printf(`%s starts %s`, user.Username, serviceFullName)
 
-		id, err := docker.ContainerCreate(context.Background(), getConfig(&service, user, appNameStr), getHostConfig(&service), getNetworkConfig(&service, &deployedServices), serviceFullName)
+		createdContainer, err := docker.ContainerCreate(context.Background(), getConfig(&service, user, appNameStr), getHostConfig(&service), getNetworkConfig(&service, &deployedServices), serviceFullName)
 		if err != nil {
 			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
-			return
+			creationError = true
+			break
 		}
 
-		startContainer(id.ID)
-		deployedServices[serviceName] = deployedService{ID: id.ID, Name: serviceFullName}
+		deployedServices[serviceName] = deployedService{ID: createdContainer.ID, Name: serviceFullName}
 	}
 
-	log.Print(`Waiting 5 seconds for containers to start...`)
-	time.Sleep(5 * time.Second)
+	if creationError {
+		for _, container := range deployedServices {
+			rmContainer(container.ID)
+		}
 
-	cleanContainers(&ownerContainers, user)
-	if err := renameDeployedContainers(&deployedServices); err != nil {
-		errorHandler(w, err)
 		return
 	}
+
+	var wgHealthCheck sync.WaitGroup
+
+	for _, container := range deployedServices {
+		startContainer(container.ID)
+		wgHealthCheck.Add(1)
+	}
+
+	go func() {
+		log.Printf(`Waiting %d seconds for new containers to start...`, waitTime)
+		time.Sleep(waitTime * time.Second)
+
+		cleanContainers(&ownerContainers, user)
+		if err := renameDeployedContainers(&deployedServices); err != nil {
+			log.Print(err)
+		}
+	}()
 
 	jsonHttp.ResponseJSON(w, results{deployedServices})
 }
