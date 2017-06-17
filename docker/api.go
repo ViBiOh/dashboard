@@ -17,8 +17,8 @@ type results struct {
 	Results interface{} `json:"results"`
 }
 
-var gracefulCloseRequest = regexp.MustCompile(`^/gracefulClose$`)
-var healthRequest = regexp.MustCompile(`^/health$`)
+var gracefulCloseRequest = regexp.MustCompile(`^gracefulClose$`)
+var healthRequest = regexp.MustCompile(`^health$`)
 var containersRequest = regexp.MustCompile(`containers/?$`)
 var containerRequest = regexp.MustCompile(`containers/([^/]+)/?$`)
 var containerStartRequest = regexp.MustCompile(`containers/([^/]+)/start`)
@@ -84,7 +84,6 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	urlPath := []byte(r.URL.Path)
 
-	log.Printf(`%s %v %v %v`, urlPath, healthRequest.Match(urlPath), r.Method, http.MethodGet)
 	if healthRequest.Match(urlPath) && r.Method == http.MethodGet {
 		healthHandler(w, r)
 		return
