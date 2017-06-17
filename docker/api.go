@@ -84,6 +84,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	urlPath := []byte(r.URL.Path)
 
+	log.Printf(`%s %v %v %v`, urlPath, healthRequest.Match(urlPath), r.Method, http.MethodGet)
 	if healthRequest.Match(urlPath) && r.Method == http.MethodGet {
 		healthHandler(w, r)
 		return
