@@ -9,21 +9,22 @@ import (
 	"regexp"
 )
 
+var available = true
+
 const authorizationHeader = `Authorization`
 
 type results struct {
 	Results interface{} `json:"results"`
 }
 
-var statusRequest = regexp.MustCompile(`^/status$`)
+var gracefulCloseRequest = regexp.MustCompile(`^/gracefulClose$`)
+var healthRequest = regexp.MustCompile(`^/health$`)
 var containersRequest = regexp.MustCompile(`containers/?$`)
 var containerRequest = regexp.MustCompile(`containers/([^/]+)/?$`)
 var containerStartRequest = regexp.MustCompile(`containers/([^/]+)/start`)
 var containerStopRequest = regexp.MustCompile(`containers/([^/]+)/stop`)
 var containerRestartRequest = regexp.MustCompile(`containers/([^/]+)/restart`)
-
 var servicesRequest = regexp.MustCompile(`services/?$`)
-
 var infoRequest = regexp.MustCompile(`info/?$`)
 
 func errorHandler(w http.ResponseWriter, err error) {
@@ -31,11 +32,22 @@ func errorHandler(w http.ResponseWriter, err error) {
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 
-func statusHandler(w http.ResponseWriter, r *http.Request) {
-	if docker != nil {
-		w.Write([]byte(`OK`))
+func gracefulCloseHandler(w http.ResponseWriter, r *http.Request, user *auth.User) {
+	if isAdmin(user) {
+		available = false
+		w.WriteHeader(http.StatusAccepted)
 	} else {
-		w.Write([]byte(`KO`))
+		w.WriteHeader(http.StatusForbidden)
+	}
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	if available && docker != nil {
+		w.WriteHeader(http.StatusOK)
+	} else if !available {
+		w.WriteHeader(http.StatusGone)
+	} else if docker == nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
 	}
 }
 
@@ -65,14 +77,8 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`Access-Control-Allow-Methods`, `GET, POST, DELETE`)
 	w.Header().Add(`X-Content-Type-Options`, `nosniff`)
 
-	urlPath := []byte(r.URL.Path)
-
 	if r.Method == http.MethodOptions {
-		if statusRequest.Match(urlPath) {
-			statusHandler(w, r)
-		} else {
-			w.Write(nil)
-		}
+		w.Write(nil)
 		return
 	}
 
@@ -82,7 +88,13 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if infoRequest.Match(urlPath) && r.Method == http.MethodGet {
+	urlPath := []byte(r.URL.Path)
+
+	if healthRequest.Match(urlPath) && r.Method == http.MethodGet {
+		healthHandler(w, r)
+	} else if gracefulCloseRequest.Match(urlPath) && r.Method == http.MethodPost {
+		gracefulCloseHandler(w, r, user)
+	} else if infoRequest.Match(urlPath) && r.Method == http.MethodGet {
 		infoHandler(w)
 	} else if containersRequest.Match(urlPath) && r.Method == http.MethodGet {
 		listContainersHandler(w, user)
