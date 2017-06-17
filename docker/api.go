@@ -15,6 +15,7 @@ type results struct {
 	Results interface{} `json:"results"`
 }
 
+var statusRequest = regexp.MustCompile(`^/status$`)
 var containersRequest = regexp.MustCompile(`containers/?$`)
 var containerRequest = regexp.MustCompile(`containers/([^/]+)/?$`)
 var containerStartRequest = regexp.MustCompile(`containers/([^/]+)/start`)
@@ -28,6 +29,14 @@ var infoRequest = regexp.MustCompile(`info/?$`)
 func errorHandler(w http.ResponseWriter, err error) {
 	log.Print(err)
 	http.Error(w, err.Error(), http.StatusInternalServerError)
+}
+
+func statusHandler(w http.ResponseWriter, r *http.Request) {
+	if docker != nil {
+		w.Write([]byte(`OK`))
+	} else {
+		w.Write([]byte(`KO`))
+	}
 }
 
 func unauthorized(w http.ResponseWriter, err error) {
@@ -56,8 +65,14 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add(`Access-Control-Allow-Methods`, `GET, POST, DELETE`)
 	w.Header().Add(`X-Content-Type-Options`, `nosniff`)
 
+	urlPath := []byte(r.URL.Path)
+
 	if r.Method == http.MethodOptions {
-		w.Write(nil)
+		if statusRequest.Match(urlPath) {
+			statusHandler(w, r)
+		} else {
+			w.Write(nil)
+		}
 		return
 	}
 
@@ -66,8 +81,6 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		unauthorized(w, err)
 		return
 	}
-
-	urlPath := []byte(r.URL.Path)
 
 	if infoRequest.Match(urlPath) && r.Method == http.MethodGet {
 		infoHandler(w)

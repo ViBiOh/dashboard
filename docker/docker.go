@@ -17,7 +17,6 @@ var hostCheck *regexp.Regexp
 var docker *client.Client
 
 func init() {
-
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
 	if err != nil {
 		log.Fatal(err)
