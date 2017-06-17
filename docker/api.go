@@ -82,6 +82,8 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	urlPath := []byte(r.URL.Path)
+
 	if healthRequest.Match(urlPath) && r.Method == http.MethodGet {
 		healthHandler(w, r)
 		return
@@ -92,8 +94,6 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		unauthorized(w, err)
 		return
 	}
-
-	urlPath := []byte(r.URL.Path)
 
 	if gracefulCloseRequest.Match(urlPath) && r.Method == http.MethodPost {
 		gracefulCloseHandler(w, r, user)
