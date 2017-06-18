@@ -18,6 +18,7 @@ import (
 
 const minMemory = 16777216
 const maxMemory = 805306368
+const httpPrefix = `http://`
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
@@ -169,7 +170,7 @@ func healthCheckContainer(container *types.ContainerJSON) bool {
 	if container.Config.Labels[traefikHeatlhCheckLabel] != `` {
 		log.Printf(`Checking health of container %s`, container.Name)
 
-		response, err := http.Get(container.NetworkSettings.Networks[networkMode].IPAddress + container.Config.Labels[traefikPortLabel] + container.Config.Labels[traefikHeatlhCheckLabel])
+		response, err := http.Get(httpPrefix + container.NetworkSettings.Networks[networkMode].IPAddress + container.Config.Labels[traefikPortLabel] + container.Config.Labels[traefikHeatlhCheckLabel])
 
 		if err != nil {
 			log.Printf(`Unable to health check for container %s : %v`, container.Name, err)
