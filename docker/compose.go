@@ -158,11 +158,18 @@ func pullImage(image string, user *auth.User) error {
 func healthCheckContainers(containers []*types.ContainerJSON) {
 	healthCheckSuccess := make(map[string]bool)
 
-	for len(healthCheckSuccess) != len(containers) {
+	iterate := true
+
+	for iterate {
 		for _, container := range containers {
 			if !healthCheckSuccess[container.ID] && healthCheckContainer(container) {
 				healthCheckSuccess[container.ID] = true
 			}
+		}
+
+		iterate = len(healthCheckSuccess) != len(containers)
+		if (!iterate) {
+			return
 		}
 
 		time.Sleep(waitTime)
