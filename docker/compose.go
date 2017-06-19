@@ -28,7 +28,7 @@ const traefikPortLabel = `traefik.port`
 const linkSeparator = `:`
 const waitTime = 10 * time.Second
 
-var httpClient http.Client = http.Client{ Timeout: 5 * time.Second }
+var httpClient = http.Client{ Timeout: 5 * time.Second }
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
@@ -173,7 +173,8 @@ func healthCheckContainer(container *types.ContainerJSON) bool {
 	if container.Config.Labels[traefikHeatlhCheckLabel] != `` {
 		log.Printf(`Checking health of container %s`, container.Name)
 
-		response, err := httpClient.Do(http.NewRequest(`GET`, httpPrefix + container.NetworkSettings.Networks[networkMode].IPAddress + portSeparator + container.Config.Labels[traefikPortLabel] + container.Config.Labels[traefikHeatlhCheckLabel], nil))	
+		request := http.NewRequest(`GET`, httpPrefix + container.NetworkSettings.Networks[networkMode].IPAddress + portSeparator + container.Config.Labels[traefikPortLabel] + container.Config.Labels[traefikHeatlhCheckLabel], nil)
+		response, err := httpClient.Do(request)	
 		if err != nil {
 			log.Printf(`Unable to health check for container %s : %v`, container.Name, err)
 			return true
