@@ -173,7 +173,12 @@ func healthCheckContainer(container *types.ContainerJSON) bool {
 	if container.Config.Labels[traefikHeatlhCheckLabel] != `` {
 		log.Printf(`Checking health of container %s`, container.Name)
 
-		request := http.NewRequest(`GET`, httpPrefix + container.NetworkSettings.Networks[networkMode].IPAddress + portSeparator + container.Config.Labels[traefikPortLabel] + container.Config.Labels[traefikHeatlhCheckLabel], nil)
+		request, err := http.NewRequest(`GET`, httpPrefix + container.NetworkSettings.Networks[networkMode].IPAddress + portSeparator + container.Config.Labels[traefikPortLabel] + container.Config.Labels[traefikHeatlhCheckLabel], nil)
+		if err != nil {
+			log.Printf(`Unable to prepare health check request for container %s : %v`, container.Name, err)
+			return true
+		}
+		
 		response, err := httpClient.Do(request)	
 		if err != nil {
 			log.Printf(`Unable to health check for container %s : %v`, container.Name, err)
