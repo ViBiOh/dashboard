@@ -28,7 +28,7 @@ const traefikPortLabel = `traefik.port`
 const linkSeparator = `:`
 const waitTime = 10 * time.Second
 
-var httpClient := http.Client{ Timeout: 5 * time.Second }
+var httpClient http.Client = http.Client{ Timeout: 5 * time.Second }
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
