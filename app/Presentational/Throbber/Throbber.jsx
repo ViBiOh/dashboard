@@ -12,7 +12,7 @@ const Throbber = ({ label, title, className, vertical, horizontalSm }) =>
     {!vertical && label ? <span>{label}</span> : null}
     <div
       className={`${style.throbber} ${vertical && style.column} ${horizontalSm &&
-        style['row-responsive']} ${className}`}
+        style['row-responsive']} ${className || ''}`}
     >
       <div className={style.bounce1} />
       <div className={style.bounce2} />
