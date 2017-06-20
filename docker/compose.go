@@ -189,7 +189,7 @@ func healthCheckContainer(container *types.ContainerJSON) bool {
 		response, err := httpClient.Do(request)	
 		if err != nil {
 			log.Printf(`Unable to health check for container %s : %v`, container.Name, err)
-			return true
+			return false
 		}
 
 		defer response.Body.Close()
