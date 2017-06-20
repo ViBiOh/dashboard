@@ -112,6 +112,14 @@ test.serial('should drop stored token from localStorage on logout', (t) => {
   });
 });
 
+test.serial('should throw error if not auth find', (t) => {
+  localStorageService.getItem.restore();
+  sinon.stub(localStorageService, 'getItem').callsFake(() => '');
+
+  const error = t.throws(() => DockerService.containers());
+  t.is(error.message, 'Authentification not find');
+});
+
 test.serial('should list containers with auth', t =>
   DockerService.containers().then(() => {
     t.true(getItemSpy.calledWith(authStorage));
