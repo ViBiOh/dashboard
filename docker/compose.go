@@ -173,7 +173,7 @@ func healthCheckContainers(containers []*types.ContainerJSON) bool {
 			}
 		}
 
-		if len(healthCheckSuccess) != len(containers) {
+		if len(healthCheckSuccess) == len(containers) {
 			return true
 		}
 	}
