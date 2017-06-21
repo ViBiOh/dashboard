@@ -27,7 +27,7 @@ const traefikHeatlhCheckLabel = `traefik.backend.healthcheck.path`
 const traefikPortLabel = `traefik.port`
 const linkSeparator = `:`
 const waitTime = 10 * time.Second
-const maxHealthCheckTry = 5
+const maxHealthCheckTry = 8
 
 var httpClient = http.Client{Timeout: 5 * time.Second}
 
@@ -161,8 +161,8 @@ func healthCheckContainers(containers []*types.ContainerJSON) bool {
 
 	sleepDuration := waitTime
 
-	for i := 1; i <= maxHealthCheckTry && len(healthCheckSuccess) != len(containers); i++ {
-		if i != 1 {
+	for i := 0; i < maxHealthCheckTry && len(healthCheckSuccess) != len(containers); i++ {
+		if i != 0 {
 			time.Sleep(waitTime)
 			sleepDuration = sleepDuration * 2
 		}
