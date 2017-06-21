@@ -161,7 +161,7 @@ func healthCheckContainers(containers []*types.ContainerJSON) bool {
 
 	sleepDuration := waitTime
 
-	for i := 0; i < maxHealthCheckTry && len(healthCheckSuccess) != len(containers); i++ {
+	for i := 0; i < maxHealthCheckTry; i++ {
 		if i != 0 {
 			time.Sleep(waitTime)
 			sleepDuration = sleepDuration * 2
@@ -172,9 +172,13 @@ func healthCheckContainers(containers []*types.ContainerJSON) bool {
 				healthCheckSuccess[container.ID] = true
 			}
 		}
+
+		if len(healthCheckSuccess) != len(containers) {
+			return true
+		}
 	}
 
-	return len(healthCheckSuccess) != len(containers)
+	return false
 }
 
 func healthCheckContainer(container *types.ContainerJSON) bool {
