@@ -317,6 +317,7 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 		log.Printf(`Waiting for new containers to start...`)
 
 		if healthCheckContainers(inspectServices(deployedServices)) {
+			log.Printf(`Health check succeed for started app %s`, appName)
 			cleanContainers(&ownerContainers, user)
 
 			if err := renameDeployedContainers(&deployedServices); err != nil {
