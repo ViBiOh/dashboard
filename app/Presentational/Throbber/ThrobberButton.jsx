@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../Presentational/Button/Button';
 import Throbber from './Throbber';
-import style from './ThrobberButton.less';
 
 /**
  * Throbber wrapped in a Button for displaying background task on click.
@@ -12,7 +11,7 @@ import style from './ThrobberButton.less';
 const ThrobberButton = ({ pending, vertical, horizontalSm, onClick, children, ...buttonProps }) =>
   (<Button {...buttonProps} onClick={e => (pending ? null : onClick(e))}>
     {pending
-      ? <Throbber className={style.white} vertical={vertical} horizontalSm={horizontalSm} />
+      ? <Throbber vertical={vertical} horizontalSm={horizontalSm} white />
       : children}
   </Button>);
 
