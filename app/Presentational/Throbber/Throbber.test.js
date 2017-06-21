@@ -20,12 +20,6 @@ test('should have no label if vertical', (t) => {
 });
 
 test('should have 4 styles if vertical and row-responsive', (t) => {
-  t.is(
-    shallow(<Throbber white vertical horizontalSm />)
-      .find('div')
-      .at(1)
-      .prop('className')
-      .split(' ').length,
-    4,
-  );
+  const wrapper = shallow(<Throbber white vertical horizontalSm />).find('div').at(1);
+  t.is(wrapper.prop('className').split(' ').length, 4);
 });

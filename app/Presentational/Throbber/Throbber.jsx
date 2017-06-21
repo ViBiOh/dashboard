@@ -11,8 +11,8 @@ const Throbber = ({ label, title, white, vertical, horizontalSm }) =>
   (<div className={style.container} title={title}>
     {!vertical && label ? <span>{label}</span> : null}
     <div
-      className={`${style.throbber} ${white && style.white} ${vertical && style.column} ${horizontalSm &&
-        style['row-responsive']}`}
+      className={`${style.throbber} ${white && style.white} ${vertical &&
+        style.column} ${horizontalSm && style['row-responsive']}`}
     >
       <div className={style.bounce1} />
       <div className={style.bounce2} />

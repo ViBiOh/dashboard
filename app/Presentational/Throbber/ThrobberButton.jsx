@@ -10,9 +10,7 @@ import Throbber from './Throbber';
  */
 const ThrobberButton = ({ pending, vertical, horizontalSm, onClick, children, ...buttonProps }) =>
   (<Button {...buttonProps} onClick={e => (pending ? null : onClick(e))}>
-    {pending
-      ? <Throbber vertical={vertical} horizontalSm={horizontalSm} white />
-      : children}
+    {pending ? <Throbber vertical={vertical} horizontalSm={horizontalSm} white /> : children}
   </Button>);
 
 ThrobberButton.displayName = 'ThrobberButton';
