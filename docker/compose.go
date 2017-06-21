@@ -27,8 +27,9 @@ const traefikHeatlhCheckLabel = `traefik.backend.healthcheck.path`
 const traefikPortLabel = `traefik.port`
 const linkSeparator = `:`
 const waitTime = 10 * time.Second
+const maxHealthCheckTry = 5
 
-var httpClient = http.Client{ Timeout: 5 * time.Second }
+var httpClient = http.Client{Timeout: 5 * time.Second}
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
@@ -155,38 +156,38 @@ func pullImage(image string, user *auth.User) error {
 	return nil
 }
 
-func healthCheckContainers(containers []*types.ContainerJSON) {
+func healthCheckContainers(containers []*types.ContainerJSON) bool {
 	healthCheckSuccess := make(map[string]bool)
 
-	iterate := true
+	sleepDuration := waitTime
 
-	for iterate {
+	for i := 1; i <= maxHealthCheckTry && len(healthCheckSuccess) != len(containers); i++ {
+		if i != 1 {
+			time.Sleep(waitTime)
+			sleepDuration = sleepDuration * 2
+		}
+
 		for _, container := range containers {
 			if !healthCheckSuccess[container.ID] && healthCheckContainer(container) {
 				healthCheckSuccess[container.ID] = true
 			}
 		}
-
-		iterate = len(healthCheckSuccess) != len(containers)
-		if (!iterate) {
-			return
-		}
-
-		time.Sleep(waitTime)
 	}
+
+	return len(healthCheckSuccess) != len(containers)
 }
 
 func healthCheckContainer(container *types.ContainerJSON) bool {
 	if container.Config.Labels[traefikHeatlhCheckLabel] != `` {
 		log.Printf(`Checking health of container %s`, container.Name)
 
-		request, err := http.NewRequest(`GET`, httpPrefix + container.NetworkSettings.Networks[networkMode].IPAddress + portSeparator + container.Config.Labels[traefikPortLabel] + container.Config.Labels[traefikHeatlhCheckLabel], nil)
+		request, err := http.NewRequest(`GET`, httpPrefix+container.NetworkSettings.Networks[networkMode].IPAddress+portSeparator+container.Config.Labels[traefikPortLabel]+container.Config.Labels[traefikHeatlhCheckLabel], nil)
 		if err != nil {
 			log.Printf(`Unable to prepare health check request for container %s : %v`, container.Name, err)
 			return true
 		}
-		
-		response, err := httpClient.Do(request)	
+
+		response, err := httpClient.Do(request)
 		if err != nil {
 			log.Printf(`Unable to health check for container %s : %v`, container.Name, err)
 			return false
@@ -229,18 +230,20 @@ func getFinalName(serviceFullName string) string {
 	return strings.TrimSuffix(serviceFullName, deploySuffix)
 }
 
-func deleteServices(services map[string]deployedService) {
+func deleteServices(appName []byte, services map[string]deployedService) {
+	log.Printf(`Deleting container %s`, appName)
 	for service, container := range services {
 		if err := rmContainer(container.ID); err != nil {
-			log.Printf(`Error while deleting container for %s : %v`, service, err)
+			log.Printf(`Error while deleting container %s : %v`, service, err)
 		}
 	}
 }
 
-func startServices(services map[string]deployedService) {
+func startServices(appName []byte, services map[string]deployedService) {
+	log.Printf(`Starting containers for app %s`, appName)
 	for service, container := range services {
 		if err := startContainer(container.ID); err != nil {
-			log.Printf(`Error while starting container for %s : %v`, service, err)
+			log.Printf(`Error while starting container %s : %v`, service, err)
 		}
 	}
 }
@@ -251,7 +254,7 @@ func inspectServices(services map[string]deployedService) []*types.ContainerJSON
 	for service, container := range services {
 		infos, err := inspectContainer(container.ID)
 		if err != nil {
-			log.Printf(`Error while inspecting container for %s : %v`, service, err)
+			log.Printf(`Error while inspecting container %s : %v`, service, err)
 		}
 
 		containers = append(containers, &infos)
@@ -304,20 +307,24 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	}
 
 	if creationError {
-		deleteServices(deployedServices)
+		deleteServices(appName, deployedServices)
 		return
 	}
 
-	startServices(deployedServices)
+	startServices(appName, deployedServices)
 
 	go func() {
 		log.Printf(`Waiting for new containers to start...`)
 
-		healthCheckContainers(inspectServices(deployedServices))
-		cleanContainers(&ownerContainers, user)
+		if healthCheckContainers(inspectServices(deployedServices)) {
+			cleanContainers(&ownerContainers, user)
 
-		if err := renameDeployedContainers(&deployedServices); err != nil {
-			log.Print(err)
+			if err := renameDeployedContainers(&deployedServices); err != nil {
+				log.Print(err)
+			}
+		} else {
+			log.Printf(`Health check failed for started app %s`, appName)
+			deleteServices(appName, deployedServices)
 		}
 	}()
 
