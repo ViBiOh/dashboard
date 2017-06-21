@@ -35,7 +35,7 @@ services:
     command:
     - -spa
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com ajax.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' data: ; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-api.l3miage.fr;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-api.l3miage.fr;"
     labels:
       traefik.backend.healthcheck.path: '/health'
       traefik.frontend.passHostHeader: 'true'
