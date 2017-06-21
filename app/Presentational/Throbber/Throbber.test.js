@@ -21,7 +21,7 @@ test('should have no label if vertical', (t) => {
 
 test('should have 4 styles if vertical and row-responsive', (t) => {
   t.is(
-    shallow(<Throbber vertical horizontalSm className={'user'} />)
+    shallow(<Throbber white vertical horizontalSm />)
       .find('div')
       .at(1)
       .prop('className')
