@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"sync"
 	"time"
 )
 
@@ -14,6 +15,8 @@ const authorizationHeader = `Authorization`
 const gracefulCloseDelay = 30
 
 var gracefulCloseTimestamp time.Time
+var gracefulCloseMutex = sync.RWMutex{}
+var gracefulCloseCounter = 0
 
 type results struct {
 	Results interface{} `json:"results"`
@@ -47,10 +50,32 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	if time.Time.IsZero(gracefulCloseTimestamp) && docker != nil {
 		w.WriteHeader(http.StatusOK)
 	} else if !time.Time.IsZero(gracefulCloseTimestamp) {
-		w.WriteHeader(http.StatusGone)
+		if !isGracefullyClosed() {
+			w.WriteHeader(http.StatusGone)
+		} else {
+			gracefulCloseMutex.RLock()
+			defer gracefulCloseMutex.Unlock()
+
+			if gracefulCloseCounter != 0 {
+				w.WriteHeader(http.StatusProcessing)
+			} else {
+				w.WriteHeader(http.StatusTeapot)
+			}
+		}
 	} else if docker == nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
 	}
+}
+
+func isGracefullyClosed() bool {
+	return !time.Time.IsZero(gracefulCloseTimestamp) && time.Now().After(gracefulCloseTimestamp)
+}
+
+func addCounter(value int) {
+	defer gracefulCloseMutex.Unlock()
+
+	gracefulCloseMutex.Lock()
+	gracefulCloseCounter = gracefulCloseCounter + value
 }
 
 func unauthorized(w http.ResponseWriter, err error) {
@@ -91,14 +116,14 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := auth.IsAuthenticatedByAuth(r.Header.Get(authorizationHeader))
-	if err != nil {
-		unauthorized(w, err)
+	if isGracefullyClosed() {
+		w.WriteHeader(http.StatusGone)
 		return
 	}
 
-	if !time.Time.IsZero(gracefulCloseTimestamp) && time.Now().After(gracefulCloseTimestamp) {
-		w.WriteHeader(http.StatusGone)
+	user, err := auth.IsAuthenticatedByAuth(r.Header.Get(authorizationHeader))
+	if err != nil {
+		unauthorized(w, err)
 		return
 	}
 
@@ -122,6 +147,9 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if composeBody, err := readBody(r.Body); err != nil {
 			errorHandler(w, err)
 		} else {
+			addCounter(1)
+			defer addCounter(-1)
+
 			createAppHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 		}
 	} else if servicesRequest.Match(urlPath) && r.Method == http.MethodGet {

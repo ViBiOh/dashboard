@@ -259,6 +259,9 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	startServices(appName, deployedServices)
 
 	go func() {
+		addCounter(1)
+		defer addCounter(-1)
+
 		log.Printf(`Waiting for containers of app %s to start...`, appName)
 
 		if healthCheck.TraefikContainers(inspectServices(deployedServices), networkMode) {
