@@ -7,11 +7,13 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"time"
 )
 
-var available = true
-
 const authorizationHeader = `Authorization`
+const gracefulCloseDelay = 30
+
+var gracefulCloseTimestamp time.Time
 
 type results struct {
 	Results interface{} `json:"results"`
@@ -34,7 +36,7 @@ func errorHandler(w http.ResponseWriter, err error) {
 
 func gracefulCloseHandler(w http.ResponseWriter, r *http.Request, user *auth.User) {
 	if isAdmin(user) {
-		available = false
+		gracefulCloseTimestamp = time.Now().Add(gracefulCloseDelay * time.Second)
 		w.WriteHeader(http.StatusAccepted)
 	} else {
 		w.WriteHeader(http.StatusForbidden)
@@ -42,9 +44,9 @@ func gracefulCloseHandler(w http.ResponseWriter, r *http.Request, user *auth.Use
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	if available && docker != nil {
+	if time.Time.IsZero(gracefulCloseTimestamp) && docker != nil {
 		w.WriteHeader(http.StatusOK)
-	} else if !available {
+	} else if !time.Time.IsZero(gracefulCloseTimestamp) {
 		w.WriteHeader(http.StatusGone)
 	} else if docker == nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
@@ -95,7 +97,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !available {
+	if !time.Time.IsZero(gracefulCloseTimestamp) && time.Now().After(gracefulCloseTimestamp) {
 		w.WriteHeader(http.StatusGone)
 		return
 	}
