@@ -163,7 +163,7 @@ func healthCheckContainers(containers []*types.ContainerJSON) bool {
 
 	for i := 0; i < maxHealthCheckTry; i++ {
 		if i != 0 {
-			time.Sleep(waitTime)
+			time.Sleep(sleepDuration)
 			sleepDuration = sleepDuration * 2
 		}
 
@@ -298,7 +298,7 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 		}
 
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
-		log.Printf(`%s starts %s`, user.Username, serviceFullName)
+		log.Printf(`%s create %s container for app %s`, user.Username, serviceFullName, appName)
 
 		createdContainer, err := docker.ContainerCreate(context.Background(), getConfig(&service, user, appNameStr), getHostConfig(&service), getNetworkConfig(&service, &deployedServices), serviceFullName)
 		if err != nil {
@@ -318,17 +318,17 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	startServices(appName, deployedServices)
 
 	go func() {
-		log.Printf(`Waiting for new containers to start...`)
+		log.Printf(`Waiting for containers of app %s to start...`, appName)
 
 		if healthCheckContainers(inspectServices(deployedServices)) {
-			log.Printf(`Health check succeed for started app %s`, appName)
+			log.Printf(`Health check succeeded for app %s`, appName)
 			cleanContainers(&ownerContainers, user)
 
 			if err := renameDeployedContainers(&deployedServices); err != nil {
 				log.Print(err)
 			}
 		} else {
-			log.Printf(`Health check failed for started app %s`, appName)
+			log.Printf(`Health check failed for app %s`, appName)
 			deleteServices(appName, deployedServices)
 		}
 	}()
