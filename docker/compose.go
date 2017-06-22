@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/dashboard/healthCheck"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -13,23 +14,14 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-	"time"
 )
 
 const minMemory = 16777216
 const maxMemory = 805306368
-const httpPrefix = `http://`
-const portSeparator = `:`
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
-const traefikHeatlhCheckLabel = `traefik.backend.healthcheck.path`
-const traefikPortLabel = `traefik.port`
 const linkSeparator = `:`
-const waitTime = 10 * time.Second
-const maxHealthCheckTry = 8
-
-var httpClient = http.Client{Timeout: 5 * time.Second}
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
@@ -156,57 +148,6 @@ func pullImage(image string, user *auth.User) error {
 	return nil
 }
 
-func healthCheckContainers(containers []*types.ContainerJSON) bool {
-	healthCheckSuccess := make(map[string]bool)
-
-	sleepDuration := waitTime
-
-	for i := 0; i < maxHealthCheckTry; i++ {
-		if i != 0 {
-			time.Sleep(sleepDuration)
-			sleepDuration = sleepDuration * 2
-		}
-
-		for _, container := range containers {
-			if !healthCheckSuccess[container.ID] && healthCheckContainer(container) {
-				healthCheckSuccess[container.ID] = true
-			}
-		}
-
-		if len(healthCheckSuccess) == len(containers) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func healthCheckContainer(container *types.ContainerJSON) bool {
-	if container.Config.Labels[traefikHeatlhCheckLabel] != `` {
-		log.Printf(`Checking health of container %s`, container.Name)
-
-		request, err := http.NewRequest(`GET`, httpPrefix+container.NetworkSettings.Networks[networkMode].IPAddress+portSeparator+container.Config.Labels[traefikPortLabel]+container.Config.Labels[traefikHeatlhCheckLabel], nil)
-		if err != nil {
-			log.Printf(`Unable to prepare health check request for container %s : %v`, container.Name, err)
-			return true
-		}
-
-		response, err := httpClient.Do(request)
-		if err != nil {
-			log.Printf(`Unable to health check for container %s : %v`, container.Name, err)
-			return false
-		}
-
-		defer response.Body.Close()
-		if response.StatusCode != http.StatusOK {
-			log.Printf(`Health check failed for container %s : HTTP/%d`, container.Name, response.StatusCode)
-			return false
-		}
-	}
-
-	return true
-}
-
 func cleanContainers(containers *[]types.Container, user *auth.User) {
 	for _, container := range *containers {
 		log.Print(user.Username + ` stops ` + strings.Join(container.Names, `, `))
@@ -320,7 +261,7 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	go func() {
 		log.Printf(`Waiting for containers of app %s to start...`, appName)
 
-		if healthCheckContainers(inspectServices(deployedServices)) {
+		if healthCheck.TraefikContainers(inspectServices(deployedServices), networkMode) {
 			log.Printf(`Health check succeeded for app %s`, appName)
 			cleanContainers(&ownerContainers, user)
 
