@@ -95,6 +95,11 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !available {
+		w.WriteHeader(http.StatusGone)
+		return
+	}
+
 	if gracefulCloseRequest.Match(urlPath) && r.Method == http.MethodPost {
 		gracefulCloseHandler(w, r, user)
 	} else if infoRequest.Match(urlPath) && r.Method == http.MethodGet {
