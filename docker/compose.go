@@ -137,22 +137,22 @@ func pullImage(image string, user *auth.User) error {
 		image = image + defaultTag
 	}
 
-	log.Print(user.Username + ` starts pulling for ` + image)
+	log.Printf(`[%s] Starting pull of image %s`, user.Username, image)
 	pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
 	if err != nil {
-		return fmt.Errorf(`Error while pulling image: %v`, err)
+		return fmt.Errorf(`[%s] Error while pulling image: %v`, user.Username, err)
 	}
 
 	readBody(pull)
-	log.Print(user.Username + ` ends pulling for ` + image)
+	log.Printf(`[%s] Ending pull of image %s`, user.Username, image)
 	return nil
 }
 
 func cleanContainers(containers *[]types.Container, user *auth.User) {
 	for _, container := range *containers {
-		log.Print(user.Username + ` stops ` + strings.Join(container.Names, `, `))
+		log.Printf(`[%s] Stopping containers %s`, user.Username, strings.Join(container.Names, `, `))
 		stopContainer(container.ID)
-		log.Print(user.Username + ` rm ` + strings.Join(container.Names, `, `))
+		log.Printf(`[%s] Deleting containers %s`, user.Username, strings.Join(container.Names, `, `))
 		rmContainer(container.ID)
 	}
 }
@@ -179,7 +179,7 @@ func deleteServices(appName []byte, services map[string]deployedService) {
 	log.Printf(`Deleting container %s`, appName)
 	for service, container := range services {
 		if err := rmContainer(container.ID); err != nil {
-			log.Printf(`Error while deleting container %s : %v`, service, err)
+			log.Printf(`Error while deleting container %s: %v`, service, err)
 		}
 	}
 }
@@ -188,7 +188,7 @@ func startServices(appName []byte, services map[string]deployedService) {
 	log.Printf(`Starting containers for app %s`, appName)
 	for service, container := range services {
 		if err := startContainer(container.ID); err != nil {
-			log.Printf(`Error while starting container %s : %v`, service, err)
+			log.Printf(`Error while starting container %s: %v`, service, err)
 		}
 	}
 }
@@ -199,7 +199,7 @@ func inspectServices(services map[string]deployedService) []*types.ContainerJSON
 	for service, container := range services {
 		infos, err := inspectContainer(container.ID)
 		if err != nil {
-			log.Printf(`Error while inspecting container %s : %v`, service, err)
+			log.Printf(`Error while inspecting container %s: %v`, service, err)
 		}
 
 		containers = append(containers, &infos)
@@ -210,18 +210,18 @@ func inspectServices(services map[string]deployedService) []*types.ContainerJSON
 
 func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
-		http.Error(w, `An application name and a compose file are required`, http.StatusBadRequest)
+		http.Error(w, `[` + user.Username + `] An application name and a compose file are required`, http.StatusBadRequest)
 		return
 	}
 
 	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		errorHandler(w, fmt.Errorf(`Error while unmarshalling compose file: %v`, err))
+		errorHandler(w, fmt.Errorf(`[%s] Error while unmarshalling compose file: %v`, user.Username, err))
 		return
 	}
 
 	appNameStr := string(appName)
-	log.Print(user.Username + ` deploys ` + appNameStr)
+	log.Printf(`[%s] Deploying %s`, user.Username, appNameStr)
 
 	ownerContainers, err := listContainers(user, &appNameStr)
 	if err != nil {
@@ -239,11 +239,11 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 		}
 
 		serviceFullName := getServiceFullName(appNameStr, serviceName)
-		log.Printf(`%s create %s container for app %s`, user.Username, serviceFullName, appName)
+		log.Printf(`[%s] Creating container %s for %s`, user.Username, serviceFullName, appName)
 
 		createdContainer, err := docker.ContainerCreate(context.Background(), getConfig(&service, user, appNameStr), getHostConfig(&service), getNetworkConfig(&service, &deployedServices), serviceFullName)
 		if err != nil {
-			errorHandler(w, fmt.Errorf(`Error while creating container: %v`, err))
+			errorHandler(w, fmt.Errorf(`[%s] Error while creating container %s for %s: %v`, user.Username, serviceFullName, appName, err))
 			creationError = true
 			break
 		}
@@ -262,17 +262,17 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 		addCounter(1)
 		defer addCounter(-1)
 
-		log.Printf(`Waiting for containers of app %s to start...`, appName)
+		log.Printf(`[%s] Waiting for %s to start...`, user.Username, appName)
 
 		if healthCheck.TraefikContainers(inspectServices(deployedServices), networkMode) {
-			log.Printf(`Health check succeeded for app %s`, appName)
+			log.Printf(`[%s] Health check succeeded for %s`, user.Username, appName)
 			cleanContainers(&ownerContainers, user)
 
 			if err := renameDeployedContainers(&deployedServices); err != nil {
 				log.Print(err)
 			}
 		} else {
-			log.Printf(`Health check failed for app %s`, appName)
+			log.Printf(`[%s] Health check failed for %s`, user.Username, appName)
 			deleteServices(appName, deployedServices)
 		}
 	}()
