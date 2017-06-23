@@ -36,11 +36,6 @@ var containerRestartRequest = regexp.MustCompile(`^containers/([^/]+)/restart`)
 var servicesRequest = regexp.MustCompile(`^services`)
 var listServicesRequest = regexp.MustCompile(`^services/?$`)
 
-func errorHandler(w http.ResponseWriter, err error) {
-	log.Print(err)
-	http.Error(w, err.Error(), http.StatusInternalServerError)
-}
-
 func gracefulCloseHandler(w http.ResponseWriter, r *http.Request, user *auth.User) {
 	if isAdmin(user) {
 		gracefulCloseTimestamp = time.Now().Add(gracefulCloseDelay * time.Second)
@@ -82,12 +77,23 @@ func addCounter(value int) {
 	gracefulCloseCounter = gracefulCloseCounter + value
 }
 
+func badRequest(w http.ResponseWriter, err error) {
+	log.Print(err)
+	http.Error(w, err.Error(), http.StatusBadRequest)
+}
+
 func unauthorized(w http.ResponseWriter, err error) {
+	log.Print(err)
 	http.Error(w, err.Error(), http.StatusUnauthorized)
 }
 
 func forbidden(w http.ResponseWriter) {
-	http.Error(w, `Forbidden`, http.StatusForbidden)
+	http.Error(w, ``, http.StatusForbidden)
+}
+
+func errorHandler(w http.ResponseWriter, err error) {
+	log.Print(err)
+	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 
 func infoHandler(w http.ResponseWriter) {
