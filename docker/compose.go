@@ -210,7 +210,7 @@ func inspectServices(services map[string]deployedService) []*types.ContainerJSON
 
 func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
-		http.Error(w, `[` + user.Username + `] An application name and a compose file are required`, http.StatusBadRequest)
+		http.Error(w, `[`+user.Username+`] An application name and a compose file are required`, http.StatusBadRequest)
 		return
 	}
 
