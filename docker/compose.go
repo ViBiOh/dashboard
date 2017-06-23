@@ -175,20 +175,20 @@ func getFinalName(serviceFullName string) string {
 	return strings.TrimSuffix(serviceFullName, deploySuffix)
 }
 
-func deleteServices(appName []byte, services map[string]deployedService) {
-	log.Printf(`Deleting container %s`, appName)
+func deleteServices(appName []byte, services map[string]deployedService, user *auth.User) {
+	log.Printf(`[%s] Deleting containers for %s`, user.Username, appName)
 	for service, container := range services {
 		if err := rmContainer(container.ID); err != nil {
-			log.Printf(`Error while deleting container %s: %v`, service, err)
+			log.Printf(`[%s] Error while deleting container %s for %s: %v`, user.Username, service, appName, err)
 		}
 	}
 }
 
-func startServices(appName []byte, services map[string]deployedService) {
-	log.Printf(`Starting containers for app %s`, appName)
+func startServices(appName []byte, services map[string]deployedService, user *auth.User) {
+	log.Printf(`[%s] Starting containers for %s`, user.Username, appName)
 	for service, container := range services {
 		if err := startContainer(container.ID); err != nil {
-			log.Printf(`Error while starting container %s: %v`, service, err)
+			log.Printf(`[%s] Error while starting container %s for %s: %v`, user.Username, service, appName, err)
 		}
 	}
 }
@@ -252,11 +252,11 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	}
 
 	if creationError {
-		deleteServices(appName, deployedServices)
+		deleteServices(appName, deployedServices, user)
 		return
 	}
 
-	startServices(appName, deployedServices)
+	startServices(appName, deployedServices, user)
 
 	go func() {
 		addCounter(1)
@@ -273,7 +273,7 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 			}
 		} else {
 			log.Printf(`[%s] Health check failed for %s`, user.Username, appName)
-			deleteServices(appName, deployedServices)
+			deleteServices(appName, deployedServices, user)
 		}
 	}()
 
