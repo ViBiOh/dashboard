@@ -37,7 +37,7 @@ func labelFilters(filtersArgs *filters.Args, user *auth.User, appName *string) e
 		}
 	} else if !isAdmin(user) {
 		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+user.Username, *filtersArgs); err != nil {
-			return fmt.Errorf(`[%s] Error while parsing label for label=%s=%s: %v`, user.Username, ownerLabel, *user.Username, err)
+			return fmt.Errorf(`[%s] Error while parsing label for label=%s=%s: %v`, user.Username, ownerLabel, user.Username, err)
 		}
 	}
 
