@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/ViBiOh/dashboard/auth"
-	"github.com/ViBiOh/dashboard/healthCheck"
+	"github.com/ViBiOh/dashboard/healthcheck"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -270,7 +270,7 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 
 		log.Printf(`[%s] Waiting for %s to start...`, user.Username, appName)
 
-		if healthCheck.TraefikContainers(inspectServices(deployedServices, user), networkMode, user) {
+		if healthcheck.TraefikContainers(inspectServices(deployedServices, user), networkMode, user) {
 			log.Printf(`[%s] Health check succeeded for %s`, user.Username, appName)
 			cleanContainers(&ownerContainers, user)
 
