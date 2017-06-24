@@ -14,6 +14,7 @@ func ResponseJSON(w http.ResponseWriter, obj interface{}) {
 		w.Header().Set(`Cache-Control`, `no-cache`)
 		w.Write(objJSON)
 	} else {
+		log.Print(err)
 		http.Error(w, `Error while marshalling JSON response`, http.StatusInternalServerError)
 	}
 }

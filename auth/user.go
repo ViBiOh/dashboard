@@ -48,7 +48,7 @@ func readConfiguration(path string) map[string]*User {
 	scanner := bufio.NewScanner(configFile)
 	for scanner.Scan() {
 		parts := bytes.Split(scanner.Bytes(), commaByte)
-		user := User{string(parts[0]), parts[1], string(parts[2])}
+		user := User{Username: strings.ToLower(string(parts[0])), password: parts[1], profiles: string(parts[2])}
 
 		users[strings.ToLower(user.Username)] = &user
 	}
@@ -65,7 +65,7 @@ func isAuthenticated(username string, password string) (*User, error) {
 		}
 	}
 
-	return nil, fmt.Errorf(`Invalid credentials for ` + username)
+	return nil, fmt.Errorf(`[%s] Invalid credentials`, username)
 }
 
 // IsAuthenticatedByAuth check if Autorization Header matches a User

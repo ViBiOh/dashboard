@@ -47,7 +47,7 @@ func TraefikContainers(containers []*types.ContainerJSON, network string, user *
 }
 
 func healthCheckFail(name string, reason interface{}, user *auth.User) bool {
-	log.Printf(`[%s] Health check failed for container %s : %v`, user.Username, name, reason)
+	log.Printf(`[%s] Health check failed for container %s: %v`, user.Username, name, reason)
 	return false
 }
 
