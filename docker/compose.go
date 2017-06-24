@@ -231,6 +231,10 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 		return
 	}
 
+	if len(ownerContainers) > 0 && ownerContainers[0].Labels[ownerLabel] != user.Username {
+		forbidden(w)
+	}
+
 	deployedServices := make(map[string]deployedService)
 
 	for serviceName, service := range compose.Services {
