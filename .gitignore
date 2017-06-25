@@ -11,5 +11,4 @@ package-lock.json
 # Go binary
 server
 bcrypt_pass
-health_check
 users

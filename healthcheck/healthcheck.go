@@ -2,8 +2,8 @@ package healthcheck
 
 import (
 	"fmt"
+	"github.com/ViBiOh/alcotest/httpclient"
 	"github.com/ViBiOh/dashboard/auth"
-	"github.com/ViBiOh/dashboard/httpclient"
 	"github.com/docker/docker/api/types"
 	"log"
 	"net/http"
