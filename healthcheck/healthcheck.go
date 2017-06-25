@@ -3,6 +3,7 @@ package healthcheck
 import (
 	"fmt"
 	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/dashboard/httpclient"
 	"github.com/docker/docker/api/types"
 	"log"
 	"net/http"
@@ -15,8 +16,6 @@ const traefikHealthCheckLabel = `traefik.backend.healthcheck.path`
 const traefikPortLabel = `traefik.port`
 const waitTime = 10 * time.Second
 const maxHealthCheckTry = 8
-
-var httpClient = http.Client{Timeout: 5 * time.Second}
 
 // TraefikContainers Check health of given containers based on Traefik labels
 func TraefikContainers(containers []*types.ContainerJSON, network string, user *auth.User) bool {
@@ -55,19 +54,13 @@ func traefikContainer(container *types.ContainerJSON, network string, user *auth
 	if container.Config.Labels[traefikHealthCheckLabel] != `` {
 		log.Printf(`[%s] Checking health of container %s`, user.Username, container.Name)
 
-		request, err := http.NewRequest(`GET`, httpPrefix+container.NetworkSettings.Networks[network].IPAddress+portSeparator+container.Config.Labels[traefikPortLabel]+container.Config.Labels[traefikHealthCheckLabel], nil)
+		statusCode, err := httpclient.GetStatusCode(httpPrefix + container.NetworkSettings.Networks[network].IPAddress + portSeparator + container.Config.Labels[traefikPortLabel] + container.Config.Labels[traefikHealthCheckLabel])
 		if err != nil {
 			return healthCheckFail(container.Name, err, user)
 		}
 
-		response, err := httpClient.Do(request)
-		if err != nil {
-			return healthCheckFail(container.Name, err, user)
-		}
-
-		defer response.Body.Close()
-		if response.StatusCode != http.StatusOK {
-			return healthCheckFail(container.Name, fmt.Sprintf(`HTTP/%d`, response.StatusCode), user)
+		if statusCode != http.StatusOK {
+			return healthCheckFail(container.Name, fmt.Sprintf(`HTTP/%d`, statusCode), user)
 		}
 	}
 

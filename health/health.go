@@ -1,28 +1,16 @@
 package main
 
 import (
+	"github.com/ViBiOh/dashboard/httpclient"
 	"log"
 	"net/http"
-	"time"
 )
 
 func main() {
-	httpClient := http.Client{Timeout: 5 * time.Second}
-
-	request, err := http.NewRequest(`GET`, `http://localhost:1080/health`, nil)
-	if err != nil {
+	if statusCode, err := httpclient.GetStatusCode(`http://localhost:1080/health`); err != nil {
 		log.Fatal(err)
-	}
-
-	response, err := httpClient.Do(request)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	response.Body.Close()
-
-	if response.StatusCode != http.StatusOK {
-		log.Fatalf(`HTTP/%d`, response.StatusCode)
+	} else if statusCode != http.StatusOK {
+		log.Fatalf(`HTTP/%d`, statusCode)
 	}
 
 	log.Print(`Health succeed`)
