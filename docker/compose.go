@@ -233,13 +233,9 @@ func areContainersHealthy(ctx context.Context, user *auth.User, containers []*ty
 	timeoutCtx, cancel := context.WithTimeout(ctx, healthcheckTimeout)
 	defer cancel()
 
-	messages, err := docker.Events(timeoutCtx, types.EventsOptions{Filters: filtersArgs})
-	if err != nil {
-		log.Printf(`[%s] Error while reading healthy events: %v`, user.Username, err)
-		return false
-	}
-
+	messages, errors := docker.Events(timeoutCtx, types.EventsOptions{Filters: filtersArgs})
 	healthyContainers := make(map[string]bool, len(containersIdsWithHealthcheck))
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -250,6 +246,9 @@ func areContainersHealthy(ctx context.Context, user *auth.User, containers []*ty
 			if len(healthyContainers) == len(containersIdsWithHealthcheck) {
 				return true
 			}
+		case err := <-errors:
+			log.Printf(`[%s] Error while reading healthy events: %v`, user.Username, err)
+			return false
 		}
 	}
 }
