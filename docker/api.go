@@ -5,9 +5,12 @@ import (
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"log"
+	"os"
+	"os/signal"
 	"net/http"
 	"regexp"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -22,7 +25,6 @@ type results struct {
 	Results interface{} `json:"results"`
 }
 
-var gracefulCloseRequest = regexp.MustCompile(`^gracefulClose$`)
 var healthRequest = regexp.MustCompile(`^health$`)
 var infoRequest = regexp.MustCompile(`info/?$`)
 
@@ -36,13 +38,30 @@ var containerRestartRequest = regexp.MustCompile(`^containers/([^/]+)/restart`)
 var servicesRequest = regexp.MustCompile(`^services`)
 var listServicesRequest = regexp.MustCompile(`^services/?$`)
 
-func gracefulCloseHandler(w http.ResponseWriter, r *http.Request, user *auth.User) {
-	if isAdmin(user) {
+func init() {
+	signals := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGTERM)
+
+	go func() {
+		<-c
+		defer close(signals)
+
 		gracefulCloseTimestamp = time.Now().Add(gracefulCloseDelay * time.Second)
-		w.WriteHeader(http.StatusAccepted)
-	} else {
-		w.WriteHeader(http.StatusForbidden)
+		if canBeGracefullyClosed() {
+			os.Exit(0)
+		}
+    	}()
+}
+
+func canBeGracefullyClosed() bool {
+	gracefulCloseMutex.RLock()
+	defer gracefulCloseMutex.Unlock()
+
+	if gracefulCloseCounter != 0 {
+		return false
 	}
+
+	return true
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
@@ -52,13 +71,10 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 		if !isGracefullyClosed() {
 			w.WriteHeader(http.StatusGone)
 		} else {
-			gracefulCloseMutex.RLock()
-			defer gracefulCloseMutex.Unlock()
-
-			if gracefulCloseCounter != 0 {
-				w.WriteHeader(http.StatusProcessing)
-			} else {
+			if canBeGracefullyClosed() {
 				w.WriteHeader(http.StatusTeapot)
+			} else {
+				w.WriteHeader(http.StatusProcessing)
 			}
 		}
 	} else if docker == nil {
@@ -168,9 +184,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if gracefulCloseRequest.Match(urlPath) && r.Method == http.MethodPost {
-		gracefulCloseHandler(w, r, user)
-	} else if infoRequest.Match(urlPath) && r.Method == http.MethodGet {
+	if infoRequest.Match(urlPath) && r.Method == http.MethodGet {
 		infoHandler(w)
 	} else if containersRequest.Match(urlPath) {
 		containersHandler(w, r, urlPath, user)
