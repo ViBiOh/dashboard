@@ -38,21 +38,6 @@ var containerRestartRequest = regexp.MustCompile(`^containers/([^/]+)/restart`)
 var servicesRequest = regexp.MustCompile(`^services`)
 var listServicesRequest = regexp.MustCompile(`^services/?$`)
 
-func init() {
-	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, syscall.SIGTERM)
-
-	go func() {
-		<-signals
-		defer close(signals)
-
-		gracefulCloseTimestamp = time.Now().Add(gracefulCloseDelay * time.Second)
-		if canBeGracefullyClosed() {
-			os.Exit(0)
-		}
-    	}()
-}
-
 func canBeGracefullyClosed() bool {
 	gracefulCloseMutex.RLock()
 	defer gracefulCloseMutex.Unlock()
