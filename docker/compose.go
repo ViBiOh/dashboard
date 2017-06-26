@@ -4,16 +4,17 @@ import (
 	"context"
 	"fmt"
 	"github.com/ViBiOh/dashboard/auth"
-	"github.com/ViBiOh/dashboard/healthcheck"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/network"
 	"gopkg.in/yaml.v2"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 )
 
 const minMemory = 16777216
@@ -22,6 +23,7 @@ const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
 const linkSeparator = `:`
+const healthcheckTimeout = 5 * time.Minute
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
@@ -210,6 +212,48 @@ func inspectServices(services map[string]deployedService, user *auth.User) []*ty
 	return containers
 }
 
+func healthyListener(ctx context.Context, user *auth.User, containers []*types.ContainerJSON) bool {
+	containersIdsWithHealthcheck := make([]*string, 0, len(containers))
+	for _, container := range containers {
+		if container.Config.Healthcheck != nil && len(container.Config.Healthcheck.Test) != 0 {
+			containersIdsWithHealthcheck = append(containersIdsWithHealthcheck, &container.ID)
+		}
+	}
+
+	if len(containersIdsWithHealthcheck) == 0 {
+		return true
+	}
+
+	filtersArgs := filters.NewArgs()
+	if err := healthyStatusFilters(user, &filtersArgs, containersIdsWithHealthcheck); err != nil {
+		log.Printf(`[%s] Error while defining healthy filters: %v`, user.Username, err)
+		return true
+	}
+
+	timeoutCtx, cancel := context.WithTimeout(ctx, healthcheckTimeout)
+	defer cancel()
+
+	messages, err := docker.Events(timeoutCtx, types.EventsOptions{Filters: filtersArgs})
+	if err != nil {
+		log.Printf(`[%s] Error while reading healthy events: %v`, user.Username, err)
+		return false
+	}
+
+	healthyContainers := make(map[string]bool, len(containersIdsWithHealthcheck))
+	for {
+		select {
+		case <-ctx.Done():
+			return false
+		case message := <-messages:
+			healthyContainers[message.ID] = true
+
+			if len(healthyContainers) == len(containersIdsWithHealthcheck) {
+				return true
+			}
+		}
+	}
+}
+
 func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
 		badRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
@@ -254,23 +298,16 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 		deployedServices[serviceName] = deployedService{ID: createdContainer.ID, Name: serviceFullName}
 	}
 
-	if err == nil {
-		err = startServices(appName, deployedServices, user)
-	}
-
-	if err != nil {
-		deleteServices(appName, deployedServices, user)
-		errorHandler(w, err)
-		return
-	}
+	ctx, cancel := context.WithCancel(context.Background())
 
 	go func() {
 		addCounter(1)
 		defer addCounter(-1)
+		defer cancel()
 
 		log.Printf(`[%s] Waiting for %s to start...`, user.Username, appName)
 
-		if healthcheck.TraefikContainers(inspectServices(deployedServices, user), networkMode, user) {
+		if healthyListener(ctx, user, inspectServices(deployedServices, user)) {
 			log.Printf(`[%s] Health check succeeded for %s`, user.Username, appName)
 			cleanContainers(&ownerContainers, user)
 
@@ -282,6 +319,17 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 			deleteServices(appName, deployedServices, user)
 		}
 	}()
+
+	if err == nil {
+		err = startServices(appName, deployedServices, user)
+	}
+
+	if err != nil {
+		deleteServices(appName, deployedServices, user)
+		errorHandler(w, err)
+		cancel()
+		return
+	}
 
 	jsonHttp.ResponseJSON(w, results{deployedServices})
 }

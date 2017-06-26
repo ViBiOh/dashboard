@@ -44,6 +44,20 @@ func labelFilters(filtersArgs *filters.Args, user *auth.User, appName *string) e
 	return nil
 }
 
+func healthyStatusFilters(user *auth.User, filtersArgs *filters.Args, containersIds []*string) error {
+	if _, err := filters.ParseFlag(`event=health_status: healthy`, *filtersArgs); err != nil {
+		return fmt.Errorf(`[%s] Error while parsing label for event=health_status: healthy: %v`, user.Username, err)
+	}
+
+	for _, container := range containersIds {
+		if _, err := filters.ParseFlag(`container=`+*container, *filtersArgs); err != nil {
+			return fmt.Errorf(`[%s] Error while parsing label for container=%s: %v`, user.Username, *container, err)
+		}
+	}
+
+	return nil
+}
+
 func eventFilters(filtersArgs *filters.Args) error {
 	if _, err := filters.ParseFlag(`event=create`, *filtersArgs); err != nil {
 		return fmt.Errorf(`[] Error while parsing label for event=create: %v`, err)
