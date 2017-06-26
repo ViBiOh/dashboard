@@ -5,12 +5,9 @@ import (
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"log"
-	"os"
-	"os/signal"
 	"net/http"
 	"regexp"
 	"sync"
-	"syscall"
 	"time"
 )
 
