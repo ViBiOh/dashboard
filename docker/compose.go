@@ -150,8 +150,8 @@ func pullImage(image string, user *auth.User) error {
 	return nil
 }
 
-func cleanContainers(containers *[]types.Container, user *auth.User) {
-	for _, container := range *containers {
+func cleanContainers(containers []types.Container, user *auth.User) {
+	for _, container := range containers {
 		log.Printf(`[%s] Stopping containers %s`, user.Username, strings.Join(container.Names, `, `))
 		stopContainer(container.ID)
 		log.Printf(`[%s] Deleting containers %s`, user.Username, strings.Join(container.Names, `, `))
@@ -159,8 +159,8 @@ func cleanContainers(containers *[]types.Container, user *auth.User) {
 	}
 }
 
-func renameDeployedContainers(containers *map[string]deployedService, user *auth.User) error {
-	for service, container := range *containers {
+func renameDeployedContainers(containers map[string]deployedService, user *auth.User) error {
+	for service, container := range containers {
 		if err := docker.ContainerRename(context.Background(), container.ID, getFinalName(container.Name)); err != nil {
 			return fmt.Errorf(`[%s] Error while renaming container %s: %v`, user.Username, service, err)
 		}
@@ -212,7 +212,7 @@ func inspectServices(services map[string]deployedService, user *auth.User) []*ty
 	return containers
 }
 
-func healthyListener(ctx context.Context, user *auth.User, containers []*types.ContainerJSON) bool {
+func areContainersHealthy(ctx context.Context, user *auth.User, containers []*types.ContainerJSON) bool {
 	containersIdsWithHealthcheck := make([]*string, 0, len(containers))
 	for _, container := range containers {
 		if container.Config.Healthcheck != nil && len(container.Config.Healthcheck.Test) != 0 {
@@ -251,6 +251,26 @@ func healthyListener(ctx context.Context, user *auth.User, containers []*types.C
 				return true
 			}
 		}
+	}
+}
+
+func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.User, appName []byte, services map[string]deployedService, oldContainers []types.Container) {
+	addCounter(1)
+	defer addCounter(-1)
+	defer cancel()
+
+	log.Printf(`[%s] Waiting for %s to start...`, user.Username, appName)
+
+	if areContainersHealthy(ctx, user, inspectServices(services, user)) {
+		log.Printf(`[%s] Health check succeeded for %s`, user.Username, appName)
+		cleanContainers(oldContainers, user)
+
+		if err := renameDeployedContainers(services, user); err != nil {
+			log.Print(err)
+		}
+	} else {
+		log.Printf(`[%s] Health check failed for %s`, user.Username, appName)
+		deleteServices(appName, services, user)
 	}
 }
 
@@ -299,26 +319,7 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-
-	go func() {
-		addCounter(1)
-		defer addCounter(-1)
-		defer cancel()
-
-		log.Printf(`[%s] Waiting for %s to start...`, user.Username, appName)
-
-		if healthyListener(ctx, user, inspectServices(deployedServices, user)) {
-			log.Printf(`[%s] Health check succeeded for %s`, user.Username, appName)
-			cleanContainers(&ownerContainers, user)
-
-			if err := renameDeployedContainers(&deployedServices, user); err != nil {
-				log.Print(err)
-			}
-		} else {
-			log.Printf(`[%s] Health check failed for %s`, user.Username, appName)
-			deleteServices(appName, deployedServices, user)
-		}
-	}()
+	go finishDeploy(ctx, cancel, user, appName, deployedServices, ownerContainers)
 
 	if err == nil {
 		err = startServices(appName, deployedServices, user)
