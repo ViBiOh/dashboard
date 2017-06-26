@@ -108,14 +108,14 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	return &hostConfig
 }
 
-func getNetworkConfig(service *dockerComposeService, deployedServices *map[string]deployedService) *network.NetworkingConfig {
+func getNetworkConfig(service *dockerComposeService, deployedServices map[string]deployedService) *network.NetworkingConfig {
 	traefikConfig := network.EndpointSettings{}
 
 	for _, link := range service.Links {
 		linkParts := strings.Split(link, linkSeparator)
 
 		target := linkParts[0]
-		if linkedService, ok := (*deployedServices)[target]; ok {
+		if linkedService, ok := (deployedServices)[target]; ok {
 			target = getFinalName(linkedService.Name)
 		}
 
@@ -274,6 +274,23 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	}
 }
 
+func createContainer(user *auth.User, appName []byte, serviceName string, services map[string]deployedService, service *dockerComposeService) (*deployedService, error) {
+	if err := pullImage(service.Image, user); err != nil {
+		return nil, err
+	}
+
+	serviceFullName := getServiceFullName(string(appName), serviceName)
+	log.Printf(`[%s] Creating service %s for %s`, user.Username, serviceName, appName)
+
+	createdContainer, err := docker.ContainerCreate(context.Background(), getConfig(service, user, string(appName)), getHostConfig(service), getNetworkConfig(service, services), serviceFullName)
+	if err != nil {
+		err = fmt.Errorf(`[%s] Error while creating service %s for %s: %v`, user.Username, serviceName, appName, err)
+		return nil, err
+	}
+
+	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
+}
+
 func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
 		badRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
@@ -289,48 +306,38 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	appNameStr := string(appName)
 	log.Printf(`[%s] Deploying %s`, user.Username, appNameStr)
 
-	ownerContainers, err := listContainers(user, &appNameStr)
+	oldContainers, err := listContainers(user, &appNameStr)
 	if err != nil {
 		errorHandler(w, err)
 		return
 	}
 
-	if len(ownerContainers) > 0 && ownerContainers[0].Labels[ownerLabel] != user.Username {
+	if len(oldContainers) > 0 && oldContainers[0].Labels[ownerLabel] != user.Username {
 		forbidden(w)
 	}
 
-	deployedServices := make(map[string]deployedService)
-
+	newServices := make(map[string]deployedService)
 	for serviceName, service := range compose.Services {
-		if err := pullImage(service.Image, user); err != nil {
+		if deployedService, err := createContainer(user, appName, serviceName, newServices, &service); err != nil {
 			break
+		} else {
+			newServices[serviceName] = *deployedService
 		}
-
-		serviceFullName := getServiceFullName(appNameStr, serviceName)
-		log.Printf(`[%s] Creating service %s for %s`, user.Username, serviceName, appName)
-
-		createdContainer, err := docker.ContainerCreate(context.Background(), getConfig(&service, user, appNameStr), getHostConfig(&service), getNetworkConfig(&service, &deployedServices), serviceFullName)
-		if err != nil {
-			err = fmt.Errorf(`[%s] Error while creating service %s for %s: %v`, user.Username, serviceName, appName, err)
-			break
-		}
-
-		deployedServices[serviceName] = deployedService{ID: createdContainer.ID, Name: serviceFullName}
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-	go finishDeploy(ctx, cancel, user, appName, deployedServices, ownerContainers)
+	go finishDeploy(ctx, cancel, user, appName, newServices, oldContainers)
 
 	if err == nil {
-		err = startServices(appName, deployedServices, user)
+		err = startServices(appName, newServices, user)
 	}
 
 	if err != nil {
-		deleteServices(appName, deployedServices, user)
+		deleteServices(appName, newServices, user)
 		errorHandler(w, err)
 		cancel()
 		return
 	}
 
-	jsonHttp.ResponseJSON(w, results{deployedServices})
+	jsonHttp.ResponseJSON(w, results{newServices})
 }
