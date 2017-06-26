@@ -64,6 +64,10 @@ func canBeGracefullyClosed() bool {
 	return true
 }
 
+func isGracefullyClosed() bool {
+	return !time.Time.IsZero(gracefulCloseTimestamp) && time.Now().After(gracefulCloseTimestamp)
+}
+
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	if time.Time.IsZero(gracefulCloseTimestamp) && docker != nil {
 		w.WriteHeader(http.StatusOK)
@@ -80,10 +84,6 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	} else if docker == nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
 	}
-}
-
-func isGracefullyClosed() bool {
-	return !time.Time.IsZero(gracefulCloseTimestamp) && time.Now().After(gracefulCloseTimestamp)
 }
 
 func addCounter(value int) {
