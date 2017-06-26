@@ -40,10 +40,10 @@ var listServicesRequest = regexp.MustCompile(`^services/?$`)
 
 func init() {
 	signals := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGTERM)
+	signal.Notify(signals, syscall.SIGTERM)
 
 	go func() {
-		<-c
+		<-signals
 		defer close(signals)
 
 		gracefulCloseTimestamp = time.Now().Add(gracefulCloseDelay * time.Second)
