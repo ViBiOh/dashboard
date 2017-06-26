@@ -236,11 +236,9 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	}
 
 	deployedServices := make(map[string]deployedService)
-	
-	var err error
 
 	for serviceName, service := range compose.Services {
-		if err = pullImage(service.Image, user); err != nil {
+		if err := pullImage(service.Image, user); err != nil {
 			break
 		}
 
