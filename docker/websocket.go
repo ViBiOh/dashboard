@@ -71,6 +71,8 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	defer logs.Close()
 
 	go func() {
+		defer cancel()
+
 		scanner := bufio.NewScanner(logs)
 		for scanner.Scan() {
 			select {
@@ -82,7 +84,6 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 				if len(logLine) > ignoredByteLogSize {
 					if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
 						log.Printf(`Error while writing to logs socket: %v`, err)
-						cancel()
 						return
 					}
 				}
@@ -98,7 +99,6 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		default:
 			if messageType, content, err := ws.NextReader(); err != nil {
 				log.Printf(`Error while reading from logs socket: %v | %v | %v`, err, messageType, content)
-				cancel()
 				return
 			}
 		}
@@ -122,36 +122,33 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	context := context.Background()
-	defer context.Done()
-	messages, errors := docker.Events(context, types.EventsOptions{Filters: filtersArgs})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	done := make(chan struct{})
+	messages, errors := docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
 
 	go func() {
+		defer cancel()
+		
 		for {
 			select {
-			case <-done:
+			case <-ctx.Done():
 				return
 
 			case message := <-messages:
 				messageJSON, err := json.Marshal(message)
 				if err != nil {
 					log.Printf(`Error while marshalling event: %v`, err)
-					close(done)
 					return
 				}
 
 				if err = ws.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
 					log.Printf(`Error while writing to events socket: %v`, err)
-					close(done)
 					return
 				}
-				break
 
 			case err := <-errors:
 				log.Printf(`Error while reading events: %v`, err)
-				close(done)
 				return
 			}
 		}
@@ -159,12 +156,11 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	for {
 		select {
-		case <-done:
+		case <-ctx.Done():
 			return
 		default:
 			if _, _, err := ws.NextReader(); err != nil {
 				log.Printf(`Error while reading from events socket: %v`, err)
-				close(done)
 				return
 			}
 		}
@@ -179,29 +175,28 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	}
 	defer ws.Close()
 
-	context := context.Background()
-	defer context.Done()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	stats, err := docker.ContainerStats(context, string(containerID), true)
+	stats, err := docker.ContainerStats(ctx, string(containerID), true)
 	if err != nil {
 		log.Print(err)
 		return
 	}
 	defer stats.Body.Close()
 
-	done := make(chan struct{})
-
 	go func() {
+		defer cancel()
+
 		scanner := bufio.NewScanner(stats.Body)
 		for scanner.Scan() {
 			select {
-			case <-done:
+			case <-ctx.Done():
 				return
 
 			default:
 				if err = ws.WriteMessage(websocket.TextMessage, scanner.Bytes()); err != nil {
 					log.Printf(`Error while writing to stats socket: %v`, err)
-					close(done)
 					return
 				}
 			}
@@ -210,13 +205,12 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 
 	for {
 		select {
-		case <-done:
+		case <-ctx.Done():
 			return
 
 		default:
 			if _, _, err := ws.NextReader(); err != nil {
 				log.Printf(`Error while reading from stats socket: %v`, err)
-				close(done)
 				return
 			}
 		}
