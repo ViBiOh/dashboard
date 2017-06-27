@@ -60,8 +60,8 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	}
 	defer ws.Close()
 
-	context := context.Background()
-	defer context.Done()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	logs, err := docker.ContainerLogs(context, string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	if err != nil {
@@ -76,7 +76,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 		scanner := bufio.NewScanner(logs)
 		for scanner.Scan() {
 			select {
-			case <-done:
+			case <-ctx.Done():
 				return
 
 			default:
@@ -84,7 +84,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 				if len(logLine) > ignoredByteLogSize {
 					if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
 						log.Printf(`Error while writing to logs socket: %v`, err)
-						close(done)
+						cancel()
 						return
 					}
 				}
@@ -94,13 +94,13 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 
 	for {
 		select {
-		case <-done:
+		case <-ctx.Done():
 			return
 
 		default:
 			if messageType, content, err := ws.NextReader(); err != nil {
 				log.Printf(`Error while reading from logs socket: %v | %v | %v`, err, messageType, content)
-				close(done)
+				cancel()
 				return
 			}
 		}
