@@ -53,7 +53,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 }
 
 func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
-	ws, _, err := upgradeAndAuth(w, r)
+	ws, user, err := upgradeAndAuth(w, r)
 	if err != nil {
 		log.Print(err)
 		return
@@ -83,7 +83,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 				logLine := scanner.Bytes()
 				if len(logLine) > ignoredByteLogSize {
 					if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
-						log.Printf(`Error while writing to logs socket: %v`, err)
+						log.Printf(`[%s] Error while writing to logs socket: %v`, user.Username, err)
 						return
 					}
 				}
@@ -94,12 +94,16 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	for {
 		select {
 		case <-ctx.Done():
-			return
+			break
 
 		default:
-			if messageType, content, err := ws.NextReader(); err != nil {
-				log.Printf(`Error while reading from logs socket: %v | %v | %v`, err, messageType, content)
+			messageType, _, err := ws.NextReader()
+			if err != nil {
+				log.Printf(`[%s] Error while reading from logs socket: %v`, user.Username, err)
 				return
+			}
+			if messageType == websocket.CloseMessage {
+				break
 			}
 		}
 	}
@@ -114,11 +118,11 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	filtersArgs := filters.NewArgs()
 	if labelFilters(&filtersArgs, user, nil) != nil {
-		log.Printf(`Error while defining label filters: %v`, err)
+		log.Printf(`[%s] Error while defining label filters: %v`, user.Username, err)
 		return
 	}
 	if eventFilters(&filtersArgs) != nil {
-		log.Printf(`Error while defining event filters: %v`, err)
+		log.Printf(`[%s] Error while defining event filters: %v`, user.Username, err)
 		return
 	}
 
@@ -138,17 +142,17 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			case message := <-messages:
 				messageJSON, err := json.Marshal(message)
 				if err != nil {
-					log.Printf(`Error while marshalling event: %v`, err)
+					log.Printf(`[%s] Error while marshalling event: %v`, user.Username, err)
 					return
 				}
 
 				if err = ws.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
-					log.Printf(`Error while writing to events socket: %v`, err)
+					log.Printf(`[%s] Error while writing to events socket: %v`, user.Username, err)
 					return
 				}
 
 			case err := <-errors:
-				log.Printf(`Error while reading events: %v`, err)
+				log.Printf(`[%s] Error while reading events: %v`, user.Username, err)
 				return
 			}
 		}
@@ -157,18 +161,21 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case <-ctx.Done():
-			return
+			break
 		default:
-			if _, _, err := ws.NextReader(); err != nil {
-				log.Printf(`Error while reading from events socket: %v`, err)
+			if messageType, _, err := ws.NextReader(); err != nil {
+				log.Printf(`[%s] Error while reading from events socket: %v`, user.Username, err)
 				return
+			}
+			if messageType == websocket.CloseMessage {
+				break
 			}
 		}
 	}
 }
 
 func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
-	ws, _, err := upgradeAndAuth(w, r)
+	ws, user, err := upgradeAndAuth(w, r)
 	if err != nil {
 		log.Print(err)
 		return
@@ -196,7 +203,7 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 
 			default:
 				if err = ws.WriteMessage(websocket.TextMessage, scanner.Bytes()); err != nil {
-					log.Printf(`Error while writing to stats socket: %v`, err)
+					log.Printf(`[%s] Error while writing to stats socket: %v`, user.Username, err)
 					return
 				}
 			}
@@ -206,12 +213,15 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	for {
 		select {
 		case <-ctx.Done():
-			return
+			break
 
 		default:
-			if _, _, err := ws.NextReader(); err != nil {
-				log.Printf(`Error while reading from stats socket: %v`, err)
+			if messageType, _, err := ws.NextReader(); err != nil {
+				log.Printf(`[%s] Error while reading from stats socket: %v`, user.Username, err)
 				return
+			}
+			if messageType == websocket.CloseMessage {
+				break
 			}
 		}
 	}
