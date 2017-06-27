@@ -212,7 +212,7 @@ func inspectServices(services map[string]deployedService, user *auth.User) []*ty
 	return containers
 }
 
-func areContainersHealthy(ctx context.Context, user *auth.User, containers []*types.ContainerJSON) bool {
+func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, containers []*types.ContainerJSON) bool {
 	containersIdsWithHealthcheck := make([]*string, 0, len(containers))
 	for _, container := range containers {
 		if container.Config.Healthcheck != nil && len(container.Config.Healthcheck.Test) != 0 {
@@ -242,7 +242,7 @@ func areContainersHealthy(ctx context.Context, user *auth.User, containers []*ty
 			return false
 		case message := <-messages:
 			healthyContainers[message.ID] = true
-			log.Printf(`[%s] Container %s is healthy`, user.Username, message.From)
+			log.Printf(`[%s] Container %s for %s is healthy`, user.Username, appName, message.From)
 
 			if len(healthyContainers) == len(containersIdsWithHealthcheck) {
 				return true
@@ -261,7 +261,7 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 
 	log.Printf(`[%s] Waiting for %s to start...`, user.Username, appName)
 
-	if areContainersHealthy(ctx, user, inspectServices(services, user)) {
+	if areContainersHealthy(ctx, user, appName, inspectServices(services, user)) {
 		log.Printf(`[%s] Health check succeeded for %s`, user.Username, appName)
 		cleanContainers(oldContainers, user)
 
