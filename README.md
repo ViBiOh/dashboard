@@ -33,9 +33,9 @@ First goal of this tool was to be available for students to deploy containers on
 
 ## HotDeploy
 
-At deploy time, if the new containers have [`HEALTHCHECK`](https://docs.docker.com/engine/reference/builder/#healthcheck), `dashboard` will wait during at most 5 minutes for an `healthy` status. When all containers with `healthcheck` are healthy, old containers are stopped and removed, load-balancer with Docker's healthcheck (e.g. [traefik](https://traefik.io) will handle route change.
+At deploy time, if the new containers have [`HEALTHCHECK`](https://docs.docker.com/engine/reference/builder/#healthcheck), `dashboard` will wait during at most 5 minutes for an `healthy` status. When all containers with `healthcheck` are healthy, old containers are stopped and removed, load-balancer with Docker's healthcheck (e.g. [traefik](https://traefik.io)) will handle route change without downtime.
 
-If no healthcheck is provided, `dashboard` doesn't know if you're container is ready for business, so it's a simple start new containers then stop and remove old containers, without waiting time.
+If no healthcheck is provided, `dashboard` doesn't know if you're container is ready for business, so it's a simple launch new containers then destroy old containers, without waiting time.
 
 ## Build
 
