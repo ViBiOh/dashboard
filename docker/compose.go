@@ -242,7 +242,7 @@ func areContainersHealthy(ctx context.Context, user *auth.User, containers []*ty
 			return false
 		case message := <-messages:
 			healthyContainers[message.ID] = true
-			log.Printf(`[%s] Container %s is healthy`, user.Username, message.Name)
+			log.Printf(`[%s] Container %s is healthy`, user.Username, message.From)
 
 			if len(healthyContainers) == len(containersIdsWithHealthcheck) {
 				return true
