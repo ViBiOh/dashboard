@@ -52,7 +52,7 @@
     "css-loader": "latest",
     "enzyme": "latest",
     "esdoc": "latest",
-    "eslint": "3",
+    "eslint": "latest",
     "eslint-config-airbnb": "latest",
     "eslint-loader": "latest",
     "eslint-plugin-import": "latest",
