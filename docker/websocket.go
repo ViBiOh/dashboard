@@ -163,7 +163,8 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		case <-ctx.Done():
 			break
 		default:
-			if messageType, _, err := ws.NextReader(); err != nil {
+			messageType, _, err := ws.NextReader()
+			if err != nil {
 				log.Printf(`[%s] Error while reading from events socket: %v`, user.Username, err)
 				return
 			}
@@ -216,7 +217,8 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 			break
 
 		default:
-			if messageType, _, err := ws.NextReader(); err != nil {
+			messageType, _, err := ws.NextReader()
+			if err != nil {
 				log.Printf(`[%s] Error while reading from stats socket: %v`, user.Username, err)
 				return
 			}
