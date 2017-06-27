@@ -63,14 +63,12 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	logs, err := docker.ContainerLogs(context, string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
+	logs, err := docker.ContainerLogs(ctx, string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	if err != nil {
 		log.Print(err)
 		return
 	}
 	defer logs.Close()
-
-	done := make(chan struct{})
 
 	go func() {
 		scanner := bufio.NewScanner(logs)
