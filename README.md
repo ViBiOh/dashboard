@@ -29,7 +29,7 @@ By default, your origin domain name has to start with `dashboard` (e.g. dashboar
 
 ## Why without volumes ?
 
-First goal of this tool was to be available for students to deploy containers on my own server. Trust doesn't mean no control and if a student mounts a too critical volumes (e.g. `/`) with a `root` user, he can potentially become `root` on the server, whcih I don't want ! So volumes are not allowed, and some security options are setted by default.
+First goal of this tool was to be available for students to deploy containers on my own server. Trust doesn't mean no control and if a student mounts a too critical volumes (e.g. `/`) with a `root` user, he can potentially become `root` on the server, which I don't want ! So volumes are not allowed, and some security options are setted by default.
 
 ## HotDeploy
 
