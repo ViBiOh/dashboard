@@ -63,11 +63,10 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	onClose := func(_ int, _ string) error {
+	ws.SetCloseHandler(func(_ int, _ string) error {
 		cancel()
 		return nil
-	}
-	ws.SetCloseHandler(onClose)
+	})
 
 	logs, err := docker.ContainerLogs(ctx, string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	if err != nil {
@@ -103,13 +102,9 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 			break
 
 		default:
-			messageType, _, err := ws.NextReader()
-			if err != nil {
+			if _, _, err := ws.NextReader(); err != nil {
 				log.Printf(`[%s] Error while reading from logs socket: %v`, user.Username, err)
 				return
-			}
-			if messageType == websocket.CloseMessage {
-				break
 			}
 		}
 	}
@@ -135,11 +130,10 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	onClose := func(_ int, _ string) error {
+	ws.SetCloseHandler(func(_ int, _ string) error {
 		cancel()
 		return nil
-	}
-	ws.SetCloseHandler(onClose)
+	})
 
 	messages, errors := docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
 
@@ -175,13 +169,9 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		case <-ctx.Done():
 			break
 		default:
-			messageType, _, err := ws.NextReader()
-			if err != nil {
+			if _, _, err := ws.NextReader(); err != nil {
 				log.Printf(`[%s] Error while reading from events socket: %v`, user.Username, err)
 				return
-			}
-			if messageType == websocket.CloseMessage {
-				break
 			}
 		}
 	}
@@ -198,11 +188,10 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	onClose := func(_ int, _ string) error {
+	ws.SetCloseHandler(func(_ int, _ string) error {
 		cancel()
 		return nil
-	}
-	ws.SetCloseHandler(onClose)
+	})
 
 	stats, err := docker.ContainerStats(ctx, string(containerID), true)
 	if err != nil {
@@ -235,8 +224,7 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 			break
 
 		default:
-			messageType, _, err := ws.NextReader()
-			if err != nil {
+			if _, _, err := ws.NextReader(); err != nil {
 				log.Printf(`[%s] Error while reading from stats socket: %v`, user.Username, err)
 				return
 			}
