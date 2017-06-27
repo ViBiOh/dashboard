@@ -63,6 +63,12 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	onClose := func(_ int, _ string) error {
+		cancel()
+		return nil
+	}
+	ws.SetCloseHandler(onClose)
+
 	logs, err := docker.ContainerLogs(ctx, string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	if err != nil {
 		log.Print(err)
@@ -129,11 +135,17 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	onClose := func(_ int, _ string) error {
+		cancel()
+		return nil
+	}
+	ws.SetCloseHandler(onClose)
+
 	messages, errors := docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
 
 	go func() {
 		defer cancel()
-		
+
 		for {
 			select {
 			case <-ctx.Done():
@@ -186,6 +198,12 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	onClose := func(_ int, _ string) error {
+		cancel()
+		return nil
+	}
+	ws.SetCloseHandler(onClose)
+
 	stats, err := docker.ContainerStats(ctx, string(containerID), true)
 	if err != nil {
 		log.Print(err)
@@ -221,9 +239,6 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 			if err != nil {
 				log.Printf(`[%s] Error while reading from stats socket: %v`, user.Username, err)
 				return
-			}
-			if messageType == websocket.CloseMessage {
-				break
 			}
 		}
 	}
