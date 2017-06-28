@@ -28,6 +28,24 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+func readUntilClose(user *auth.User, ws *websocket.Conn, name string) bool {
+	messageType, _, err := ws.ReadMessage()
+
+	if messageType == websocket.CloseMessage {
+		return true
+	}
+
+	if err != nil {
+		if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
+			log.Printf(`[%s] Error while reading from %s socket: %v`, user.Username, name, err)
+		}
+
+		return true
+	}
+
+	return false
+}
+
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -97,17 +115,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 			break
 
 		default:
-			messageType, _, err := ws.NextReader()
-
-			if messageType == websocket.CloseMessage {
-				return
-			}
-
-			if err != nil {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
-					log.Printf(`[%s] Error while reading from logs socket: %v`, user.Username, err)
-				}
-
+			if readUntilClose(user, ws, `logs`) {
 				return
 			}
 		}
@@ -167,18 +175,9 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		select {
 		case <-ctx.Done():
 			break
+
 		default:
-			messageType, _, err := ws.NextReader()
-
-			if messageType == websocket.CloseMessage {
-				return
-			}
-
-			if err != nil {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
-					log.Printf(`[%s] Error while reading from events socket: %v`, user.Username, err)
-				}
-
+			if readUntilClose(user, ws, `events`) {
 				return
 			}
 		}
@@ -229,17 +228,7 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 			return
 
 		default:
-			messageType, _, err := ws.NextReader()
-
-			if messageType == websocket.CloseMessage {
-				return
-			}
-
-			if err != nil {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
-					log.Printf(`[%s] Error while reading from stats socket: %v`, user.Username, err)
-				}
-
+			if readUntilClose(user, ws, `stats`) {
 				return
 			}
 		}
