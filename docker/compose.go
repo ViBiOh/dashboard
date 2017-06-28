@@ -268,9 +268,11 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 		if err := renameDeployedContainers(services, user); err != nil {
 			log.Print(err)
 		}
+		log.Printf(`[%s] Succeeded to deploy %s`, user.Username, appName)
 	} else {
 		log.Printf(`[%s] Health check failed for %s`, user.Username, appName)
 		deleteServices(appName, services, user)
+		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err)
 	}
 }
 
@@ -304,11 +306,12 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 	}
 
 	appNameStr := string(appName)
-	log.Printf(`[%s] Deploying %s`, user.Username, appNameStr)
+	log.Printf(`[%s] Deploying %s`, user.Username, appName)
 
 	oldContainers, err := listContainers(user, &appNameStr)
 	if err != nil {
 		errorHandler(w, err)
+		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err)
 		return
 	}
 
@@ -336,6 +339,7 @@ func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, co
 		deleteServices(appName, newServices, user)
 		errorHandler(w, err)
 		cancel()
+		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err)
 		return
 	}
 
