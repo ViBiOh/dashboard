@@ -97,7 +97,7 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
             break
 
         default:
-            messageType, _, err := ws.ReadMessage()
+            messageType, _, err := ws.NextReader()
 
             if messageType == websocket.CloseMessage {
                 return
@@ -165,7 +165,7 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
         case <-ctx.Done():
             break
         default:
-            messageType, _, err := ws.ReadMessage()
+            messageType, _, err := ws.NextReader()
 
             if messageType == websocket.CloseMessage {
                 return
@@ -223,7 +223,7 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
             return
 
         default:
-            messageType, _, err := ws.ReadMessage()
+            messageType, _, err := ws.NextReader()
 
             if messageType == websocket.CloseMessage {
                 return
