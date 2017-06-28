@@ -104,10 +104,10 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 			}
 
 			if err != nil {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure){
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
 					log.Printf(`[%s] Error while reading from logs socket: %v`, user.Username, err)
 				}
-				
+
 				return
 			}
 		}
@@ -175,10 +175,10 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if err != nil {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure){
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
 					log.Printf(`[%s] Error while reading from events socket: %v`, user.Username, err)
 				}
-				
+
 				return
 			}
 		}
@@ -236,10 +236,10 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 			}
 
 			if err != nil {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure){
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
 					log.Printf(`[%s] Error while reading from stats socket: %v`, user.Username, err)
 				}
-				
+
 				return
 			}
 		}
