@@ -97,7 +97,13 @@ func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, conta
 			break
 
 		default:
-			if _, _, err := ws.NextReader(); err != nil {
+			messageType, _, err := ws.NextReader()
+
+			if messageType == websocket.CloseMessage {
+				return
+			}
+
+			if err != nil {
 				log.Printf(`[%s] Error while reading from logs socket: %v`, user.Username, err)
 				return
 			}
@@ -159,7 +165,13 @@ func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		case <-ctx.Done():
 			break
 		default:
-			if _, _, err := ws.NextReader(); err != nil {
+			messageType, _, err := ws.NextReader()
+
+			if messageType == websocket.CloseMessage {
+				return
+			}
+
+			if err != nil {
 				log.Printf(`[%s] Error while reading from events socket: %v`, user.Username, err)
 				return
 			}
