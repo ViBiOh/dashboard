@@ -7,7 +7,12 @@ import style from './ErrorBanner.less';
  * @param  {String} error Error to display
  * @return {ReactComponent} div with error or null if no error
  */
-const ErrorBanner = ({ error }) => (error ? <div className={style.error}>{error}</div> : null);
+const ErrorBanner = ({ error }) => {
+  if (error) {
+    return <div className={style.error}>{error}</div>;
+  }
+  return null;
+}
 
 ErrorBanner.displayName = 'ErrorBanner';
 
