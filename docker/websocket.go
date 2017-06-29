@@ -18,7 +18,7 @@ const tailSize = `100`
 const start = `start`
 const stop = `stop`
 
-var eventsDemand = regexp.MustCompile(`^events (.+)(.?)`)
+var eventsDemand = regexp.MustCompile(`^events (.+)`)
 var logsDemand = regexp.MustCompile(`^logs (.+) (.+)`)
 var statsDemand = regexp.MustCompile(`^stats (.+) (.+)`)
 var busWebsocketRequest = regexp.MustCompile(`bus`)
@@ -350,8 +350,12 @@ func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.
 		log.Printf(`[%s] Unable to parse bus demand %s for %s`, user.Username, input, name)
 	}
 
-	containerID := string(demandGroups[1])
-	action := string(demandGroups[2])
+	action := string(demandGroups[1])
+
+	containerID := ``
+	if len(demandGroups) > 2 {
+		containerID = string(demandGroups[2])
+	}
 
 	if action == stop && cancel != nil {
 		log.Printf(`[%s] Stopping %s stream`, user.Username, name)
