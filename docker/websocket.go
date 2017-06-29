@@ -15,10 +15,11 @@ import (
 
 const ignoredByteLogSize = 8
 const tailSize = `100`
-const logsDemand = `logs`
-const statsDemand = `stats`
 
-var containerWebsocketRequest = regexp.MustCompile(`containers/([^/]+)`)
+var eventsDemand = regexp.MustCompile(`^events`)
+var logsDemand = regexp.MustCompile(`^logs (.+)`)
+var statsDemand = regexp.MustCompile(`^stats (.+)`)
+var busWebsocketRequest = regexp.MustCompile(`bus`)
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
 var statsWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/stats`)
 var eventsWebsocketRequest = regexp.MustCompile(`events`)
@@ -260,7 +261,7 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	}
 }
 
-func containerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
+func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	ws, user, err := upgradeAndAuth(w, r)
 	if err != nil {
 		log.Print(err)
@@ -276,26 +277,27 @@ func containerWebsocketHandler(w http.ResponseWriter, r *http.Request, container
 	input := make(chan []byte)
 	defer close(input)
 
-	go readContent(user, ws, `container`, done, input)
+	go readContent(user, ws, `streaming`, done, input)
+	log.Printf(`[%s] Streaming started`, user.Username)
 
 	for {
 		select {
 		case <-done:
-			log.Printf(`[%s] Streaming end for %s`, user.Username, containerID)
+			log.Printf(`[%s] Streaming ended`, user.Username)
 			return
 
 		case inputBytes := <-input:
-			inputStr := string(inputBytes)
-
-			if inputStr == logsDemand {
-				log.Printf(`[%s] Streaming logs for %s`, user.Username, containerID)
-			} else if inputStr == statsDemand {
-				log.Printf(`[%s] Streaming stats for %s`, user.Username, containerID)
+			if eventsDemand.Match(inputBytes) {
+				log.Printf(`[%s] Streaming events`, user.Username)
+			} else if logsDemand.Match(inputBytes) {
+				log.Printf(`[%s] Streaming logs for %s`, user.Username, logsDemand.FindSubmatch(inputBytes)[1])
+			} else if statsDemand.Match(inputBytes) {
+				log.Printf(`[%s] Streaming stats for %s`, user.Username, statsDemand.FindSubmatch(inputBytes)[1])
 			}
 
 		case outputBytes := <-output:
 			if err = ws.WriteMessage(websocket.TextMessage, outputBytes); err != nil {
-				log.Printf(`[%s] Error while writing to container socket: %v`, user.Username, err)
+				log.Printf(`[%s] Error while writing to streaming: %v`, user.Username, err)
 				close(done)
 			}
 		}
@@ -315,7 +317,7 @@ func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		eventsWebsocketHandler(w, r)
 	} else if statsWebsocketRequest.Match(urlPath) {
 		statsWebsocketHandler(w, r, statsWebsocketRequest.FindSubmatch(urlPath)[1])
-	} else if containerWebsocketRequest.Match(urlPath) {
-		containerWebsocketHandler(w, r, containerWebsocketRequest.FindSubmatch(urlPath)[1])
+	} else if busWebsocketRequest.Match(urlPath) {
+		busWebsocketHandler(w, r)
 	}
 }
