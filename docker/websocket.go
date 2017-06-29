@@ -263,7 +263,64 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	}
 }
 
-func streamStats(ctx context.Context, user *auth.User, containerID string, output chan<- []byte) {
+func streamLogs(ctx context.Context, _ context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
+	logs, err := docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
+	if err != nil {
+		log.Printf(`[%s] Logs opening in error: %v`, user.Username, err)
+		return
+	}
+	defer logs.Close()
+
+	scanner := bufio.NewScanner(logs)
+	log.Printf(`[%s] Logs streaming started for %s`, user.Username, containerID)
+
+	for scanner.Scan() {
+		logLine := scanner.Bytes()
+		if len(logLine) > ignoredByteLogSize {
+			output <- logLine[ignoredByteLogSize:]
+		}
+	}
+
+	log.Printf(`[%s] Logs streaming ended for %s`, user.Username, containerID)
+}
+
+func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.User, _ string, output chan<- []byte) {
+	filtersArgs := filters.NewArgs()
+	if err := labelFilters(&filtersArgs, user, nil); err != nil {
+		log.Printf(`[%s] Events opening in error: %v`, user.Username, err)
+		return
+	}
+	if err := eventFilters(&filtersArgs); err != nil {
+		log.Printf(`[%s] Events opening in error: %v`, user.Username, err)
+		return
+	}
+
+	messages, errors := docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
+
+	log.Printf(`[%s] Events streaming started`, user.Username)
+	for {
+		select {
+		case <-ctx.Done():
+			log.Printf(`[%s] Events streaming ended`, user.Username)
+			return
+
+		case message := <-messages:
+			messageJSON, err := json.Marshal(message)
+			if err != nil {
+				log.Printf(`[%s] Events marshalling in error: %v`, user.Username, err)
+				cancel()
+			} else {
+				output <- messageJSON
+			}
+
+		case err := <-errors:
+			log.Printf(`[%s] Events reading in error: %v`, user.Username, err)
+			cancel()
+		}
+	}
+}
+
+func streamStats(ctx context.Context, _ context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
 	stats, err := docker.ContainerStats(ctx, containerID, true)
 	if err != nil {
 		log.Printf(`[%s] Stats opening in error for %s: %v`, user.Username, containerID, err)
@@ -272,8 +329,8 @@ func streamStats(ctx context.Context, user *auth.User, containerID string, outpu
 	defer stats.Body.Close()
 
 	scanner := bufio.NewScanner(stats.Body)
-
 	log.Printf(`[%s] Stats streaming started for %s`, user.Username, containerID)
+
 	for scanner.Scan() {
 		output <- scanner.Bytes()
 	}
@@ -281,7 +338,7 @@ func streamStats(ctx context.Context, user *auth.User, containerID string, outpu
 	log.Printf(`[%s] Stats streaming ended for %s`, user.Username, containerID)
 }
 
-func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.Regexp, cancel context.CancelFunc, output chan<- []byte, streamFn func(context.Context, *auth.User, string, chan<- []byte)) context.CancelFunc {
+func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.Regexp, cancel context.CancelFunc, output chan<- []byte, streamFn func(context.Context, context.CancelFunc, *auth.User, string, chan<- []byte)) context.CancelFunc {
 	containerID := string(demand.FindSubmatch(input)[1])
 	action := string(demand.FindSubmatch(input)[2])
 
@@ -297,7 +354,7 @@ func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.
 		}
 
 		ctx, newCancel := context.WithCancel(context.Background())
-		go streamFn(ctx, user, string(containerID), output)
+		go streamFn(ctx, newCancel, user, string(containerID), output)
 
 		return newCancel
 	}
@@ -324,6 +381,8 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	go readContent(user, ws, `streaming`, done, input)
 	log.Printf(`[%s] Streaming started`, user.Username)
 
+	var eventsCancelFunc context.CancelFunc
+	var logsCancelFunc context.CancelFunc
 	var statsCancelFunc context.CancelFunc
 
 	for {
@@ -334,9 +393,9 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 		case inputBytes := <-input:
 			if eventsDemand.Match(inputBytes) {
-				log.Printf(`[%s] Streaming events`, user.Username)
+				eventsCancelFunc = handleBusDemand(user, `events`, inputBytes, eventsDemand, eventsCancelFunc, output, streamEvents)
 			} else if logsDemand.Match(inputBytes) {
-				log.Printf(`[%s] Streaming logs for %s`, user.Username, logsDemand.FindSubmatch(inputBytes)[1])
+				logsCancelFunc = handleBusDemand(user, `logs`, inputBytes, logsDemand, logsCancelFunc, output, streamLogs)
 			} else if statsDemand.Match(inputBytes) {
 				statsCancelFunc = handleBusDemand(user, `stats`, inputBytes, statsDemand, statsCancelFunc, output, streamStats)
 			}
