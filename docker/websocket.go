@@ -15,9 +15,9 @@ import (
 
 const ignoredByteLogSize = 8
 const tailSize = `100`
+const logsDemand = `logs`
+const statsDemand = `stats`
 
-var logsDemand = []byte(`logs`)
-var statsDemand = []byte(`stats`)
 var containerWebsocketRequest = regexp.MustCompile(`containers/([^/]+)`)
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
 var statsWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/stats`)
@@ -284,9 +284,10 @@ func containerWebsocketHandler(w http.ResponseWriter, r *http.Request, container
 			log.Printf(`[%s] Streaming end for %s`, user.Username, containerID)
 			return
 		case inputBytes := <-input:
-			if inputBytes == logsDemand {
+			inputStr = string(inputBytes)
+			if inputStr == logsDemand {
 				log.Printf(`[%s] Streaming logs for %s`, user.Username, containerID)
-			} else if inputBytes == statsDemand {
+			} else if inputStr == statsDemand {
 				log.Printf(`[%s] Streaming stats for %s`, user.Username, containerID)
 			}
 		case outputBytes := <-output:
