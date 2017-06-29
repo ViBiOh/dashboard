@@ -302,10 +302,6 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		select {
 		case <-done:
 			log.Printf(`[%s] Streaming ended`, user.Username)
-			if statsCancelFunc != nil {
-				log.Printf(`[%s] Cancelling stats stream`, user.Username)
-				statsCancelFunc()
-			}
 			return
 
 		case inputBytes := <-input:
@@ -328,6 +324,8 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 						statsCancelFunc()
 					}
 					statsContext, statsCancelFunc := context.WithCancel(context.Background())
+					defer statsCancelFunc()
+
 					streamStats(statsContext, user, containerID, output)
 				}
 			}
