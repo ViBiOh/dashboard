@@ -15,10 +15,12 @@ import (
 
 const ignoredByteLogSize = 8
 const tailSize = `100`
+const start = `start`
+const stop = `stop`
 
 var eventsDemand = regexp.MustCompile(`^events`)
 var logsDemand = regexp.MustCompile(`^logs (.+)`)
-var statsDemand = regexp.MustCompile(`^stats (.+)`)
+var statsDemand = regexp.MustCompile(`^stats (.+) (.+)`)
 var busWebsocketRequest = regexp.MustCompile(`bus`)
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
 var statsWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/stats`)
@@ -261,6 +263,20 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	}
 }
 
+func streamStats(ctx *context.Context, user *auth.User, containerID string, output chan<- []byte) {
+	stats, err := docker.ContainerStats(ctx, containerID, true)
+	if err != nil {
+		log.Printf(`[%s] Error while streaming stats: %v`, user.Username, err)
+		return
+	}
+	defer stats.Body.Close()
+
+	scanner := bufio.NewScanner(stats.Body)
+	for scanner.Scan() {
+		output <- scanner.Bytes()
+	}
+}
+
 func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	ws, user, err := upgradeAndAuth(w, r)
 	if err != nil {
@@ -279,11 +295,17 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	go readContent(user, ws, `streaming`, done, input)
 	log.Printf(`[%s] Streaming started`, user.Username)
+	
+	var statsCancelFunc context.CancelFunc
 
 	for {
 		select {
 		case <-done:
 			log.Printf(`[%s] Streaming ended`, user.Username)
+			if statsCancelFunc != nil {
+				log.Printf(`[%s] Cancelling stats stream`, user.Username)
+				statsCancelFunc()
+			}
 			return
 
 		case inputBytes := <-input:
@@ -292,7 +314,22 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			} else if logsDemand.Match(inputBytes) {
 				log.Printf(`[%s] Streaming logs for %s`, user.Username, logsDemand.FindSubmatch(inputBytes)[1])
 			} else if statsDemand.Match(inputBytes) {
-				log.Printf(`[%s] Streaming stats for %s`, user.Username, statsDemand.FindSubmatch(inputBytes)[1])
+				containerID := statsDemand.FindSubmatch(inputBytes)[1]
+				action := string(statsDemand.FindSubmatch(inputBytes)[2])
+				
+				if action == stop && cancelFunc != nil {
+					log.Printf(`[%s] Stopping stats stream`, user.Username)
+					statsCancelFunc()
+				} else if action == start {				
+					log.Printf(`[%s] Starting stats stream for %s`, user.Username, containerID)
+
+					if statsCancelFunc != nil {
+						log.Printf(`[%s] Cancelling previous stats stream`, user.Username)
+						statsCancelFunc()
+					}
+					statsContext, statsCancelFunc := context.WithCancel(context.Background())
+					streamStats(statsContext, user, containerID, output)
+				}
 			}
 
 		case outputBytes := <-output:
