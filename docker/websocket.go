@@ -266,15 +266,19 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 func streamStats(ctx context.Context, user *auth.User, containerID string, output chan<- []byte) {
 	stats, err := docker.ContainerStats(ctx, containerID, true)
 	if err != nil {
-		log.Printf(`[%s] Error while streaming stats: %v`, user.Username, err)
+		log.Printf(`[%s] Stats opening in error for %s: %v`, user.Username, containerID, err)
 		return
 	}
 	defer stats.Body.Close()
 
 	scanner := bufio.NewScanner(stats.Body)
+
+	log.Printf(`[%s] Stats streaming started for %s`, user.Username, containerID)
 	for scanner.Scan() {
 		output <- scanner.Bytes()
 	}
+	
+	log.Printf(`[%s] Stats streaming ended for %s`, user.Username, containerID)
 }
 
 func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
