@@ -15,7 +15,10 @@ import (
 
 const ignoredByteLogSize = 8
 const tailSize = `100`
+const logsDemand = []byte(`logs`)
+const statsDemand = []byte(`stats`)
 
+var containerWebsocketRequest = regexp.MustCompile(`containers/([^/]+)`)
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
 var statsWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/stats`)
 var eventsWebsocketRequest = regexp.MustCompile(`events`)
@@ -44,6 +47,28 @@ func readUntilClose(user *auth.User, ws *websocket.Conn, name string) bool {
 	}
 
 	return false
+}
+
+func readContent(user *auth.User, ws *websocket.Conn, name string, done chan<- int, content chan<- []byte) {
+	for {
+		messageType, message, err := ws.ReadMessage()
+
+		if messageType == websocket.CloseMessage {
+			close(done)
+			return
+		}
+
+		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
+				log.Printf(`[%s] Error while reading from %s socket: %v`, user.Username, name, err)
+			}
+
+			close(done)
+			return
+		}
+
+		content <- message
+	}
 }
 
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
@@ -235,6 +260,44 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	}
 }
 
+func containerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
+	ws, user, err := upgradeAndAuth(w, r)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	defer ws.Close()
+
+	done = make(chan int)
+
+	output = make(chan []byte)
+	defer close(output)
+
+	input = make(chan []byte)
+	defer close(input)
+	
+	go readContent(user, ws, `container`, done, input)
+
+	for {
+		select {
+		case <-done:
+			log.Printf(`[%s] Streaming end for %s`, user.Username, containerID)
+			return
+		case inputBytes := <-input:
+			if inputBytes == logsDemand {
+				log.Printf(`[%s] Streaming logs for %s`, user.Username, containerID)
+			} else if inputBytes == statsDemand {
+				log.Printf(`[%s] Streaming stats for %s`, user.Username, containerID)
+			}
+		case outputBytes := <-output:
+			if err = ws.WriteMessage(websocket.TextMessage, outputBytes); err != nil {
+				log.Printf(`[%s] Error while writing to container socket: %v`, user.Username, err)
+				close(done)
+			}
+		}
+	}
+}
+
 // WebsocketHandler for Docker Websocket request. Should be use with net/http
 type WebsocketHandler struct {
 }
@@ -248,5 +311,7 @@ func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		eventsWebsocketHandler(w, r)
 	} else if statsWebsocketRequest.Match(urlPath) {
 		statsWebsocketHandler(w, r, statsWebsocketRequest.FindSubmatch(urlPath)[1])
+	} else if containerWebsocketRequest.Match(urlPath) {
+		containerWebsocketHandler(w, r, containerWebsocketRequest.FindSubmatch(urlPath)[1])
 	}
 }
