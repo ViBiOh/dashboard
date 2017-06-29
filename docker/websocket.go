@@ -330,7 +330,7 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 					statsContext, statsCancelFunc := context.WithCancel(context.Background())
 					defer statsCancelFunc()
 
-					streamStats(statsContext, user, string(containerID), output)
+					go streamStats(statsContext, user, string(containerID), output)
 				}
 			}
 
