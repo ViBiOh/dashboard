@@ -263,8 +263,10 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	}
 }
 
-func streamLogs(ctx context.Context, _ context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
+func streamLogs(ctx context.Context, cancel context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
 	logs, err := docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
+	defer cancel()
+
 	if err != nil {
 		log.Printf(`[%s] Logs opening in error: %v`, user.Username, err)
 		return
@@ -285,6 +287,8 @@ func streamLogs(ctx context.Context, _ context.CancelFunc, user *auth.User, cont
 }
 
 func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.User, _ string, output chan<- []byte) {
+	defer cancel()
+
 	filtersArgs := filters.NewArgs()
 	if err := labelFilters(&filtersArgs, user, nil); err != nil {
 		log.Printf(`[%s] Events opening in error: %v`, user.Username, err)
@@ -320,8 +324,10 @@ func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	}
 }
 
-func streamStats(ctx context.Context, _ context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
+func streamStats(ctx context.Context, cancel context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
 	stats, err := docker.ContainerStats(ctx, containerID, true)
+	defer cancel()
+
 	if err != nil {
 		log.Printf(`[%s] Stats opening in error for %s: %v`, user.Username, containerID, err)
 		return
@@ -394,10 +400,19 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		case inputBytes := <-input:
 			if eventsDemand.Match(inputBytes) {
 				eventsCancelFunc = handleBusDemand(user, `events`, inputBytes, eventsDemand, eventsCancelFunc, output, streamEvents)
+				if eventsCancelFunc != nil {
+					defer eventsCancelFunc()
+				}
 			} else if logsDemand.Match(inputBytes) {
 				logsCancelFunc = handleBusDemand(user, `logs`, inputBytes, logsDemand, logsCancelFunc, output, streamLogs)
+				if eventsCancelFunc != nil {
+					defer logsCancelFunc()
+				}
 			} else if statsDemand.Match(inputBytes) {
 				statsCancelFunc = handleBusDemand(user, `stats`, inputBytes, statsDemand, statsCancelFunc, output, streamStats)
+				if eventsCancelFunc != nil {
+					defer statsCancelFunc()
+				}
 			}
 
 		case outputBytes := <-output:
