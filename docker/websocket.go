@@ -295,7 +295,7 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	go readContent(user, ws, `streaming`, done, input)
 	log.Printf(`[%s] Streaming started`, user.Username)
-	
+
 	var statsCancelFunc context.CancelFunc
 
 	for {
@@ -312,7 +312,7 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			} else if statsDemand.Match(inputBytes) {
 				containerID := statsDemand.FindSubmatch(inputBytes)[1]
 				action := string(statsDemand.FindSubmatch(inputBytes)[2])
-				
+
 				if action == stop && statsCancelFunc != nil {
 					log.Printf(`[%s] Stopping stats stream`, user.Username)
 					statsCancelFunc()
