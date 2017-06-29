@@ -277,7 +277,7 @@ func streamStats(ctx context.Context, user *auth.User, containerID string, outpu
 	for scanner.Scan() {
 		output <- scanner.Bytes()
 	}
-	
+
 	log.Printf(`[%s] Stats streaming ended for %s`, user.Username, containerID)
 }
 
@@ -320,7 +320,7 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 				if action == stop && statsCancelFunc != nil {
 					log.Printf(`[%s] Stopping stats stream`, user.Username)
 					statsCancelFunc()
-				} else if action == start {				
+				} else if action == start {
 					log.Printf(`[%s] Starting stats stream for %s`, user.Username, containerID)
 
 					if statsCancelFunc != nil {
