@@ -263,7 +263,7 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	}
 }
 
-func streamStats(ctx *context.Context, user *auth.User, containerID string, output chan<- []byte) {
+func streamStats(ctx context.Context, user *auth.User, containerID string, output chan<- []byte) {
 	stats, err := docker.ContainerStats(ctx, containerID, true)
 	if err != nil {
 		log.Printf(`[%s] Error while streaming stats: %v`, user.Username, err)
@@ -313,7 +313,7 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 				containerID := statsDemand.FindSubmatch(inputBytes)[1]
 				action := string(statsDemand.FindSubmatch(inputBytes)[2])
 				
-				if action == stop && cancelFunc != nil {
+				if action == stop && statsCancelFunc != nil {
 					log.Printf(`[%s] Stopping stats stream`, user.Username)
 					statsCancelFunc()
 				} else if action == start {				
@@ -326,7 +326,7 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 					statsContext, statsCancelFunc := context.WithCancel(context.Background())
 					defer statsCancelFunc()
 
-					streamStats(statsContext, user, containerID, output)
+					streamStats(statsContext, user, string(containerID), output)
 				}
 			}
 
