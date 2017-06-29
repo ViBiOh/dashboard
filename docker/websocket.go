@@ -281,6 +281,30 @@ func streamStats(ctx context.Context, user *auth.User, containerID string, outpu
 	log.Printf(`[%s] Stats streaming ended for %s`, user.Username, containerID)
 }
 
+func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.Regexp, cancel context.CancelFunc, output chan<- []byte, streamFn func(context.Context, *auth.User, string, chan<- []byte)) context.CancelFunc {
+	containerID := string(demand.FindSubmatch(input)[1])
+	action := string(demand.FindSubmatch(input)[2])
+
+	if action == stop && cancel != nil {
+		log.Printf(`[%s] Stopping %s stream`, user.Username, name)
+		cancel()
+	} else if action == start {
+		log.Printf(`[%s] Starting %s stream for %s`, user.Username, name, containerID)
+
+		if cancel != nil {
+			log.Printf(`[%s] Cancelling previous %s stream`, user.Username, name)
+			cancel()
+		}
+
+		ctx, newCancel := context.WithCancel(context.Background())
+		go streamFn(ctx, user, string(containerID), output)
+
+		return newCancel
+	}
+
+	return nil
+}
+
 func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	ws, user, err := upgradeAndAuth(w, r)
 	if err != nil {
@@ -314,24 +338,7 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			} else if logsDemand.Match(inputBytes) {
 				log.Printf(`[%s] Streaming logs for %s`, user.Username, logsDemand.FindSubmatch(inputBytes)[1])
 			} else if statsDemand.Match(inputBytes) {
-				containerID := statsDemand.FindSubmatch(inputBytes)[1]
-				action := string(statsDemand.FindSubmatch(inputBytes)[2])
-
-				if action == stop && statsCancelFunc != nil {
-					log.Printf(`[%s] Stopping stats stream`, user.Username)
-					statsCancelFunc()
-				} else if action == start {
-					log.Printf(`[%s] Starting stats stream for %s`, user.Username, containerID)
-
-					if statsCancelFunc != nil {
-						log.Printf(`[%s] Cancelling previous stats stream`, user.Username)
-						statsCancelFunc()
-					}
-					statsContext, statsCancelFunc := context.WithCancel(context.Background())
-					defer statsCancelFunc()
-
-					go streamStats(statsContext, user, string(containerID), output)
-				}
+				statsCancelFunc = handleBusDemand(user, `stats`, inputBytes, statsDemand, statsCancelFunc, output, streamStats)
 			}
 
 		case outputBytes := <-output:

@@ -9,6 +9,6 @@ doc/
 package-lock.json
 
 # Go binary
-server
+dashboard
 bcrypt_pass
 users
