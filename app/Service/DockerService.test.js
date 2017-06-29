@@ -277,3 +277,32 @@ test.serial('should call onMessage callback', (t) => {
 
   t.true(onMessage.calledWith('test'));
 });
+
+test.serial('should send auth on streamBus opening', (t) => {
+  const onMessage = sinon.spy();
+  const wsSend = sinon.spy();
+
+  global.WebSocket = () => ({
+    send: wsSend,
+    onmessage: onMessage,
+  });
+
+  DockerService.streamBus(onMessage).onopen();
+
+  t.true(wsSend.calledWith('token'));
+  t.true(getItemSpy.calledWith(authStorage));
+});
+
+test.serial('should call onMessage callback for streamBus', (t) => {
+  const onMessage = sinon.spy();
+  const wsSend = sinon.spy();
+
+  global.WebSocket = () => ({
+    send: wsSend,
+    onmessage: onMessage,
+  });
+
+  DockerService.streamBus(onMessage).onmessage({ data: 'test' });
+
+  t.true(onMessage.calledWith('test'));
+});

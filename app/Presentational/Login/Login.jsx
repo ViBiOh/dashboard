@@ -37,7 +37,9 @@ const Login = ({ pending, onLogin, error }) => {
         onKeyDown={e => onKeyDown(e, submit)}
       />
       <div className={style.center}>
-        <ThrobberButton onClick={submit} pending={pending}>Login</ThrobberButton>
+        <ThrobberButton onClick={submit} pending={pending}>
+          Login
+        </ThrobberButton>
       </div>
     </span>
   );

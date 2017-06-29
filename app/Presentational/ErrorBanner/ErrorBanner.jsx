@@ -9,10 +9,14 @@ import style from './ErrorBanner.less';
  */
 const ErrorBanner = ({ error }) => {
   if (error) {
-    return <div className={style.error}>{error}</div>;
+    return (
+      <div className={style.error}>
+        {error}
+      </div>
+    );
   }
   return null;
-}
+};
 
 ErrorBanner.displayName = 'ErrorBanner';
 

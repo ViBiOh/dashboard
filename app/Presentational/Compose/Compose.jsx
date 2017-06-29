@@ -50,7 +50,9 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
           onKeyDown={e => onKeyDown(e, submit)}
         />
         <span>
-          <ThrobberButton onClick={submit} pending={pending}>Create</ThrobberButton>
+          <ThrobberButton onClick={submit} pending={pending}>
+            Create
+          </ThrobberButton>
         </span>
       </div>
     </div>

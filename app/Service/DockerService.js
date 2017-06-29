@@ -159,6 +159,20 @@ export default class DockerService {
   }
 
   /**
+   * Open WebSocket with auth token for connecting to two-way bus.
+   * @param  {Function} onMessage Callback for each input receive from socket
+   * @return {Websocket}          Opened and authentified Websocket
+   */
+  static streamBus(onMessage) {
+    const socket = new WebSocket(`${WS}bus`);
+
+    socket.onmessage = event => onMessage(event.data);
+    socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
+
+    return socket;
+  }
+
+  /**
    * Open WebSocket with auth token for reading logs of a Docker's container.
    * @param  {String} containerId Container's id
    * @param  {Function} onMessage Callback for each input receive from socket

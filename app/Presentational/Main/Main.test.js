@@ -4,9 +4,23 @@ import { shallow } from 'enzyme';
 import Main from './Main';
 
 test('should always render as a span', (t) => {
-  t.is(shallow(<Main><span /></Main>).type(), 'span');
+  t.is(
+    shallow(
+      <Main>
+        <span />
+      </Main>,
+    ).type(),
+    'span',
+  );
 });
 
 test('should wrap content into article', (t) => {
-  t.is(shallow(<Main><span /></Main>).find('article').length, 1);
+  t.is(
+    shallow(
+      <Main>
+        <span />
+      </Main>,
+    ).find('article').length,
+    1,
+  );
 });

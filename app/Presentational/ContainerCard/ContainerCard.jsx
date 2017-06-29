@@ -15,13 +15,19 @@ const ContainerCard = ({ container, onClick }) =>
   (<Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
     <div className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`} />
     <span className={style.column}>
-      <em>{container.Image}</em>
-      <strong>{container.Names.join(', ')}</strong>
+      <em>
+        {container.Image}
+      </em>
+      <strong>
+        {container.Names.join(', ')}
+      </strong>
     </span>
     <span>
       {moment.unix(container.Created).fromNow()}
       {container.Labels && container.Labels.owner
-        ? <div className={style.owner}>by {container.Labels.owner}</div>
+        ? <div className={style.owner}>
+            by {container.Labels.owner}
+        </div>
         : null}
     </span>
   </Button>);

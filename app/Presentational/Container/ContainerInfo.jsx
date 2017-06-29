@@ -54,15 +54,21 @@ const ContainerInfo = ({ container }) => {
       <h3 key="config">Config</h3>
       <span key="id" className={style.info}>
         <span className={style.label}>Id</span>
-        <span>{String(container.Id).substring(0, 12)}</span>
+        <span>
+          {String(container.Id).substring(0, 12)}
+        </span>
       </span>
       <span key="created" className={style.info}>
         <span className={style.label}>Created</span>
-        <span>{moment(container.Created).fromNow()}</span>
+        <span>
+          {moment(container.Created).fromNow()}
+        </span>
       </span>
       <span key="image" className={style.info}>
         <span className={style.label}>Image</span>
-        <span>{container.Config.Image}</span>
+        <span>
+          {container.Config.Image}
+        </span>
       </span>
       <span key="command" className={style.info}>
         <span className={style.label}>Command</span>

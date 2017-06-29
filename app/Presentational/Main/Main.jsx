@@ -9,7 +9,9 @@ import style from './Main.less';
  */
 const Main = ({ children }) =>
   (<span className={style.layout}>
-    <article className={style.article}>{children}</article>
+    <article className={style.article}>
+      {children}
+    </article>
   </span>);
 
 Main.propTypes = {
