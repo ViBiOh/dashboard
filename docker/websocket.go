@@ -283,13 +283,16 @@ func containerWebsocketHandler(w http.ResponseWriter, r *http.Request, container
 		case <-done:
 			log.Printf(`[%s] Streaming end for %s`, user.Username, containerID)
 			return
+
 		case inputBytes := <-input:
-			inputStr = string(inputBytes)
+			inputStr := string(inputBytes)
+
 			if inputStr == logsDemand {
 				log.Printf(`[%s] Streaming logs for %s`, user.Username, containerID)
 			} else if inputStr == statsDemand {
 				log.Printf(`[%s] Streaming stats for %s`, user.Username, containerID)
 			}
+
 		case outputBytes := <-output:
 			if err = ws.WriteMessage(websocket.TextMessage, outputBytes); err != nil {
 				log.Printf(`[%s] Error while writing to container socket: %v`, user.Username, err)
