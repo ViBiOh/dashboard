@@ -15,9 +15,9 @@ import (
 
 const ignoredByteLogSize = 8
 const tailSize = `100`
-const logsDemand = []byte(`logs`)
-const statsDemand = []byte(`stats`)
 
+var logsDemand = []byte(`logs`)
+var statsDemand = []byte(`stats`)
 var containerWebsocketRequest = regexp.MustCompile(`containers/([^/]+)`)
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
 var statsWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/stats`)
@@ -268,14 +268,14 @@ func containerWebsocketHandler(w http.ResponseWriter, r *http.Request, container
 	}
 	defer ws.Close()
 
-	done = make(chan int)
+	done := make(chan int)
 
-	output = make(chan []byte)
+	output := make(chan []byte)
 	defer close(output)
 
-	input = make(chan []byte)
+	input := make(chan []byte)
 	defer close(input)
-	
+
 	go readContent(user, ws, `container`, done, input)
 
 	for {
