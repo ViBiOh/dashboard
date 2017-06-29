@@ -18,8 +18,8 @@ const tailSize = `100`
 const start = `start`
 const stop = `stop`
 
-var eventsDemand = regexp.MustCompile(`^events`)
-var logsDemand = regexp.MustCompile(`^logs (.+)`)
+var eventsDemand = regexp.MustCompile(`^events (.+)(.?)`)
+var logsDemand = regexp.MustCompile(`^logs (.+) (.+)`)
 var statsDemand = regexp.MustCompile(`^stats (.+) (.+)`)
 var busWebsocketRequest = regexp.MustCompile(`bus`)
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
@@ -345,8 +345,13 @@ func streamStats(ctx context.Context, cancel context.CancelFunc, user *auth.User
 }
 
 func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.Regexp, cancel context.CancelFunc, output chan<- []byte, streamFn func(context.Context, context.CancelFunc, *auth.User, string, chan<- []byte)) context.CancelFunc {
-	containerID := string(demand.FindSubmatch(input)[1])
-	action := string(demand.FindSubmatch(input)[2])
+	demandGroups := demand.FindSubmatch(input)
+	if len(demandGroups) < 2 {
+		log.Printf(`[%s] Unable to parse bus demand %s for %s`, user.Username, input, name)
+	}
+
+	containerID := string(demandGroups[1])
+	action := string(demandGroups[2])
 
 	if action == stop && cancel != nil {
 		log.Printf(`[%s] Stopping %s stream`, user.Username, name)
@@ -405,12 +410,12 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			} else if logsDemand.Match(inputBytes) {
 				logsCancelFunc = handleBusDemand(user, `logs`, inputBytes, logsDemand, logsCancelFunc, output, streamLogs)
-				if eventsCancelFunc != nil {
+				if logsCancelFunc != nil {
 					defer logsCancelFunc()
 				}
 			} else if statsDemand.Match(inputBytes) {
 				statsCancelFunc = handleBusDemand(user, `stats`, inputBytes, statsDemand, statsCancelFunc, output, streamStats)
-				if eventsCancelFunc != nil {
+				if statsCancelFunc != nil {
 					defer statsCancelFunc()
 				}
 			}
