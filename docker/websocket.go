@@ -55,28 +55,6 @@ func readUntilClose(user *auth.User, ws *websocket.Conn, name string) bool {
 	return false
 }
 
-func readContent(user *auth.User, ws *websocket.Conn, name string, done chan<- int, content chan<- []byte) {
-	for {
-		messageType, message, err := ws.ReadMessage()
-
-		if messageType == websocket.CloseMessage {
-			close(done)
-			return
-		}
-
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
-				log.Printf(`[%s] Error while reading from %s socket: %v`, user.Username, name, err)
-			}
-
-			close(done)
-			return
-		}
-
-		content <- message
-	}
-}
-
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -266,6 +244,28 @@ func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID [
 	}
 }
 
+func readContent(user *auth.User, ws *websocket.Conn, name string, done chan<- int, content chan<- []byte) {
+	for {
+		messageType, message, err := ws.ReadMessage()
+
+		if messageType == websocket.CloseMessage {
+			close(done)
+			return
+		}
+
+		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
+				log.Printf(`[%s] Error while reading from %s socket: %v`, user.Username, name, err)
+			}
+
+			close(done)
+			return
+		}
+
+		content <- message
+	}
+}
+
 func streamLogs(ctx context.Context, cancel context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
 	logs, err := docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	defer cancel()
@@ -389,6 +389,7 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	defer ws.Close()
 
 	done := make(chan int)
+	defer close(done)
 
 	output := make(chan []byte)
 	defer close(output)
