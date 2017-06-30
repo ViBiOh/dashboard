@@ -154,6 +154,9 @@ func cleanContainers(containers []types.Container, user *auth.User) {
 	for _, container := range containers {
 		log.Printf(`[%s] Stopping containers %s`, user.Username, strings.Join(container.Names, `, `))
 		stopContainer(container.ID)
+	}
+
+	for _, container := range containers {
 		log.Printf(`[%s] Deleting containers %s`, user.Username, strings.Join(container.Names, `, `))
 		rmContainer(container.ID)
 	}
@@ -180,6 +183,10 @@ func getFinalName(serviceFullName string) string {
 func deleteServices(appName []byte, services map[string]deployedService, user *auth.User) {
 	log.Printf(`[%s] Deleting services for %s`, user.Username, appName)
 	for service, container := range services {
+		if err := stopContainer(container.ID); err != nil {
+			log.Printf(`[%s] Error while stopping service %s for %s: %v`, user.Username, service, appName, err)
+		}
+
 		if err := rmContainer(container.ID); err != nil {
 			log.Printf(`[%s] Error while deleting service %s for %s: %v`, user.Username, service, appName, err)
 		}
