@@ -21,6 +21,9 @@ const stop = `stop`
 var eventsDemand = regexp.MustCompile(`^events (.+)`)
 var logsDemand = regexp.MustCompile(`^logs (.+) (.+)`)
 var statsDemand = regexp.MustCompile(`^stats (.+) (.+)`)
+var eventsPrefix = []byte(`events `)
+var logsPrefix = []byte(`stats `)
+var statsPrefix = []byte(`stats `)
 var busWebsocketRequest = regexp.MustCompile(`bus`)
 var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
 var statsWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/stats`)
@@ -279,7 +282,7 @@ func streamLogs(ctx context.Context, cancel context.CancelFunc, user *auth.User,
 	for scanner.Scan() {
 		logLine := scanner.Bytes()
 		if len(logLine) > ignoredByteLogSize {
-			output <- logLine[ignoredByteLogSize:]
+			output <- append(logsPrefix, logLine[ignoredByteLogSize:]...)
 		}
 	}
 
@@ -314,7 +317,7 @@ func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 				log.Printf(`[%s] Events marshalling in error: %v`, user.Username, err)
 				cancel()
 			} else {
-				output <- messageJSON
+				output <- append(eventsPrefix, messageJSON...)
 			}
 
 		case err := <-errors:
@@ -338,7 +341,7 @@ func streamStats(ctx context.Context, cancel context.CancelFunc, user *auth.User
 	log.Printf(`[%s] Stats streaming started for %s`, user.Username, containerID)
 
 	for scanner.Scan() {
-		output <- scanner.Bytes()
+		output <- append(statsPrefix, scanner.Bytes()...)
 	}
 
 	log.Printf(`[%s] Stats streaming ended for %s`, user.Username, containerID)
