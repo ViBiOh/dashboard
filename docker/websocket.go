@@ -389,7 +389,6 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	defer ws.Close()
 
 	done := make(chan int)
-	defer close(done)
 
 	output := make(chan []byte)
 	defer close(output)
