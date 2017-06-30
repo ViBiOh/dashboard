@@ -361,7 +361,7 @@ func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.
 		log.Printf(`[%s] Stopping %s stream`, user.Username, name)
 		cancel()
 	} else if action == start {
-		log.Printf(`[%s] Starting %s stream for %s`, user.Username, name, containerID)
+		log.Printf(`[%s] Starting %s stream`, user.Username, name)
 
 		if cancel != nil {
 			log.Printf(`[%s] Cancelling previous %s stream`, user.Username, name)
