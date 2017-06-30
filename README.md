@@ -35,9 +35,9 @@ Because :
 
 * I have only one server, setup should be easy
 * I want people to deploy on my server but I don't want them to use too much ressources, quota of containers has to be defined
-* I want people to deploy containers without fear for my server security on disk space
+* I want people to deploy containers without fear for my server security or disk space
 * I want people to deploy containers easily with a simple `curl` command, from CI
-* I want people to be able to manage theirs containers by their own (monitoring, logs, etc.) without granting ssh access
+* I want people to be able to manage theirs containers by their own (lifecycle, configuration, monitoring, logs, etc.) without granting ssh access
 
 And, maybe, I want to have fun with `golang` and `ReactJS` 🙄😏
 
