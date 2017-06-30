@@ -45,6 +45,9 @@ const ContainersList = ({
   return (
     <span className={style.container}>
       <Toolbar>
+        <Button onClick={onAdd} title="Deploy a new stack">
+          <FaPlus />
+        </Button>
         <ThrobberButton
           pending={pendingInfo}
           onClick={onRefresh}
@@ -54,9 +57,6 @@ const ContainersList = ({
         >
           <FaRefresh />
         </ThrobberButton>
-        <Button onClick={onAdd} title="Deploy a new stack">
-          <FaPlus />
-        </Button>
         <span className={style.fill} />
         <Button onClick={onLogout} title="Logout" type="danger">
           <FaUserTimes />
