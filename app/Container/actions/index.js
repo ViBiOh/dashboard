@@ -117,7 +117,7 @@ export const makeBusActionCreator = (camelCaseName) => {
     ]),
     ...makeBusActionAndTypeCreator(`CLOSE_${typeName}`, `close${camelSuffix}`, [
       camelCaseName,
-      'end',
+      'stop',
     ]),
   };
 };
