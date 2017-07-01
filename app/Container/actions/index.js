@@ -68,113 +68,59 @@ export const makeOpenCloseActionCreator = (camelCaseName, opens = [], closes = [
 };
 
 /**
+ * Action creator : return a function for given action
+ * @param  {string}     type     Action type
+ * @param  {...objects} argNames Properties' names of action
+ * @return {func}                Function that generate action with type and properties given the
+ *                               params
+ */
+export const makeBusPayloadActionCreator = (type, streamName, demand) => (id) => {
+  let usedId = '';
+  if (typeof id !== 'undefined') {
+    usedId = ` ${id}`;
+  }
+
+  const action = {
+    type,
+    streamName,
+    payload: `${streamName} ${demand}${usedId}`,
+  };
+
+  return action;
+};
+
+/**
+ * Action bus creator : return the function and the constant for the given action
+ * @param  {string} type   Action type
+ * @param  {string} action Action function name
+ * @param  {Array}  inputs Properties' names of action
+ * @return {object}        An object containing both function and constant
+ */
+export const makeBusActionAndTypeCreator = (type, action, inputs = []) => ({
+  [type]: type,
+  [action]: makeBusPayloadActionCreator(type, ...inputs),
+});
+
+/**
  * Action creator for an WebSocket call (open, close)
  * @param  {[type]} camelCaseName CamelCase name of action : the action function name
- * @param  {Array}  opens         Properties' names of open action
- * @param  {Array}  closes        Properties' names of close action
  * @return {[type]}               An object container constants and functions for requesting WS
  */
-export const makeWriteBusActionCreator = (camelCaseName, opens = [], closes = []) => {
+export const makeBusActionCreator = (camelCaseName) => {
   const typeName = toTypeName(camelCaseName);
   const camelSuffix = camelCaseName.replace(/^(.)/, (all, char) => char.toUpperCase());
 
   return {
-    ...makeActionAndTypeCreator(`OPEN_${typeName}`, `open${camelSuffix}`, opens.map()),
-    ...makeActionAndTypeCreator(`CLOSE_${typeName}`, `close${camelSuffix}`, closes),
+    ...makeBusActionAndTypeCreator(`OPEN_${typeName}`, `open${camelSuffix}`, [
+      camelCaseName,
+      'start',
+    ]),
+    ...makeBusActionAndTypeCreator(`CLOSE_${typeName}`, `close${camelSuffix}`, [
+      camelCaseName,
+      'end',
+    ]),
   };
 };
-
-/**
- * Open events.
- * @type {String}
- */
-const OPEN_EVENTS = 'OPEN_EVENTS';
-
-/**
- * Ask for events stream for given container
- * @return {Object} Action to dispatch
- */
-const openEvents = () => ({
-  type: OPEN_EVENTS,
-  payload: 'events start',
-});
-
-/**
- * Close events.
- * @type {String}
- */
-const CLOSE_EVENTS = 'CLOSE_EVENTS';
-
-/**
- * Ask for events stream end
- * @return {Object} Action to dispatch
- */
-const closeEvents = () => ({
-  type: CLOSE_EVENTS,
-  payload: 'events stop',
-});
-
-/**
- * Open logs.
- * @type {String}
- */
-const OPEN_LOGS = 'OPEN_LOGS';
-
-/**
- * Ask for logs stream for given container
- * @param  {String} containerId Container ID
- * @return {Object} Action to dispatch
- */
-const openLogs = containerId => ({
-  type: OPEN_LOGS,
-  payload: `logs start ${containerId}`,
-});
-
-/**
- * Close logs.
- * @type {String}
- */
-const CLOSE_LOGS = 'CLOSE_LOGS';
-
-/**
- * Ask for logs stream end
- * @return {Object} Action to dispatch
- */
-const closeLogs = () => ({
-  type: CLOSE_LOGS,
-  payload: 'logs stop',
-});
-
-/**
- * Open stats.
- * @type {String}
- */
-const OPEN_STATS = 'OPEN_STATS';
-
-/**
- * Ask for stats stream for given container
- * @param  {String} containerId Container ID
- * @return {Object} Action to dispatch
- */
-const openStats = containerId => ({
-  type: OPEN_STATS,
-  payload: `stats start ${containerId}`,
-});
-
-/**
- * Close stats.
- * @type {String}
- */
-const CLOSE_STATS = 'CLOSE_STATS';
-
-/**
- * Ask for stats stream end
- * @return {Object} Action to dispatch
- */
-const closeStats = () => ({
-  type: CLOSE_STATS,
-  payload: 'stats stop',
-});
 
 /**
  * App's actions.
@@ -189,20 +135,11 @@ export default {
   ...makeApiActionCreator('actionContainer', ['action', 'id']),
   ...makeApiActionCreator('compose', ['name', 'file']),
   ...makeOpenCloseActionCreator('bus'),
+  ...makeBusActionCreator('events'),
+  ...makeBusActionCreator('logs'),
+  ...makeBusActionCreator('stats'),
   ...makeActionAndTypeCreator('ADD_LOG', 'addLog', ['log']),
   ...makeActionAndTypeCreator('ADD_STAT', 'addStat', ['stat']),
   ...makeActionAndTypeCreator('SET_ERROR', 'setError', ['error']),
   ...makeActionAndTypeCreator('GO_HOME', 'goHome'),
-  OPEN_EVENTS,
-  openEvents,
-  CLOSE_EVENTS,
-  closeEvents,
-  OPEN_LOGS,
-  openLogs,
-  CLOSE_LOGS,
-  closeLogs,
-  OPEN_STATS,
-  openStats,
-  CLOSE_STATS,
-  closeStats,
 };
