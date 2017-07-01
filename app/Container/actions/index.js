@@ -68,6 +68,115 @@ export const makeOpenCloseActionCreator = (camelCaseName, opens = [], closes = [
 };
 
 /**
+ * Action creator for an WebSocket call (open, close)
+ * @param  {[type]} camelCaseName CamelCase name of action : the action function name
+ * @param  {Array}  opens         Properties' names of open action
+ * @param  {Array}  closes        Properties' names of close action
+ * @return {[type]}               An object container constants and functions for requesting WS
+ */
+export const makeWriteBusActionCreator = (camelCaseName, opens = [], closes = []) => {
+  const typeName = toTypeName(camelCaseName);
+  const camelSuffix = camelCaseName.replace(/^(.)/, (all, char) => char.toUpperCase());
+
+  return {
+    ...makeActionAndTypeCreator(`OPEN_${typeName}`, `open${camelSuffix}`, opens.map()),
+    ...makeActionAndTypeCreator(`CLOSE_${typeName}`, `close${camelSuffix}`, closes),
+  };
+};
+
+/**
+ * Open events.
+ * @type {String}
+ */
+const OPEN_EVENTS = 'OPEN_EVENTS';
+
+/**
+ * Ask for events stream for given container
+ * @return {Object} Action to dispatch
+ */
+const openEvents = () => ({
+  type: OPEN_EVENTS,
+  payload: 'events start',
+});
+
+/**
+ * Close events.
+ * @type {String}
+ */
+const CLOSE_EVENTS = 'CLOSE_EVENTS';
+
+/**
+ * Ask for events stream end
+ * @return {Object} Action to dispatch
+ */
+const closeEvents = () => ({
+  type: CLOSE_EVENTS,
+  payload: 'events stop',
+});
+
+/**
+ * Open logs.
+ * @type {String}
+ */
+const OPEN_LOGS = 'OPEN_LOGS';
+
+/**
+ * Ask for logs stream for given container
+ * @param  {String} containerId Container ID
+ * @return {Object} Action to dispatch
+ */
+const openLogs = containerId => ({
+  type: OPEN_LOGS,
+  payload: `logs start ${containerId}`,
+});
+
+/**
+ * Close logs.
+ * @type {String}
+ */
+const CLOSE_LOGS = 'CLOSE_LOGS';
+
+/**
+ * Ask for logs stream end
+ * @return {Object} Action to dispatch
+ */
+const closeLogs = () => ({
+  type: CLOSE_LOGS,
+  payload: 'logs stop',
+});
+
+/**
+ * Open stats.
+ * @type {String}
+ */
+const OPEN_STATS = 'OPEN_STATS';
+
+/**
+ * Ask for stats stream for given container
+ * @param  {String} containerId Container ID
+ * @return {Object} Action to dispatch
+ */
+const openStats = containerId => ({
+  type: OPEN_STATS,
+  payload: `stats start ${containerId}`,
+});
+
+/**
+ * Close stats.
+ * @type {String}
+ */
+const CLOSE_STATS = 'CLOSE_STATS';
+
+/**
+ * Ask for stats stream end
+ * @return {Object} Action to dispatch
+ */
+const closeStats = () => ({
+  type: CLOSE_STATS,
+  payload: 'stats stop',
+});
+
+/**
  * App's actions.
  */
 export default {
@@ -79,11 +188,21 @@ export default {
   ...makeApiActionCreator('fetchContainer', ['id'], ['container']),
   ...makeApiActionCreator('actionContainer', ['action', 'id']),
   ...makeApiActionCreator('compose', ['name', 'file']),
-  ...makeOpenCloseActionCreator('logs', ['id']),
-  ...makeOpenCloseActionCreator('stats', ['id']),
-  ...makeOpenCloseActionCreator('events'),
+  ...makeOpenCloseActionCreator('bus'),
   ...makeActionAndTypeCreator('ADD_LOG', 'addLog', ['log']),
   ...makeActionAndTypeCreator('ADD_STAT', 'addStat', ['stat']),
   ...makeActionAndTypeCreator('SET_ERROR', 'setError', ['error']),
   ...makeActionAndTypeCreator('GO_HOME', 'goHome'),
+  OPEN_EVENTS,
+  openEvents,
+  CLOSE_EVENTS,
+  closeEvents,
+  OPEN_LOGS,
+  openLogs,
+  CLOSE_LOGS,
+  closeLogs,
+  OPEN_STATS,
+  openStats,
+  CLOSE_STATS,
+  closeStats,
 };

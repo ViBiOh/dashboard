@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
-import { eventChannel, delay } from 'redux-saga';
+import { eventChannel } from 'redux-saga';
 import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
 import actions from '../actions';
@@ -56,9 +56,7 @@ export function* logoutSaga() {
     yield call(DockerService.logout);
     yield [
       put(actions.logoutSucceeded()),
-      put(actions.closeEvents()),
-      put(actions.closeLogs()),
-      put(actions.closeStats()),
+      put(actions.closeBus()),
       put(actions.setError('')),
       put(push('/login')),
     ];
@@ -76,7 +74,7 @@ export function* infoSaga() {
     const infos = yield call(DockerService.info);
 
     const nextActions = [actions.infoSucceeded(infos)];
-    nextActions.push(actions.openEvents());
+    nextActions.push(actions.openBus());
     nextActions.push(actions.fetchContainers());
     if (infos.Swarm && infos.Swarm.NodeID) {
       nextActions.push(actions.fetchServices());
@@ -169,132 +167,76 @@ export function* composeSaga(action) {
   }
 }
 
-/**
- * Saga of reading logs' stream :
- * - Create a channel to handle every log
- * - Add log to state
- * @param {Object} action        Action dispatched
- * @yield {Function} Saga effects to sequence flow of work
- */
-export function* readLogsSaga(action) {
-  const chan = eventChannel((emit) => {
-    const websocket = DockerService.containerLogs(action.id, emit);
-
-    return () => websocket.close();
-  });
-
-  try {
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const log = yield take(chan);
-      yield put(actions.addLog(log));
-    }
-  } finally {
-    chan.close();
+export function* writeBusSaga(websocket) {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const action = yield take([
+      actions.OPEN_EVENTS,
+      actions.OPEN_LOGS,
+      actions.OPEN_STATS,
+      actions.CLOSE_EVENTS,
+      actions.CLOSE_LOGS,
+      actions.CLOSE_STATS,
+    ]);
+    websocket.send(action.payload);
   }
 }
 
 /**
- * Saga of handling logs' stream:
- * - Fork the reading channel
- * - Handle close request
- * @param {Object} action        Action dispatched
- * @yield {Function} Saga effects to sequence flow of work
- */
-export function* logsSaga(action) {
-  const task = yield fork(readLogsSaga, action);
-
-  yield take(actions.CLOSE_LOGS);
-  yield cancel(task);
-}
-
-/**
- * Saga of reading stats' stream :
- * - Create a channel to handle every log
- * - Add log to state
+ * Saga of reading bus' stream :
+ * - Create a channel to handle every input
+ * - Handle every put
  * @param {Object} action Action dispatched
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* readStatsSaga(action) {
+export function* readBusSaga(action) {
+  let websocket;
   const chan = eventChannel((emit) => {
-    const websocket = DockerService.containerStats(action.id, emit);
-
-    return () => websocket.close();
-  });
-
-  try {
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const stat = yield take(chan);
-      yield put(actions.addStat(JSON.parse(stat)));
-    }
-  } finally {
-    chan.close();
-  }
-}
-
-/**
- * Saga of handling stats' stream:
- * - Fork the reading channel
- * - Handle close request
- * @param {Object} action Action dispatched
- * @yield {Function} Saga effects to sequence flow of work
- */
-export function* statsSaga(action) {
-  const task = yield fork(readStatsSaga, action);
-
-  yield take(actions.CLOSE_STATS);
-  yield cancel(task);
-}
-
-/**
- * Debounced fetch of containers.
- * Duration is based on the sleep servier-side before renaming containers.
- * @yield {Function} Saga effects to sequence flow of work
- */
-export function* debounceFetchContainersSaga() {
-  yield call(delay, 5555);
-  yield put(actions.fetchContainers());
-}
-
-/**
- * Saga of reading events' stream :
- * - Create a channel to handle every events
- * - Debounced fetch containers
- * @yield {Function} Saga effects to sequence flow of work
- */
-export function* readEventsSaga() {
-  const chan = eventChannel((emit) => {
-    const websocket = DockerService.events(emit);
+    websocket = DockerService.streamBus(emit);
 
     return () => websocket.close();
   });
 
   let task;
   try {
+    task = yield fork(writeBusSaga, websocket);
+
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      yield take(chan);
-      if (task) {
-        yield cancel(task);
+      const bus = yield take(chan);
+
+      let demand;
+      bus.replace(/^(\S+) (.*)$/, (all, type, content) => {
+        if (type === 'stats') {
+          demand = actions.addStat(JSON.parse(content));
+        } else if (type === 'logs') {
+          demand = actions.addLog(content);
+        } else if (type === 'events') {
+          demand = action.fetchContainers();
+        }
+      });
+
+      if (demand) {
+        yield put(demand);
       }
-      task = yield fork(debounceFetchContainersSaga);
     }
   } finally {
     chan.close();
+    yield cancel(task);
   }
 }
 
 /**
- * Saga of handling events' stream:
+ * Saga of handling bus' stream:
  * - Fork the reading channel
  * - Handle close request
+ * @param {Object} action Action dispatched
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* eventsSaga() {
-  const task = yield fork(readEventsSaga);
+export function* busSaga(action) {
+  const task = yield fork(readBusSaga, action);
 
-  yield take(actions.CLOSE_EVENTS);
+  yield take(actions.CLOSE_BUS);
   yield cancel(task);
 }
 
@@ -312,7 +254,5 @@ export default function* appSaga() {
   yield takeLatest(actions.FETCH_CONTAINER, fetchContainerSaga);
   yield takeLatest(actions.ACTION_CONTAINER, actionContainerSaga);
   yield takeLatest(actions.COMPOSE, composeSaga);
-  yield takeLatest(actions.OPEN_LOGS, logsSaga);
-  yield takeLatest(actions.OPEN_STATS, statsSaga);
-  yield takeLatest(actions.OPEN_EVENTS, eventsSaga);
+  yield takeLatest(actions.OPEN_BUS, busSaga);
 }

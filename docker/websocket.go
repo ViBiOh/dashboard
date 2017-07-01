@@ -18,16 +18,13 @@ const tailSize = `100`
 const start = `start`
 const stop = `stop`
 
-var eventsDemand = regexp.MustCompile(`^events (.+)`)
-var logsDemand = regexp.MustCompile(`^logs (.+) (.+)?`)
-var statsDemand = regexp.MustCompile(`^stats (.+) (.+)?`)
+var eventsDemand = regexp.MustCompile(`^events (\S+)`)
+var logsDemand = regexp.MustCompile(`^logs (\S+)(?: (.+))?`)
+var statsDemand = regexp.MustCompile(`^stats (\S+)(?: (.+))?`)
+var busWebsocketRequest = regexp.MustCompile(`bus`)
 var eventsPrefix = []byte(`events `)
 var logsPrefix = []byte(`logs `)
 var statsPrefix = []byte(`stats `)
-var busWebsocketRequest = regexp.MustCompile(`bus`)
-var logWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/logs`)
-var statsWebsocketRequest = regexp.MustCompile(`containers/([^/]+)/stats`)
-var eventsWebsocketRequest = regexp.MustCompile(`events`)
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -35,24 +32,6 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return hostCheck.MatchString(r.Host)
 	},
-}
-
-func readUntilClose(user *auth.User, ws *websocket.Conn, name string) bool {
-	messageType, _, err := ws.ReadMessage()
-
-	if messageType == websocket.CloseMessage {
-		return true
-	}
-
-	if err != nil {
-		if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
-			log.Printf(`[%s] Error while reading from %s socket: %v`, user.Username, name, err)
-		}
-
-		return true
-	}
-
-	return false
 }
 
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
@@ -79,171 +58,6 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 	return ws, user, nil
 }
 
-func logsContainerWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
-	ws, user, err := upgradeAndAuth(w, r)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	defer ws.Close()
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	logs, err := docker.ContainerLogs(ctx, string(containerID), types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	defer logs.Close()
-
-	go func() {
-		defer cancel()
-
-		scanner := bufio.NewScanner(logs)
-		for scanner.Scan() {
-			select {
-			case <-ctx.Done():
-				return
-
-			default:
-				logLine := scanner.Bytes()
-				if len(logLine) > ignoredByteLogSize {
-					if err = ws.WriteMessage(websocket.TextMessage, logLine[ignoredByteLogSize:]); err != nil {
-						log.Printf(`[%s] Error while writing to logs socket: %v`, user.Username, err)
-						return
-					}
-				}
-			}
-		}
-	}()
-
-	for {
-		select {
-		case <-ctx.Done():
-			break
-
-		default:
-			if readUntilClose(user, ws, `logs`) {
-				return
-			}
-		}
-	}
-}
-
-func eventsWebsocketHandler(w http.ResponseWriter, r *http.Request) {
-	ws, user, err := upgradeAndAuth(w, r)
-	if err != nil {
-		return
-	}
-	defer ws.Close()
-
-	filtersArgs := filters.NewArgs()
-	if labelFilters(&filtersArgs, user, nil) != nil {
-		log.Printf(`[%s] Error while defining label filters: %v`, user.Username, err)
-		return
-	}
-	if eventFilters(&filtersArgs) != nil {
-		log.Printf(`[%s] Error while defining event filters: %v`, user.Username, err)
-		return
-	}
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	messages, errors := docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
-
-	go func() {
-		defer cancel()
-
-		for {
-			select {
-			case <-ctx.Done():
-				return
-
-			case message := <-messages:
-				messageJSON, err := json.Marshal(message)
-				if err != nil {
-					log.Printf(`[%s] Error while marshalling event: %v`, user.Username, err)
-					return
-				}
-
-				if err = ws.WriteMessage(websocket.TextMessage, messageJSON); err != nil {
-					log.Printf(`[%s] Error while writing to events socket: %v`, user.Username, err)
-					return
-				}
-
-			case err := <-errors:
-				log.Printf(`[%s] Error while reading events: %v`, user.Username, err)
-				return
-			}
-		}
-	}()
-
-	for {
-		select {
-		case <-ctx.Done():
-			break
-
-		default:
-			if readUntilClose(user, ws, `events`) {
-				return
-			}
-		}
-	}
-}
-
-func statsWebsocketHandler(w http.ResponseWriter, r *http.Request, containerID []byte) {
-	ws, user, err := upgradeAndAuth(w, r)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	defer ws.Close()
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	stats, err := docker.ContainerStats(ctx, string(containerID), true)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	defer stats.Body.Close()
-
-	go func() {
-		defer cancel()
-
-		scanner := bufio.NewScanner(stats.Body)
-		for scanner.Scan() {
-			select {
-			case <-ctx.Done():
-				log.Printf(`[%s] Stats context is over for writing`, user.Username)
-				return
-
-			default:
-				if err = ws.WriteMessage(websocket.TextMessage, scanner.Bytes()); err != nil {
-					log.Printf(`[%s] Error while writing to stats socket: %v`, user.Username, err)
-					return
-				}
-			}
-		}
-	}()
-
-	for {
-		select {
-		case <-ctx.Done():
-			log.Printf(`[%s] Stats context is over for reading`, user.Username)
-			return
-
-		default:
-			if readUntilClose(user, ws, `stats`) {
-				return
-			}
-		}
-	}
-}
-
 func readContent(user *auth.User, ws *websocket.Conn, name string, done chan<- int, content chan<- []byte) {
 	for {
 		messageType, message, err := ws.ReadMessage()
@@ -264,29 +78,6 @@ func readContent(user *auth.User, ws *websocket.Conn, name string, done chan<- i
 
 		content <- message
 	}
-}
-
-func streamLogs(ctx context.Context, cancel context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
-	logs, err := docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
-	defer cancel()
-
-	if err != nil {
-		log.Printf(`[%s] Logs opening in error: %v`, user.Username, err)
-		return
-	}
-	defer logs.Close()
-
-	scanner := bufio.NewScanner(logs)
-	log.Printf(`[%s] Logs streaming started for %s`, user.Username, containerID)
-
-	for scanner.Scan() {
-		logLine := scanner.Bytes()
-		if len(logLine) > ignoredByteLogSize {
-			output <- append(logsPrefix, logLine[ignoredByteLogSize:]...)
-		}
-	}
-
-	log.Printf(`[%s] Logs streaming ended for %s`, user.Username, containerID)
 }
 
 func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.User, _ string, output chan<- []byte) {
@@ -325,6 +116,29 @@ func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 			cancel()
 		}
 	}
+}
+
+func streamLogs(ctx context.Context, cancel context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
+	logs, err := docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
+	defer cancel()
+
+	if err != nil {
+		log.Printf(`[%s] Logs opening in error: %v`, user.Username, err)
+		return
+	}
+	defer logs.Close()
+
+	scanner := bufio.NewScanner(logs)
+	log.Printf(`[%s] Logs streaming started for %s`, user.Username, containerID)
+
+	for scanner.Scan() {
+		logLine := scanner.Bytes()
+		if len(logLine) > ignoredByteLogSize {
+			output <- append(logsPrefix, logLine[ignoredByteLogSize:]...)
+		}
+	}
+
+	log.Printf(`[%s] Logs streaming ended for %s`, user.Username, containerID)
 }
 
 func streamStats(ctx context.Context, cancel context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
@@ -443,13 +257,7 @@ type WebsocketHandler struct {
 func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	urlPath := []byte(r.URL.Path)
 
-	if logWebsocketRequest.Match(urlPath) {
-		logsContainerWebsocketHandler(w, r, logWebsocketRequest.FindSubmatch(urlPath)[1])
-	} else if eventsWebsocketRequest.Match((urlPath)) {
-		eventsWebsocketHandler(w, r)
-	} else if statsWebsocketRequest.Match(urlPath) {
-		statsWebsocketHandler(w, r, statsWebsocketRequest.FindSubmatch(urlPath)[1])
-	} else if busWebsocketRequest.Match(urlPath) {
+	if busWebsocketRequest.Match(urlPath) {
 		busWebsocketHandler(w, r)
 	}
 }

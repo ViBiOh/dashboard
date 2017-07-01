@@ -173,54 +173,10 @@ export default class DockerService {
   }
 
   /**
-   * Open WebSocket with auth token for reading logs of a Docker's container.
-   * @param  {String} containerId Container's id
-   * @param  {Function} onMessage Callback for each input receive from socket
-   * @return {Websocket}          Opened and authentified Websocket
-   */
-  static containerLogs(containerId, onMessage) {
-    const socket = new WebSocket(`${WS}containers/${containerId}/logs`);
-
-    socket.onmessage = event => onMessage(event.data);
-    socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
-
-    return socket;
-  }
-
-  /**
-   * Open WebSocket with auth token for reading stats of a Docker's container.
-   * @param  {String} containerId Container's id
-   * @param  {Function} onMessage Callback for each input receive from socket
-   * @return {Websocket}          Opened and authentified Websocket
-   */
-  static containerStats(containerId, onMessage) {
-    const socket = new WebSocket(`${WS}containers/${containerId}/stats`);
-
-    socket.onmessage = event => onMessage(event.data);
-    socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
-
-    return socket;
-  }
-
-  /**
    * List Docker's Swarm services.
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static services() {
     return auth(`${API}services`).get().then(({ results }) => results);
-  }
-
-  /**
-   * Open WebSocket with auth token for reading events of a Docker's daemon.
-   * @param  {Function} onMessage Callback for each input event from socket
-   * @return {Websocket}          Opened and authentified Websocket
-   */
-  static events(onMessage) {
-    const socket = new WebSocket(`${WS}events`);
-
-    socket.onmessage = event => onMessage(event.data);
-    socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
-
-    return socket;
   }
 }
