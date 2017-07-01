@@ -19,8 +19,8 @@ const start = `start`
 const stop = `stop`
 
 var eventsDemand = regexp.MustCompile(`^events (.+)`)
-var logsDemand = regexp.MustCompile(`^logs (.+) (.+)`)
-var statsDemand = regexp.MustCompile(`^stats (.+) (.+)`)
+var logsDemand = regexp.MustCompile(`^logs (.+) (.+)?`)
+var statsDemand = regexp.MustCompile(`^stats (.+) (.+)?`)
 var eventsPrefix = []byte(`events `)
 var logsPrefix = []byte(`stats `)
 var statsPrefix = []byte(`stats `)
