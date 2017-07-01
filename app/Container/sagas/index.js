@@ -168,17 +168,25 @@ export function* composeSaga(action) {
 }
 
 export function* writeBusSaga(websocket) {
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const action = yield take([
-      actions.OPEN_EVENTS,
-      actions.OPEN_LOGS,
-      actions.OPEN_STATS,
-      actions.CLOSE_EVENTS,
-      actions.CLOSE_LOGS,
-      actions.CLOSE_STATS,
-    ]);
-    websocket.send(action.payload);
+  try {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const action = yield take([
+        actions.OPEN_EVENTS,
+        actions.OPEN_LOGS,
+        actions.OPEN_STATS,
+        actions.CLOSE_EVENTS,
+        actions.CLOSE_LOGS,
+        actions.CLOSE_STATS,
+      ]);
+      yield call(websocket.send, action.payload);
+    }
+  } finally {
+    yield [
+      call(websocket.send, actions.closeEvents().payload),
+      call(websocket.send, actions.closeLogs().payload),
+      call(websocket.send, actions.closeStats().payload),
+    ];
   }
 }
 
