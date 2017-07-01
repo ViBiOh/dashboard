@@ -178,19 +178,20 @@ export function* writeBusSaga(websocket) {
     while (true) {
       const action = yield take([
         actions.OPEN_EVENTS,
-        actions.OPEN_LOGS,
-        actions.OPEN_STATS,
         actions.CLOSE_EVENTS,
+        actions.OPEN_LOGS,
         actions.CLOSE_LOGS,
+        actions.OPEN_STATS,
         actions.CLOSE_STATS,
       ]);
-      yield call(websocket.send, action.payload);
+
+      yield call([websocket, 'send'], action.payload);
     }
   } finally {
     yield [
-      call(websocket.send, actions.closeEvents().payload),
-      call(websocket.send, actions.closeLogs().payload),
-      call(websocket.send, actions.closeStats().payload),
+      call([websocket, 'send'], actions.closeEvents().payload),
+      call([websocket, 'send'], actions.closeLogs().payload),
+      call([websocket, 'send'], actions.closeStats().payload),
     ];
   }
 }

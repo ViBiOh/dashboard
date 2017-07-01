@@ -10,33 +10,33 @@ test('should wait for write action', (t) => {
     iterator.next().value,
     take([
       actions.OPEN_EVENTS,
-      actions.OPEN_LOGS,
-      actions.OPEN_STATS,
       actions.CLOSE_EVENTS,
+      actions.OPEN_LOGS,
       actions.CLOSE_LOGS,
+      actions.OPEN_STATS,
       actions.CLOSE_STATS,
     ]),
   );
 });
 
 test('should send received payload', (t) => {
-  const send = () => null;
+  const websocket = { send: () => null };
 
-  const iterator = writeBusSaga({ send });
+  const iterator = writeBusSaga(websocket);
   iterator.next();
 
-  t.deepEqual(iterator.next({ payload: 'test' }).value, call(send, 'test'));
+  t.deepEqual(iterator.next({ payload: 'test' }).value, call([websocket, 'send'], 'test'));
 });
 
 test('should graceful close', (t) => {
-  const send = () => null;
+  const websocket = { send: () => null };
 
-  const iterator = writeBusSaga({ send });
+  const iterator = writeBusSaga(websocket);
   iterator.next();
 
   t.deepEqual(iterator.throw(new Error('test')).value, [
-    call(send, actions.closeEvents().payload),
-    call(send, actions.closeLogs().payload),
-    call(send, actions.closeStats().payload),
+    call([websocket, 'send'], actions.closeEvents().payload),
+    call([websocket, 'send'], actions.closeLogs().payload),
+    call([websocket, 'send'], actions.closeStats().payload),
   ]);
 });
