@@ -167,6 +167,11 @@ export function* composeSaga(action) {
   }
 }
 
+/**
+ * Saga of writing to bus stream
+ * @param {Websocket} websocket     Opened websocket for stream
+ * @yield {Function} Saga effects to sequence flow of work
+ */
 export function* writeBusSaga(websocket) {
   try {
     // eslint-disable-next-line no-constant-condition
@@ -191,7 +196,7 @@ export function* writeBusSaga(websocket) {
 }
 
 /**
- * Saga of reading bus' stream :
+ * Saga of reading from bus stream :
  * - Create a channel to handle every input
  * - Handle every put
  * @param {Object} action Action dispatched
