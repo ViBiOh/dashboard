@@ -1,5 +1,11 @@
 import actions from '../actions';
 
+/**
+ * Bus's reducer.
+ * @param  {Bool} state  Existing bus's state
+ * @param  {Object} action Action dispatched
+ * @return {Bool}        New state
+ */
 export default (state = false, action) => {
   switch (action.type) {
     case actions.BUS_OPENED:
