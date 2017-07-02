@@ -128,8 +128,8 @@ func streamLogs(ctx context.Context, cancel context.CancelFunc, user *auth.User,
 	}
 	defer logs.Close()
 
-	scanner := bufio.NewScanner(logs)
 	log.Printf(`[%s] Logs streaming started for %s`, user.Username, containerID)
+	scanner := bufio.NewScanner(logs)
 
 	for scanner.Scan() {
 		logLine := scanner.Bytes()
