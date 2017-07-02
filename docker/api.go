@@ -28,9 +28,7 @@ var infoRequest = regexp.MustCompile(`info/?$`)
 var containersRequest = regexp.MustCompile(`^containers`)
 var listContainersRequest = regexp.MustCompile(`^containers/?$`)
 var containerRequest = regexp.MustCompile(`^containers/([^/]+)/?$`)
-var containerStartRequest = regexp.MustCompile(`^containers/([^/]+)/start`)
-var containerStopRequest = regexp.MustCompile(`^containers/([^/]+)/stop`)
-var containerRestartRequest = regexp.MustCompile(`^containers/([^/]+)/restart`)
+var containerActionRequest = regexp.MustCompile(`^containers/([^/]+)/([^/]+)`)
 
 var servicesRequest = regexp.MustCompile(`^services`)
 var listServicesRequest = regexp.MustCompile(`^services/?$`)
@@ -107,14 +105,11 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath []byte, u
 		listContainersHandler(w, user)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
 		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
-	} else if containerStartRequest.Match(urlPath) && r.Method == http.MethodPost {
-		basicActionHandler(w, user, containerStartRequest.FindSubmatch(urlPath)[1], startContainer)
-	} else if containerStopRequest.Match(urlPath) && r.Method == http.MethodPost {
-		basicActionHandler(w, user, containerStopRequest.FindSubmatch(urlPath)[1], stopContainer)
-	} else if containerRestartRequest.Match(urlPath) && r.Method == http.MethodPost {
-		basicActionHandler(w, user, containerRestartRequest.FindSubmatch(urlPath)[1], restartContainer)
+	} else if containerActionRequest.Match(urlPath) && r.Method == http.MethodPost {
+		matches := containerActionRequest.FindSubmatch(urlPath)
+		basicActionHandler(w, user, matches[1], string(matches[2]))
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
-		basicActionHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], rmContainer)
+		basicActionHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], deleteAction)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
 		if composeBody, err := readBody(r.Body); err != nil {
 			errorHandler(w, err)
@@ -122,7 +117,7 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath []byte, u
 			addCounter(1)
 			defer addCounter(-1)
 
-			createAppHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], composeBody)
+			composeHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 		}
 	}
 }

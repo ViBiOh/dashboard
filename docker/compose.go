@@ -300,7 +300,7 @@ func createContainer(user *auth.User, appName []byte, serviceName string, servic
 	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
 }
 
-func createAppHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
+func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
 		badRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
 		return

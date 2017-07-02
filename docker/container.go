@@ -12,6 +12,11 @@ import (
 	"net/http"
 )
 
+const startAction = `start`
+const stopAction = `stop`
+const restartAction = `restart`
+const deleteAction = `delete`
+
 func listContainers(user *auth.User, appName *string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
@@ -67,7 +72,24 @@ func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
 	}
 }
 
-func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID []byte, handle func(string) error) {
+func getAction(action string) func(string) error {
+	switch action {
+	case startAction:
+		return startContainer
+	case stopAction:
+		return stopContainer
+	case restartAction:
+		return restartContainer
+	case deleteAction:
+		return rmContainer
+	default:
+		return func(string) error {
+			return fmt.Errorf(`Unknown action %s`, action)
+		}
+	}
+}
+
+func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID []byte, action string) {
 	id := string(containerID)
 
 	allowed, err := isAllowed(user, id)
@@ -76,7 +98,7 @@ func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID []by
 	} else if err != nil {
 		errorHandler(w, err)
 	} else {
-		if err = handle(id); err != nil {
+		if err = getAction(action)(id); err != nil {
 			errorHandler(w, err)
 		} else {
 			w.Write(nil)
