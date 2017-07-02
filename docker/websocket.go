@@ -217,7 +217,9 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	var logsCancelFunc context.CancelFunc
 	var statsCancelFunc context.CancelFunc
 
-	output <- []byte(`ready`)
+	if err = ws.WriteMessage(websocket.TextMessage, []byte(`ready`)); err != nil {
+		log.Printf(`[%s] Error while saying ready: %v`, user.Username, err)
+	}
 
 	for {
 		select {
