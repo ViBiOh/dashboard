@@ -64,6 +64,8 @@ export const makeOpenCloseActionCreator = (camelCaseName, opens = [], closes = [
   return {
     ...makeActionAndTypeCreator(`OPEN_${typeName}`, `open${camelSuffix}`, opens),
     ...makeActionAndTypeCreator(`CLOSE_${typeName}`, `close${camelSuffix}`, closes),
+    ...makeActionAndTypeCreator(`${typeName}_OPENED`, `${camelCaseName}Opened`),
+    ...makeActionAndTypeCreator(`${typeName}_CLOSED`, `${camelCaseName}Closed`),
   };
 };
 

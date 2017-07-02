@@ -95,11 +95,9 @@ func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 
 	messages, errors := docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
 
-	log.Printf(`[%s] Events streaming started`, user.Username)
 	for {
 		select {
 		case <-ctx.Done():
-			log.Printf(`[%s] Events streaming ended`, user.Username)
 			return
 
 		case message := <-messages:
@@ -128,17 +126,13 @@ func streamLogs(ctx context.Context, cancel context.CancelFunc, user *auth.User,
 	}
 	defer logs.Close()
 
-	log.Printf(`[%s] Logs streaming started for %s`, user.Username, containerID)
 	scanner := bufio.NewScanner(logs)
-
 	for scanner.Scan() {
 		logLine := scanner.Bytes()
 		if len(logLine) > ignoredByteLogSize {
 			output <- append(logsPrefix, logLine[ignoredByteLogSize:]...)
 		}
 	}
-
-	log.Printf(`[%s] Logs streaming ended for %s`, user.Username, containerID)
 }
 
 func streamStats(ctx context.Context, cancel context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
@@ -152,13 +146,9 @@ func streamStats(ctx context.Context, cancel context.CancelFunc, user *auth.User
 	defer stats.Body.Close()
 
 	scanner := bufio.NewScanner(stats.Body)
-	log.Printf(`[%s] Stats streaming started for %s`, user.Username, containerID)
-
 	for scanner.Scan() {
 		output <- append(statsPrefix, scanner.Bytes()...)
 	}
-
-	log.Printf(`[%s] Stats streaming ended for %s`, user.Username, containerID)
 }
 
 func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.Regexp, cancel context.CancelFunc, output chan<- []byte, streamFn func(context.Context, context.CancelFunc, *auth.User, string, chan<- []byte)) context.CancelFunc {
@@ -175,13 +165,9 @@ func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.
 	}
 
 	if action == stop && cancel != nil {
-		log.Printf(`[%s] Stopping %s stream`, user.Username, name)
 		cancel()
 	} else if action == start {
-		log.Printf(`[%s] Starting %s stream`, user.Username, name)
-
 		if cancel != nil {
-			log.Printf(`[%s] Cancelling previous %s stream`, user.Username, name)
 			cancel()
 		}
 
@@ -211,7 +197,6 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	defer close(input)
 
 	go readContent(user, ws, `streaming`, done, input)
-	log.Printf(`[%s] Streaming started`, user.Username)
 
 	var eventsCancelFunc context.CancelFunc
 	var logsCancelFunc context.CancelFunc
@@ -224,7 +209,6 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case <-done:
-			log.Printf(`[%s] Streaming ended`, user.Username)
 			return
 
 		case inputBytes := <-input:

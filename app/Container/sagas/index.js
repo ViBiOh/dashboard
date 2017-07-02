@@ -215,6 +215,9 @@ export function* readBusSaga(action) {
   try {
     task = yield fork(writeBusSaga, websocket);
 
+    yield take(chan);
+    yield [put(actions.busOpened()), put(actions.openEvents())];
+
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const bus = yield take(chan);
@@ -236,7 +239,7 @@ export function* readBusSaga(action) {
     }
   } finally {
     chan.close();
-    yield cancel(task);
+    yield [cancel(task), put(actions.busClosed())];
   }
 }
 

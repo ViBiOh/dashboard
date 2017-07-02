@@ -6,6 +6,7 @@ import logs from './logs';
 import stats from './stats';
 import pending from './pending';
 import error from './error';
+import bus from './bus';
 
 const appReducers = combineReducers({
   infos,
@@ -15,6 +16,7 @@ const appReducers = combineReducers({
   stats,
   pending,
   error,
+  bus,
 });
 
 /**

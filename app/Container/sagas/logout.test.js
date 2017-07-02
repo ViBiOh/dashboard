@@ -18,9 +18,7 @@ test('should put success, close streams and redirect to login after API call', (
 
   t.deepEqual(iterator.next().value, [
     put(actions.logoutSucceeded()),
-    put(actions.closeEvents()),
-    put(actions.closeLogs()),
-    put(actions.closeStats()),
+    put(actions.closeBus()),
     put(actions.setError('')),
     put(push('/login')),
   ]);

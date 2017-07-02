@@ -29,7 +29,21 @@ test('should wait for event from channel', (t) => {
   iterator.next();
   DockerService.streamBus.restore();
 
-  t.truthy(iterator.next().value.TAKE.channel);
+  t.truthy(iterator.next(createMockTask()).value.TAKE.channel);
+});
+
+test('should put bus opened event', (t) => {
+  sinon.stub(DockerService, 'streamBus').callsFake(() => ({
+    close: () => null,
+  }));
+
+  const iterator = readBusSaga({});
+  iterator.next();
+  DockerService.streamBus.restore();
+
+  iterator.next(createMockTask());
+
+  t.deepEqual(iterator.next('ready').value, [put(actions.busOpened()), put(actions.openEvents())]);
 });
 
 test('should fetch containers if events', (t) => {
@@ -40,7 +54,10 @@ test('should fetch containers if events', (t) => {
   const iterator = readBusSaga({});
   iterator.next();
   DockerService.streamBus.restore();
+
   iterator.next(createMockTask());
+  iterator.next('ready');
+  iterator.next();
 
   t.truthy(iterator.next('events test').value, put(actions.fetchContainers));
 });
@@ -53,7 +70,10 @@ test('should add log if logs', (t) => {
   const iterator = readBusSaga({});
   iterator.next();
   DockerService.streamBus.restore();
+
   iterator.next(createMockTask());
+  iterator.next('ready');
+  iterator.next();
 
   t.truthy(iterator.next('logs test').value, put(actions.addLog('test')));
 });
@@ -66,7 +86,10 @@ test('should add stats if stats', (t) => {
   const iterator = readBusSaga({});
   iterator.next();
   DockerService.streamBus.restore();
+
   iterator.next(createMockTask());
+  iterator.next('ready');
+  iterator.next();
 
   t.truthy(iterator.next('stats { value: true }').value, put(actions.addStat({ value: true })));
 });
@@ -79,12 +102,15 @@ test('should do nothing if unknown', (t) => {
   const iterator = readBusSaga({});
   iterator.next();
   DockerService.streamBus.restore();
+
   iterator.next(createMockTask());
+  iterator.next('ready');
+  iterator.next();
 
   t.truthy(iterator.next('unknown start').value.TAKE.channel);
 });
 
-test('should graceful close', (t) => {
+test('should graceful close fork and say stream ended', (t) => {
   sinon.stub(DockerService, 'streamBus').callsFake(() => ({
     close: () => null,
   }));
@@ -95,6 +121,8 @@ test('should graceful close', (t) => {
 
   const task = createMockTask();
   iterator.next(task);
+  iterator.next('ready');
+  iterator.next();
 
-  t.truthy(iterator.throw(new Error('test')).value, cancel(task));
+  t.deepEqual(iterator.throw(new Error('test')).value, [cancel(task), put(actions.busClosed())]);
 });

@@ -7,11 +7,28 @@ import Container from '../Presentational/Container/Container';
 class ContainerComponent extends Component {
   componentDidMount() {
     this.props.fetchContainer(this.props.containerId);
+
+    if (this.props.bus) {
+      this.openStreams();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.bus && nextProps.bus) {
+      this.openStreams();
+    }
+  }
+
+  componentWillUnmount() {
+    this.closeStreams();
+  }
+
+  openStreams() {
     this.props.openLogs(this.props.containerId);
     this.props.openStats(this.props.containerId);
   }
 
-  componentWillUnmount() {
+  closeStreams() {
     this.props.closeLogs();
     this.props.closeStats();
   }
@@ -27,6 +44,7 @@ class ContainerComponent extends Component {
         logs={this.props.logs}
         stats={this.props.stats}
         onBack={this.props.onBack}
+        openStreams={this.openStreams}
         onRefresh={() => this.props.actionContainer('containerInfos', container.Id)}
         onStart={() => this.props.actionContainer('containerStart', container.Id)}
         onRestart={() => this.props.actionContainer('containerRestart', container.Id)}
@@ -43,6 +61,7 @@ ContainerComponent.propTypes = {
   pending: PropTypes.bool.isRequired,
   pendingAction: PropTypes.bool.isRequired,
   container: PropTypes.shape({}),
+  bus: PropTypes.bool.isRequired,
   logs: PropTypes.arrayOf(PropTypes.string),
   stats: PropTypes.shape({}),
   error: PropTypes.string.isRequired,
@@ -65,6 +84,7 @@ const mapStateToProps = (state, props) => ({
   pending: !!state.pending[actions.FETCH_CONTAINER],
   pendingAction: !!state.pending[actions.ACTION_CONTAINER],
   container: state.container,
+  bus: state.bus,
   logs: state.logs,
   stats: state.stats,
   error: state.error,
