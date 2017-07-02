@@ -18,7 +18,7 @@ lint:
 	go vet ./...
 
 tst:
-	go test ./...
+	./test/coverage
 
 build:
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo dashboard.go
