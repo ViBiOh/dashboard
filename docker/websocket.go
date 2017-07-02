@@ -217,6 +217,8 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	var logsCancelFunc context.CancelFunc
 	var statsCancelFunc context.CancelFunc
 
+	output <- []byte(`ready`)
+
 	for {
 		select {
 		case <-done:
