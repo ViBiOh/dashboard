@@ -16,17 +16,16 @@ const version = `DOCKER_VERSION`
 var hostCheck *regexp.Regexp
 var docker *client.Client
 
-func init() {
+// Init docker
+func Init(websocketOrigin string) {
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
+
 	if err != nil {
 		log.Fatal(err)
 	} else {
 		docker = client
 	}
-}
 
-// Init docker
-func Init(websocketOrigin string) {
 	hostCheck = regexp.MustCompile(websocketOrigin)
 }
 
