@@ -1,4 +1,4 @@
-version: '2.1'
+version: '2'
 
 services:
   api:
@@ -26,7 +26,6 @@ services:
     read_only: true
     cpu_shares: 128
     mem_limit: 33554432
-    pids_limit: 3
     security_opt:
     - no-new-privileges
 
@@ -48,7 +47,6 @@ services:
     read_only: true
     cpu_shares: 128
     mem_limit: 67108864
-    pids_limit: 3
     security_opt:
     - no-new-privileges
 
