@@ -14,7 +14,7 @@
     "doc": "./node_modules/.bin/esdoc",
     "start": "npm run copy:html && API_HOST=dashboard-api.vibioh.fr API_SECURE=true ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test": "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
-    "coverage": "./node_modules/.bin/codecov -f ./coverage/lcov.info",
+    "coverage": "./node_modules/.bin/codecov",
     "build": "npm run codestyle && npm test && npm run mustache && npm run copy:web && ./node_modules/.bin/webpack --progress -p"
   },
   "repository": {

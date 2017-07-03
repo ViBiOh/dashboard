@@ -12,3 +12,4 @@ package-lock.json
 dashboard
 bcrypt_pass
 users
+coverage.txt
