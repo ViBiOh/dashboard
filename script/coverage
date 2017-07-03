@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -e
-rm coverage.txt
+rm -f coverage.txt
 
 for pkg in $(go list ./... | grep -v vendor); do
     go test -covermode=atomic -coverprofile=profile.out $pkg
