@@ -20,7 +20,7 @@ import (
 const minMemory = 16777216
 const maxMemory = 805306368
 const defaultTag = `:latest`
-const defaultPidLimit = 3
+const defaultPidsLimit = 3
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
 const linkSeparator = `:`
@@ -38,7 +38,6 @@ type dockerComposeService struct {
 	ReadOnly    bool  `yaml:"read_only"`
 	CPUShares   int64 `yaml:"cpu_shares"`
 	MemoryLimit int64 `yaml:"mem_limit"`
-	PidsLimit   int64 `yaml:"pids_limit"`
 }
 
 type dockerCompose struct {
@@ -107,11 +106,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 		}
 	}
 
-	if service.PidsLimit != 0 {
-		hostConfig.Resources.PidsLimit = service.PidsLimit
-	} else {
-		hostConfig.Resources.PidsLimit = defaultPidLimit
-	}
+	hostConfig.Resources.PidsLimit = defaultPidsLimit
 
 	return &hostConfig
 }
