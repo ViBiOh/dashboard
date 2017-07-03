@@ -20,7 +20,6 @@ import (
 const minMemory = 16777216
 const maxMemory = 805306368
 const defaultTag = `:latest`
-const defaultPidsLimit = 10
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
 const linkSeparator = `:`
@@ -105,8 +104,6 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 			hostConfig.Resources.Memory = maxMemory
 		}
 	}
-
-	hostConfig.Resources.PidsLimit = defaultPidsLimit
 
 	return &hostConfig
 }
