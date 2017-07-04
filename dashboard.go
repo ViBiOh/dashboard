@@ -24,10 +24,10 @@ var restHandler = http.StripPrefix(restPrefix, docker.Handler{})
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
-	if strings.HasPrefix(r.URL.Path, restPrefix) {
-		restHandler.ServeHTTP(w, r)
-	} else if strings.HasPrefix(r.URL.Path, websocketPrefix) {
+	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
 		websocketHandler.ServeHTTP(w, r)
+	} else if strings.HasPrefix(r.URL.Path, restPrefix) {
+		restHandler.ServeHTTP(w, r)
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 	}
