@@ -8,13 +8,11 @@ import (
 	"net/http"
 	"regexp"
 	"sync"
-	"time"
 )
 
 const authorizationHeader = `Authorization`
 const gracefulCloseDelay = 30
 
-var gracefulCloseTimestamp time.Time
 var gracefulCloseMutex = sync.RWMutex{}
 var gracefulCloseCounter = 0
 
@@ -33,7 +31,8 @@ var containerActionRequest = regexp.MustCompile(`^containers/([^/]+)/([^/]+)`)
 var servicesRequest = regexp.MustCompile(`^services`)
 var listServicesRequest = regexp.MustCompile(`^services/?$`)
 
-func canBeGracefullyClosed() bool {
+// CanBeGracefullyClosed indicates if application can terminate safely
+func CanBeGracefullyClosed() bool {
 	gracefulCloseMutex.RLock()
 	defer gracefulCloseMutex.Unlock()
 
@@ -44,33 +43,19 @@ func canBeGracefullyClosed() bool {
 	return true
 }
 
-func isGracefullyClosed() bool {
-	return !time.Time.IsZero(gracefulCloseTimestamp) && time.Now().After(gracefulCloseTimestamp)
-}
-
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	if time.Time.IsZero(gracefulCloseTimestamp) && docker != nil {
-		w.WriteHeader(http.StatusOK)
-	} else if !time.Time.IsZero(gracefulCloseTimestamp) {
-		if !isGracefullyClosed() {
-			w.WriteHeader(http.StatusGone)
-		} else {
-			if canBeGracefullyClosed() {
-				w.WriteHeader(http.StatusTeapot)
-			} else {
-				w.WriteHeader(http.StatusProcessing)
-			}
-		}
-	} else if docker == nil {
-		w.WriteHeader(http.StatusServiceUnavailable)
-	}
-}
-
 func addCounter(value int) {
 	defer gracefulCloseMutex.Unlock()
 
 	gracefulCloseMutex.Lock()
 	gracefulCloseCounter = gracefulCloseCounter + value
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	if docker != nil {
+		w.WriteHeader(http.StatusOK)
+	} else if docker == nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+	}
 }
 
 func badRequest(w http.ResponseWriter, err error) {
@@ -147,11 +132,6 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if healthRequest.Match(urlPath) && r.Method == http.MethodGet {
 		healthHandler(w, r)
-		return
-	}
-
-	if isGracefullyClosed() {
-		w.WriteHeader(http.StatusGone)
 		return
 	}
 
