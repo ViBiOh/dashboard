@@ -12,11 +12,11 @@ install:
 - npm i
 - npm run build
 script: |
+  bash <(curl -s https://codecov.io/bash) &&
   docker build -t ${DOCKER_USER}/dashboard-front -f Dockerfile_front . &&
   docker build -t ${DOCKER_USER}/dashboard-api -f Dockerfile_api .
 after_success: |
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
-    npm run coverage
     curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create &&
     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && docker push ${DOCKER_USER}/dashboard-front && docker push ${DOCKER_USER}/dashboard-api
   fi
