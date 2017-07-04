@@ -42,6 +42,47 @@ func TestHasProfile(t *testing.T) {
 	}
 }
 
+func TestInit(t *testing.T) {
+	var tests = []struct {
+		path string
+		want int
+	}{
+		{
+			`../test/users_test`,
+			2,
+		},
+	}
+
+	for _, test := range tests {
+		Init(test.path)
+		if len(users) != test.want {
+			t.Errorf("Init(%v) = %v, want %v", test.path, users, test.want)
+		}
+	}
+}
+
+func TestReadConfiguration(t *testing.T) {
+	var tests = []struct {
+		path string
+		want int
+	}{
+		{
+			`notExistingFile`,
+			0,
+		},
+		{
+			`../test/users_test`,
+			2,
+		},
+	}
+
+	for _, test := range tests {
+		if result := readConfiguration(test.path); len(result) != test.want {
+			t.Errorf("readConfiguration(%v) = %v, want %v", test.path, result, test.want)
+		}
+	}
+}
+
 func TestIsAuthenticated(t *testing.T) {
 	users = make(map[string]*User)
 
