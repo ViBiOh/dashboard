@@ -59,7 +59,7 @@ test('should fetch containers if events', (t) => {
   iterator.next('ready');
   iterator.next();
 
-  t.truthy(iterator.next('events test').value, put(actions.fetchContainers));
+  t.deepEqual(iterator.next('events test').value, put(actions.fetchContainers()));
 });
 
 test('should add log if logs', (t) => {
@@ -75,7 +75,7 @@ test('should add log if logs', (t) => {
   iterator.next('ready');
   iterator.next();
 
-  t.truthy(iterator.next('logs test').value, put(actions.addLog('test')));
+  t.deepEqual(iterator.next('logs test').value, put(actions.addLog('test')));
 });
 
 test('should add stats if stats', (t) => {
@@ -91,7 +91,7 @@ test('should add stats if stats', (t) => {
   iterator.next('ready');
   iterator.next();
 
-  t.truthy(iterator.next('stats { value: true }').value, put(actions.addStat({ value: true })));
+  t.deepEqual(iterator.next('stats {"value": true}').value, put(actions.addStat({ value: true })));
 });
 
 test('should do nothing if unknown', (t) => {

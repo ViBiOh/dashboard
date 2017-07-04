@@ -1,13 +1,7 @@
 import funtch, { errorHandler } from 'funtch';
 import btoa from '../Tools/btoa';
+import { API, WS } from '../Constants';
 import localStorageService from './LocalStorageService';
-
-const IS_SECURE = process.env.API_SECURE || /^https/.test(document.location.origin);
-const API_HOST =
-  process.env.API_HOST || document.location.host.replace(/dashboard/i, 'dashboard-api');
-
-const API = `http${IS_SECURE ? 's' : ''}://${API_HOST}/`;
-const WS = `ws${IS_SECURE ? 's' : ''}://${API_HOST}/ws/`;
 
 /**
  * Storage key name for authentification token.

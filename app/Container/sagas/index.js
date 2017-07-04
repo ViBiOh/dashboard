@@ -200,10 +200,9 @@ export function* writeBusSaga(websocket) {
  * Saga of reading from bus stream :
  * - Create a channel to handle every input
  * - Handle every put
- * @param {Object} action Action dispatched
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* readBusSaga(action) {
+export function* readBusSaga() {
   let websocket;
   const chan = eventChannel((emit) => {
     websocket = DockerService.streamBus(emit);
@@ -229,7 +228,7 @@ export function* readBusSaga(action) {
         } else if (type === 'logs') {
           demand = actions.addLog(content);
         } else if (type === 'events') {
-          demand = action.fetchContainers();
+          demand = actions.fetchContainers();
         }
       });
 
