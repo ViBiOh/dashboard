@@ -300,6 +300,15 @@ func createContainer(user *auth.User, appName []byte, serviceName string, servic
 	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
 }
 
+func composeFailed(w http.ResponseWriter, user *auth.User, appName []byte, err error) {
+	errorHandler(w, err)
+	if err != nil {
+		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err)
+	} else {
+		log.Printf(`[%s] Failed to deploy %s`, user.Username, appName)
+	}
+}
+
 func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
 		badRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
@@ -317,8 +326,7 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 
 	oldContainers, err := listContainers(user, &appNameStr)
 	if err != nil {
-		errorHandler(w, err)
-		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err)
+		composeFailed(w, user, appName, err)
 		return
 	}
 
@@ -343,12 +351,9 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 	}
 
 	if err != nil {
-		deleteServices(appName, newServices, user)
-		errorHandler(w, err)
 		cancel()
-		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err)
-		return
+		composeFailed(w, user, appName, err)
+	} else {
+		jsonHttp.ResponseJSON(w, results{newServices})
 	}
-
-	jsonHttp.ResponseJSON(w, results{newServices})
 }
