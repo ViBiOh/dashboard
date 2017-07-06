@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import FaCloud from 'react-icons/lib/fa/cloud';
 import Button from '../../Presentational/Button/Button';
 import style from './ContainerCard.less';
 
@@ -29,6 +30,7 @@ const ContainerCard = ({ container, onClick }) =>
             by {container.Labels.owner}
         </div>
         : null}
+      {container.Ports.some(port => port.IP) ? <FaCloud /> : null}
     </span>
   </Button>);
 
