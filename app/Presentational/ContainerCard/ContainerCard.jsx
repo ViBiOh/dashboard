@@ -13,7 +13,7 @@ const GREEN_STATUS = /up/i;
  */
 const ContainerCard = ({ container, onClick }) =>
   (<Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
-    <div className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`} />
+    <div className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`} title={container.Status} />
     <span className={style.column}>
       <em>
         {container.Image}
