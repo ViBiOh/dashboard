@@ -331,6 +331,7 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 	}
 
 	if len(oldContainers) > 0 && oldContainers[0].Labels[ownerLabel] != user.Username {
+		composeFailed(w, user, appName, fmt.Errorf(`Application not owned`))
 		forbidden(w)
 	}
 

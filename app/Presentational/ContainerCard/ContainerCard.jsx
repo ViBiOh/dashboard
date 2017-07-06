@@ -14,7 +14,10 @@ const GREEN_STATUS = /up/i;
  */
 const ContainerCard = ({ container, onClick }) =>
   (<Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
-    <div className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`} title={container.Status} />
+    <div
+      className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`}
+      title={container.Status}
+    />
     <span className={style.column}>
       <em>
         {container.Image}
@@ -30,7 +33,11 @@ const ContainerCard = ({ container, onClick }) =>
             by {container.Labels.owner}
         </div>
         : null}
-      {container.Ports.some(port => port.IP) ? <div className={style.external}><FaCloud /></div> : null}
+      {container.Ports.some(port => port.IP)
+        ? <div className={style.external} title="Has external IP">
+          <FaCloud />
+        </div>
+        : null}
     </span>
   </Button>);
 

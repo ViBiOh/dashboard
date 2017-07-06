@@ -51,7 +51,7 @@ test('should display owner if present', (t) => {
 
 test('should display icon if container has external IP', (t) => {
   const wrapper = shallow(
-    <ContainerCard {...props} container={{ ...props.container, Ports: [ { IP: '0.0.0.0' } ] }} />,
+    <ContainerCard {...props} container={{ ...props.container, Ports: [{ IP: '0.0.0.0' }] }} />,
   );
 
   t.is(wrapper.find('FaCloud').length, 1);

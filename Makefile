@@ -1,4 +1,4 @@
-default: deps lint tst build
+default: deps fmt lint tst build
 
 deps:
 	go get -u github.com/golang/lint/golint
@@ -12,6 +12,9 @@ deps:
 	go get -u github.com/gorilla/websocket
 	go get -u golang.org/x/crypto/bcrypt
 	go get -u gopkg.in/yaml.v2
+
+fmt:
+	gofmt -s -w **/*.go
 
 lint:
 	golint ./...
