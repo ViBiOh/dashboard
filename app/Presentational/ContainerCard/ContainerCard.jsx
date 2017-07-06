@@ -30,7 +30,7 @@ const ContainerCard = ({ container, onClick }) =>
             by {container.Labels.owner}
         </div>
         : null}
-      {container.Ports.some(port => port.IP) ? <FaCloud /> : null}
+      {container.Ports.some(port => port.IP) ? <div className={style.external}><FaCloud /></div> : null}
     </span>
   </Button>);
 
