@@ -14,6 +14,7 @@ test.beforeEach(() => {
       Created: 0,
       Status: 'up',
       Names: [],
+      Ports: [],
     },
     onClick: sinon.spy(),
   };
@@ -46,4 +47,12 @@ test('should display owner if present', (t) => {
   );
 
   t.is(wrapper.findWhere(e => e.text() === 'test').length, 1);
+});
+
+test('should display icon if container has external IP', (t) => {
+  const wrapper = shallow(
+    <ContainerCard {...props} container={{ ...props.container, Ports: [ { IP: '0.0.0.0' } ] }} />,
+  );
+
+  t.is(wrapper.find('FaCloud').length, 1);
 });
