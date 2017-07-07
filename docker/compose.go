@@ -262,9 +262,13 @@ func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, 
 }
 
 func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.User, appName []byte, services map[string]deployedService, oldContainers []types.Container) {
-	addCounter(1)
-	defer addCounter(-1)
 	defer cancel()
+	defer func() {
+		backgroundMutex.Lock()
+		defer backgroundMutex.Unlock()
+
+		backgroundCompose[string(appName)] = false
+	}()
 
 	log.Printf(`[%s] Waiting for %s to start...`, user.Username, appName)
 
@@ -322,6 +326,17 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 	}
 
 	appNameStr := string(appName)
+	backgroundMutex.Lock()
+
+	if value, ok := backgroundCompose[appNameStr]; ok && value {
+		backgroundMutex.Unlock()
+		composeFailed(w, user, appName, fmt.Errorf(`Application already in deployment`))
+		return
+	}
+
+	backgroundCompose[appNameStr] = true
+	backgroundMutex.Unlock()
+
 	log.Printf(`[%s] Deploying %s`, user.Username, appName)
 
 	oldContainers, err := listContainers(user, &appNameStr)

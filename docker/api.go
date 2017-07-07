@@ -13,8 +13,8 @@ import (
 const authorizationHeader = `Authorization`
 const gracefulCloseDelay = 30
 
-var gracefulCloseMutex = sync.RWMutex{}
-var gracefulCloseCounter = 0
+var backgroundMutex = sync.RWMutex{}
+var backgroundCompose = make(map[string]bool)
 
 type results struct {
 	Results interface{} `json:"results"`
@@ -33,21 +33,21 @@ var listServicesRequest = regexp.MustCompile(`^services/?$`)
 
 // CanBeGracefullyClosed indicates if application can terminate safely
 func CanBeGracefullyClosed() bool {
-	gracefulCloseMutex.RLock()
-	defer gracefulCloseMutex.Unlock()
+	backgroundMutex.RLock()
+	defer backgroundMutex.Unlock()
 
-	if gracefulCloseCounter != 0 {
+	backgroundCount := 0
+	for _, value := range backgroundCompose {
+		if value {
+			backgroundCount++
+		}
+	}
+
+	if backgroundCount != 0 {
 		return false
 	}
 
 	return true
-}
-
-func addCounter(value int) {
-	defer gracefulCloseMutex.Unlock()
-
-	gracefulCloseMutex.Lock()
-	gracefulCloseCounter = gracefulCloseCounter + value
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
@@ -99,9 +99,6 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath []byte, u
 		if composeBody, err := readBody(r.Body); err != nil {
 			errorHandler(w, err)
 		} else {
-			addCounter(1)
-			defer addCounter(-1)
-
 			composeHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 		}
 	}
