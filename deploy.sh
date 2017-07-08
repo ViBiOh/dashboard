@@ -50,8 +50,8 @@ function docker-compose-hot-deploy() {
 
   docker-compose -p ${PROJECT_NAME} up -d
 
-  echo "Waiting 5 seconds to start..."
-  sleep 5
+  echo "Waiting 30 seconds to start..."
+  sleep 30
 
   if [ ! -z "${services}" ]; then
     docker stop ${services}
