@@ -14,6 +14,7 @@ deps:
 	go get -u gopkg.in/yaml.v2
 
 fmt:
+	goimports -w **/*.go
 	gofmt -s -w **/*.go
 
 lint:

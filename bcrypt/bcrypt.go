@@ -1,9 +1,10 @@
 package main
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"os"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {

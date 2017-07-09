@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"log"
+	"net/http"
+	"regexp"
+
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/gorilla/websocket"
-	"log"
-	"net/http"
-	"regexp"
 )
 
 const ignoredByteLogSize = 8

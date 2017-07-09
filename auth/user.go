@@ -5,10 +5,11 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"os"
 	"strings"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 const basicPrefix = `Basic `

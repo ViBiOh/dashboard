@@ -3,8 +3,9 @@ package auth
 import (
 	"encoding/base64"
 	"fmt"
-	"golang.org/x/crypto/bcrypt"
 	"testing"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func TestHasProfile(t *testing.T) {

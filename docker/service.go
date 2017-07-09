@@ -2,12 +2,13 @@ package docker
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/swarm"
-	"net/http"
 )
 
 const ownerLabel = `owner`

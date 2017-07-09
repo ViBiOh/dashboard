@@ -3,6 +3,12 @@ package docker
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
@@ -10,11 +16,6 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/network"
 	"gopkg.in/yaml.v2"
-	"log"
-	"net/http"
-	"regexp"
-	"strings"
-	"time"
 )
 
 const minMemory = 16777216

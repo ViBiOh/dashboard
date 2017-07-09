@@ -2,12 +2,13 @@ package docker
 
 import (
 	"fmt"
-	"github.com/ViBiOh/dashboard/auth"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/client"
 	"log"
 	"os"
 	"regexp"
+
+	"github.com/ViBiOh/dashboard/auth"
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/client"
 )
 
 const host = `DOCKER_HOST`

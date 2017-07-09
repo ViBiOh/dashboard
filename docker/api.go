@@ -2,12 +2,13 @@ package docker
 
 import (
 	"context"
-	"github.com/ViBiOh/dashboard/auth"
-	"github.com/ViBiOh/dashboard/jsonHttp"
 	"log"
 	"net/http"
 	"regexp"
 	"sync"
+
+	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/dashboard/jsonHttp"
 )
 
 const authorizationHeader = `Authorization`
