@@ -26,21 +26,25 @@ function docker-compose-hot-deploy() {
 
   PROJECT_FULLNAME=${PROJECT_NAME}_`git rev-parse --short HEAD`
 
-  oldServices=`docker ps -f name=${PROJECT_NAME}_* -q ps`
+  oldServices=`docker ps -f name=${PROJECT_NAME}_* -q`
 
   docker-compose -p ${PROJECT_FULLNAME} up -d
   servicesCount=`docker-compose -p ${PROJECT_FULLNAME} ps | awk '{if (NR > 2) {print $1}}' | wc -l`
 
-  echo "Waiting 2 minutes for containers to start..."
-  timeout=`date --date="2 minutes" +%s`
+  echo "Waiting 45 seconds for containers to start..."
+  timeout=`date --date="45 seconds" +%s`
   healthyCount=$(docker events --until ${timeout} -f event="health_status: healthy" -f name=${PROJECT_NAME}_ | wc -l)
 
   if [ "${servicesCount}" != "${healthyCount}" ]; then
+    echo "Containers didn't start, reverting..."
+
     docker-compose -p ${PROJECT_FULLNAME} stop
     docker-compose -p ${PROJECT_FULLNAME} rm
 
     return 1
   fi
+
+  echo Containers started, stopping old containers if presents
 
   if [ ! -z "${services}" ]; then
     docker stop ${services}
@@ -66,4 +70,4 @@ git clone ${PROJECT_URL} ${PROJECT_NAME}
 cd ${PROJECT_NAME}
 
 echo "Deploying stack for ${PROJECT_NAME}"
-docker-compose-hot-deploy ${PROJECT_FULLNAME} ${3}
+docker-compose-hot-deploy ${PROJECT_NAME} ${3}
