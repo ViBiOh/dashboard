@@ -70,5 +70,5 @@ rm -rf ${PROJECT_NAME}
 git clone ${PROJECT_URL} ${PROJECT_NAME}
 cd ${PROJECT_NAME}
 
-echo "Deploying stack for ${PROJECT_NAME}"
+echo "Deploying ${PROJECT_NAME}"
 docker-compose-hot-deploy ${PROJECT_NAME} ${3}
