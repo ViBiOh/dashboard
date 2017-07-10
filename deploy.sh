@@ -16,19 +16,6 @@ function docker-clean() {
   fi
 }
 
-function docker-compose-deploy() {
-  PROJECT_NAME=${1}
-  readVariableIfRequired "PROJECT_NAME"
-
-  DOMAIN=${2}
-  readVariableIfRequired "DOMAIN"
-  export DOMAIN=${DOMAIN}
-
-  docker-compose -p ${PROJECT_NAME} pull
-  docker-compose -p ${PROJECT_NAME} up -d
-  docker-clean
-}
-
 function docker-compose-hot-deploy() {
   PROJECT_NAME=${1}
   readVariableIfRequired "PROJECT_NAME"
@@ -37,24 +24,29 @@ function docker-compose-hot-deploy() {
   readVariableIfRequired "DOMAIN"
   export DOMAIN=${DOMAIN}
 
-  services=`docker-compose -p ${PROJECT_NAME} ps | awk '{if (NR > 2) {print $1}}'`
+  PROJECT_FULLNAME=${PROJECT_NAME}_`git rev-parse --short HEAD`
 
-  docker-compose -p ${PROJECT_NAME} pull
-  matchPattern=${PROJECT_NAME}'_(.*?)_[0-9]+'
+  oldServices=`docker ps -f name=${PROJECT_NAME}_* -q ps`
 
-  for service in ${services}; do
-    if [[ ${service} =~ ${matchPattern} ]]; then
-      docker-compose -p ${PROJECT_NAME} scale ${BASH_REMATCH[1]}=2
-    fi
-  done
+  docker-compose -p ${PROJECT_FULLNAME} up -d
+  servicesCount=`docker-compose -p ${PROJECT_FULLNAME} ps | awk '{if (NR > 2) {print $1}}' | wc -l`
 
-  docker-compose -p ${PROJECT_NAME} up -d
+  echo "Waiting 2 minutes for containers to start..."
+  timeout=`date --date="2 minutes" +%s`
+  healthyCount=$(docker events --until ${timeout} -f event="health_status: healthy" -f name=${PROJECT_NAME}_ | wc -l)
 
-  echo "Waiting 30 seconds to start..."
-  sleep 30
+  if [ "${servicesCount}" != "${healthyCount}" ]; then
+    docker-compose -p ${PROJECT_FULLNAME} stop
+    docker-compose -p ${PROJECT_FULLNAME} rm
+
+    return 1
+  fi
 
   if [ ! -z "${services}" ]; then
     docker stop ${services}
+  fi
+
+  if [ ! -z "${services}" ]; then
     docker rm -f -v ${services}
   fi
   
@@ -73,12 +65,5 @@ rm -rf ${PROJECT_NAME}
 git clone ${PROJECT_URL} ${PROJECT_NAME}
 cd ${PROJECT_NAME}
 
-export DOMAIN=${3}
-
-if [ `docker-compose -p ${PROJECT_NAME} ps | awk '{if (NR > 2) {print}}' | wc -l` -eq 0 ]; then
-  echo "Deploying new stack"
-  docker-compose-deploy ${PROJECT_NAME} ${3}
-else
-  echo "Hot deploying stack"
-  docker-compose-hot-deploy ${PROJECT_NAME} ${3}
-fi
+echo "Deploying stack for ${PROJECT_NAME}"
+docker-compose-hot-deploy ${PROJECT_FULLNAME} ${3}
