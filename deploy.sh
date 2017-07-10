@@ -24,16 +24,17 @@ function docker-compose-hot-deploy() {
   readVariableIfRequired "DOMAIN"
   export DOMAIN=${DOMAIN}
 
-  PROJECT_FULLNAME=${PROJECT_NAME}_`git rev-parse --short HEAD`
+  PROJECT_FULLNAME_SEPARATOR="uuu"
+  PROJECT_FULLNAME=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR}`git rev-parse --short HEAD`
 
-  oldServices=`docker ps -f name=${PROJECT_NAME}_* -q`
+  oldServices=`docker ps -f name=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR}* -q`
 
   docker-compose -p ${PROJECT_FULLNAME} up -d
   servicesCount=`docker-compose -p ${PROJECT_FULLNAME} ps | awk '{if (NR > 2) {print $1}}' | wc -l`
 
   echo "Waiting 45 seconds for containers to start..."
   timeout=`date --date="45 seconds" +%s`
-  healthyCount=$(docker events --until ${timeout} -f event="health_status: healthy" -f name=${PROJECT_NAME}_ | wc -l)
+  healthyCount=$(docker events --until ${timeout} -f event="health_status: healthy" -f name=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR} | wc -l)
 
   if [ "${servicesCount}" != "${healthyCount}" ]; then
     echo "Containers didn't start, reverting..."
