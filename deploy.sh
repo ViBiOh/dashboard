@@ -47,12 +47,12 @@ function docker-compose-hot-deploy() {
 
   echo Containers started, stopping old containers if presents
 
-  if [ ! -z "${services}" ]; then
-    docker stop ${services}
+  if [ ! -z "${oldServices}" ]; then
+    docker stop ${oldServices}
   fi
 
-  if [ ! -z "${services}" ]; then
-    docker rm -f -v ${services}
+  if [ ! -z "${oldServices}" ]; then
+    docker rm -f -v ${oldServices}
   fi
   
   docker-clean
