@@ -38,7 +38,8 @@ func CanBeGracefullyClosed() bool {
 	defer backgroundMutex.Unlock()
 
 	backgroundCount := 0
-	for _, value := range backgroundCompose {
+	for key, value := range backgroundCompose {
+		log.Printf(`CanBeGracefullyClosed for %s: %v`, key, value)
 		if value {
 			backgroundCount++
 		}
