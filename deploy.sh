@@ -39,16 +39,14 @@ function docker-compose-hot-deploy() {
   if [ "${servicesCount}" != "${healthyCount}" ]; then
     echo "Containers didn't start, reverting..."
 
-    docker-compose -p ${PROJECT_FULLNAME} stop
-    docker-compose -p ${PROJECT_FULLNAME} rm
-
+    docker-compose -p ${PROJECT_FULLNAME} rm --force --stop -v
     return 1
   fi
 
-  echo Containers started, stopping old containers if presents
+  echo Containers started, gracefully stopping old containers if presents
 
   if [ ! -z "${oldServices}" ]; then
-    docker stop ${oldServices}
+    docker stop --time 180 ${oldServices}
   fi
 
   if [ ! -z "${oldServices}" ]; then
