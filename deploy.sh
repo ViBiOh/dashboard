@@ -16,7 +16,7 @@ function docker-clean() {
   fi
 }
 
-function docker-compose-hot-deploy() {
+function docker-compose-deploy() {
   PROJECT_NAME=${1}
   readVariableIfRequired "PROJECT_NAME"
 
@@ -29,6 +29,7 @@ function docker-compose-hot-deploy() {
 
   oldServices=`docker ps -f name=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR}* -q`
 
+  docker-compose -p ${PROJECT_FULLNAME} pull
   docker-compose -p ${PROJECT_FULLNAME} up -d
   servicesCount=`docker-compose -p ${PROJECT_FULLNAME} ps -q | wc -l`
 
@@ -71,4 +72,4 @@ git clone ${PROJECT_URL} ${PROJECT_NAME}
 cd ${PROJECT_NAME}
 
 echo "Deploying ${PROJECT_NAME}"
-docker-compose-hot-deploy ${PROJECT_NAME} ${3}
+docker-compose-deploy ${PROJECT_NAME} ${3}
