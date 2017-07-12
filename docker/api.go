@@ -12,8 +12,9 @@ import (
 )
 
 const authorizationHeader = `Authorization`
-const gracefulCloseDelay = 30
 
+// GracefulClose indicator that drive healthcheck
+var GracefulClose = false
 var backgroundMutex = sync.RWMutex{}
 var backgroundCompose = make(map[string]bool)
 
@@ -38,8 +39,7 @@ func CanBeGracefullyClosed() bool {
 	defer backgroundMutex.RUnlock()
 
 	backgroundCount := 0
-	for key, value := range backgroundCompose {
-		log.Printf(`CanBeGracefullyClosed for %s: %v`, key, value)
+	for _, value := range backgroundCompose {
 		if value {
 			backgroundCount++
 		}
@@ -53,10 +53,12 @@ func CanBeGracefullyClosed() bool {
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	if docker != nil {
+	if docker != nil && !GracefulClose {
 		w.WriteHeader(http.StatusOK)
 	} else if docker == nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
+	} else {
+		w.WriteHeader(http.StatusGone)
 	}
 }
 
