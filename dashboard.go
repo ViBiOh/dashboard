@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"runtime"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -24,6 +25,8 @@ const websocketPrefix = `/ws/`
 var restHandler = http.StripPrefix(restPrefix, docker.Handler{})
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
+var wg sync.WaitGroup
+
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
 		websocketHandler.ServeHTTP(w, r)
@@ -35,6 +38,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleGracefulClose(server *http.Server) {
+	defer wg.Done()
+
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGTERM)
 
@@ -86,5 +91,8 @@ func main() {
 	}
 
 	go handleGracefulClose(server)
-	log.Fatal(server.ListenAndServe())
+	wg.Add(1)
+	server.ListenAndServe()
+	
+	wg.Wait()
 }
