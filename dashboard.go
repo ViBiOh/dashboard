@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/ViBiOh/dashboard/auth"
-	"github.com/ViBiOh/dashboard/docker"
 	"log"
 	"net/http"
 	"os"
@@ -13,6 +11,9 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/dashboard/docker"
 )
 
 const port = `1080`
@@ -57,7 +58,7 @@ func handleGracefulClose(server *http.Server) {
 				log.Print(`Gracefully closed`)
 				os.Exit(0)
 			}
-			log.Print(`Dashboard still runnning background tasks...`)	
+			log.Print(`Dashboard still runnning background tasks...`)
 		case <-timeout:
 			log.Print(`Close due to timeout`)
 			os.Exit(1)
