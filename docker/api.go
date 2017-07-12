@@ -35,7 +35,7 @@ var listServicesRequest = regexp.MustCompile(`^services/?$`)
 // CanBeGracefullyClosed indicates if application can terminate safely
 func CanBeGracefullyClosed() bool {
 	backgroundMutex.RLock()
-	defer backgroundMutex.Unlock()
+	defer backgroundMutex.RUnlock()
 
 	backgroundCount := 0
 	for key, value := range backgroundCompose {

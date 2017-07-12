@@ -52,8 +52,11 @@ func handleGracefulClose(server *http.Server) {
 			log.Print(err)
 		}
 	}
-	
-	log.Print(`Waiting for graceful close to be available`)
+
+	if docker.CanBeGracefullyClosed() {
+		log.Print(`Gracefully closed`)
+		os.Exit(0)
+	}
 
 	ticker := time.Tick(10 * time.Second)
 	timeout := time.After(2 * time.Minute)
@@ -65,7 +68,6 @@ func handleGracefulClose(server *http.Server) {
 				log.Print(`Gracefully closed`)
 				os.Exit(0)
 			}
-			log.Print(`Dashboard still runnning background tasks...`)
 		case <-timeout:
 			log.Print(`Close due to timeout`)
 			os.Exit(1)
@@ -93,6 +95,6 @@ func main() {
 	go handleGracefulClose(server)
 	wg.Add(1)
 	server.ListenAndServe()
-	
+
 	wg.Wait()
 }
