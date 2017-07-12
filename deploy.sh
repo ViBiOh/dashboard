@@ -39,6 +39,7 @@ function docker-compose-hot-deploy() {
   if [ "${servicesCount}" != "${healthyCount}" ]; then
     echo "Containers didn't start, reverting..."
 
+    docker-compose -p ${PROJECT_FULLNAME} logs
     docker-compose -p ${PROJECT_FULLNAME} rm --force --stop -v
     return 1
   fi
