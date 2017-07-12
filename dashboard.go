@@ -47,6 +47,8 @@ func handleGracefulClose(server *http.Server) {
 			log.Print(err)
 		}
 	}
+	
+	log.Print(`Waiting for graceful close to be available`)
 
 	ticker := time.Tick(10 * time.Second)
 	timeout := time.After(2 * time.Minute)
