@@ -30,7 +30,7 @@ function docker-compose-hot-deploy() {
   oldServices=`docker ps -f name=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR}* -q`
 
   docker-compose -p ${PROJECT_FULLNAME} up -d
-  servicesCount=`docker-compose -p ${PROJECT_FULLNAME} ps | awk '{if (NR > 2) {print $1}}' | wc -l`
+  servicesCount=`docker-compose -p ${PROJECT_FULLNAME} ps -q | wc -l`
 
   echo "Waiting 45 seconds for containers to start..."
   timeout=`date --date="45 seconds" +%s`
@@ -40,6 +40,7 @@ function docker-compose-hot-deploy() {
     echo "Containers didn't start, reverting..."
 
     docker-compose -p ${PROJECT_FULLNAME} logs
+    docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{range .State.Health.Log}}{{.Output}}{{end}}'
     docker-compose -p ${PROJECT_FULLNAME} rm --force --stop -v
     return 1
   fi
