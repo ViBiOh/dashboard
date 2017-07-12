@@ -57,6 +57,7 @@ func handleGracefulClose(server *http.Server) {
 				log.Print(`Gracefully closed`)
 				os.Exit(0)
 			}
+			log.Print(`Dashboard still runnning background tasks...`)	
 		case <-timeout:
 			log.Print(`Close due to timeout`)
 			os.Exit(1)
