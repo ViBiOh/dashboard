@@ -13,8 +13,6 @@ import (
 
 const authorizationHeader = `Authorization`
 
-// GracefulClose indicator that drive healthcheck
-var GracefulClose = false
 var backgroundMutex = sync.RWMutex{}
 var backgroundCompose = make(map[string]bool)
 
@@ -53,12 +51,10 @@ func CanBeGracefullyClosed() bool {
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	if docker != nil && !GracefulClose {
+	if docker != nil {
 		w.WriteHeader(http.StatusOK)
 	} else if docker == nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
-	} else {
-		w.WriteHeader(http.StatusGone)
 	}
 }
 

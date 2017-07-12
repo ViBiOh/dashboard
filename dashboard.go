@@ -18,7 +18,6 @@ import (
 )
 
 const port = `1080`
-const gracefulCloseDelay = 30
 const restPrefix = `/`
 const websocketPrefix = `/ws/`
 
@@ -45,10 +44,7 @@ func handleGracefulClose(server *http.Server) {
 
 	<-signals
 
-	docker.GracefulClose = true
-
-	log.Printf(`SIGTERM received, waiting %d seconds for load-balancer to be notify`, gracefulCloseDelay)
-	time.Sleep(gracefulCloseDelay * time.Second)
+	log.Printf(`SIGTERM received`)
 
 	if server != nil {
 		log.Print(`Shutting down http server`)
@@ -58,7 +54,7 @@ func handleGracefulClose(server *http.Server) {
 	}
 
 	if docker.CanBeGracefullyClosed() {
-		os.Exit(0)
+		return
 	}
 
 	ticker := time.Tick(10 * time.Second)
@@ -68,7 +64,7 @@ func handleGracefulClose(server *http.Server) {
 		select {
 		case <-ticker:
 			if docker.CanBeGracefullyClosed() {
-				os.Exit(0)
+				return
 			}
 		case <-timeout:
 			os.Exit(1)
