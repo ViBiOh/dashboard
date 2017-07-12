@@ -54,9 +54,11 @@ func handleGracefulClose(server *http.Server) {
 		select {
 		case <-ticker:
 			if docker.CanBeGracefullyClosed() {
+				log.Print(`Gracefully closed`)
 				os.Exit(0)
 			}
 		case <-timeout:
+			log.Print(`Close due to timeout`)
 			os.Exit(1)
 		}
 	}
