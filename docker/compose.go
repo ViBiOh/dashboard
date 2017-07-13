@@ -24,7 +24,7 @@ const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
 const linkSeparator = `:`
-const healthcheckTimeout = 5 * time.Minute
+const healthcheckTimeout = 3 * time.Minute
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
