@@ -49,7 +49,7 @@ function docker-compose-deploy() {
   echo Containers started, gracefully stopping old containers if presents
 
   if [ ! -z "${oldServices}" ]; then
-    docker stop --time 180 ${oldServices}
+    docker stop --time=180 ${oldServices}
   fi
 
   if [ ! -z "${oldServices}" ]; then
