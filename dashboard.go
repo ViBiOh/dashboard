@@ -52,8 +52,8 @@ func handleGracefulClose(server *http.Server) {
 		return
 	}
 
-	ticker := time.Tick(10 * time.Second)
-	timeout := time.After(2 * time.Minute)
+	ticker := time.Tick(15 * time.Second)
+	timeout := time.After(3 * time.Minute)
 
 	for {
 		select {
