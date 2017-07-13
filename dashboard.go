@@ -53,7 +53,7 @@ func handleGracefulClose(server *http.Server) {
 	}
 
 	ticker := time.Tick(15 * time.Second)
-	timeout := time.After(3 * time.Minute)
+	timeout := time.After(docker.DeployTimeout)
 
 	for {
 		select {

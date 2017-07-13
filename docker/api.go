@@ -6,15 +6,18 @@ import (
 	"net/http"
 	"regexp"
 	"sync"
+	"time"
 
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 )
 
+// DeployTimeout indicates delay for application to deploy before rollback
+const DeployTimeout = 3 * time.Minute
 const authorizationHeader = `Authorization`
 
 var backgroundMutex = sync.RWMutex{}
-var backgroundCompose = make(map[string]bool)
+var backgroundTasks = make(map[string]bool)
 
 type results struct {
 	Results interface{} `json:"results"`
@@ -36,15 +39,10 @@ func CanBeGracefullyClosed() bool {
 	backgroundMutex.RLock()
 	defer backgroundMutex.RUnlock()
 
-	backgroundCount := 0
-	for _, value := range backgroundCompose {
+	for _, value := range backgroundTasks {
 		if value {
-			backgroundCount++
+			return false
 		}
-	}
-
-	if backgroundCount != 0 {
-		return false
 	}
 
 	return true

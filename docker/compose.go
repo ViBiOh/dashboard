@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/jsonHttp"
@@ -24,7 +23,6 @@ const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
 const linkSeparator = `:`
-const healthcheckTimeout = 3 * time.Minute
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
@@ -238,7 +236,7 @@ func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, 
 		return true
 	}
 
-	timeoutCtx, cancel := context.WithTimeout(ctx, healthcheckTimeout)
+	timeoutCtx, cancel := context.WithTimeout(ctx, DeployTimeout)
 	defer cancel()
 
 	messages, errors := docker.Events(timeoutCtx, types.EventsOptions{Filters: filtersArgs})
@@ -268,7 +266,7 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 		backgroundMutex.Lock()
 		defer backgroundMutex.Unlock()
 
-		backgroundCompose[string(appName)] = false
+		backgroundTasks[string(appName)] = false
 	}()
 
 	log.Printf(`[%s] Waiting for %s to start...`, user.Username, appName)
@@ -329,13 +327,13 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 	appNameStr := string(appName)
 	backgroundMutex.Lock()
 
-	if value, ok := backgroundCompose[appNameStr]; ok && value {
+	if value, ok := backgroundTasks[appNameStr]; ok && value {
 		backgroundMutex.Unlock()
 		composeFailed(w, user, appName, fmt.Errorf(`Application already in deployment`))
 		return
 	}
 
-	backgroundCompose[appNameStr] = true
+	backgroundTasks[appNameStr] = true
 	backgroundMutex.Unlock()
 
 	log.Printf(`[%s] Deploying %s`, user.Username, appName)
