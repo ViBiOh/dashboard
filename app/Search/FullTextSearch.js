@@ -2,6 +2,12 @@ const CLEAN_SEARCH_MIN_LENGTH = 2;
 const CLEAN_WORDS_MIN_LENTH = 2;
 const CLEAN_SEARCH_PERCENTAGE = 0.5;
 
+/**
+ * Replace accented char in given string
+ *
+ * @param {String} str Given string
+ * @return String with accented character replaced by raw one
+ */
 export function replaceAccentedChar(str) {
   if (typeof str === 'undefined' || str === null) {
     return '';
@@ -34,6 +40,12 @@ export function replaceAccentedChar(str) {
     .replace(/[\u0153]/gm, 'oe');
 }
 
+/**
+ * Clean search values by removing too short words if enough words
+ *
+ * @param {Array<String>} values Search values
+ * @return Cleaned search values
+ */
 export function cleanSearchValues(values) {
   if (!Array.isArray(values)) {
     return [];
@@ -49,6 +61,13 @@ export function cleanSearchValues(values) {
   return values;
 }
 
+/**
+ * Build full text regex for given string, splitting words, cleaning and
+ * create a regex that behaves like a fulltext search.
+ *
+ * @param {String} value Search string
+ * @returnRegExp Pattern for make a fulltext-like search from given search string
+ */
 export function buildFullTextRegex(value) {
   const wildcard = '[\\s\\S]*';
   const flags = 'gimy';
@@ -80,6 +99,13 @@ export function buildFullTextRegex(value) {
   return new RegExp(parts.join(''), flags);
 }
 
+/**
+ * Perform a fulltext search for given search and indicate if value matches or not
+ *
+ * @param {String} value tested for search matching
+ * @param {string|RegExp} search Searched string or pattern
+ * return True if value matches given search, false otherwise
+ */
 export function fullTextRegexFilter(value, search) {
   let regex = search;
   if (!(search instanceof RegExp)) {

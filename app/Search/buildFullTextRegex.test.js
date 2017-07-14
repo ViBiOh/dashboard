@@ -6,5 +6,11 @@ test('should have wildcard if value is empty', (t) => {
 });
 
 test('should build regex for all values', (t) => {
-  t.deepEqual(buildFullTextRegex('unit test dashboard'), new RegExp('[\\s\\S]*(unit|test|dashboard)[\\s\\S]*(?!\\1)(unit|test|dashboard)[\\s\\S]*(?!\\1|\\2)(unit|test|dashboard)[\\s\\S]*', 'gimy'));
+  t.deepEqual(
+    buildFullTextRegex('unit test dashboard'),
+    new RegExp(
+      '[\\s\\S]*(unit|test|dashboard)[\\s\\S]*(?!\\1)(unit|test|dashboard)[\\s\\S]*(?!\\1|\\2)(unit|test|dashboard)[\\s\\S]*',
+      'gimy',
+    ),
+  );
 });
