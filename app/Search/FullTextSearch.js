@@ -65,10 +65,9 @@ export function buildFullTextRegex(value) {
   );
   const textGroup = `(${values.join('|')})`;
 
-  const parts = [];
+  const parts = [wildcard];
   const excludes = [];
 
-  parts.push(wildcard);
   for (let i = 0, size = values.length; i < size; i += 1) {
     if (i > 0) {
       excludes.push(`\\${i}`);
