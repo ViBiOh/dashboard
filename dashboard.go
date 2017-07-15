@@ -12,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ViBiOh/alcotest/alcotest"
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/docker"
 )
@@ -68,11 +69,16 @@ func handleGracefulClose(server *http.Server) {
 }
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
+	url := flag.String(`c`, ``, `URL to healthcheck (check and exit)`)
 	authFile := flag.String(`auth`, ``, `Path of authentification configuration file`)
 	websocketOrigin := flag.String(`ws`, `^dashboard`, `Allowed WebSocket Origin pattern`)
 	flag.Parse()
+
+	if *url != `` {
+		alcotest.Do(url)
+	}
+
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	auth.Init(*authFile)
 	docker.Init(*websocketOrigin)
