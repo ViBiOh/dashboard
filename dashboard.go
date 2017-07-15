@@ -76,6 +76,7 @@ func main() {
 
 	if *url != `` {
 		alcotest.Do(url)
+		return
 	}
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
