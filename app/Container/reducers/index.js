@@ -7,16 +7,18 @@ import stats from './stats';
 import pending from './pending';
 import error from './error';
 import bus from './bus';
+import filter from './filter';
 
 const appReducers = combineReducers({
-  infos,
-  containers,
-  container,
-  logs,
-  stats,
-  pending,
-  error,
   bus,
+  container,
+  containers,
+  error,
+  filter,
+  infos,
+  logs,
+  pending,
+  stats,
 });
 
 /**

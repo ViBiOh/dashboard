@@ -9,6 +9,7 @@ import Button from '../Button/Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import Throbber from '../Throbber/Throbber';
 import ErrorBanner from '../ErrorBanner/ErrorBanner';
+import FilterBar from '../Filter/FilterBar';
 import ContainerCard from '../ContainerCard/ContainerCard';
 import style from './ContainersList.less';
 
@@ -21,11 +22,13 @@ const ContainersList = ({
   pending,
   pendingInfo,
   containers,
+  filter,
   error,
   onRefresh,
   onAdd,
   onSelect,
   onLogout,
+  onFilterChange,
 }) => {
   let content;
 
@@ -35,6 +38,7 @@ const ContainersList = ({
     content = [
       <span key="size" className={style.size} title="Number of containers">
         {containers.length}&nbsp;<FaCubes />
+        <FilterBar value={filter} onChange={onFilterChange} />
       </span>,
       containers.map(container =>
         <ContainerCard key={container.Id} container={container} onClick={onSelect} />,
@@ -76,11 +80,13 @@ ContainersList.propTypes = {
   pending: PropTypes.bool,
   pendingInfo: PropTypes.bool,
   containers: PropTypes.arrayOf(PropTypes.shape({})),
+  filter: PropTypes.string,
   error: PropTypes.string,
   onRefresh: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  onFilterChange: PropTypes.func.isRequired,
 };
 
 ContainersList.defaultProps = {
@@ -88,6 +94,7 @@ ContainersList.defaultProps = {
   pendingInfo: false,
   containers: null,
   infos: null,
+  filter: '',
   error: '',
 };
 

@@ -144,4 +144,5 @@ export default {
   ...makeActionAndTypeCreator('ADD_STAT', 'addStat', ['stat']),
   ...makeActionAndTypeCreator('SET_ERROR', 'setError', ['error']),
   ...makeActionAndTypeCreator('GO_HOME', 'goHome'),
+  ...makeActionAndTypeCreator('CHANGE_FILTER', 'changeFilter', ['value']),
 };
