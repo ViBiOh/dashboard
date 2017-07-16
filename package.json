@@ -146,7 +146,8 @@
     "extends": "stylelint-config-standard",
     "rules": {
       "declaration-colon-newline-after": null,
-      "selector-list-comma-newline-after": null
+      "selector-list-comma-newline-after": null,
+      "indentation": null
     }
   }
 }

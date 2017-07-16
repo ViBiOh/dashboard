@@ -4,13 +4,9 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import FilterBar from './FilterBar';
 
-let defaultProps;
-
-test.beforeEach(() => {
-  defaultProps = {
-    onChange: sinon.spy(),
-  };
-});
+const defaultProps = {
+  onChange: () => null,
+};
 
 test('should render as an input', (t) => {
   const wrapper = shallow(<FilterBar {...defaultProps} />);
@@ -19,9 +15,10 @@ test('should render as an input', (t) => {
 });
 
 test('should call given onChange method', (t) => {
-  const wrapper = shallow(<FilterBar {...defaultProps} />);
+  const onChange = sinon.spy();
+  const wrapper = shallow(<FilterBar {...defaultProps} onChange={onChange} />);
 
   wrapper.simulate('change', { target: {} });
 
-  t.true(defaultProps.onChange.called);
+  t.true(onChange.called);
 });
