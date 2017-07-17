@@ -18,11 +18,12 @@ function flatValues(o) {
 const mapStateToProps = (state) => {
   const regexFilter = buildFullTextRegex(state.filter);
 
+  // eslint-disable no-console
   return {
     pending: !!state.pending[actions.FETCH_CONTAINERS],
     pendingInfo: !!state.pending[actions.INFO],
     containers: state.containers
-      ? state.containers.filter(e => fullTextRegexFilter(flatValues(e).join(' '), regexFilter))
+      ? state.containers.filter(e => console.log(e) || fullTextRegexFilter(flatValues(e).join(' '), regexFilter))
       : state.containers,
     filter: state.filter,
     error: state.error,
