@@ -6,7 +6,18 @@ import ContainersList from '../Presentational/ContainersList/ContainersList';
 
 function flatValues(o) {
   const values = Object.values(o)
-    .filter(e => typeof e !== 'function' && typeof e !== 'object')
+    .filter(e => typeof e !== 'function')
+    .map(e => {
+      if (Array.isArray(e)) {
+        return e.map(flatValues);
+      }
+      
+      if (typeof e === 'object') {
+        return flatValues(e);
+      }
+      
+      return e;
+    });
 
   return [].concat(...values);
 }
