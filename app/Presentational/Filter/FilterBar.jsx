@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import style from './FilterBar.less';
 
 /**
  * Input for setting filter value.
@@ -10,6 +11,7 @@ const FilterBar = ({ value, onChange }) =>
     name="search"
     placeholder="Filter..."
     value={value}
+    className={style.search}
     onChange={e => onChange(e.target.value)}
   />);
 

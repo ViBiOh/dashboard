@@ -1,36 +1,16 @@
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { buildFullTextRegex, fullTextRegexFilter } from '../Search/FullTextSearch';
 import actions from './actions';
 import ContainersList from '../Presentational/ContainersList/ContainersList';
 
-function flatValues(o) {
-  if (Array.isArray(o)) {
-    return o.map(flatValues);
-  }
-
-  if (typeof o === 'object' && o !== null) {
-    const values = Object.values(o).filter(e => typeof e !== 'function').map(flatValues);
-
-    return [].concat(...values);
-  }
-
-  return o;
-}
-
-const mapStateToProps = (state) => {
-  const regexFilter = buildFullTextRegex(state.filter);
-
-  return {
-    pending: !!state.pending[actions.FETCH_CONTAINERS],
-    pendingInfo: !!state.pending[actions.INFO],
-    containers: state.containers
-      ? state.containers.filter(e => fullTextRegexFilter(flatValues(e).join(' '), regexFilter))
-      : state.containers,
-    filter: state.filter,
-    error: state.error,
-  };
-};
+const mapStateToProps = state => ({
+  pending: !!state.pending[actions.FETCH_CONTAINERS],
+  pendingInfo: !!state.pending[actions.INFO],
+  containersTotalCount: state.containers ? state.containers.length : 0,
+  containers: state.filteredContainers,
+  filter: state.filter,
+  error: state.error,
+});
 
 const mapDispatchToProps = dispatch => ({
   onRefresh: () => dispatch(actions.info()),

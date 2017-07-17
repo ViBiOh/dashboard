@@ -37,10 +37,20 @@ test('should render a div list with ContainerCard if not pending', (t) => {
     },
   ];
 
-  const wrapper = shallow(<ContainersList {...defaultProps} containers={containers} />);
+  const wrapper = shallow(
+    <ContainersList {...defaultProps} containers={containers} containersTotalCount={1} />,
+  );
 
   t.is(wrapper.find('div').length, 1);
   t.is(wrapper.find('ContainerCard').length, 1);
   t.is(wrapper.find('span').length, 3);
   t.is(wrapper.find('span').at(2).text(), '1 <FaCubes /><FilterBar />');
+});
+
+test('should indicate filtered list', (t) => {
+  const wrapper = shallow(
+    <ContainersList {...defaultProps} containers={[]} containersTotalCount={1} />,
+  );
+
+  t.is(wrapper.find('span').at(2).text(), '0 / 1 <FaCubes /><FilterBar />');
 });

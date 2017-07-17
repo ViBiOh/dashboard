@@ -1,4 +1,4 @@
-const CLEAN_SEARCH_MIN_LENGTH = 2;
+const CLEAN_SEARCH_MIN_LENGTH = 1;
 const CLEAN_WORDS_MIN_LENTH = 2;
 const CLEAN_SEARCH_PERCENTAGE = 0.5;
 
@@ -114,4 +114,28 @@ export function fullTextRegexFilter(value, search) {
 
   regex.lastIndex = 0;
   return regex.test(replaceAccentedChar(value));
+}
+
+/**
+ * Flat values of given param (object/array).
+ *
+ * @param {any} o Values to flat
+ * @return Array of flatted values
+ */
+export function flatValues(o) {
+  if (typeof o === 'undefined' || o === null) {
+    return [];
+  }
+
+  if (Array.isArray(o)) {
+    return [].concat(...o.map(flatValues));
+  }
+
+  if (typeof o === 'object') {
+    const values = Object.values(o).filter(e => typeof e !== 'function').map(flatValues);
+
+    return [].concat(...values);
+  }
+
+  return [o];
 }

@@ -21,6 +21,7 @@ import style from './ContainersList.less';
 const ContainersList = ({
   pending,
   pendingInfo,
+  containersTotalCount,
   containers,
   filter,
   error,
@@ -35,9 +36,14 @@ const ContainersList = ({
   if (pending || !Array.isArray(containers)) {
     content = <Throbber label="Loading containers" />;
   } else {
+    const count =
+      containers.length !== containersTotalCount
+        ? `${containers.length} / ${containersTotalCount}`
+        : containers.length;
+
     content = [
       <span key="size" className={style.size} title="Number of containers">
-        {containers.length}&nbsp;<FaCubes />
+        {count} <FaCubes />
         <FilterBar value={filter} onChange={onFilterChange} />
       </span>,
       containers.map(container =>
@@ -79,6 +85,7 @@ ContainersList.displayName = 'ContainersList';
 ContainersList.propTypes = {
   pending: PropTypes.bool,
   pendingInfo: PropTypes.bool,
+  containersTotalCount: PropTypes.number,
   containers: PropTypes.arrayOf(PropTypes.shape({})),
   filter: PropTypes.string,
   error: PropTypes.string,
@@ -92,6 +99,7 @@ ContainersList.propTypes = {
 ContainersList.defaultProps = {
   pending: false,
   pendingInfo: false,
+  containersTotalCount: 0,
   containers: null,
   infos: null,
   filter: '',
