@@ -98,9 +98,9 @@ export const makeBusPayloadActionCreator = (type, streamName, demand) => (id) =>
  * @param  {Array}  inputs Properties' names of action
  * @return {object}        An object containing both function and constant
  */
-export const makeBusActionAndTypeCreator = (type, action) => ({
+export const makeBusActionAndTypeCreator = (type, action, input = []) => ({
   [type]: type,
-  [action]: makeBusPayloadActionCreator(type),
+  [action]: makeBusPayloadActionCreator(type, ...input),
 });
 
 /**
