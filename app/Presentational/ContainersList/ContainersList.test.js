@@ -44,7 +44,7 @@ test('should render a div list with ContainerCard if not pending', (t) => {
   t.is(wrapper.find('div').length, 1);
   t.is(wrapper.find('ContainerCard').length, 1);
   t.is(wrapper.find('span').length, 3);
-  t.is(wrapper.find('span').at(2).text(), '1 <FaCubes /><FilterBar />');
+  t.is(wrapper.find('span').at(2).text(), '1<FaCubes /><FilterBar />');
 });
 
 test('should indicate filtered list', (t) => {
@@ -52,5 +52,5 @@ test('should indicate filtered list', (t) => {
     <ContainersList {...defaultProps} containers={[]} containersTotalCount={1} />,
   );
 
-  t.is(wrapper.find('span').at(2).text(), '0 / 1 <FaCubes /><FilterBar />');
+  t.is(wrapper.find('span').at(2).text(), '0 / 1<FaCubes /><FilterBar />');
 });

@@ -43,7 +43,8 @@ const ContainersList = ({
 
     content = [
       <span key="size" className={style.size} title="Number of containers">
-        {count} <FaCubes />
+        {count}
+        <FaCubes />
         <FilterBar value={filter} onChange={onFilterChange} />
       </span>,
       containers.map(container =>

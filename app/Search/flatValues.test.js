@@ -18,5 +18,8 @@ test('should work with an object', (t) => {
 });
 
 test('should work with nested object in array', (t) => {
-  t.deepEqual(flatValues({ name: 'test', cases: [{ name: 'null' }, { name: 'undefined' }], errors: 0 }), ['test', 'null', 'undefined', 0]);
+  t.deepEqual(
+    flatValues({ name: 'test', cases: [{ name: 'null' }, { name: 'undefined' }], errors: 0 }),
+    ['test', 'null', 'undefined', 0],
+  );
 });
