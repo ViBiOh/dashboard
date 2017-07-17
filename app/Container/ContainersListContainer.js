@@ -5,21 +5,19 @@ import actions from './actions';
 import ContainersList from '../Presentational/ContainersList/ContainersList';
 
 function flatValues(o) {
-  const values = Object.values(o)
-    .filter(e => typeof e !== 'function')
-    .map(e => {
-      if (Array.isArray(e)) {
-        return e.map(flatValues);
-      }
-      
-      if (typeof e === 'object') {
-        return flatValues(e);
-      }
-      
-      return e;
-    });
+  if (Array.isArray(o)) {
+    return o.map(flatValues);
+  }
 
-  return [].concat(...values);
+  if (typeof o === 'object') {
+    const values = Object.values(o)
+      .filter(e => typeof e !== 'function')
+      .map(flatValues);
+
+    return [].concat(...values);
+  }
+  
+  return o;
 }
 
 const mapStateToProps = (state) => {
