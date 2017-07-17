@@ -9,14 +9,12 @@ function flatValues(o) {
     return o.map(flatValues);
   }
 
-  if (typeof o === 'object') {
-    const values = Object.values(o)
-      .filter(e => typeof e !== 'function')
-      .map(flatValues);
+  if (typeof o === 'object' && o !== null) {
+    const values = Object.values(o).filter(e => typeof e !== 'function').map(flatValues);
 
     return [].concat(...values);
   }
-  
+
   return o;
 }
 
