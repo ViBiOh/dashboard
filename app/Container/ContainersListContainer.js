@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
     pending: !!state.pending[actions.FETCH_CONTAINERS],
     pendingInfo: !!state.pending[actions.INFO],
     containers: state.containers
-      ? state.containers.filter(e => fullTextRegexFilter(e.Names.join(' '), regexFilter))
+      ? state.containers.filter(e => fullTextRegexFilter(JSON.stringify(e), regexFilter))
       : state.containers,
     filter: state.filter,
     error: state.error,
