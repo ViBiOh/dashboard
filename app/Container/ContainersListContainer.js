@@ -9,7 +9,7 @@ function flatValues(o) {
     .filter(e => typeof e !== 'function')
     .map((e) => {
       if (typeof e === 'object') {
-        return deepValues(e);
+        return flatValues(e);
       }
       return e;
     }));
