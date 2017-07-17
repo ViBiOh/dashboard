@@ -4,6 +4,17 @@ import { buildFullTextRegex, fullTextRegexFilter } from '../Search/FullTextSearc
 import actions from './actions';
 import ContainersList from '../Presentational/ContainersList/ContainersList';
 
+function flatValues(o) {
+  return [].concat(...Object.values(o)
+    .filter(e => typeof e !== 'function')
+    .map((e) => {
+      if (typeof e === 'object') {
+        return deepValues(e);
+      }
+      return e;
+    }));
+}
+
 const mapStateToProps = (state) => {
   const regexFilter = buildFullTextRegex(state.filter);
 
@@ -11,7 +22,7 @@ const mapStateToProps = (state) => {
     pending: !!state.pending[actions.FETCH_CONTAINERS],
     pendingInfo: !!state.pending[actions.INFO],
     containers: state.containers
-      ? state.containers.filter(e => fullTextRegexFilter(JSON.stringify(e), regexFilter))
+      ? state.containers.filter(e => fullTextRegexFilter(flatValues(e).join(' '), regexFilter))
       : state.containers,
     filter: state.filter,
     error: state.error,
