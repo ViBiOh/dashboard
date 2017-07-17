@@ -5,25 +5,26 @@ import actions from './actions';
 import ContainersList from '../Presentational/ContainersList/ContainersList';
 
 function flatValues(o) {
-  return [].concat(...Object.values(o)
+  const values = Object.values(o)
     .filter(e => typeof e !== 'function')
     .map((e) => {
       if (typeof e === 'object') {
         return flatValues(e);
       }
       return e;
-    }));
+    });
+
+  return [].concat(...values);
 }
 
 const mapStateToProps = (state) => {
   const regexFilter = buildFullTextRegex(state.filter);
 
-  // eslint-disable no-console
   return {
     pending: !!state.pending[actions.FETCH_CONTAINERS],
     pendingInfo: !!state.pending[actions.INFO],
     containers: state.containers
-      ? state.containers.filter(e => console.log(e) || fullTextRegexFilter(flatValues(e).join(' '), regexFilter))
+      ? state.containers.filter(e => fullTextRegexFilter(flatValues(e).join(' '), regexFilter))
       : state.containers,
     filter: state.filter,
     error: state.error,
