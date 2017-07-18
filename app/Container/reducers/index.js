@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { routerReducer } from 'react-router-redux'
 import actions from '../actions';
 import { buildFullTextRegex, fullTextRegexFilter, flatValues } from '../../Search/FullTextSearch';
 import infos from './infos';
@@ -22,6 +23,7 @@ const reducers = combineReducers({
   logs,
   pending,
   stats,
+  routing: routerReducer,
 });
 
 function appReducers(state, action) {
