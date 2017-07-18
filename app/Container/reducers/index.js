@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux'
 import actions from '../actions';
 import { buildFullTextRegex, fullTextRegexFilter, flatValues } from '../../Search/FullTextSearch';
 import infos from './infos';
@@ -23,13 +22,15 @@ const reducers = combineReducers({
   logs,
   pending,
   stats,
-  routing: routerReducer,
 });
 
 function appReducers(state, action) {
   const nextState = reducers(state, action);
 
-  if (action.type === actions.CHANGE_FILTER || action.type === actions.FETCH_CONTAINERS_SUCCEEDED) {
+  if (
+    nextState.containers &&
+    (action.type === actions.CHANGE_FILTER || action.type === actions.FETCH_CONTAINERS_SUCCEEDED)
+  ) {
     const regexFilter = buildFullTextRegex(nextState.filter);
     nextState.filteredContainers = nextState.containers.filter(e =>
       fullTextRegexFilter(flatValues(e).join(' '), regexFilter),

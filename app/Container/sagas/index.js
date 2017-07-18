@@ -257,6 +257,20 @@ export function* busSaga(action) {
 }
 
 /**
+ * Saga of handling changeFilter's stream:
+ * - push filter in search history
+ * @param {Object} action Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
+export function* changeFilterSaga(action) {
+  if (action.value) {
+    yield put(push({ search: `?filter=${encodeURIComponent(action.value)}` }));
+  } else {
+    yield put(push({ search: '' }));
+  }
+}
+
+/**
  * Sagas of app.
  * @yield {Function} Sagas
  */
@@ -271,4 +285,5 @@ export default function* appSaga() {
   yield takeLatest(actions.ACTION_CONTAINER, actionContainerSaga);
   yield takeLatest(actions.COMPOSE, composeSaga);
   yield takeLatest(actions.OPEN_BUS, busSaga);
+  yield takeLatest(actions.CHANGE_FILTER, changeFilterSaga);
 }
