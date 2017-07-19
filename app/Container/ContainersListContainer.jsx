@@ -27,12 +27,15 @@ const mapDispatchToProps = dispatch => ({
  */
 export class ContainersListContainerComponent extends Component {
   /**
-   * Retrieval of query string for populating ReduxState.
+   * Retrieval of query string for synchronizing ReduxState and History.
    */
   componentDidMount() {
-    const filter = new URLSearchParams(this.props.location.search).get('filter');
-    if (filter && filter !== this.props.filter) {
-      this.props.onFilterChange(filter);
+    const queryFilter = new URLSearchParams(this.props.location.search).get('filter');
+
+    if (queryFilter && !this.props.filter) {
+      this.props.onFilterChange(queryFilter);
+    } else if (!queryFilter && this.props.filter) {
+      this.props.onFilterChange(this.props.filter);
     }
   }
 
