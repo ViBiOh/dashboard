@@ -44,7 +44,11 @@ func handleGracefulClose(server *http.Server) {
 
 	if server != nil {
 		log.Print(`Shutting down http server`)
-		if err := server.Shutdown(context.Background()); err != nil {
+
+		ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
+		defer cancel()
+
+		if err := server.Shutdown(ctx); err != nil {
 			log.Print(err)
 		}
 	}
