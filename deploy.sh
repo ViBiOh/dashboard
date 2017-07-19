@@ -35,7 +35,7 @@ function docker-compose-deploy() {
 
   echo "Waiting 45 seconds for containers to start..."
   timeout=`date --date="45 seconds" +%s`
-  healthyCount=$(docker events --until ${timeout} -f event="health_status: healthy" -f name=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR} | wc -l)
+  healthyCount=$(docker events --until ${timeout} -f event="health_status: healthy" -f name=${PROJECT_FULLNAME} | wc -l)
 
   if [ "${servicesCount}" != "${healthyCount}" ]; then
     echo "Containers didn't start, reverting..."
