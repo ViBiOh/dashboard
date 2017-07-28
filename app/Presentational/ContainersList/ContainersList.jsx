@@ -20,7 +20,6 @@ import style from './ContainersList.less';
  */
 const ContainersList = ({
   pending,
-  pendingInfo,
   containersTotalCount,
   containers,
   filter,
@@ -60,7 +59,7 @@ const ContainersList = ({
           <FaPlus />
         </Button>
         <ThrobberButton
-          pending={pendingInfo}
+          pending={pending}
           onClick={onRefresh}
           title="Refresh containers list"
           vertical
@@ -85,7 +84,6 @@ ContainersList.displayName = 'ContainersList';
 
 ContainersList.propTypes = {
   pending: PropTypes.bool,
-  pendingInfo: PropTypes.bool,
   containersTotalCount: PropTypes.number,
   containers: PropTypes.arrayOf(PropTypes.shape({})),
   filter: PropTypes.string,

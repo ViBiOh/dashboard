@@ -6,8 +6,7 @@ import actions from './actions';
 import ContainersList from '../Presentational/ContainersList/ContainersList';
 
 const mapStateToProps = state => ({
-  pending: !!state.pending[actions.FETCH_CONTAINERS],
-  pendingInfo: !!state.pending[actions.INFO],
+  pending: !!state.pending[actions.INFO] || !!state.pending[actions.FETCH_CONTAINERS],
   containersTotalCount: state.containers ? state.containers.length : 0,
   containers: state.filteredContainers,
   filter: state.filter,
