@@ -182,6 +182,12 @@ func getFinalName(serviceFullName string) string {
 func deleteServices(appName []byte, services map[string]deployedService, user *auth.User) {
 	log.Printf(`[%s] Deleting services for %s`, user.Username, appName)
 	for service, container := range services {
+		if infos, err := inspectContainer(container.ID); err != nil {
+			log.Printf(`[%s] Error while inspecting service %s for %s: %v`, user.Username, service, appName, err)
+		} else if infos.State.Health != nil {
+			log.Printf(`[%s] Healthcheck output for %s: %v`, user.Username, service, infos.State.Health.Log)
+		}
+
 		if err := stopContainer(container.ID); err != nil {
 			log.Printf(`[%s] Error while stopping service %s for %s: %v`, user.Username, service, appName, err)
 		}
