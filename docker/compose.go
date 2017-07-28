@@ -185,7 +185,12 @@ func deleteServices(appName []byte, services map[string]deployedService, user *a
 		if infos, err := inspectContainer(container.ID); err != nil {
 			log.Printf(`[%s] Error while inspecting service %s for %s: %v`, user.Username, service, appName, err)
 		} else if infos.State.Health != nil {
-			log.Printf(`[%s] Healthcheck output for %s: %v`, user.Username, service, infos.State.Health.Log)
+			logs := make([]string, 0);
+			for _, log := range infos.State.Health.Log {
+				logs = append(logs, log.Output)
+			}
+
+			log.Printf(`[%s] Healthcheck output for %s: %s`, user.Username, service, logs)
 		}
 
 		if err := stopContainer(container.ID); err != nil {
