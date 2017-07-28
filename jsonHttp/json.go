@@ -8,9 +8,7 @@ import (
 
 // ResponseJSON write marshalled obj to http.ResponseWriter with correct header
 func ResponseJSON(w http.ResponseWriter, obj interface{}) {
-	objJSON, err := json.Marshal(obj)
-
-	if err == nil {
+	if objJSON, err := json.Marshal(obj); err == nil {
 		w.Header().Set(`Content-Type`, `application/json`)
 		w.Header().Set(`Cache-Control`, `no-cache`)
 		w.Write(objJSON)
