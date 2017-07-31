@@ -107,7 +107,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	return &hostConfig
 }
 
-func getNetworkConfig(service *dockerComposeService, deployedServices map[string]deployedService) *network.NetworkingConfig {
+func getNetworkConfig(service *dockerComposeService, deployedServices map[string]*deployedService) *network.NetworkingConfig {
 	traefikConfig := network.EndpointSettings{}
 
 	for _, link := range service.Links {
@@ -161,7 +161,7 @@ func cleanContainers(containers []types.Container, user *auth.User) {
 	}
 }
 
-func renameDeployedContainers(containers map[string]deployedService, user *auth.User) error {
+func renameDeployedContainers(containers map[string]*deployedService, user *auth.User) error {
 	for service, container := range containers {
 		if err := docker.ContainerRename(context.Background(), container.ID, getFinalName(container.Name)); err != nil {
 			return fmt.Errorf(`[%s] Error while renaming container %s: %v`, user.Username, service, err)
@@ -179,7 +179,7 @@ func getFinalName(serviceFullName string) string {
 	return strings.TrimSuffix(serviceFullName, deploySuffix)
 }
 
-func deleteServices(appName []byte, services map[string]deployedService, user *auth.User) {
+func deleteServices(appName []byte, services map[string]*deployedService, user *auth.User) {
 	log.Printf(`[%s] Deleting services for %s`, user.Username, appName)
 	for service, container := range services {
 		if infos, err := inspectContainer(container.ID); err != nil {
@@ -203,7 +203,7 @@ func deleteServices(appName []byte, services map[string]deployedService, user *a
 	}
 }
 
-func startServices(appName []byte, services map[string]deployedService, user *auth.User) error {
+func startServices(appName []byte, services map[string]*deployedService, user *auth.User) error {
 	log.Printf(`[%s] Starting services for %s`, user.Username, appName)
 	for service, container := range services {
 		if err := startContainer(container.ID); err != nil {
@@ -214,7 +214,7 @@ func startServices(appName []byte, services map[string]deployedService, user *au
 	return nil
 }
 
-func inspectServices(services map[string]deployedService, user *auth.User) []*types.ContainerJSON {
+func inspectServices(services map[string]*deployedService, user *auth.User) []*types.ContainerJSON {
 	containers := make([]*types.ContainerJSON, 0, len(services))
 
 	for service, container := range services {
@@ -271,7 +271,7 @@ func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, 
 	}
 }
 
-func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.User, appName []byte, services map[string]deployedService, oldContainers []types.Container) {
+func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.User, appName []byte, services map[string]*deployedService, oldContainers []types.Container) {
 	defer cancel()
 	defer func() {
 		backgroundMutex.Lock()
@@ -297,7 +297,7 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	}
 }
 
-func createContainer(user *auth.User, appName []byte, serviceName string, services map[string]deployedService, service *dockerComposeService) (*deployedService, error) {
+func createContainer(user *auth.User, appName []byte, serviceName string, services map[string]*deployedService, service *dockerComposeService) (*deployedService, error) {
 	if err := pullImage(service.Image, user); err != nil {
 		return nil, err
 	}
@@ -360,12 +360,12 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 		forbidden(w)
 	}
 
-	newServices := make(map[string]deployedService)
+	newServices := make(map[string]*deployedService)
 	for serviceName, service := range compose.Services {
 		if deployedService, err := createContainer(user, appName, serviceName, newServices, &service); err != nil {
 			break
 		} else {
-			newServices[serviceName] = *deployedService
+			newServices[serviceName] = deployedService
 		}
 	}
 
