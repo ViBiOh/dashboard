@@ -30,10 +30,10 @@ func Init(websocketOrigin string) {
 	hostCheck = regexp.MustCompile(websocketOrigin)
 }
 
-func labelFilters(filtersArgs *filters.Args, user *auth.User, appName *string) error {
-	if appName != nil && *appName != `` && isMultiApp(user) {
-		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+*appName, *filtersArgs); err != nil {
-			return fmt.Errorf(`[%s] Error while parsing label for label=%s=%s: %v`, user.Username, appLabel, *appName, err)
+func labelFilters(filtersArgs *filters.Args, user *auth.User, appName string) error {
+	if appName != `` && isMultiApp(user) {
+		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+appName, *filtersArgs); err != nil {
+			return fmt.Errorf(`[%s] Error while parsing label for label=%s=%s: %v`, user.Username, appLabel, appName, err)
 		}
 	} else if !isAdmin(user) {
 		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+user.Username, *filtersArgs); err != nil {
@@ -44,14 +44,14 @@ func labelFilters(filtersArgs *filters.Args, user *auth.User, appName *string) e
 	return nil
 }
 
-func healthyStatusFilters(user *auth.User, filtersArgs *filters.Args, containersIds []*string) error {
+func healthyStatusFilters(user *auth.User, filtersArgs *filters.Args, containersIds []string) error {
 	if _, err := filters.ParseFlag(`event=health_status: healthy`, *filtersArgs); err != nil {
 		return fmt.Errorf(`[%s] Error while parsing label for event=health_status: healthy: %v`, user.Username, err)
 	}
 
 	for _, container := range containersIds {
-		if _, err := filters.ParseFlag(`container=`+*container, *filtersArgs); err != nil {
-			return fmt.Errorf(`[%s] Error while parsing label for container=%s: %v`, user.Username, *container, err)
+		if _, err := filters.ParseFlag(`container=`+container, *filtersArgs); err != nil {
+			return fmt.Errorf(`[%s] Error while parsing label for container=%s: %v`, user.Username, container, err)
 		}
 	}
 

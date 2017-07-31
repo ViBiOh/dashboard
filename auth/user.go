@@ -28,14 +28,14 @@ func (user *User) HasProfile(profile string) bool {
 	return strings.Contains(user.profiles, profile)
 }
 
-var users map[string]*User
+var users map[string]User
 
 // Init auth
 func Init(authFile string) {
 	users = readConfiguration(authFile)
 }
 
-func readConfiguration(path string) map[string]*User {
+func readConfiguration(path string) map[string]User {
 	configFile, err := os.Open(path)
 	defer configFile.Close()
 
@@ -44,14 +44,14 @@ func readConfiguration(path string) map[string]*User {
 		return nil
 	}
 
-	users := make(map[string]*User)
+	users := make(map[string]User)
 
 	scanner := bufio.NewScanner(configFile)
 	for scanner.Scan() {
 		parts := bytes.Split(scanner.Bytes(), commaByte)
 		user := User{strings.ToLower(string(parts[0])), parts[1], string(parts[2])}
 
-		users[strings.ToLower(user.Username)] = &user
+		users[strings.ToLower(user.Username)] = user
 	}
 
 	return users
@@ -62,7 +62,7 @@ func isAuthenticated(username string, password string) (*User, error) {
 
 	if ok {
 		if err := bcrypt.CompareHashAndPassword(user.password, []byte(password)); err == nil {
-			return user, nil
+			return &user, nil
 		}
 	}
 

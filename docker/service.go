@@ -14,7 +14,7 @@ import (
 const ownerLabel = `owner`
 const appLabel = `app`
 
-func listServices(user *auth.User, appName *string) ([]swarm.Service, error) {
+func listServices(user *auth.User, appName string) ([]swarm.Service, error) {
 	options := types.ServiceListOptions{}
 
 	options.Filters = filters.NewArgs()
@@ -26,7 +26,7 @@ func listServices(user *auth.User, appName *string) ([]swarm.Service, error) {
 }
 
 func listServicesHandler(w http.ResponseWriter, user *auth.User) {
-	if services, err := listServices(user, nil); err != nil {
+	if services, err := listServices(user, ``); err != nil {
 		errorHandler(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{services})

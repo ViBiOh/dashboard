@@ -3,6 +3,7 @@ package auth
 import (
 	"encoding/base64"
 	"fmt"
+	"reflect"
 	"testing"
 
 	"golang.org/x/crypto/bcrypt"
@@ -10,27 +11,27 @@ import (
 
 func TestHasProfile(t *testing.T) {
 	var tests = []struct {
-		instance *User
+		instance User
 		profile  string
 		want     bool
 	}{
 		{
-			&User{},
+			User{},
 			`admin`,
 			false,
 		},
 		{
-			&User{profiles: `admin`},
+			User{profiles: `admin`},
 			`admin`,
 			true,
 		},
 		{
-			&User{profiles: `admin,multi`},
+			User{profiles: `admin,multi`},
 			`multi`,
 			true,
 		},
 		{
-			&User{profiles: `multi`},
+			User{profiles: `multi`},
 			`admin`,
 			false,
 		},
@@ -85,13 +86,14 @@ func TestReadConfiguration(t *testing.T) {
 }
 
 func TestIsAuthenticated(t *testing.T) {
-	users = make(map[string]*User)
+	users = make(map[string]User)
 
 	password, _ := bcrypt.GenerateFromPassword([]byte(`password`), 12)
-	users[`admin`] = &User{`admin`, password, `admin`}
+	admin := User{`admin`, password, `admin`}
+	users[`admin`] = admin
 
 	guest, _ := bcrypt.GenerateFromPassword([]byte(`guest`), 12)
-	users[`guest`] = &User{`guest`, guest, ``}
+	users[`guest`] = User{`guest`, guest, ``}
 
 	var tests = []struct {
 		username string
@@ -102,13 +104,13 @@ func TestIsAuthenticated(t *testing.T) {
 		{
 			`admin`,
 			`password`,
-			users[`admin`],
+			&admin,
 			nil,
 		},
 		{
 			`AdMiN`,
 			`password`,
-			users[`admin`],
+			&admin,
 			nil,
 		},
 		{
@@ -125,19 +127,35 @@ func TestIsAuthenticated(t *testing.T) {
 		},
 	}
 
+	var failed bool
+
 	for _, test := range tests {
 		result, err := isAuthenticated(test.username, test.password)
-		if result != test.want || (err == nil && test.wantErr != nil) || (err != nil && test.wantErr == nil) || (err != nil && test.wantErr != nil && err.Error() != test.wantErr.Error()) {
+
+		failed = false
+
+		if err == nil && test.wantErr != nil {
+			failed = true
+		} else if err != nil && test.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != test.wantErr.Error() {
+			failed = true
+		} else if !reflect.DeepEqual(result, test.want) {
+			failed = true
+		}
+
+		if failed {
 			t.Errorf("isAuthenticated(%v, %v) = (%v, %v) want (%v, %v)", test.username, test.password, result, err, test.want, test.wantErr)
 		}
 	}
 }
 
 func TestIsAuthenticatedByAuth(t *testing.T) {
-	users = make(map[string]*User)
+	users = make(map[string]User)
 
 	password, _ := bcrypt.GenerateFromPassword([]byte(`password`), 12)
-	users[`admin`] = &User{`admin`, password, `admin`}
+	admin := User{`admin`, password, `admin`}
+	users[`admin`] = admin
 
 	var tests = []struct {
 		auth    string
@@ -161,7 +179,7 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 		},
 		{
 			fmt.Sprintf(`Basic %s`, base64.StdEncoding.EncodeToString([]byte(`admin:password`))),
-			users[`admin`],
+			&admin,
 			nil,
 		},
 		{
@@ -171,9 +189,24 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 		},
 	}
 
+	var failed bool
+
 	for _, test := range tests {
 		result, err := IsAuthenticatedByAuth(test.auth)
-		if result != test.want || (err == nil && test.wantErr != nil) || (err != nil && test.wantErr == nil) || (err != nil && test.wantErr != nil && err.Error() != test.wantErr.Error()) {
+
+		failed = false
+
+		if err == nil && test.wantErr != nil {
+			failed = true
+		} else if err != nil && test.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != test.wantErr.Error() {
+			failed = true
+		} else if !reflect.DeepEqual(result, test.want) {
+			failed = true
+		}
+
+		if failed {
 			t.Errorf("IsAuthenticatedByAuth(%v) = (%v, %v) want (%v, %v)", test.auth, result, err, test.want, test.wantErr)
 		}
 	}

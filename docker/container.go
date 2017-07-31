@@ -18,7 +18,7 @@ const stopAction = `stop`
 const restartAction = `restart`
 const deleteAction = `delete`
 
-func listContainers(user *auth.User, appName *string) ([]types.Container, error) {
+func listContainers(user *auth.User, appName string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
 	options.Filters = filters.NewArgs()
@@ -108,7 +108,7 @@ func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID []by
 }
 
 func listContainersHandler(w http.ResponseWriter, user *auth.User) {
-	if containers, err := listContainers(user, nil); err != nil {
+	if containers, err := listContainers(user, ``); err != nil {
 		errorHandler(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{containers})

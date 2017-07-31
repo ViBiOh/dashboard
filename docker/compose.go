@@ -185,7 +185,7 @@ func deleteServices(appName []byte, services map[string]deployedService, user *a
 		if infos, err := inspectContainer(container.ID); err != nil {
 			log.Printf(`[%s] Error while inspecting service %s for %s: %v`, user.Username, service, appName, err)
 		} else if infos.State.Health != nil {
-			logs := make([]string, 0);
+			logs := make([]string, 0)
 			for _, log := range infos.State.Health.Log {
 				logs = append(logs, log.Output)
 			}
@@ -230,10 +230,10 @@ func inspectServices(services map[string]deployedService, user *auth.User) []*ty
 }
 
 func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, containers []*types.ContainerJSON) bool {
-	containersIdsWithHealthcheck := make([]*string, 0, len(containers))
+	containersIdsWithHealthcheck := make([]string, 0, len(containers))
 	for _, container := range containers {
 		if container.Config.Healthcheck != nil && len(container.Config.Healthcheck.Test) != 0 {
-			containersIdsWithHealthcheck = append(containersIdsWithHealthcheck, &container.ID)
+			containersIdsWithHealthcheck = append(containersIdsWithHealthcheck, container.ID)
 		}
 	}
 
@@ -349,7 +349,7 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 
 	log.Printf(`[%s] Deploying %s`, user.Username, appName)
 
-	oldContainers, err := listContainers(user, &appNameStr)
+	oldContainers, err := listContainers(user, appNameStr)
 	if err != nil {
 		composeFailed(w, user, appName, err)
 		return
