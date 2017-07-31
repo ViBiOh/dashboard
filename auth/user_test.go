@@ -3,7 +3,6 @@ package auth
 import (
 	"encoding/base64"
 	"fmt"
-	"reflect"
 	"testing"
 
 	"golang.org/x/crypto/bcrypt"
@@ -86,14 +85,14 @@ func TestReadConfiguration(t *testing.T) {
 }
 
 func TestIsAuthenticated(t *testing.T) {
-	users = make(map[string]User)
+	users = make(map[string]*User)
 
 	password, _ := bcrypt.GenerateFromPassword([]byte(`password`), 12)
 	admin := User{`admin`, password, `admin`}
-	users[`admin`] = admin
+	users[`admin`] = &admin
 
 	guest, _ := bcrypt.GenerateFromPassword([]byte(`guest`), 12)
-	users[`guest`] = User{`guest`, guest, ``}
+	users[`guest`] = &User{`guest`, guest, ``}
 
 	var tests = []struct {
 		username string
@@ -140,7 +139,7 @@ func TestIsAuthenticated(t *testing.T) {
 			failed = true
 		} else if err != nil && err.Error() != test.wantErr.Error() {
 			failed = true
-		} else if !reflect.DeepEqual(result, test.want) {
+		} else if result != test.want {
 			failed = true
 		}
 
@@ -151,11 +150,11 @@ func TestIsAuthenticated(t *testing.T) {
 }
 
 func TestIsAuthenticatedByAuth(t *testing.T) {
-	users = make(map[string]User)
+	users = make(map[string]*User)
 
 	password, _ := bcrypt.GenerateFromPassword([]byte(`password`), 12)
 	admin := User{`admin`, password, `admin`}
-	users[`admin`] = admin
+	users[`admin`] = &admin
 
 	var tests = []struct {
 		auth    string
@@ -202,7 +201,7 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 			failed = true
 		} else if err != nil && err.Error() != test.wantErr.Error() {
 			failed = true
-		} else if !reflect.DeepEqual(result, test.want) {
+		} else if result != test.want {
 			failed = true
 		}
 
