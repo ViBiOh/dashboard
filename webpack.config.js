@@ -34,7 +34,8 @@ const config = {
       {
         test: /\.less$/,
         use: ExtractTextPlugin.extract({
-          use: 'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!less-loader',
+          use:
+            'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]!less-loader',
         }),
       },
     ],
@@ -55,6 +56,14 @@ const config = {
   output: {
     filename: 'app.js',
     path: path.join(__dirname, 'dist/static'),
+  },
+
+  devServer: {
+    setup: app => {
+      app.get('/env', (req, res) => {
+        res.json({ API_URL: process.env.API_URL, WS_URL: process.env.WS_URL });
+      });
+    },
   },
 };
 

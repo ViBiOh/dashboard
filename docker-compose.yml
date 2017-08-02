@@ -5,7 +5,7 @@ services:
     image: vibioh/dashboard-api
     command:
     - -ws
-    - ^dashboard(?:-api)?\.(?:vibioh|l3miage)\.fr
+    - ^dashboard(?:-api)?\.vibioh\.fr
     - -auth
     - /users
     environment:
@@ -33,12 +33,17 @@ services:
     image: vibioh/dashboard-front
     command:
     - -spa
+    - -env
+    - API_URL,WS_URL
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-api.l3miage.fr;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr;"
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr, dashboard.l3miage.fr'
       traefik.port: '1080'
+    environment:
+      API_URL: 'https://dashboard-api.vibioh.fr'
+      WS_URL: 'wss://dashboard-api.vibioh.fr/ws'
     logging:
       driver: json-file
       options:

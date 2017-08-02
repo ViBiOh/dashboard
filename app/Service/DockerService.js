@@ -1,6 +1,6 @@
 import funtch, { errorHandler } from 'funtch';
 import btoa from '../Tools/btoa';
-import { API, WS } from '../Constants';
+import Constants from '../Constants';
 import localStorageService from './LocalStorageService';
 
 /**
@@ -66,7 +66,7 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${API}auth`, hash).get().then((result) => {
+    return auth(`${Constants.getApiUrl()}/auth`, hash).get().then((result) => {
       localStorageService.setItem(authStorage, hash);
       return result;
     });
@@ -86,7 +86,7 @@ export default class DockerService {
    * @return {Promise} Information of daemon
    */
   static info() {
-    return auth(`${API}info`).get();
+    return auth(`${Constants.getApiUrl()}/info`).get();
   }
 
   /**
@@ -94,7 +94,7 @@ export default class DockerService {
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static containers() {
-    return auth(`${API}containers`).get().then(({ results }) => results);
+    return auth(`${Constants.getApiUrl()}/containers`).get().then(({ results }) => results);
   }
 
   /**
@@ -103,7 +103,7 @@ export default class DockerService {
    * @return {Promise}            Information wrapped in a Promise
    */
   static containerInfos(containerId) {
-    return auth(`${API}containers/${containerId}/`).get();
+    return auth(`${Constants.getApiUrl()}/containers/${containerId}/`).get();
   }
 
   /**
@@ -113,7 +113,7 @@ export default class DockerService {
    * @return {Promise}            Array of created containers wrapped in a Promise
    */
   static containerCreate(name, composeFile) {
-    return auth(`${API}containers/${name}/`).post(composeFile);
+    return auth(`${Constants.getApiUrl()}/containers/${name}/`).post(composeFile);
   }
 
   /**
@@ -122,7 +122,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static containerStart(containerId) {
-    return auth(`${API}containers/${containerId}/start`).post();
+    return auth(`${Constants.getApiUrl()}/containers/${containerId}/start`).post();
   }
 
   /**
@@ -131,7 +131,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static containerStop(containerId) {
-    return auth(`${API}containers/${containerId}/stop`).post();
+    return auth(`${Constants.getApiUrl()}/containers/${containerId}/stop`).post();
   }
 
   /**
@@ -140,7 +140,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static containerRestart(containerId) {
-    return auth(`${API}containers/${containerId}/restart`).post();
+    return auth(`${Constants.getApiUrl()}/containers/${containerId}/restart`).post();
   }
 
   /**
@@ -149,7 +149,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static containerDelete(containerId) {
-    return auth(`${API}containers/${containerId}/`).delete();
+    return auth(`${Constants.getApiUrl()}/containers/${containerId}/`).delete();
   }
 
   /**
@@ -158,7 +158,7 @@ export default class DockerService {
    * @return {Websocket}          Opened and authentified Websocket
    */
   static streamBus(onMessage) {
-    const socket = new WebSocket(`${WS}bus`);
+    const socket = new WebSocket(`${Constants.getWsUrl()}/bus`);
 
     socket.onmessage = event => onMessage(event.data);
     socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
@@ -171,6 +171,6 @@ export default class DockerService {
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static services() {
-    return auth(`${API}services`).get().then(({ results }) => results);
+    return auth(`${Constants.getApiUrl()}/services`).get().then(({ results }) => results);
   }
 }

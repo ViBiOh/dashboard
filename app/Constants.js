@@ -1,15 +1,38 @@
-const IS_SECURE = process.env.API_SECURE || /^https/.test(document.location.origin);
-const API_HOST =
-  process.env.API_HOST || document.location.host.replace(/dashboard/i, 'dashboard-api');
+import funtch from 'funtch';
+
+let context = {};
+
+/**
+ * Initialize context from remote endpoint
+ * @return {Promise<Object>} Context
+ */
+function init() {
+  return new Promise((resolve) => {
+    funtch.get('/env').then((env) => {
+      context = env;
+      resolve(context);
+    });
+  });
+}
+
+/**
+ * Return API endpoint URL
+ * @return {String} API endpoint URL
+ */
+function getApiUrl() {
+  return context.API_URL;
+}
+
+/**
+ * Return WebSocket endpoint URL
+ * @return {String} WebSocket endpoint URL
+ */
+function getWsUrl() {
+  return context.WS_URL;
+}
 
 /**
  * URL for API requests
  * @type {String}
  */
-export const API = `http${IS_SECURE ? 's' : ''}://${API_HOST}/`;
-
-/**
- * URL for WebSocket requests
- * @type {String}
- */
-export const WS = `ws${IS_SECURE ? 's' : ''}://${API_HOST}/ws/`;
+export default { init, getApiUrl, getWsUrl };
