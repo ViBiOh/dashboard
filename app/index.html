@@ -37,6 +37,12 @@
     <div id="root"></div>
   </body>
   <script async="true" src="static/app.js?v={{version}}"></script>
+  <script
+          async="true"
+          src="https://cdn.ravenjs.com/3.17.0/raven.min.js"
+          crossorigin="anonymous"
+          onload="Raven.config('https://5ee66ccb9e844b0fa322bbe87c0c02f6@sentry.io/198607').install()"
+  ></script>
 </html>
 <link rel="stylesheet" href="static/app.css?v={{version}}">
 <script>
