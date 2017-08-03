@@ -79,13 +79,15 @@ const ContainerInfo = ({ container }) => {
         {container.HostConfig.RestartPolicy &&
           <span key="restart" className={style.item}>
             Restart | {container.HostConfig.RestartPolicy.Name}
-            {container.HostConfig.RestartPolicy.MaximumRetryCount ? ':' + container.HostConfig.RestartPolicy.MaximumRetryCount : ''}
+            {container.HostConfig.RestartPolicy.MaximumRetryCount
+              ? `:${container.HostConfig.RestartPolicy.MaximumRetryCount}`
+              : ''}
           </span>}
         {container.HostConfig.ReadonlyRootfs &&
           <span key="read-only" className={style.item}>
             read-only
           </span>}
-        {container.HostConfig.CpuShares &&
+        {container.HostConfig.CpuShares > 0 &&
           <span key="cpu" className={style.item}>
             CPU Shares | {container.HostConfig.CpuShares}
           </span>}

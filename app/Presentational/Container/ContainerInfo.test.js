@@ -111,6 +111,25 @@ test('should render Restart Policy if present', (t) => {
   );
 });
 
+test('should render Restart Policy count if not present', (t) => {
+  const wrapper = shallow(
+    <ContainerInfo
+      container={{
+        ...container,
+        HostConfig: {
+          ...container.HostConfig,
+          RestartPolicy: {
+            Name: 'no',
+            MaximumRetryCount: 0,
+          },
+        },
+      }}
+    />,
+  );
+
+  t.is(wrapper.find('span').filterWhere(n => /^Restart\s*\|\s*no+$/.test(n.text())).length, 2);
+});
+
 test('should not render read-only if empty', (t) => {
   const wrapper = shallow(<ContainerInfo container={container} />);
   t.is(wrapper.find('span').filterWhere(n => /^read-only$/.test(n.text())).length, 0);
