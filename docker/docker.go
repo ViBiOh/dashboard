@@ -2,7 +2,6 @@ package docker
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"regexp"
 
@@ -17,17 +16,18 @@ const version = `DOCKER_VERSION`
 var hostCheck *regexp.Regexp
 var docker *client.Client
 
-// Init docker
-func Init(websocketOrigin string) {
+// Init docker client
+func Init(websocketOrigin string) error {
 	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
 
 	if err != nil {
-		log.Fatal(err)
-	} else {
-		docker = client
+		return fmt.Errorf(`Error while creating docker client: %v`, err)
 	}
 
+	docker = client
 	hostCheck = regexp.MustCompile(websocketOrigin)
+
+	return nil
 }
 
 func labelFilters(filtersArgs *filters.Args, user *auth.User, appName string) error {

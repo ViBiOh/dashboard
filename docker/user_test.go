@@ -3,8 +3,9 @@ package docker
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/ViBiOh/dashboard/auth"
 	"testing"
+
+	"github.com/ViBiOh/dashboard/auth"
 )
 
 func TestIsAdmin(t *testing.T) {

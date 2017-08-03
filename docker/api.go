@@ -57,12 +57,12 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func badRequest(w http.ResponseWriter, err error) {
-	log.Print(err)
+	log.Printf(`HTTP/400 %v`, err)
 	http.Error(w, err.Error(), http.StatusBadRequest)
 }
 
 func unauthorized(w http.ResponseWriter, err error) {
-	log.Print(err)
+	log.Printf(`HTTP/401 %v`, err)
 	http.Error(w, err.Error(), http.StatusUnauthorized)
 }
 
@@ -71,7 +71,7 @@ func forbidden(w http.ResponseWriter) {
 }
 
 func errorHandler(w http.ResponseWriter, err error) {
-	log.Print(err)
+	log.Printf(`HTTP/500 %v`, err)
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 
