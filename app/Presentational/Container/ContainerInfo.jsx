@@ -76,10 +76,10 @@ const ContainerInfo = ({ container }) => {
       </span>
       <h3 key="hostConfig">HostConfig</h3>
       <span key="hostLabels" className={style.labels}>
-        {container.HostConfig.RestartPolicy.Name !== 'no' &&
+        {container.HostConfig.RestartPolicy &&
           <span key="restart" className={style.item}>
-            Restart | {container.HostConfig.RestartPolicy.Name}:
-            {container.HostConfig.RestartPolicy.MaximumRetryCount}
+            Restart | {container.HostConfig.RestartPolicy.Name}
+            {container.HostConfig.RestartPolicy.MaximumRetryCount ? ':' + container.HostConfig.RestartPolicy.MaximumRetryCount : ''}
           </span>}
         {container.HostConfig.ReadonlyRootfs &&
           <span key="read-only" className={style.item}>
