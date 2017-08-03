@@ -49,7 +49,7 @@ func TestInit(t *testing.T) {
 		want int
 	}{
 		{
-			`../test/users_test`,
+			`users_test`,
 			2,
 		},
 	}
@@ -72,7 +72,7 @@ func TestReadConfiguration(t *testing.T) {
 			0,
 		},
 		{
-			`../test/users_test`,
+			`users_test`,
 			2,
 		},
 	}

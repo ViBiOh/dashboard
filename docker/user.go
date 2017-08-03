@@ -8,14 +8,26 @@ const adminUser = `admin`
 const multiAppUser = `multi`
 
 func isAdmin(user *auth.User) bool {
+	if user == nil {
+		return false
+	}
+
 	return user.HasProfile(adminUser)
 }
 
 func isMultiApp(user *auth.User) bool {
+	if user == nil {
+		return false
+	}
+
 	return user.HasProfile(adminUser) || user.HasProfile(multiAppUser)
 }
 
 func isAllowed(user *auth.User, containerID string) (bool, error) {
+	if user == nil {
+		return false, nil
+	}
+
 	if !isAdmin(user) {
 		container, err := inspectContainer(string(containerID))
 		if err != nil {
