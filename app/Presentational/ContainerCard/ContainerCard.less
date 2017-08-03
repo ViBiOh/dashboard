@@ -38,15 +38,27 @@
   background-color: @danger;
 }
 
+.ellipsis {
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .column {
   display: inline-flex;
   flex: 1;
   flex-flow: column nowrap;
   min-width: 0;
+  width: 10rem;
 }
 
 .column > * {
   .small-padding;
+}
+
+.image {
+  .ellipsis;
 }
 
 .owner {

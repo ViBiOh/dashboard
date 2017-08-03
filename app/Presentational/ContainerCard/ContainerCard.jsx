@@ -13,13 +13,13 @@ const GREEN_STATUS = /up/i;
  * @return {React.Component} Card with summarized details of container.
  */
 const ContainerCard = ({ container, onClick }) =>
-  (<Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
+  <Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
     <div
       className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`}
       title={container.Status}
     />
     <span className={style.column}>
-      <em>
+      <em className={style.image}>
         {container.Image}
       </em>
       <strong>
@@ -31,15 +31,15 @@ const ContainerCard = ({ container, onClick }) =>
       {container.Labels && container.Labels.owner
         ? <div className={style.owner}>
             by {container.Labels.owner}
-        </div>
+          </div>
         : null}
       {container.Ports.some(port => port.IP)
         ? <div className={style.external} title="Has external IP">
-          <FaCloud />
-        </div>
+            <FaCloud />
+          </div>
         : null}
     </span>
-  </Button>);
+  </Button>;
 
 ContainerCard.displayName = 'ContainerCard';
 
