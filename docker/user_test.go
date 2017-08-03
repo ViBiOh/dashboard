@@ -33,7 +33,7 @@ func TestIsAdmin(t *testing.T) {
 		user, _ := auth.IsAuthenticatedByAuth(test.credentials)
 
 		if result := isAdmin(user); result != test.want {
-			t.Errorf("isAdmin(%v) = %v, want %v", user, result, test.want)
+			t.Errorf(`isAdmin(%v) = %v, want %v`, user, result, test.want)
 		}
 	}
 }

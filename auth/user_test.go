@@ -38,7 +38,7 @@ func TestHasProfile(t *testing.T) {
 
 	for _, test := range tests {
 		if result := test.instance.HasProfile(test.profile); result != test.want {
-			t.Errorf("%v.HasProfile(%v) = %v, want %v", test.profile, test.instance, result, test.want)
+			t.Errorf(`%v.HasProfile(%v) = %v, want %v`, test.profile, test.instance, result, test.want)
 		}
 	}
 }
@@ -57,7 +57,7 @@ func TestInit(t *testing.T) {
 	for _, test := range tests {
 		Init(test.path)
 		if len(users) != test.want {
-			t.Errorf("Init(%v) = %v, want %v", test.path, users, test.want)
+			t.Errorf(`Init(%v) = %v, want %v`, test.path, users, test.want)
 		}
 	}
 }
@@ -79,7 +79,7 @@ func TestReadConfiguration(t *testing.T) {
 
 	for _, test := range tests {
 		if result := readConfiguration(test.path); len(result) != test.want {
-			t.Errorf("readConfiguration(%v) = %v, want %v", test.path, result, test.want)
+			t.Errorf(`readConfiguration(%v) = %v, want %v`, test.path, result, test.want)
 		}
 	}
 }
@@ -144,7 +144,7 @@ func TestIsAuthenticated(t *testing.T) {
 		}
 
 		if failed {
-			t.Errorf("isAuthenticated(%v, %v) = (%v, %v) want (%v, %v)", test.username, test.password, result, err, test.want, test.wantErr)
+			t.Errorf(`isAuthenticated(%v, %v) = (%v, %v) want (%v, %v)`, test.username, test.password, result, err, test.want, test.wantErr)
 		}
 	}
 }
@@ -206,7 +206,7 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 		}
 
 		if failed {
-			t.Errorf("IsAuthenticatedByAuth(%v) = (%v, %v) want (%v, %v)", test.auth, result, err, test.want, test.wantErr)
+			t.Errorf(`IsAuthenticatedByAuth(%v) = (%v, %v) want (%v, %v)`, test.auth, result, err, test.want, test.wantErr)
 		}
 	}
 }

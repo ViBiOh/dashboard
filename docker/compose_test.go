@@ -21,7 +21,7 @@ func TestGetFinalName(t *testing.T) {
 
 	for _, test := range tests {
 		if result := getFinalName(test.serviceFullName); result != test.want {
-			t.Errorf("getFinalName(%v) = %v, want %v", test.serviceFullName, result, test.want)
+			t.Errorf(`getFinalName(%v) = %v, want %v`, test.serviceFullName, result, test.want)
 		}
 	}
 }
