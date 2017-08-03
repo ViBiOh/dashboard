@@ -9,11 +9,7 @@ const container = {
     Labels: {},
     Env: [],
   },
-  HostConfig: {
-    RestartPolicy: {
-      Name: 'no',
-    },
-  },
+  HostConfig: {},
   NetworkSettings: {},
   Mounts: [],
   State: {},
