@@ -76,7 +76,7 @@ const ContainerInfo = ({ container }) => {
       </span>
       <h3 key="hostConfig">HostConfig</h3>
       <span key="hostLabels" className={style.labels}>
-        {container.HostConfig.RestartPolicy &&
+        {container.HostConfig.RestartPolicy.Name !== 'no &&
           <span key="restart" className={style.item}>
             Restart | {container.HostConfig.RestartPolicy.Name}:
             {container.HostConfig.RestartPolicy.MaximumRetryCount}
