@@ -42,7 +42,10 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	accessToken, err := getAccessToken(r.URL.Query().Get(`code`))
 	if err != nil {
 		log.Printf(`Error while getting access token: %v`, err)
+		http.Redirect(w, r, `https://dashboarg.vibioh.fr/login`, http.StatusTemporaryRedirect)
+		return
 	}
 
 	log.Printf(`Access token is %s`, accessToken)
+	http.Redirect(w, r, `https://dashboarg.vibioh.fr`, http.StatusTemporaryRedirect)
 }
