@@ -10,15 +10,12 @@ import (
 	"github.com/docker/docker/client"
 )
 
-const host = `DOCKER_HOST`
-const version = `DOCKER_VERSION`
-
 var hostCheck *regexp.Regexp
 var docker *client.Client
 
 // Init docker client
 func Init(websocketOrigin string) error {
-	client, err := client.NewClient(os.Getenv(host), os.Getenv(version), nil, nil)
+	client, err := client.NewClient(os.Getenv(`DOCKER_HOST`), os.Getenv(`DOCKER_VERSION`), nil, nil)
 
 	if err != nil {
 		return fmt.Errorf(`Error while creating docker client: %v`, err)

@@ -11,6 +11,7 @@ services:
     environment:
       DOCKER_HOST: 'unix:///var/run/docker.sock'
       DOCKER_VERSION: '1.24'
+      OAUTH_STATE_SALT: 'A_SIMPLE_STRING_FOR_NOW'
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr, dashboard-api.l3miage.fr'
@@ -34,7 +35,7 @@ services:
     command:
     - -spa
     - -env
-    - API_URL,WS_URL
+    - API_URL,WS_URL,OAUTH_STATE_SALT
     - -csp
     - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr;"
     labels:
@@ -44,6 +45,7 @@ services:
     environment:
       API_URL: 'https://dashboard-api.vibioh.fr'
       WS_URL: 'wss://dashboard-api.vibioh.fr/ws'
+      OAUTH_STATE_SALT: 'A_SIMPLE_STRING_FOR_NOW'
     logging:
       driver: json-file
       options:
