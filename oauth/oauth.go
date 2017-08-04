@@ -4,8 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/ViBiOh/dashboard/fetch"
 )
 
 const accessTokenURL = `https://github.com/login/oauth/access_token`
