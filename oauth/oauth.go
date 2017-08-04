@@ -21,10 +21,5 @@ type Handler struct {
 }
 
 func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	body, err := fetch.ReadBody(r.Body)
-	if err != nil {
-		log.Printf(`Error while reading body: %v`, err)
-	}
-
-	log.Printf(`Code = %s`, body)
+	log.Printf(`Path = %s`, r.URL.Path)
 }
