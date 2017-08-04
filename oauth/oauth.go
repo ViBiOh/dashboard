@@ -9,7 +9,7 @@ import (
 	"github.com/ViBiOh/dashboard/fetch"
 )
 
-const accessTokenURL = `https://github.com/login/oauth/access_token`
+const accessTokenURL = `https://github.com/login/oauth/access_token?`
 
 var (
 	stateSalt    string
@@ -25,9 +25,10 @@ func Init() {
 }
 
 func getAccessToken(code string) ([]byte, error) {
-	result, err := fetch.Post(accessTokenURL + `?client_id=` + clientID + `&client_secret=` + clientSecret + `&code=` + code)
+	url := accessTokenURL + `client_id=` + clientID + `&client_secret=` + clientSecret + `&code=` + code
+	result, err := fetch.Post(url)
 	if err != nil {
-		return nil, fmt.Errorf(`Error while requesting access token: %v`, err)
+		return nil, fmt.Errorf(`Error while requesting access token %s: %v`, url, err)
 	}
 
 	return result, nil
