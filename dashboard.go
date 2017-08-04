@@ -24,7 +24,7 @@ const oauthPrefix = `/oauth`
 const websocketPrefix = `/ws/`
 
 var restHandler = http.StripPrefix(restPrefix, docker.Handler{})
-var oauthHandler = http.StripPrefix(restPrefix, oauth.Handler{})
+var oauthHandler = http.StripPrefix(oauthPrefix, oauth.Handler{})
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
