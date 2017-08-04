@@ -23,9 +23,18 @@ Role can be `admin`, `multi` or anything else.
 
 ### Running
 
-Docker's images are available, `vibioh/dashboard-front` et `vibioh/dashboard-api` and `docker-compose.yml` provided is almost configured, only tweak domain's name, mainly configured for be used with [traefik](https://traefik.io).
+Docker's images are available, `vibioh/dashboard-front` et `vibioh/dashboard-api` and `docker-compose.yml` provided is almost configured, only tweak domain's name, mainly configured for be used with [traefik](https://traefik.io), and secrets.
 
 By default, your origin domain name has to start with `dashboard` (e.g. dashboard.vibioh.fr) in order to allow websockets to work. You can override it by setting `-ws` option to the API server.
+
+You have to define several environments variables :
+
+* `DOCKER_HOST` Docker Host connexion
+* `DOCKER_VERSION` Docker Version of API
+* `OAUTH_STATE` A random string for OAuth flow
+* `OAUTH_REDIRECT_URL` Redirect URL after OAuth hits API Server and response is processed
+* `GITHUB_OAUTH_CLIENT_ID` Client ID
+* `GITHUB_OAUTH_CLIENT_SECRET` Client Secret
 
 ## Another Docker Infrastructure Manager ?
 
@@ -66,7 +75,7 @@ It will compile both API server and password encrypter.
 API server uses `${DOCKER_HOST}` and `${DOCKER_VERSION}` to connect to Docker's daemon and have two more options on CLI :
 
 ```
-Usage of ./dashboard:
+Usage of dashboard:
   -auth string
       Path of authentification configuration file
   -ws string

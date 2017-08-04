@@ -1,7 +1,10 @@
 package oauth
 
 import (
+	"crypto/sha512"
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -11,6 +14,10 @@ import (
 )
 
 const accessTokenURL = `https://github.com/login/oauth/access_token?`
+
+type githubUser struct {
+	Login string `json:"login"`
+}
 
 var (
 	state       string
@@ -51,11 +58,17 @@ func oauthRedirectHandler(w http.ResponseWriter, r *http.Request) {
 
 	content, err := fetch.ReadBody(userResponse.Body)
 	if err != nil {
-		http.Error(w, fmt.Sprintf(`Error while reading user informations: %v`, err), http.StatusUnauthorized)
+		http.Error(w, fmt.Sprintf(`Error while reading user informations: %v`, err), http.StatusInternalServerError)
 		return
 	}
 
-	log.Printf(`Logged in as GitHub user: %s`, content)
+	user := githubUser{}
+	if err := json.Unmarshal(content, &user); err != nil {
+		http.Error(w, fmt.Sprintf(`Error while unmarshalling GitHub user informations: %v`, err), http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf(`Logged in as GitHub login %s with token %s`, user.Login, fmt.Sprintf(`%x`, sha512.Sum512([]byte(token.AccessToken))))
 	http.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
 }
 
