@@ -14,6 +14,7 @@ services:
       GITHUB_OAUTH_STATE_SALT: 'A_SIMPLE_STRING_FOR_NOW'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
       GITHUB_OAUTH_CLIENT_SECRET: '${GITHUB_OAUTH_CLIENT_SECRET}'
+      OAUTH_REDIRECT_URL: '${OAUTH_REDIRECT_URL}'
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr, dashboard-api.l3miage.fr'
