@@ -19,5 +19,5 @@ type Handler struct {
 }
 
 func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Printf(`Path = %s`, r.URL.Path)
+	log.Printf(`Path = %s`, r.URL.RawQuery)
 }
