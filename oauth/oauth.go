@@ -15,11 +15,13 @@ var (
 	stateSalt    string
 	clientID     string
 	clientSecret string
+	redirectURL  string
 )
 
 // Init retrieve env variables
 func Init() {
 	stateSalt = os.Getenv(`OAUTH_STATE_SALT`)
+	redirectURL = os.Getenv(`OAUTH_REDIRECT_URL`)
 	clientID = os.Getenv(`GITHUB_OAUTH_CLIENT_ID`)
 	stateSalt = os.Getenv(`GITHUB_OAUTH_CLIENT_SECRET`)
 }
@@ -42,10 +44,10 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	accessToken, err := getAccessToken(r.URL.Query().Get(`code`))
 	if err != nil {
 		log.Printf(`Error while getting access token: %v`, err)
-		http.Redirect(w, r, `https://dashboarg.vibioh.fr/login`, http.StatusTemporaryRedirect)
+		http.Redirect(w, r, OAUTH_REDIRECT_URL + `/login`, http.StatusTemporaryRedirect)
 		return
 	}
 
 	log.Printf(`Access token is %s`, accessToken)
-	http.Redirect(w, r, `https://dashboarg.vibioh.fr`, http.StatusTemporaryRedirect)
+	http.Redirect(w, r, OAUTH_REDIRECT_URL, http.StatusTemporaryRedirect)
 }
