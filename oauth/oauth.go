@@ -55,7 +55,7 @@ func oauthRedirectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf(`Logged in as GitHub user: %s`, content)
+	log.Printf(`Logged in as GitHub user: %s`, content)
 	http.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
 }
 
