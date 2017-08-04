@@ -46,16 +46,6 @@ func GetBody(url string) ([]byte, error) {
 	return doAndRead(request)
 }
 
-// Post execute POST for given URL and return body response
-func Post(url string) ([]byte, error) {
-	request, err := http.NewRequest(`POST`, url, nil)
-	if err != nil {
-		return nil, fmt.Errorf(`Error while creating request: %v`, err)
-	}
-
-	return doAndRead(request)
-}
-
 // PostJSONBody post given interface to URL with optional credential supplied
 func PostJSONBody(url string, body interface{}, user string, pass string) ([]byte, error) {
 	jsonBody, err := json.Marshal(body)
