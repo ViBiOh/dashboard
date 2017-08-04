@@ -91,6 +91,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	auth.Init(*authFile)
+	oauth.Init()
 	if err := docker.Init(*websocketOrigin); err != nil {
 		log.Printf(`Error while initializing docker: %v`, err)
 	}
