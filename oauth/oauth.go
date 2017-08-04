@@ -20,8 +20,8 @@ var (
 // Init retrieve env variables
 func Init() {
 	stateSalt = os.Getenv(`OAUTH_STATE_SALT`)
-	clientID = os.Getenv(`OAUTH_CLIENT_ID`)
-	stateSalt = os.Getenv(`OAUTH_CLIENT_SECRET`)
+	clientID = os.Getenv(`GITHUB_OAUTH_CLIENT_ID`)
+	stateSalt = os.Getenv(`GITHUB_OAUTH_CLIENT_SECRET`)
 }
 
 func getAccessToken(code string) ([]byte, error) {
