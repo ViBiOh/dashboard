@@ -37,8 +37,13 @@ func ReadBody(body io.ReadCloser) ([]byte, error) {
 }
 
 // GetBody return body of given URL or error if something goes wrong
-func GetBody(url string) ([]byte, error) {
+func GetBody(url string, authorization string) ([]byte, error) {
 	request, err := http.NewRequest(`GET`, url, nil)
+
+	if authorization != `` {
+		request.Header.Add(`Authorization`, authorization)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf(`Error while creating request: %v`, err)
 	}

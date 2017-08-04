@@ -89,3 +89,10 @@ func IsAuthenticatedByAuth(authContent string) (*User, error) {
 
 	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:])
 }
+
+// IsAllowed username for using apps
+func IsAllowed(username string) bool {
+	_, ok := users[username]
+
+	return ok
+}

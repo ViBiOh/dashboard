@@ -31,8 +31,7 @@ You have to define several environments variables :
 
 * `DOCKER_HOST` Docker Host connexion
 * `DOCKER_VERSION` Docker Version of API
-* `OAUTH_STATE` A random string for OAuth flow
-* `OAUTH_REDIRECT_URL` Redirect URL after OAuth hits API Server and response is processed
+* `GITHUB_OAUTH_STATE` A random string for OAuth flow
 * `GITHUB_OAUTH_CLIENT_ID` Client ID
 * `GITHUB_OAUTH_CLIENT_SECRET` Client Secret
 
