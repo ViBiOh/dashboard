@@ -32,3 +32,19 @@ func TestBadRequest(t *testing.T) {
 		}
 	}
 }
+
+func TestForbidden(t *testing.T) {
+	var tests = []struct {
+	}{
+		{},
+	}
+
+	for range tests {
+		writer := httptest.NewRecorder()
+		forbidden(writer)
+
+		if result := writer.Result().StatusCode; result != http.StatusForbidden {
+			t.Errorf(`forbidden() = %v, want %v`, result, http.StatusForbidden)
+		}
+	}
+}
