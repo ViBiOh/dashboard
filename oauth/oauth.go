@@ -46,6 +46,11 @@ func handleGracefulClose(server *http.Server) {
 }
 
 func oauthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add(`Access-Control-Allow-Origin`, `*`)
+	w.Header().Add(`Access-Control-Allow-Headers`, `Content-Type`)
+	w.Header().Add(`Access-Control-Allow-Methods`, `GET`)
+	w.Header().Add(`X-Content-Type-Options`, `nosniff`)
+
 	if strings.HasPrefix(r.URL.Path, githubPrefix) {
 		githubHandler.ServeHTTP(w, r)
 	}
