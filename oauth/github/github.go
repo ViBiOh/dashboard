@@ -69,6 +69,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if token, err := getAccessToken(r.FormValue(`state`), r.FormValue(`code`)); err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 		} else {
+			log.Printf(`Token: %s`, token.AccessToken)
 			w.Write([]byte(token.AccessToken))
 		}
 	}
