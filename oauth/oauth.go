@@ -1,4 +1,4 @@
-package oauth
+package main
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/ViBiOh/alcotest/alcotest"
-	github "github.com/ViBiOh/dashboard/oauth/github"
+	"github.com/ViBiOh/dashboard/oauth/github"
 )
 
 const githubPrefix = `/github`

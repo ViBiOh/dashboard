@@ -1,4 +1,4 @@
-package oauth
+package github
 
 import (
 	"encoding/json"
