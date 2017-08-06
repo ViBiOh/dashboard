@@ -13,6 +13,7 @@ import (
 )
 
 const basicPrefix = `Basic `
+const githubPrefix = `GitHub `
 
 var commaByte = []byte(`,`)
 
@@ -69,20 +70,15 @@ func isAuthenticated(username string, password string) (*User, error) {
 	return nil, fmt.Errorf(`[%s] Invalid credentials`, username)
 }
 
-// IsAuthenticatedByAuth check if Autorization Header matches a User
-func IsAuthenticatedByAuth(authContent string) (*User, error) {
-	if !strings.HasPrefix(authContent, basicPrefix) {
-		return nil, fmt.Errorf(`Unable to read authentication type`)
-	}
-
-	data, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(authContent, basicPrefix))
+func isAuthenticatedByBasicAuth(basicContent string) (*User, error) {
+	data, err := base64.StdEncoding.DecodeString(basicContent)
 	if err != nil {
 		return nil, fmt.Errorf(`Unable to read basic authentication`)
 	}
 
 	dataStr := string(data)
 
-	sepIndex := strings.IndexByte(dataStr, ':')
+	sepIndex := strings.Index(dataStr, `:`)
 	if sepIndex < 0 {
 		return nil, fmt.Errorf(`Unable to read basic authentication`)
 	}
@@ -90,7 +86,16 @@ func IsAuthenticatedByAuth(authContent string) (*User, error) {
 	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:])
 }
 
-// IsAllowed username for using apps
+// IsAuthenticatedByAuth check if Autorization Header matches a User
+func IsAuthenticatedByAuth(authContent string) (*User, error) {
+	if strings.HasPrefix(authContent, basicPrefix) {
+		return isAuthenticatedByBasicAuth(strings.TrimPrefix(authContent, basicPrefix))
+	}
+
+	return nil, fmt.Errorf(`Unable to read authentication type`)
+}
+
+// IsAllowed username for using app
 func IsAllowed(username string) bool {
 	_, ok := users[username]
 

@@ -44,6 +44,8 @@ func getAccessToken(requestState string, requestCode string) (string, error) {
 		return ``, fmt.Errorf(`Invalid code provided for oauth`)
 	}
 
+	log.Printf(`Token: %v`, token)
+
 	return token.AccessToken, nil
 }
 
@@ -70,14 +72,12 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if token, err := getAccessToken(r.FormValue(`state`), r.FormValue(`code`)); err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 		} else {
-			log.Printf(`Token: %s`, token)
 			w.Write([]byte(token))
 		}
 	} else if r.URL.Path == `/user` {
 		if username, err := getUsername(r.Header.Get(`Authorization`)); err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 		} else {
-			log.Printf(`Username: %s`, username)
 			w.Write([]byte(username))
 		}
 	}
