@@ -9,7 +9,6 @@ doc/
 package-lock.json
 
 # Go binary
-dashboard
-bcrypt_pass
+bin/
 users
 coverage.txt

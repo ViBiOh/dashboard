@@ -15,23 +15,18 @@ import (
 	"github.com/ViBiOh/alcotest/alcotest"
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/docker"
-	"github.com/ViBiOh/dashboard/oauth"
 )
 
 const port = `1080`
 const restPrefix = `/`
-const oauthPrefix = `/oauth`
 const websocketPrefix = `/ws/`
 
 var restHandler = http.StripPrefix(restPrefix, docker.Handler{})
-var oauthHandler = http.StripPrefix(oauthPrefix, oauth.Handler{})
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
 		websocketHandler.ServeHTTP(w, r)
-	} else if strings.HasPrefix(r.URL.Path, oauthPrefix) {
-		oauthHandler.ServeHTTP(w, r)
 	} else if strings.HasPrefix(r.URL.Path, restPrefix) {
 		restHandler.ServeHTTP(w, r)
 	} else {
@@ -91,7 +86,6 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	auth.Init(*authFile)
-	oauth.Init()
 	if err := docker.Init(*websocketOrigin); err != nil {
 		log.Printf(`Error while initializing docker: %v`, err)
 	}

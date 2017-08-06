@@ -11,9 +11,6 @@ services:
     environment:
       DOCKER_HOST: 'unix:///var/run/docker.sock'
       DOCKER_VERSION: '1.24'
-      GITHUB_OAUTH_STATE: 'A_SIMPLE_STRING_FOR_NOW'
-      GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
-      GITHUB_OAUTH_CLIENT_SECRET: '${GITHUB_OAUTH_CLIENT_SECRET}'
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr, dashboard-api.l3miage.fr'
@@ -21,6 +18,27 @@ services:
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     - /home/vibioh/code/src/github.com/ViBiOh/dashboard/users:/users:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: '50m'
+    restart: on-failure:5
+    read_only: true
+    cpu_shares: 128
+    mem_limit: 33554432
+    security_opt:
+    - no-new-privileges
+
+  api:
+    image: vibioh/dashboard-auth
+    environment:
+      GITHUB_OAUTH_STATE: 'A_SIMPLE_STRING_FOR_NOW'
+      GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
+      GITHUB_OAUTH_CLIENT_SECRET: '${GITHUB_OAUTH_CLIENT_SECRET}'
+    labels:
+      traefik.frontend.passHostHeader: 'true'
+      traefik.frontend.rule: 'Host: dashboard-oauth.vibioh.fr'
+      traefik.port: '1080'
     logging:
       driver: json-file
       options:
@@ -47,6 +65,8 @@ services:
     environment:
       API_URL: 'https://dashboard-api.vibioh.fr'
       WS_URL: 'wss://dashboard-api.vibioh.fr/ws'
+      OAUTH_URL: 'https://dashboard-auth.vibioh.fr'
+      GITHUB_OAUTH_REDIRECT_URL: 'https://dashboard.vibioh.fr/oauth'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
       GITHUB_OAUTH_STATE: 'A_SIMPLE_STRING_FOR_NOW'
     logging:

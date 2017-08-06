@@ -29,5 +29,6 @@ tst:
 	script/coverage
 
 build:
-	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo dashboard.go
-	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bcrypt_pass bcrypt/bcrypt.go
+	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard dashboard.go
+	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/bcrypt bcrypt/bcrypt.go
+	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/oauth oauth/oauth.go
