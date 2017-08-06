@@ -33,6 +33,32 @@ func TestBadRequest(t *testing.T) {
 	}
 }
 
+func TestUnauthorized(t *testing.T) {
+	var tests = []struct {
+		err  error
+		want string
+	}{
+		{
+			fmt.Errorf(`Unauthorized`),
+			`Unauthorized
+`,
+		},
+	}
+
+	for _, test := range tests {
+		writer := httptest.NewRecorder()
+		unauthorized(writer, test.err)
+
+		if result := writer.Result().StatusCode; result != http.StatusUnauthorized {
+			t.Errorf(`badRequest(%v) = %v, want %v`, test.err, result, http.StatusUnauthorized)
+		}
+
+		if result, _ := readBody(writer.Result().Body); string(result) != string(test.want) {
+			t.Errorf(`unauthorized(%v) = %v, want %v`, test.err, string(result), string(test.want))
+		}
+	}
+}
+
 func TestForbidden(t *testing.T) {
 	var tests = []struct {
 	}{
