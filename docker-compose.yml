@@ -29,7 +29,7 @@ services:
     security_opt:
     - no-new-privileges
 
-  api:
+  oauth:
     image: vibioh/dashboard-auth
     environment:
       GITHUB_OAUTH_STATE: 'A_SIMPLE_STRING_FOR_NOW'
