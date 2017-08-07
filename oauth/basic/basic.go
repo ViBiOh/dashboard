@@ -29,7 +29,9 @@ var (
 
 // Init auth
 func Init() {
-	LoadAuthFile(*authFile)
+	if *authFile != `` {
+		LoadAuthFile(*authFile)
+	}
 }
 
 // LoadAuthFile loads given file into users map
