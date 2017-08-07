@@ -19,7 +19,6 @@ services:
       traefik.port: '1080'
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
-    - /home/vibioh/code/src/github.com/ViBiOh/dashboard/users:/users:ro
     links:
     - auth
     logging:
@@ -46,6 +45,8 @@ services:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-oauth.vibioh.fr'
       traefik.port: '1080'
+    volumes:
+    - /home/vibioh/code/src/github.com/ViBiOh/dashboard/users:/users:ro
     logging:
       driver: json-file
       options:
