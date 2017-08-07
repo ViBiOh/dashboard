@@ -6,10 +6,10 @@ services:
     command:
     - -ws
     - ^dashboard(?:-api)?\.vibioh\.fr
-    - -auth
-    - /users
-    - -oauthUrl
-    - http://oauth
+    - -authUrl
+    - http://auth
+    - -users
+    - vibioh:admin|lili1725:multi
     environment:
       DOCKER_HOST: 'unix:///var/run/docker.sock'
       DOCKER_VERSION: '1.24'
@@ -33,8 +33,11 @@ services:
     security_opt:
     - no-new-privileges
 
-  oauth:
+  auth:
     image: vibioh/dashboard-auth
+    command:
+    - -authFile
+    - /users
     environment:
       GITHUB_OAUTH_STATE: 'A_SIMPLE_STRING_FOR_NOW'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'

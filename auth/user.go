@@ -1,17 +1,11 @@
 package auth
 
 import (
-	"bufio"
-	"bytes"
-	"encoding/base64"
 	"flag"
 	"fmt"
-	"log"
-	"os"
 	"strings"
 
 	"github.com/ViBiOh/dashboard/fetch"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const basicPrefix = `Basic `
@@ -20,7 +14,6 @@ const githubPrefix = `GitHub `
 // User of the app
 type User struct {
 	Username string
-	password []byte
 	profiles string
 }
 
@@ -32,70 +25,48 @@ func (user *User) HasProfile(profile string) bool {
 var users map[string]*User
 
 var (
-	authFile = flag.String(`auth`, ``, `Path of authentification file`)
-	oauthURL = flag.String(`oauthUrl`, ``, `URL of oauth service`)
+	authURL       = flag.String(`authUrl`, ``, `URL of auth service`)
+	usersProfiles = flag.String(`users`, ``, `List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3`)
 )
 
 // Init auth
 func Init() {
-	LoadAuthFile(*authFile)
+	LoadUsersProfiles(*usersProfiles)
 }
 
-// LoadAuthFile loads given file into users map
-func LoadAuthFile(path string) {
-	users = make(map[string]*User)
+// LoadUsersProfiles load string chain of users and profiles
+func LoadUsersProfiles(usersAndProfiles string) {
+	users = make(map[string]*User, 0)
 
-	configFile, err := os.Open(path)
-	defer configFile.Close()
+	usersList := strings.Split(usersAndProfiles, `|`)
+	for _, user := range usersList {
+		sepIndex := strings.Index(user, `:`)
 
-	if err != nil {
-		log.Print(err)
+		username := user[:sepIndex]
+		users[strings.ToLower(username)] = &User{username, user[sepIndex+1:]}
 	}
-
-	scanner := bufio.NewScanner(configFile)
-	for scanner.Scan() {
-		parts := bytes.Split(scanner.Bytes(), []byte(`,`))
-		user := User{strings.ToLower(string(parts[0])), parts[1], string(parts[2])}
-
-		users[strings.ToLower(user.Username)] = &user
-	}
-}
-
-func isAuthenticated(username string, password string) (*User, error) {
-	user, ok := users[strings.ToLower(username)]
-
-	if ok {
-		if err := bcrypt.CompareHashAndPassword(user.password, []byte(password)); err == nil {
-			return user, nil
-		}
-	}
-
-	return nil, fmt.Errorf(`[%s] Invalid credentials`, username)
 }
 
 func isAuthenticatedByBasicAuth(authContent string) (*User, error) {
-	data, err := base64.StdEncoding.DecodeString(authContent)
+	username, err := fetch.GetBody(*authURL+`/basic/user`, authContent)
 	if err != nil {
-		return nil, fmt.Errorf(`Error while decoding basic authentication: %v`, err)
+		return nil, fmt.Errorf(`Error while reading file authentication: %v`, err)
 	}
 
-	dataStr := string(data)
-
-	sepIndex := strings.Index(dataStr, `:`)
-	if sepIndex < 0 {
-		return nil, fmt.Errorf(`Error while reading basic authentication`)
+	if user, ok := users[strings.ToLower(string(username))]; ok {
+		return user, nil
 	}
 
-	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:])
+	return nil, fmt.Errorf(`[%s] Not allowed to use app`, username)
 }
 
 func isAuthenticatedByGithubAuth(authContent string) (*User, error) {
-	username, err := fetch.GetBody(*oauthURL+`/github/user`, authContent)
+	username, err := fetch.GetBody(*authURL+`/github/user`, authContent)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while reading github authentication: %v`, err)
 	}
 
-	if user, ok := users[string(username)]; ok {
+	if user, ok := users[strings.ToLower(string(username))]; ok {
 		return user, nil
 	}
 

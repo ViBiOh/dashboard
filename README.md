@@ -12,7 +12,7 @@ Docker infrastructure management with security and simplicity as goals. It allow
 Write user's credentials file with one line per user, having the following format :
 
 ```
-[username],[bcrypt password],[role]
+[username],[bcrypt password]
 ```
 
 Role can be `admin`, `multi` or anything else.

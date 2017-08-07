@@ -65,17 +65,17 @@ type Handler struct {
 }
 
 func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == `/access_token` {
-		if token, err := getAccessToken(r.FormValue(`state`), r.FormValue(`code`)); err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-		} else {
-			w.Write([]byte(token))
-		}
-	} else if r.URL.Path == `/user` {
+	if r.URL.Path == `/user` {
 		if username, err := getUsername(r.Header.Get(`Authorization`)); err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 		} else {
 			w.Write([]byte(username))
+		}
+	} else if r.URL.Path == `/access_token` {
+		if token, err := getAccessToken(r.FormValue(`state`), r.FormValue(`code`)); err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+		} else {
+			w.Write([]byte(token))
 		}
 	}
 }

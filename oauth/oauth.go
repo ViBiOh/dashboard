@@ -13,15 +13,19 @@ import (
 	"time"
 
 	"github.com/ViBiOh/alcotest/alcotest"
+	"github.com/ViBiOh/dashboard/oauth/basic"
 	"github.com/ViBiOh/dashboard/oauth/github"
 )
 
+const basicPrefix = `/basic`
 const githubPrefix = `/github`
 
+var basicHandler = http.StripPrefix(basicPrefix, basic.Handler{})
 var githubHandler = http.StripPrefix(githubPrefix, github.Handler{})
 
 // Init configure OAuth provided
 func Init() {
+	basic.Init()
 	github.Init()
 }
 
@@ -53,6 +57,8 @@ func oauthHandler(w http.ResponseWriter, r *http.Request) {
 
 	if strings.HasPrefix(r.URL.Path, githubPrefix) {
 		githubHandler.ServeHTTP(w, r)
+	} else if strings.HasPrefix(r.URL.Path, basicPrefix) {
+		basicHandler.ServeHTTP(w, r)
 	}
 }
 
