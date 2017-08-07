@@ -3,7 +3,6 @@ package github
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -43,8 +42,6 @@ func getAccessToken(requestState string, requestCode string) (string, error) {
 	if err != nil {
 		return ``, fmt.Errorf(`Invalid code provided for oauth`)
 	}
-
-	log.Printf(`Token: %v`, token)
 
 	return token.AccessToken, nil
 }
