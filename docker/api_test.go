@@ -74,3 +74,25 @@ func TestForbidden(t *testing.T) {
 		}
 	}
 }
+
+func TestErrorHandler(t *testing.T) {
+	var tests = []struct {
+		err  error
+		want string
+	}{
+		{
+			fmt.Errorf(`Internal server error`),
+			`Internal server error
+`,
+		},
+	}
+
+	for _, test := range tests {
+		writer := httptest.NewRecorder()
+		errorHandler(writer, test.err)
+
+		if result := writer.Result().StatusCode; result != http.StatusInternalServerError {
+			t.Errorf(`errorHandler(%v) = %v, want %v`, test.err, result, http.StatusInternalServerError)
+		}
+	}
+}
