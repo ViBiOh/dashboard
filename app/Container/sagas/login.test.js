@@ -1,6 +1,5 @@
 import test from 'ava';
 import { call, put } from 'redux-saga/effects';
-import { push } from 'react-router-redux';
 import DockerService from '../../Service/DockerService';
 import actions from '../actions';
 import { loginSaga } from './';
@@ -21,7 +20,7 @@ test('should put success, info, open event stream and go home after API call', (
   t.deepEqual(iterator.next().value, [
     put(actions.loginSucceeded()),
     put(actions.info()),
-    put(push('/')),
+    put(actions.goHome()),
   ]);
 });
 

@@ -1,9 +1,10 @@
 import test from 'ava';
 import sinon from 'sinon';
-import funtch, { CONTENT_TYPE_HEADER, MEDIA_TYPE_JSON } from 'funtch';
+import funtch from 'funtch';
 import btoa from '../Tools/btoa';
+import { STORAGE_KEY_AUTH } from '../Constants';
 import localStorageService from './LocalStorageService';
-import DockerService, { authStorage, customError } from './DockerService';
+import DockerService from './DockerService';
 
 let data;
 let getItemSpy;
@@ -50,43 +51,6 @@ test.afterEach(() => {
   localStorageService.getItem.restore();
 });
 
-test.serial('should add toString to a rejected response', t =>
-  customError({
-    status: 400,
-    headers: new Map(),
-    text: () => Promise.resolve('error'),
-  })
-    .then(t.fail)
-    .catch((err) => {
-      t.true(typeof err.toString === 'function');
-      t.is(String(err), 'error');
-    }),
-);
-
-test.serial('should add toString to a rejected response if JSON', t =>
-  customError({
-    status: 400,
-    headers: new Map().set(CONTENT_TYPE_HEADER, MEDIA_TYPE_JSON),
-    json: () => Promise.resolve({ content: 'error' }),
-  })
-    .then(t.fail)
-    .catch((err) => {
-      t.true(typeof err.toString === 'function');
-      t.is(String(err), '{"content":"error"}');
-    }),
-);
-
-test.serial('should determine if already logged', (t) => {
-  t.true(DockerService.isLogged());
-});
-
-test.serial('should determine if not already logged', (t) => {
-  localStorageService.getItem.restore();
-  sinon.stub(localStorageService, 'getItem').callsFake(() => '');
-
-  t.false(DockerService.isLogged());
-});
-
 test.serial('should login with given username and password', t =>
   DockerService.login('admin', 'password').then((result) => {
     t.true(/auth$/.test(result.url));
@@ -99,16 +63,7 @@ test.serial('should store token in localStorage on login', (t) => {
 
   return DockerService.login('admin', 'password').then(() => {
     localStorageService.setItem.restore();
-    t.true(setItemSpy.calledWith(authStorage, `Basic ${btoa('admin:password')}`));
-  });
-});
-
-test.serial('should drop stored token from localStorage on logout', (t) => {
-  const removeItemSpy = sinon.spy(localStorageService, 'removeItem');
-
-  return DockerService.logout().then(() => {
-    localStorageService.removeItem.restore();
-    t.true(removeItemSpy.calledWith(authStorage));
+    t.true(setItemSpy.calledWith(STORAGE_KEY_AUTH, `Basic ${btoa('admin:password')}`));
   });
 });
 
@@ -122,7 +77,7 @@ test.serial('should throw error if not auth find', (t) => {
 
 test.serial('should list containers with auth', t =>
   DockerService.containers().then(() => {
-    t.true(getItemSpy.calledWith(authStorage));
+    t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
   }),
 );
 
@@ -140,7 +95,7 @@ test.serial('should return results when listing containers', (t) => {
 
 test.serial('should list services with auth', t =>
   DockerService.services().then(() => {
-    t.true(getItemSpy.calledWith(authStorage));
+    t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
   }),
 );
 
@@ -186,7 +141,7 @@ test.serial('should create container with given args', t =>
     DockerService[param.method].apply(null, param.args).then((result) => {
       t.is(result.method, param.httpMethod);
       t.true(param.url.test(result.url));
-      t.true(getItemSpy.calledWith(authStorage));
+      t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
     }),
   );
 });
@@ -203,7 +158,7 @@ test.serial('should send auth on streamBus opening', (t) => {
   DockerService.streamBus(onMessage).onopen();
 
   t.true(wsSend.calledWith('token'));
-  t.true(getItemSpy.calledWith(authStorage));
+  t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
 });
 
 test.serial('should call onMessage callback for streamBus', (t) => {

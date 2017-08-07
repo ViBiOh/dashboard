@@ -2,6 +2,7 @@ import actions from '../actions';
 
 const pendingActions = [
   actions.LOGIN,
+  actions.GET_ACCESS_TOKEN,
   actions.INFO,
   actions.FETCH_CONTAINERS,
   actions.FETCH_CONTAINER,

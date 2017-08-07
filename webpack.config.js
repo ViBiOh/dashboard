@@ -61,7 +61,14 @@ const config = {
   devServer: {
     setup: app => {
       app.get('/env', (req, res) => {
-        res.json({ API_URL: process.env.API_URL, WS_URL: process.env.WS_URL });
+        res.json({
+          API_URL: process.env.API_URL,
+          WS_URL: process.env.WS_URL,
+          OAUTH_URL: process.env.OAUTH_URL,
+          BASIC_AUTH: process.env.BASIC_AUTH,
+          GITHUB_OAUTH_CLIENT_ID: process.env.GITHUB_OAUTH_CLIENT_ID,
+          GITHUB_OAUTH_STATE: process.env.GITHUB_OAUTH_STATE,
+        });
       });
     },
   },

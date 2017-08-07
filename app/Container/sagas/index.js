@@ -2,7 +2,10 @@ import 'babel-polyfill';
 import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { push } from 'react-router-redux';
+import { STORAGE_KEY_AUTH } from '../../Constants';
 import DockerService from '../../Service/DockerService';
+import localStorageService from '../../Service/LocalStorageService';
+import OauthService from '../../Service/OauthService';
 import actions from '../actions';
 
 /**
@@ -32,15 +35,35 @@ export function* goHomeSaga() {
  * - Fetch containers on succeed
  * - Open events stream
  * - Redirect to home
- * @param {Object} action        Action dispatched
+ * @param {Object} action Action dispatched
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* loginSaga(action) {
   try {
     yield call(DockerService.login, action.username, action.password);
-    yield [put(actions.loginSucceeded()), put(actions.info()), put(push('/'))];
+    yield [put(actions.loginSucceeded()), put(actions.info()), put(actions.goHome())];
   } catch (e) {
     yield put(actions.loginFailed(String(e)));
+  }
+}
+
+/**
+ * Saga of GitHub Access Token retrieval
+ * @param {Object} action Action dispatched
+ * @yield {Function} Saga effects to sequence flow of work
+ */
+export function* getGithubAccesTokenSaga(action) {
+  try {
+    const token = yield call(OauthService.getGithubAccessToken, action.state, action.code);
+
+    yield [
+      call([localStorageService, localStorageService.setItem], STORAGE_KEY_AUTH, `GitHub ${token}`),
+      put(actions.getGithubAccessTokenSucceeded()),
+      put(actions.info()),
+      put(actions.goHome()),
+    ];
+  } catch (e) {
+    yield put(actions.getGithubAccessTokenFailed(String(e)));
   }
 }
 
@@ -53,8 +76,8 @@ export function* loginSaga(action) {
  */
 export function* logoutSaga() {
   try {
-    yield call(DockerService.logout);
     yield [
+      call([localStorageService, localStorageService.removeItem], STORAGE_KEY_AUTH),
       put(actions.logoutSucceeded()),
       put(actions.closeBus()),
       put(actions.setError('')),
@@ -117,7 +140,7 @@ export function* fetchContainersSaga() {
 /**
  * Saga of Fetch container action :
  * - Fetch container
- * @param {Object} action        Action dispatched
+ * @param {Object} action Action dispatched
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* fetchContainerSaga(action) {
@@ -134,7 +157,7 @@ export function* fetchContainerSaga(action) {
  * - Execute action on container
  * - Fetch container if non-destructive action
  * - Redirect to home otherwise
- * @param {Object} action        Action dispatched
+ * @param {Object} action Action dispatched
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* actionContainerSaga(action) {
@@ -276,6 +299,7 @@ export function* changeFilterSaga(action) {
  */
 export default function* appSaga() {
   yield takeLatest(actions.GO_HOME, goHomeSaga);
+  yield takeLatest(actions.GET_GITHUB_ACCESS_TOKEN, getGithubAccesTokenSaga);
   yield takeLatest(actions.LOGIN, loginSaga);
   yield takeLatest(actions.LOGOUT, logoutSaga);
   yield takeLatest(actions.INFO, infoSaga);

@@ -128,6 +128,7 @@ export const makeBusActionCreator = (camelCaseName) => {
  * App's actions.
  */
 export default {
+  ...makeApiActionCreator('getGithubAccessToken', ['state', 'code']),
   ...makeApiActionCreator('login', ['username', 'password']),
   ...makeApiActionCreator('logout'),
   ...makeApiActionCreator('info', [], ['infos']),

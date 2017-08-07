@@ -1,33 +1,8 @@
-import funtch, { errorHandler } from 'funtch';
+import funtch from 'funtch';
 import btoa from '../Tools/btoa';
-import Constants from '../Constants';
+import { getApiUrl, getWsUrl, STORAGE_KEY_AUTH } from '../Constants';
 import localStorageService from './LocalStorageService';
-
-/**
- * Storage key name for authentification token.
- */
-export const authStorage = 'auth';
-
-/**
- * Custom error handler that add toString to error object.
- * @param  {Object} response Response from funtch
- * @return {Promise} Error with toString or valid reponse
- */
-export function customError(response) {
-  return new Promise((resolve, reject) =>
-    errorHandler(response).then(resolve).catch(err =>
-      reject({
-        ...err,
-        toString: () => {
-          if (typeof err.content === 'string') {
-            return err.content;
-          }
-          return JSON.stringify(err.content);
-        },
-      }),
-    ),
-  );
-}
+import { customError } from './Commons';
 
 /**
  * Generate FetchBuilder for given URL with auth and error handler.
@@ -35,7 +10,7 @@ export function customError(response) {
  * @param  {String} authentification Auth value
  * @return {FetchBuilder} FetchBuilder pre-configured
  */
-function auth(url, authentification = localStorageService.getItem(authStorage)) {
+function auth(url, authentification = localStorageService.getItem(STORAGE_KEY_AUTH)) {
   if (!authentification) {
     const authError = new Error('Authentification not find');
     authError.noAuth = true;
@@ -50,14 +25,6 @@ function auth(url, authentification = localStorageService.getItem(authStorage)) 
  */
 export default class DockerService {
   /**
-   * Check if User is already logged.
-   * @return {Boolean} True if User has authentification token, false  otherwise.
-   */
-  static isLogged() {
-    return !!localStorageService.getItem(authStorage);
-  }
-
-  /**
    * Login User given username and password. If success, store auth token in LocalStorage.
    * @param  {String} username User's username
    * @param  {String} password User's password
@@ -66,19 +33,10 @@ export default class DockerService {
   static login(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${Constants.getApiUrl()}/auth`, hash).get().then((result) => {
-      localStorageService.setItem(authStorage, hash);
+    return auth(`${getApiUrl()}/auth`, hash).get().then((result) => {
+      localStorageService.setItem(STORAGE_KEY_AUTH, hash);
       return result;
     });
-  }
-
-  /**
-   * Logout User by removing User's token.
-   * @return {Promise} Resolved promise
-   */
-  static logout() {
-    localStorageService.removeItem(authStorage);
-    return Promise.resolve();
   }
 
   /**
@@ -86,7 +44,7 @@ export default class DockerService {
    * @return {Promise} Information of daemon
    */
   static info() {
-    return auth(`${Constants.getApiUrl()}/info`).get();
+    return auth(`${getApiUrl()}/info`).get();
   }
 
   /**
@@ -94,7 +52,7 @@ export default class DockerService {
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static containers() {
-    return auth(`${Constants.getApiUrl()}/containers`).get().then(({ results }) => results);
+    return auth(`${getApiUrl()}/containers`).get().then(({ results }) => results);
   }
 
   /**
@@ -103,7 +61,7 @@ export default class DockerService {
    * @return {Promise}            Information wrapped in a Promise
    */
   static containerInfos(containerId) {
-    return auth(`${Constants.getApiUrl()}/containers/${containerId}/`).get();
+    return auth(`${getApiUrl()}/containers/${containerId}/`).get();
   }
 
   /**
@@ -113,7 +71,7 @@ export default class DockerService {
    * @return {Promise}            Array of created containers wrapped in a Promise
    */
   static containerCreate(name, composeFile) {
-    return auth(`${Constants.getApiUrl()}/containers/${name}/`).post(composeFile);
+    return auth(`${getApiUrl()}/containers/${name}/`).post(composeFile);
   }
 
   /**
@@ -122,7 +80,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static containerStart(containerId) {
-    return auth(`${Constants.getApiUrl()}/containers/${containerId}/start`).post();
+    return auth(`${getApiUrl()}/containers/${containerId}/start`).post();
   }
 
   /**
@@ -131,7 +89,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static containerStop(containerId) {
-    return auth(`${Constants.getApiUrl()}/containers/${containerId}/stop`).post();
+    return auth(`${getApiUrl()}/containers/${containerId}/stop`).post();
   }
 
   /**
@@ -140,7 +98,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static containerRestart(containerId) {
-    return auth(`${Constants.getApiUrl()}/containers/${containerId}/restart`).post();
+    return auth(`${getApiUrl()}/containers/${containerId}/restart`).post();
   }
 
   /**
@@ -149,7 +107,7 @@ export default class DockerService {
    * @return {Promise}            Resolved promise
    */
   static containerDelete(containerId) {
-    return auth(`${Constants.getApiUrl()}/containers/${containerId}/`).delete();
+    return auth(`${getApiUrl()}/containers/${containerId}/`).delete();
   }
 
   /**
@@ -158,10 +116,10 @@ export default class DockerService {
    * @return {Websocket}          Opened and authentified Websocket
    */
   static streamBus(onMessage) {
-    const socket = new WebSocket(`${Constants.getWsUrl()}/bus`);
+    const socket = new WebSocket(`${getWsUrl()}/bus`);
 
     socket.onmessage = event => onMessage(event.data);
-    socket.onopen = () => socket.send(localStorageService.getItem(authStorage));
+    socket.onopen = () => socket.send(localStorageService.getItem(STORAGE_KEY_AUTH));
 
     return socket;
   }
@@ -171,6 +129,6 @@ export default class DockerService {
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static services() {
-    return auth(`${Constants.getApiUrl()}/services`).get().then(({ results }) => results);
+    return auth(`${getApiUrl()}/services`).get().then(({ results }) => results);
   }
 }

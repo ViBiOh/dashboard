@@ -2,21 +2,16 @@
 import test from 'ava';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
-import DockerService from '../../Service/DockerService';
+import { STORAGE_KEY_AUTH } from '../../Constants';
+import localStorageService from '../../Service/LocalStorageService';
 import actions from '../actions';
 import { logoutSaga } from './';
 
-test('should call DockerService.logout', (t) => {
+test('should drop storage key, put success, close streams and redirect to login after API call', (t) => {
   const iterator = logoutSaga();
-
-  t.deepEqual(iterator.next().value, call(DockerService.logout));
-});
-
-test('should put success, close streams and redirect to login after API call', (t) => {
-  const iterator = logoutSaga();
-  iterator.next();
 
   t.deepEqual(iterator.next().value, [
+    call([localStorageService, localStorageService.removeItem], STORAGE_KEY_AUTH),
     put(actions.logoutSucceeded()),
     put(actions.closeBus()),
     put(actions.setError('')),
