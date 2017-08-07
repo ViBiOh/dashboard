@@ -13,7 +13,7 @@ const Login = () =>
   (<span className={style.flex}>
     <h2>Login</h2>
     <div className={style.center}>
-      {getFromContext('BASIC_AUTH') && <Basic />}
+      {getFromContext('BASIC_AUTH_ENABLED') === 'true' && <Basic />}
       {getFromContext('GITHUB_OAUTH_CLIENT_ID') && <Github />}
     </div>
   </span>);

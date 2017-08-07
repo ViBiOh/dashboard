@@ -63,7 +63,7 @@ func oauthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	url := flag.String(`c`, ``, `URL to check`)
+	url := flag.String(`c`, ``, `URL to healthcheck (check and exit)`)
 	port := flag.String(`port`, `1080`, `Listen port`)
 	flag.Parse()
 

@@ -24,7 +24,7 @@ type User struct {
 var users map[string]*User
 
 var (
-	authFile = flag.String(`authFile`, ``, `Path of authentification file`)
+	authFile = flag.String(`basicFile`, ``, `Path of authentification file`)
 )
 
 // Init auth

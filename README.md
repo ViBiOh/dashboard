@@ -7,9 +7,25 @@
 
 Docker infrastructure management with security and simplicity as goals. It allows to list all containers on a `daemon`, start / stop / restart / monitor each one and deploy `docker-compose` app [**without volumes**](#why-without-volumes-).
 
-## Usage
+# Getting Started
 
-You can use GitHub OAuth Provider or a simple username/password file.
+## Docker
+
+Docker's images are available, `vibioh/dashboard-front`, `vibioh/dashboard-auth` and `vibioh/dashboard-api`, and a sample `docker-compose.yml`. Everything is almost configured, you only have to tweak domain's name, mainly configured for being used with [traefik](https://traefik.io), and adjust some secrets.
+
+## Websocket
+
+By default, your origin domain name has to start with `dashboard` (e.g. dashboard.vibioh.fr) in order to allow websockets to work. You can override it by setting `-ws` option to the API server.
+
+### Roles
+
+You have to configure roles by setting `-users` on the API server with the following format:
+
+```
+[user1]:[role1],[role2]|[user2]:[role1]
+```
+
+Username must match with the authentification providers (see next section).
 
 Role can be `admin`, `multi` or anything else.
 
@@ -17,30 +33,25 @@ Role can be `admin`, `multi` or anything else.
 * `multi` : View only his containers (labeled with his name) and can deploy multiples apps.
 * others : View only his containers (labeled with his name) and can deploy only one app (erase all previously deployed containers)
 
+## Authentification
+
+You can use GitHub OAuth Provider or a simple username/password file for authentication.
+
 ### GitHub OAuth Provider
 
-Create your OAuth app on [GitHub interface](https://github.com/settings/developers). Define `GITHUB_OAUTH_CLIENT_ID` and `GITHUB_OAUTH_CLIENT_SECRET` environment variables and a random string in `GITHUB_OAUTH_STATE`.
+Create your OAuth app on [GitHub interface](https://github.com/settings/developers). The authorization callback URL must be in the form of `https://[URL_OF_DASHBOARD]/auth/github`.
 
 ### Username/Password file
 
-Write user's credentials file with one line per user, having the following format :
+Write user's credentials file with one line per user, each line having the following format :
 
 ```
 [username],[bcrypt password]
 ```
 
-You can generate bcrypted password using `./bin/bcryot_pass`.
+You can generate bcrypted password using `bin/bcrypt_pass`.
 
-### Running
-
-Docker's images are available, `vibioh/dashboard-front`, `vibioh/dashboard-auth` et `vibioh/dashboard-api` and `docker-compose.yml` provided is almost configured, only tweak domain's name, mainly configured for being used with [traefik](https://traefik.io), and secrets.
-
-By default, your origin domain name has to start with `dashboard` (e.g. dashboard.vibioh.fr) in order to allow websockets to work. You can override it by setting `-ws` option to the API server.
-
-You have to define several environments variables :
-
-* `DOCKER_HOST` Docker Host connexion
-* `DOCKER_VERSION` Docker Version of API
+You have ton configure `-basicFile` filepath on the Auth API server and change variable `BASIC_AUTH_ENABLED` value from `false` to `true` on front server.
 
 ## HotDeploy
 
@@ -70,7 +81,7 @@ First goal of this tool was to be available for students to deploy containers on
 
 ## Build
 
-In order to build the whole stuff, run the following command.
+In order to build the server stuff, run the following command.
 
 ```
 make
@@ -96,10 +107,10 @@ Usage of dashboard:
 
 ```
 Usage of auth:
-  -authFile string
+  -basicFile string
       Path of authentification file
   -c string
-      URL to check
+      URL to healthcheck (check and exit)
   -githubClientId string
       GitHub OAuth Client ID
   -githubClientSecret string

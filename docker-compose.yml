@@ -62,7 +62,7 @@ services:
     command:
     - -spa
     - -env
-    - API_URL,WS_URL,AUTH_URL,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
+    - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
     - -csp
     - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-auth.vibioh.fr;"
     labels:
@@ -73,6 +73,7 @@ services:
       API_URL: 'https://dashboard-api.vibioh.fr'
       WS_URL: 'wss://dashboard-api.vibioh.fr/ws'
       AUTH_URL: 'https://dashboard-auth.vibioh.fr'
+      BASIC_AUTH_ENABLED: 'false'
       GITHUB_OAUTH_STATE: '${GITHUB_OAUTH_STATE}'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
     logging:

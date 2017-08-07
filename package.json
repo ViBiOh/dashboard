@@ -12,7 +12,7 @@
     "eslint": "./node_modules/.bin/eslint --fix --ext .jsx \"./app/**/*.{js,jsx}\"",
     "codestyle": "npm run prettier && npm run eslint && npm run stylelint",
     "doc": "./node_modules/.bin/esdoc",
-    "start": "npm run copy:html && API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://dashboard-oauth.vibioh.fr BASIC_AUTH=true GITHUB_OAUTH_STATE=A_SIMPLE_STRING_FOR_NOW GITHUB_OAUTH_CLIENT_ID=8c451219bd1bb8760af6 ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
+    "start": "npm run copy:html && API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://dashboard-oauth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_OAUTH_STATE=A_SIMPLE_STRING_FOR_NOW GITHUB_OAUTH_CLIENT_ID=8c451219bd1bb8760af6 ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test": "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
     "build": "npm run codestyle && npm test && npm run mustache && npm run copy:web && ./node_modules/.bin/webpack --progress -p"
   },
