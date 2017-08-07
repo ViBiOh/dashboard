@@ -40,7 +40,7 @@ services:
       GITHUB_OAUTH_CLIENT_SECRET: '${GITHUB_OAUTH_CLIENT_SECRET}'
     labels:
       traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: dashboard-oauth.vibioh.fr'
+      traefik.frontend.rule: 'Host: dashboard-auth.vibioh.fr'
       traefik.port: '1080'
     logging:
       driver: json-file
@@ -60,7 +60,7 @@ services:
     - -env
     - API_URL,WS_URL,OAUTH_URL,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-auth.vibioh.fr;"
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr, dashboard.l3miage.fr'
@@ -68,7 +68,7 @@ services:
     environment:
       API_URL: 'https://dashboard-api.vibioh.fr'
       WS_URL: 'wss://dashboard-api.vibioh.fr/ws'
-      OAUTH_URL: 'https://dashboard-oauth.vibioh.fr'
+      OAUTH_URL: 'https://dashboard-auth.vibioh.fr'
       GITHUB_OAUTH_STATE: '${GITHUB_OAUTH_STATE}'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
     logging:
