@@ -7,7 +7,7 @@ services:
     - -ws
     - ^dashboard(?:-api)?\.vibioh\.fr
     - -authUrl
-    - http://auth
+    - http://auth:1080
     - -users
     - vibioh:admin|lili1725:multi
     environment:
@@ -21,7 +21,7 @@ services:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     - /home/vibioh/code/src/github.com/ViBiOh/dashboard/users:/users:ro
     links:
-    - oauth
+    - auth
     logging:
       driver: json-file
       options:
