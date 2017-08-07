@@ -1,4 +1,5 @@
 import React from 'react';
+import { getFromContext } from '../../Constants';
 import Basic from './Basic';
 import Github from './Github';
 import style from './Login.less';
@@ -12,8 +13,8 @@ const Login = () =>
   (<span className={style.flex}>
     <h2>Login</h2>
     <div className={style.center}>
-      <Basic />
-      <Github />
+      {getFromContext('BASIC_AUTH') && <Basic />}
+      {getFromContext('GITHUB_OAUTH_CLIENT_ID') && <Github />}
     </div>
   </span>);
 

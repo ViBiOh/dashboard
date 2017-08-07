@@ -1,5 +1,5 @@
 import funtch from 'funtch';
-import { getOauthApiUrl } from '../Constants';
+import { getAuthApiUrl } from '../Constants';
 import { customError } from './Commons';
 
 /**
@@ -15,7 +15,7 @@ export default class OauthService {
   static getGithubAccessToken(state, code) {
     return funtch
       .url(
-        `${getOauthApiUrl()}/github/access_token?state=${encodeURIComponent(
+        `${getAuthApiUrl()}/github/access_token?state=${encodeURIComponent(
           state,
         )}&code=${encodeURIComponent(code)}`,
       )

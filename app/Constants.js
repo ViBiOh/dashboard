@@ -21,12 +21,16 @@ function init() {
   });
 }
 
+function getFromContext(key) {
+  return context[key];
+}
+
 /**
  * Return API endpoint URL
  * @return {String} API endpoint URL
  */
 function getApiUrl() {
-  return context.API_URL;
+  return getFromContext('API_URL');
 }
 
 /**
@@ -34,15 +38,15 @@ function getApiUrl() {
  * @return {String} WebSocket endpoint URL
  */
 function getWsUrl() {
-  return context.WS_URL;
+  return getFromContext('WS_URL');
 }
 
 /**
  * Return OAuth API endpoint URL
  * @return {String} WebSocket endpoint URL
  */
-function getOauthApiUrl() {
-  return context.OAUTH_URL;
+function getAuthApiUrl() {
+  return getFromContext('AUTH_URL');
 }
 
 /**
@@ -51,13 +55,21 @@ function getOauthApiUrl() {
  */
 function getGithubOauthUrl() {
   return `http://github.com/login/oauth/authorize?client_id=${encodeURIComponent(
-    context.GITHUB_OAUTH_CLIENT_ID,
-  )}&state=${encodeURIComponent(context.GITHUB_OAUTH_STATE)}&redirect_uri=${document.location
-    .origin}/auth/github`;
+    getFromContext('GITHUB_OAUTH_CLIENT_ID'),
+  )}&state=${encodeURIComponent(getFromContext('GITHUB_OAUTH_STATE'))}&redirect_uri=${document
+    .location.origin}/auth/github`;
 }
 
 /**
  * URL for API requests
  * @type {String}
  */
-export { init, getApiUrl, getWsUrl, getOauthApiUrl, getGithubOauthUrl, STORAGE_KEY_AUTH };
+export {
+  init,
+  getFromContext,
+  getApiUrl,
+  getWsUrl,
+  getAuthApiUrl,
+  getGithubOauthUrl,
+  STORAGE_KEY_AUTH,
+};

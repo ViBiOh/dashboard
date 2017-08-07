@@ -4,15 +4,16 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
+    - -dockerHost
+    - unix:///var/run/docker.sock
+    - -dockerVersion
+    - 1.24
     - -ws
     - ^dashboard(?:-api)?\.vibioh\.fr
     - -authUrl
     - http://auth:1080
     - -users
     - vibioh:admin|lili1725:multi
-    environment:
-      DOCKER_HOST: 'unix:///var/run/docker.sock'
-      DOCKER_VERSION: '1.24'
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr, dashboard-api.l3miage.fr'
@@ -34,10 +35,13 @@ services:
 
   auth:
     image: vibioh/dashboard-auth
-    environment:
-      GITHUB_OAUTH_STATE: '${GITHUB_OAUTH_STATE}'
-      GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
-      GITHUB_OAUTH_CLIENT_SECRET: '${GITHUB_OAUTH_CLIENT_SECRET}'
+    command:
+    - -githubState
+    - ${GITHUB_OAUTH_STATE}
+    - -githubClientId
+    - ${GITHUB_OAUTH_CLIENT_ID}
+    - -githubClientSecret
+    - ${GITHUB_OAUTH_CLIENT_SECRET}
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-auth.vibioh.fr'
@@ -58,7 +62,7 @@ services:
     command:
     - -spa
     - -env
-    - API_URL,WS_URL,OAUTH_URL,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
+    - API_URL,WS_URL,AUTH_URL,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
     - -csp
     - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-auth.vibioh.fr;"
     labels:
@@ -68,7 +72,7 @@ services:
     environment:
       API_URL: 'https://dashboard-api.vibioh.fr'
       WS_URL: 'wss://dashboard-api.vibioh.fr/ws'
-      OAUTH_URL: 'https://dashboard-auth.vibioh.fr'
+      AUTH_URL: 'https://dashboard-auth.vibioh.fr'
       GITHUB_OAUTH_STATE: '${GITHUB_OAUTH_STATE}'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
     logging:

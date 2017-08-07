@@ -1,8 +1,8 @@
 package docker
 
 import (
+	"flag"
 	"fmt"
-	"os"
 
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/docker/docker/api/types/filters"
@@ -11,14 +11,17 @@ import (
 
 var docker *client.Client
 
+var (
+	dockerHost    = flag.String(`dockerHost`, ``, `Docker Host`)
+	dockerVersion = flag.String(`dockerVersion`, ``, `Docker API Version`)
+)
+
 // Init docker client
 func Init() error {
-	client, err := client.NewClient(os.Getenv(`DOCKER_HOST`), os.Getenv(`DOCKER_VERSION`), nil, nil)
-
+	client, err := client.NewClient(*dockerHost, *dockerVersion, nil, nil)
 	if err != nil {
 		return fmt.Errorf(`Error while creating docker client: %v`, err)
 	}
-
 	docker = client
 
 	InitWebsocket()

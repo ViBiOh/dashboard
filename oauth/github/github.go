@@ -2,12 +2,12 @@ package github
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
-	"log"
 	"net/http"
-	"os"
 
 	"github.com/ViBiOh/dashboard/fetch"
+	"github.com/ViBiOh/dashboard/oauth/common"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
@@ -19,28 +19,23 @@ type user struct {
 }
 
 var (
-	state     string
-	oauthConf *oauth2.Config
+	state        = flag.String(`githubState`, ``, `GitHub OAuth State`)
+	clientID     = flag.String(`githubClientId`, ``, `GitHub OAuth Client ID`)
+	clientSecret = flag.String(`githubClientSecret`, ``, `GitHub OAuth Client Secret`)
+	oauthConf    *oauth2.Config
 )
-
-func unauthorized(w http.ResponseWriter, err error) {
-	log.Printf(`HTTP/401 %v`, err)
-	http.Error(w, err.Error(), http.StatusUnauthorized)
-}
 
 // Init configuration
 func Init() {
-	state = os.Getenv(`GITHUB_OAUTH_STATE`)
-
 	oauthConf = &oauth2.Config{
-		ClientID:     os.Getenv(`GITHUB_OAUTH_CLIENT_ID`),
-		ClientSecret: os.Getenv(`GITHUB_OAUTH_CLIENT_SECRET`),
+		ClientID:     *clientID,
+		ClientSecret: *clientSecret,
 		Endpoint:     github.Endpoint,
 	}
 }
 
 func getAccessToken(requestState string, requestCode string) (string, error) {
-	if state != requestState {
+	if *state != requestState {
 		return ``, fmt.Errorf(`Invalid state provided for oauth`)
 	}
 
@@ -73,13 +68,13 @@ type Handler struct {
 func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == `/user` {
 		if username, err := getUsername(r.Header.Get(`Authorization`)); err != nil {
-			unauthorized(w, err)
+			common.Unauthorized(w, err)
 		} else {
 			w.Write([]byte(username))
 		}
 	} else if r.URL.Path == `/access_token` {
 		if token, err := getAccessToken(r.FormValue(`state`), r.FormValue(`code`)); err != nil {
-			unauthorized(w, err)
+			common.Unauthorized(w, err)
 		} else {
 			w.Write([]byte(token))
 		}

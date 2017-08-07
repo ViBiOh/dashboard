@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/ViBiOh/dashboard/oauth/common"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -83,7 +84,7 @@ type Handler struct {
 func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == `/user` {
 		if username, err := getUsername(r.Header.Get(`Authorization`)); err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
+			common.Unauthorized(w, err)
 		} else {
 			w.Write([]byte(username))
 		}

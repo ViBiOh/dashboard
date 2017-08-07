@@ -64,8 +64,7 @@ const config = {
         res.json({
           API_URL: process.env.API_URL,
           WS_URL: process.env.WS_URL,
-          OAUTH_URL: process.env.OAUTH_URL,
-          BASIC_AUTH: process.env.BASIC_AUTH,
+          AUTH_URL: process.env.AUTH_URL,
           GITHUB_OAUTH_CLIENT_ID: process.env.GITHUB_OAUTH_CLIENT_ID,
           GITHUB_OAUTH_STATE: process.env.GITHUB_OAUTH_STATE,
         });

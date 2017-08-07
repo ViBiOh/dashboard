@@ -9,11 +9,7 @@ Docker infrastructure management with security and simplicity as goals. It allow
 
 ## Usage
 
-Write user's credentials file with one line per user, having the following format :
-
-```
-[username],[bcrypt password]
-```
+You can use GitHub OAuth Provider or a simple username/password file.
 
 Role can be `admin`, `multi` or anything else.
 
@@ -21,9 +17,23 @@ Role can be `admin`, `multi` or anything else.
 * `multi` : View only his containers (labeled with his name) and can deploy multiples apps.
 * others : View only his containers (labeled with his name) and can deploy only one app (erase all previously deployed containers)
 
+### GitHub OAuth Provider
+
+Create your OAuth app on [GitHub interface](https://github.com/settings/developers). Define `GITHUB_OAUTH_CLIENT_ID` and `GITHUB_OAUTH_CLIENT_SECRET` environment variables and a random string in `GITHUB_OAUTH_STATE`.
+
+### Username/Password file
+
+Write user's credentials file with one line per user, having the following format :
+
+```
+[username],[bcrypt password]
+```
+
+You can generate bcrypted password using `./bin/bcryot_pass`.
+
 ### Running
 
-Docker's images are available, `vibioh/dashboard-front` et `vibioh/dashboard-api` and `docker-compose.yml` provided is almost configured, only tweak domain's name, mainly configured for be used with [traefik](https://traefik.io), and secrets.
+Docker's images are available, `vibioh/dashboard-front`, `vibioh/dashboard-auth` et `vibioh/dashboard-api` and `docker-compose.yml` provided is almost configured, only tweak domain's name, mainly configured for being used with [traefik](https://traefik.io), and secrets.
 
 By default, your origin domain name has to start with `dashboard` (e.g. dashboard.vibioh.fr) in order to allow websockets to work. You can override it by setting `-ws` option to the API server.
 
@@ -31,9 +41,14 @@ You have to define several environments variables :
 
 * `DOCKER_HOST` Docker Host connexion
 * `DOCKER_VERSION` Docker Version of API
-* `GITHUB_OAUTH_STATE` A random string for OAuth flow
-* `GITHUB_OAUTH_CLIENT_ID` Client ID
-* `GITHUB_OAUTH_CLIENT_SECRET` Client Secret
+
+## HotDeploy
+
+At deploy time, if the new containers have [`HEALTHCHECK`](https://docs.docker.com/engine/reference/builder/#healthcheck), `dashboard` will wait during at most 5 minutes for an `healthy` status. When all containers with `healthcheck` are healthy, old containers are stopped and removed. Load-balancer with Docker's healthcheck (e.g. [traefik](https://traefik.io)) will handle route change without downtime based on that healthcheck.
+
+If no healthcheck is provided, `dashboard` doesn't know if your container is ready for business, so it's a simple launch new containers then destroy old containers, without waiting time.
+
+If you don't have an healthcheck on your container, check [vibioh/alcotest](https://github.com/ViBiOh/alcotest) for having a simple HTTP Client that request the defined endpoint.
 
 ## Another Docker Infrastructure Manager ?
 
@@ -53,32 +68,46 @@ And, maybe, I want to have fun with `golang` and `ReactJS` 🙄😏
 
 First goal of this tool was to be available for students to deploy containers on my own server. Trust doesn't mean no control and if a student mounts a too critical volumes (e.g. `/`) with a `root` user, he can potentially become `root` on the server, which I don't want ! So volumes are not allowed, and some security options are setted by default.
 
-## HotDeploy
-
-At deploy time, if the new containers have [`HEALTHCHECK`](https://docs.docker.com/engine/reference/builder/#healthcheck), `dashboard` will wait during at most 5 minutes for an `healthy` status. When all containers with `healthcheck` are healthy, old containers are stopped and removed. Load-balancer with Docker's healthcheck (e.g. [traefik](https://traefik.io)) will handle route change without downtime based on that healthcheck.
-
-If no healthcheck is provided, `dashboard` doesn't know if your container is ready for business, so it's a simple launch new containers then destroy old containers, without waiting time.
-
-If you don't have an healthcheck on your container, check [vibioh/alcotest](https://github.com/ViBiOh/alcotest) for having a simple HTTP Client that request the defined endpoint.
-
 ## Build
 
 In order to build the whole stuff, run the following command.
 
-```sh
+```
 make
 ```
 
-It will compile both API server and password encrypter.
-
-API server uses `${DOCKER_HOST}` and `${DOCKER_VERSION}` to connect to Docker's daemon and have two more options on CLI :
+It will compile both API server, auth API server and password encrypter.
 
 ```
 Usage of dashboard:
-  -auth string
-      Path of authentification configuration file
+  -authUrl string
+      URL of auth service
+  -c string
+      URL to healthcheck (check and exit)
+  -dockerHost string
+      Docker Host
+  -dockerVersion string
+      Docker API Version
+  -users string
+      List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3
   -ws string
       Allowed WebSocket Origin pattern (default "^dashboard")
+```
+
+```
+Usage of auth:
+  -authFile string
+      Path of authentification file
+  -c string
+      URL to check
+  -githubClientId string
+      GitHub OAuth Client ID
+  -githubClientSecret string
+      GitHub OAuth Client Secret
+  -githubState string
+      GitHub OAuth State
+  -port string
+      Listen port (default "1080")
 ```
 
 Password encrypter accepts one argument, the password, and output the bcrypted one.
