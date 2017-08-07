@@ -53,8 +53,7 @@ func getAccessToken(requestState string, requestCode string) (string, error) {
 }
 
 func getUsername(token string) (string, error) {
-	log.Printf(`Auth %s`, token)
-	userResponse, err := fetch.GetBody(userURL, token)
+	userResponse, err := fetch.GetBody(userURL, `token `+token)
 	if err != nil {
 		return ``, fmt.Errorf(`Error while fetching user informations: %v`, err)
 	}
