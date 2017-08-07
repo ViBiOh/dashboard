@@ -3,18 +3,16 @@ package docker
 import (
 	"fmt"
 	"os"
-	"regexp"
 
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 )
 
-var hostCheck *regexp.Regexp
 var docker *client.Client
 
 // Init docker client
-func Init(websocketOrigin string) error {
+func Init() error {
 	client, err := client.NewClient(os.Getenv(`DOCKER_HOST`), os.Getenv(`DOCKER_VERSION`), nil, nil)
 
 	if err != nil {
@@ -22,7 +20,8 @@ func Init(websocketOrigin string) error {
 	}
 
 	docker = client
-	hostCheck = regexp.MustCompile(websocketOrigin)
+
+	InitWebsocket()
 
 	return nil
 }

@@ -27,7 +27,7 @@ func TestIsAdmin(t *testing.T) {
 		},
 	}
 
-	auth.Init(`users_test`)
+	auth.LoadAuthFile(`users_test`)
 
 	for _, test := range tests {
 		user, _ := auth.IsAuthenticatedByAuth(test.credentials)

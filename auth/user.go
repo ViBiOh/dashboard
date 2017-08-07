@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/base64"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -14,8 +15,6 @@ import (
 
 const basicPrefix = `Basic `
 const githubPrefix = `GitHub `
-
-var commaByte = []byte(`,`)
 
 // User of the app
 type User struct {
@@ -31,31 +30,33 @@ func (user *User) HasProfile(profile string) bool {
 
 var users map[string]*User
 
+var (
+	authFile = flag.String(`auth`, ``, `Path of authentification file`)
+)
+
 // Init auth
-func Init(authFile string) {
-	users = readConfiguration(authFile)
+func Init() {
+	LoadAuthFile(*authFile)
 }
 
-func readConfiguration(path string) map[string]*User {
+// LoadAuthFile loads given file into users map
+func LoadAuthFile(path string) {
+	users = make(map[string]*User)
+
 	configFile, err := os.Open(path)
 	defer configFile.Close()
 
 	if err != nil {
 		log.Print(err)
-		return nil
 	}
-
-	users := make(map[string]*User)
 
 	scanner := bufio.NewScanner(configFile)
 	for scanner.Scan() {
-		parts := bytes.Split(scanner.Bytes(), commaByte)
+		parts := bytes.Split(scanner.Bytes(), []byte(`,`))
 		user := User{strings.ToLower(string(parts[0])), parts[1], string(parts[2])}
 
 		users[strings.ToLower(user.Username)] = &user
 	}
-
-	return users
 }
 
 func isAuthenticated(username string, password string) (*User, error) {
@@ -86,10 +87,16 @@ func isAuthenticatedByBasicAuth(basicContent string) (*User, error) {
 	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:])
 }
 
+func isAuthenticatedByGithubAuth(basicContent string) (*User, error) {
+	return nil, nil
+}
+
 // IsAuthenticatedByAuth check if Autorization Header matches a User
 func IsAuthenticatedByAuth(authContent string) (*User, error) {
 	if strings.HasPrefix(authContent, basicPrefix) {
 		return isAuthenticatedByBasicAuth(strings.TrimPrefix(authContent, basicPrefix))
+	} else if strings.HasPrefix(authContent, githubPrefix) {
+		return isAuthenticatedByGithubAuth(strings.TrimPrefix(authContent, githubPrefix))
 	}
 
 	return nil, fmt.Errorf(`Unable to read authentication type`)

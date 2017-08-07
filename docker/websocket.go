@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"flag"
 	"log"
 	"net/http"
 	"regexp"
@@ -19,13 +20,23 @@ const tailSize = `100`
 const start = `start`
 const stop = `stop`
 
-var eventsDemand = regexp.MustCompile(`^events (\S+)`)
-var logsDemand = regexp.MustCompile(`^logs (\S+)(?: (.+))?`)
-var statsDemand = regexp.MustCompile(`^stats (\S+)(?: (.+))?`)
-var busWebsocketRequest = regexp.MustCompile(`bus`)
-var eventsPrefix = []byte(`events `)
-var logsPrefix = []byte(`logs `)
-var statsPrefix = []byte(`stats `)
+var (
+	eventsDemand        = regexp.MustCompile(`^events (\S+)`)
+	logsDemand          = regexp.MustCompile(`^logs (\S+)(?: (.+))?`)
+	statsDemand         = regexp.MustCompile(`^stats (\S+)(?: (.+))?`)
+	busWebsocketRequest = regexp.MustCompile(`bus`)
+)
+
+var (
+	eventsPrefix = []byte(`events `)
+	logsPrefix   = []byte(`logs `)
+	statsPrefix  = []byte(`stats `)
+)
+
+var (
+	hostCheck       *regexp.Regexp
+	websocketOrigin = flag.String(`ws`, `^dashboard`, `Allowed WebSocket Origin pattern`)
+)
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -33,6 +44,11 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return hostCheck.MatchString(r.Host)
 	},
+}
+
+// InitWebsocket configure websocket handler
+func InitWebsocket() {
+	hostCheck = regexp.MustCompile(*websocketOrigin)
 }
 
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {

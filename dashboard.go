@@ -74,8 +74,6 @@ func handleGracefulClose(server *http.Server) {
 
 func main() {
 	url := flag.String(`c`, ``, `URL to healthcheck (check and exit)`)
-	authFile := flag.String(`auth`, ``, `Path of authentification configuration file`)
-	websocketOrigin := flag.String(`ws`, `^dashboard`, `Allowed WebSocket Origin pattern`)
 	flag.Parse()
 
 	if *url != `` {
@@ -85,8 +83,8 @@ func main() {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	auth.Init(*authFile)
-	if err := docker.Init(*websocketOrigin); err != nil {
+	auth.Init()
+	if err := docker.Init(); err != nil {
 		log.Printf(`Error while initializing docker: %v`, err)
 	}
 
