@@ -45,6 +45,6 @@ test.serial('should return GitHub login URL with variables from env', (t) => {
   init();
   t.is(
     getGithubOauthUrl(),
-    'http://github.com/login/oauth/authorize?client_id=GITHUB_ID&state=GITHUB_STATE&redirect_uri=null/auth/github',
+    'http://github.com/login/oauth/authorize?client_id=GITHUB_ID&state=GITHUB_STATE',
   );
 });

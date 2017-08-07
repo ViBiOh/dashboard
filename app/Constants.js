@@ -56,8 +56,7 @@ function getAuthApiUrl() {
 function getGithubOauthUrl() {
   return `http://github.com/login/oauth/authorize?client_id=${encodeURIComponent(
     getFromContext('GITHUB_OAUTH_CLIENT_ID'),
-  )}&state=${encodeURIComponent(getFromContext('GITHUB_OAUTH_STATE'))}&redirect_uri=${document
-    .location.origin}/auth/github`;
+  )}&state=${encodeURIComponent(getFromContext('GITHUB_OAUTH_STATE'))}`;
 }
 
 /**
