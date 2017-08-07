@@ -3,6 +3,7 @@ package github
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -21,6 +22,11 @@ var (
 	state     string
 	oauthConf *oauth2.Config
 )
+
+func unauthorized(w http.ResponseWriter, err error) {
+	log.Printf(`HTTP/401 %v`, err)
+	http.Error(w, err.Error(), http.StatusUnauthorized)
+}
 
 // Init configuration
 func Init() {
@@ -47,6 +53,7 @@ func getAccessToken(requestState string, requestCode string) (string, error) {
 }
 
 func getUsername(token string) (string, error) {
+	log.Printf(`Auth %s`, token)
 	userResponse, err := fetch.GetBody(userURL, token)
 	if err != nil {
 		return ``, fmt.Errorf(`Error while fetching user informations: %v`, err)
@@ -67,13 +74,13 @@ type Handler struct {
 func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == `/user` {
 		if username, err := getUsername(r.Header.Get(`Authorization`)); err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
+			unauthorized(w, err)
 		} else {
 			w.Write([]byte(username))
 		}
 	} else if r.URL.Path == `/access_token` {
 		if token, err := getAccessToken(r.FormValue(`state`), r.FormValue(`code`)); err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
+			unauthorized(w, err)
 		} else {
 			w.Write([]byte(token))
 		}
