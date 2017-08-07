@@ -12,7 +12,7 @@ import (
 var docker *client.Client
 
 var (
-	dockerHost    = flag.String(`dockerHost`, ``, `Docker Host`)
+	dockerHost    = flag.String(`dockerHost`, `unix:///var/run/docker.sock`, `Docker Host`)
 	dockerVersion = flag.String(`dockerVersion`, ``, `Docker API Version`)
 )
 

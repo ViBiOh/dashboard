@@ -4,8 +4,6 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
-    - -dockerHost
-    - unix:///var/run/docker.sock
     - -dockerVersion
     - '1.24'
     - -ws
