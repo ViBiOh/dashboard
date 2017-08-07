@@ -8,7 +8,7 @@ services:
     - ^dashboard(?:-api)?\.vibioh\.fr
     - -auth
     - /users
-    - oauthUrl
+    - -oauthUrl
     - http://oauth
     environment:
       DOCKER_HOST: 'unix:///var/run/docker.sock'

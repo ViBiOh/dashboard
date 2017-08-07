@@ -14,7 +14,6 @@ import (
 
 // DeployTimeout indicates delay for application to deploy before rollback
 const DeployTimeout = 3 * time.Minute
-const authorizationHeader = `Authorization`
 
 var backgroundMutex = sync.RWMutex{}
 var backgroundTasks = make(map[string]bool)
@@ -130,7 +129,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := auth.IsAuthenticatedByAuth(r.Header.Get(authorizationHeader))
+	user, err := auth.IsAuthenticatedByAuth(r.Header.Get(`Authorization`))
 	if err != nil {
 		unauthorized(w, err)
 		return
