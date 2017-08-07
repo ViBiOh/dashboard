@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/ViBiOh/dashboard/fetch"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -32,6 +33,7 @@ var users map[string]*User
 
 var (
 	authFile = flag.String(`auth`, ``, `Path of authentification file`)
+	oauthURL = flag.String(`oauthUrl`, ``, `URL of oauth service`)
 )
 
 // Init auth
@@ -71,24 +73,33 @@ func isAuthenticated(username string, password string) (*User, error) {
 	return nil, fmt.Errorf(`[%s] Invalid credentials`, username)
 }
 
-func isAuthenticatedByBasicAuth(basicContent string) (*User, error) {
-	data, err := base64.StdEncoding.DecodeString(basicContent)
+func isAuthenticatedByBasicAuth(authContent string) (*User, error) {
+	data, err := base64.StdEncoding.DecodeString(authContent)
 	if err != nil {
-		return nil, fmt.Errorf(`Unable to read basic authentication`)
+		return nil, fmt.Errorf(`Error while decoding basic authentication: %v`, err)
 	}
 
 	dataStr := string(data)
 
 	sepIndex := strings.Index(dataStr, `:`)
 	if sepIndex < 0 {
-		return nil, fmt.Errorf(`Unable to read basic authentication`)
+		return nil, fmt.Errorf(`Error while reading basic authentication`)
 	}
 
 	return isAuthenticated(dataStr[:sepIndex], dataStr[sepIndex+1:])
 }
 
-func isAuthenticatedByGithubAuth(basicContent string) (*User, error) {
-	return nil, nil
+func isAuthenticatedByGithubAuth(authContent string) (*User, error) {
+	username, err := fetch.GetBody(*oauthURL+`/github/user`, authContent)
+	if err != nil {
+		return nil, fmt.Errorf(`Error while reading github authentication: %v`, err)
+	}
+
+	if user, ok := users[string(username)]; ok {
+		return user, nil
+	}
+
+	return nil, fmt.Errorf(`[%s] Not allowed to use app`, username)
 }
 
 // IsAuthenticatedByAuth check if Autorization Header matches a User
@@ -100,11 +111,4 @@ func IsAuthenticatedByAuth(authContent string) (*User, error) {
 	}
 
 	return nil, fmt.Errorf(`Unable to read authentication type`)
-}
-
-// IsAllowed username for using app
-func IsAllowed(username string) bool {
-	_, ok := users[username]
-
-	return ok
 }

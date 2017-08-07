@@ -151,12 +151,12 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 		{
 			fmt.Sprintf(`Basic %s`, `admin:password`),
 			nil,
-			fmt.Errorf(`Unable to read basic authentication`),
+			fmt.Errorf(`Error while decoding basic authentication: illegal base64 data at input byte 5`),
 		},
 		{
 			fmt.Sprintf(`Basic %s`, base64.StdEncoding.EncodeToString([]byte(`admin`))),
 			nil,
-			fmt.Errorf(`Unable to read basic authentication`),
+			fmt.Errorf(`Error while reading basic authentication`),
 		},
 		{
 			fmt.Sprintf(`Basic %s`, base64.StdEncoding.EncodeToString([]byte(`admin:password`))),
