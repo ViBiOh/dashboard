@@ -50,6 +50,10 @@
     "css-loader": "latest",
     "enzyme": "latest",
     "esdoc": "latest",
+    "esdoc-coverage-plugin": "latest",
+    "esdoc-ecmascript-proposal-plugin": "latest",
+    "esdoc-jsx-plugin": "latest",
+    "esdoc-publish-html-plugin": "latest",
     "eslint": "3",
     "eslint-config-airbnb": "latest",
     "eslint-loader": "latest",
@@ -122,16 +126,36 @@
       ".test\\.(js|jsx)$"
     ],
     "destination": "./doc",
-    "experimentalProposal": {
-      "classProperties": true,
-      "objectRestSpread": true,
-      "decorators": true,
-      "doExpressions": true,
-      "functionBind": true,
-      "asyncGenerators": true,
-      "exportExtensions": true,
-      "dynamicImport": true
-    }
+    "plugins": [
+      {
+        "name": "esdoc-ecmascript-proposal-plugin",
+        "option": {
+          "classProperties": true,
+          "objectRestSpread": true,
+          "decorators": true,
+          "doExpressions": true,
+          "functionBind": true,
+          "asyncGenerators": true,
+          "exportExtensions": true,
+          "dynamicImport": true
+        }
+      },
+      {
+        "name": "esdoc-jsx-plugin",
+        "option": {
+          "enable": true
+        }
+      },
+      {
+        "name": "esdoc-publish-html-plugin"
+      },
+      {
+        "name": "esdoc-coverage-plugin",
+        "option": {
+          "enable": true
+        }
+      }
+    ]
   },
   "eslintConfig": {
     "extends": "airbnb",
