@@ -24,7 +24,9 @@ func Init() error {
 	}
 	docker = client
 
-	InitWebsocket()
+	if err := InitWebsocket(); err != nil {
+		return fmt.Errorf(`Error while initializing websocket: %v`, err)
+	}
 
 	return nil
 }

@@ -12,7 +12,6 @@ import (
 
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/httputils"
-	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
@@ -382,6 +381,6 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 		cancel()
 		composeFailed(w, user, appName, err)
 	} else {
-		jsonHttp.ResponseJSON(w, results{newServices})
+		httputils.ResponseArrayJSON(w, newServices)
 	}
 }

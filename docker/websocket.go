@@ -47,8 +47,10 @@ var upgrader = websocket.Upgrader{
 }
 
 // InitWebsocket configure websocket handler
-func InitWebsocket() {
+func InitWebsocket() error {
 	hostCheck = regexp.MustCompile(*websocketOrigin)
+
+	return nil
 }
 
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {

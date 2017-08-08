@@ -9,7 +9,6 @@ import (
 
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/httputils"
-	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 )
@@ -70,7 +69,7 @@ func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
 	if container, err := inspectContainer(string(containerID)); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		jsonHttp.ResponseJSON(w, container)
+		httputils.ResponseJSON(w, container)
 	}
 }
 
@@ -112,7 +111,7 @@ func listContainersHandler(w http.ResponseWriter, user *auth.User) {
 	if containers, err := listContainers(user, ``); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		jsonHttp.ResponseJSON(w, results{containers})
+		httputils.ResponseArrayJSON(w, containers)
 	}
 }
 

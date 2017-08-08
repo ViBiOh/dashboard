@@ -9,7 +9,6 @@ import (
 
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/httputils"
-	"github.com/ViBiOh/dashboard/jsonHttp"
 )
 
 // DeployTimeout indicates delay for application to deploy before rollback
@@ -17,10 +16,6 @@ const DeployTimeout = 3 * time.Minute
 
 var backgroundMutex = sync.RWMutex{}
 var backgroundTasks = make(map[string]bool)
-
-type results struct {
-	Results interface{} `json:"results"`
-}
 
 var healthRequest = regexp.MustCompile(`^health$`)
 var infoRequest = regexp.MustCompile(`info/?$`)
@@ -59,7 +54,7 @@ func infoHandler(w http.ResponseWriter) {
 	if info, err := docker.Info(context.Background()); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		jsonHttp.ResponseJSON(w, info)
+		httputils.ResponseJSON(w, info)
 	}
 }
 
