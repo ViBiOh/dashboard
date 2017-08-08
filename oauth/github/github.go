@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ViBiOh/dashboard/httputils"
+	"github.com/ViBiOh/httputils"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )

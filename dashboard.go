@@ -12,7 +12,7 @@ import (
 	"github.com/ViBiOh/alcotest/alcotest"
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/docker"
-	"github.com/ViBiOh/dashboard/httputils"
+	"github.com/ViBiOh/httputils"
 )
 
 const port = `1080`

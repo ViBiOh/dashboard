@@ -11,7 +11,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/ViBiOh/dashboard/auth"
-	"github.com/ViBiOh/dashboard/httputils"
+	"github.com/ViBiOh/httputils"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"

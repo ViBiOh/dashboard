@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ViBiOh/dashboard/httputils"
+	"github.com/ViBiOh/httputils"
 )
 
 const basicPrefix = `Basic `

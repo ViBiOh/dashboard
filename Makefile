@@ -9,6 +9,7 @@ deps:
 	go get -u github.com/docker/docker/api/types/network
 	go get -u github.com/docker/docker/api/types/strslice
 	go get -u github.com/docker/docker/api/types/swarm
+	go get -u github.com/ViBiOh/httputils
 	go get -u github.com/ViBiOh/alcotest/alcotest
 	go get -u github.com/docker/docker/client
 	go get -u github.com/gorilla/websocket

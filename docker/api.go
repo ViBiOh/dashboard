@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/ViBiOh/dashboard/auth"
-	"github.com/ViBiOh/dashboard/httputils"
+	"github.com/ViBiOh/httputils"
 )
 
 // DeployTimeout indicates delay for application to deploy before rollback

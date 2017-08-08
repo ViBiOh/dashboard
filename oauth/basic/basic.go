@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ViBiOh/dashboard/httputils"
+	"github.com/ViBiOh/httputils"
 	"golang.org/x/crypto/bcrypt"
 )
 

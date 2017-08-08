@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/ViBiOh/alcotest/alcotest"
-	"github.com/ViBiOh/dashboard/httputils"
 	"github.com/ViBiOh/dashboard/oauth/basic"
 	"github.com/ViBiOh/dashboard/oauth/github"
+	"github.com/ViBiOh/httputils"
 )
 
 const basicPrefix = `/basic`

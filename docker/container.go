@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/ViBiOh/dashboard/auth"
-	"github.com/ViBiOh/dashboard/httputils"
+	"github.com/ViBiOh/httputils"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 )
