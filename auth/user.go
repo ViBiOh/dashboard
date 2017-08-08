@@ -30,8 +30,12 @@ var (
 )
 
 // Init auth
-func Init() {
-	LoadUsersProfiles(*usersProfiles)
+func Init() error {
+	if *usersProfiles != `` {
+		LoadUsersProfiles(*usersProfiles)
+	}
+
+	return nil
 }
 
 // LoadUsersProfiles load string chain of users and profiles

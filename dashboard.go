@@ -24,16 +24,6 @@ const websocketPrefix = `/ws/`
 var restHandler = http.StripPrefix(restPrefix, docker.Handler{})
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
-func dashboardHandler(w http.ResponseWriter, r *http.Request) {
-	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
-		websocketHandler.ServeHTTP(w, r)
-	} else if strings.HasPrefix(r.URL.Path, restPrefix) {
-		restHandler.ServeHTTP(w, r)
-	} else {
-		w.WriteHeader(http.StatusNotFound)
-	}
-}
-
 func handleGracefulClose(server *http.Server) {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGTERM)
@@ -72,6 +62,16 @@ func handleGracefulClose(server *http.Server) {
 	}
 }
 
+func dashboardHandler(w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
+		websocketHandler.ServeHTTP(w, r)
+	} else if strings.HasPrefix(r.URL.Path, restPrefix) {
+		restHandler.ServeHTTP(w, r)
+	} else {
+		w.WriteHeader(http.StatusNotFound)
+	}
+}
+
 func main() {
 	url := flag.String(`c`, ``, `URL to healthcheck (check and exit)`)
 	flag.Parse()
@@ -83,7 +83,9 @@ func main() {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	auth.Init()
+	if err := auth.Init(); err != nil {
+		log.Printf(`Error while initializing auth: %v`, err)
+	}
 	if err := docker.Init(); err != nil {
 		log.Printf(`Error while initializing docker: %v`, err)
 	}
