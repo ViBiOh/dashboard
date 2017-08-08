@@ -9,7 +9,7 @@ services:
     - -ws
     - ^dashboard(?:-api)?\.vibioh\.fr
     - -authUrl
-    - http://auth:1080
+    - https://auth.vibioh.fr
     - -users
     - vibioh:admin|lili1725:multi
     labels:
@@ -18,32 +18,6 @@ services:
       traefik.port: '1080'
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
-    links:
-    - auth
-    logging:
-      driver: json-file
-      options:
-        max-size: '50m'
-    restart: on-failure:5
-    read_only: true
-    cpu_shares: 128
-    mem_limit: 33554432
-    security_opt:
-    - no-new-privileges
-
-  auth:
-    image: vibioh/dashboard-auth
-    command:
-    - -githubState
-    - ${GITHUB_OAUTH_STATE}
-    - -githubClientId
-    - ${GITHUB_OAUTH_CLIENT_ID}
-    - -githubClientSecret
-    - ${GITHUB_OAUTH_CLIENT_SECRET}
-    labels:
-      traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: dashboard-auth.vibioh.fr'
-      traefik.port: '1080'
     logging:
       driver: json-file
       options:
@@ -62,7 +36,7 @@ services:
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-auth.vibioh.fr;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr auth.vibioh.fr;"
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr, dashboard.l3miage.fr'
@@ -70,7 +44,7 @@ services:
     environment:
       API_URL: 'https://dashboard-api.vibioh.fr'
       WS_URL: 'wss://dashboard-api.vibioh.fr/ws'
-      AUTH_URL: 'https://dashboard-auth.vibioh.fr'
+      AUTH_URL: 'https://auth.vibioh.fr'
       BASIC_AUTH_ENABLED: 'false'
       GITHUB_OAUTH_STATE: '${GITHUB_OAUTH_STATE}'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'

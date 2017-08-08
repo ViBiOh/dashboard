@@ -15,7 +15,7 @@ export default class OauthService {
   static getGithubAccessToken(state, code) {
     return funtch
       .url(
-        `${getAuthApiUrl()}/github/access_token?state=${encodeURIComponent(
+        `${getAuthApiUrl()}/token/github?state=${encodeURIComponent(
           state,
         )}&code=${encodeURIComponent(code)}`,
       )

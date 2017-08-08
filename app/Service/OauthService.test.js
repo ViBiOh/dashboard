@@ -20,6 +20,6 @@ test.afterEach(() => {
 
 test.serial('should forge request to get github access token', t =>
   OauthService.getGithubAccessToken('state', 'code').then(({ url }) => {
-    t.is(url, 'undefined/github/access_token?state=state&code=code');
+    t.is(url, 'undefined/token/github?state=state&code=code');
   }),
 );

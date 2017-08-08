@@ -8,9 +8,6 @@ import (
 	"github.com/ViBiOh/httputils"
 )
 
-const basicPrefix = `Basic `
-const githubPrefix = `GitHub `
-
 // User of the app
 type User struct {
 	Username string
@@ -51,39 +48,16 @@ func LoadUsersProfiles(usersAndProfiles string) {
 	}
 }
 
-func isAuthenticatedByBasicAuth(authContent string) (*User, error) {
-	username, err := httputils.GetBody(*authURL+`/basic/user`, authContent)
-	if err != nil {
-		return nil, fmt.Errorf(`Error while reading file authentication: %v`, err)
-	}
-
-	if user, ok := users[strings.ToLower(string(username))]; ok {
-		return user, nil
-	}
-
-	return nil, fmt.Errorf(`[%s] Not allowed to use app`, username)
-}
-
-func isAuthenticatedByGithubAuth(authContent string) (*User, error) {
-	username, err := httputils.GetBody(*authURL+`/github/user`, authContent)
-	if err != nil {
-		return nil, fmt.Errorf(`Error while reading github authentication: %v`, err)
-	}
-
-	if user, ok := users[strings.ToLower(string(username))]; ok {
-		return user, nil
-	}
-
-	return nil, fmt.Errorf(`[%s] Not allowed to use app`, username)
-}
-
 // IsAuthenticatedByAuth check if Autorization Header matches a User
 func IsAuthenticatedByAuth(authContent string) (*User, error) {
-	if strings.HasPrefix(authContent, basicPrefix) {
-		return isAuthenticatedByBasicAuth(strings.TrimPrefix(authContent, basicPrefix))
-	} else if strings.HasPrefix(authContent, githubPrefix) {
-		return isAuthenticatedByGithubAuth(strings.TrimPrefix(authContent, githubPrefix))
+	username, err := httputils.GetBody(*authURL+`/user`, authContent)
+	if err != nil {
+		return nil, fmt.Errorf(`Error while getting username: %v`, err)
 	}
 
-	return nil, fmt.Errorf(`Unable to read authentication type`)
+	if user, ok := users[strings.ToLower(string(username))]; ok {
+		return user, nil
+	}
+
+	return nil, fmt.Errorf(`[%s] Not allowed to use app`, username)
 }
