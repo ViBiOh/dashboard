@@ -1,20 +1,18 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
 	"runtime"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/ViBiOh/alcotest/alcotest"
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/docker"
+	"github.com/ViBiOh/dashboard/httputils"
 )
 
 const port = `1080`
@@ -24,25 +22,7 @@ const websocketPrefix = `/ws/`
 var restHandler = http.StripPrefix(restPrefix, docker.Handler{})
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
-func handleGracefulClose(server *http.Server) {
-	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, syscall.SIGTERM)
-
-	<-signals
-
-	log.Printf(`SIGTERM received`)
-
-	if server != nil {
-		log.Print(`Shutting down http server`)
-
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-
-		if err := server.Shutdown(ctx); err != nil {
-			log.Print(err)
-		}
-	}
-
+func handleGracefulClose() {
 	if docker.CanBeGracefullyClosed() {
 		return
 	}
@@ -98,5 +78,5 @@ func main() {
 	}
 
 	go server.ListenAndServe()
-	handleGracefulClose(server)
+	httputils.ServerGracefulClose(server, handleGracefulClose)
 }
