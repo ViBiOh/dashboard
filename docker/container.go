@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/dashboard/httputils"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
@@ -67,7 +68,7 @@ func rmImages(imageID string) error {
 
 func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
 	if container, err := inspectContainer(string(containerID)); err != nil {
-		errorHandler(w, err)
+		httputils.InternalServer(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, container)
 	}
@@ -95,12 +96,12 @@ func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID []by
 
 	allowed, err := isAllowed(user, id)
 	if !allowed {
-		forbidden(w)
+		httputils.Forbidden(w)
 	} else if err != nil {
-		errorHandler(w, err)
+		httputils.InternalServer(w, err)
 	} else {
 		if err = getAction(action)(id); err != nil {
-			errorHandler(w, err)
+			httputils.InternalServer(w, err)
 		} else {
 			w.Write(nil)
 		}
@@ -109,7 +110,7 @@ func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID []by
 
 func listContainersHandler(w http.ResponseWriter, user *auth.User) {
 	if containers, err := listContainers(user, ``); err != nil {
-		errorHandler(w, err)
+		httputils.InternalServer(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{containers})
 	}

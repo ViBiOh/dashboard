@@ -6,12 +6,11 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strings"
 
-	"github.com/ViBiOh/dashboard/oauth/common"
+	"github.com/ViBiOh/dashboard/httputils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -28,22 +27,26 @@ var (
 )
 
 // Init auth
-func Init() {
+func Init() error {
 	if *authFile != `` {
-		LoadAuthFile(*authFile)
+		if err := LoadAuthFile(*authFile); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
 // LoadAuthFile loads given file into users map
-func LoadAuthFile(path string) {
+func LoadAuthFile(path string) error {
 	users = make(map[string]*User)
 
 	configFile, err := os.Open(path)
-	defer configFile.Close()
-
 	if err != nil {
-		log.Print(err)
+		return fmt.Errorf(`Error while opening auth file: %v`, err)
 	}
+
+	defer configFile.Close()
 
 	scanner := bufio.NewScanner(configFile)
 	for scanner.Scan() {
@@ -52,6 +55,8 @@ func LoadAuthFile(path string) {
 
 		users[strings.ToLower(user.Username)] = &user
 	}
+
+	return nil
 }
 
 func getUsername(header string) (string, error) {
@@ -86,7 +91,7 @@ type Handler struct {
 func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == `/user` {
 		if username, err := getUsername(r.Header.Get(`Authorization`)); err != nil {
-			common.Unauthorized(w, err)
+			httputils.Unauthorized(w, err)
 		} else {
 			w.Write([]byte(username))
 		}

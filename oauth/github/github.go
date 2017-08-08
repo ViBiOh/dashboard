@@ -6,8 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ViBiOh/dashboard/fetch"
-	"github.com/ViBiOh/dashboard/oauth/common"
+	"github.com/ViBiOh/dashboard/httputils"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
@@ -26,12 +25,16 @@ var (
 )
 
 // Init configuration
-func Init() {
-	oauthConf = &oauth2.Config{
-		ClientID:     *clientID,
-		ClientSecret: *clientSecret,
-		Endpoint:     github.Endpoint,
+func Init() error {
+	if *clientID != `` {
+		oauthConf = &oauth2.Config{
+			ClientID:     *clientID,
+			ClientSecret: *clientSecret,
+			Endpoint:     github.Endpoint,
+		}
 	}
+
+	return nil
 }
 
 func getAccessToken(requestState string, requestCode string) (string, error) {
@@ -48,7 +51,7 @@ func getAccessToken(requestState string, requestCode string) (string, error) {
 }
 
 func getUsername(token string) (string, error) {
-	userResponse, err := fetch.GetBody(userURL, `token `+token)
+	userResponse, err := httputils.GetBody(userURL, `token `+token)
 	if err != nil {
 		return ``, fmt.Errorf(`Error while fetching user informations: %v`, err)
 	}
@@ -68,13 +71,13 @@ type Handler struct {
 func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == `/user` {
 		if username, err := getUsername(r.Header.Get(`Authorization`)); err != nil {
-			common.Unauthorized(w, err)
+			httputils.Unauthorized(w, err)
 		} else {
 			w.Write([]byte(username))
 		}
 	} else if r.URL.Path == `/access_token` {
 		if token, err := getAccessToken(r.FormValue(`state`), r.FormValue(`code`)); err != nil {
-			common.Unauthorized(w, err)
+			httputils.Unauthorized(w, err)
 		} else {
 			w.Write([]byte(token))
 		}

@@ -1,4 +1,4 @@
-package fetch
+package httputils
 
 import (
 	"bytes"
@@ -17,17 +17,23 @@ func doAndRead(request *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf(`Error while sending data: %v`, err)
 	}
-	reponseBody, err := ReadBody(response.Body)
+	responseBody, err := ReadBody(response.Body)
 
 	if response.StatusCode >= http.StatusBadRequest {
-		return nil, fmt.Errorf(`Error status %d`, response.StatusCode)
+		return nil, fmt.Errorf(`Error status %d: %s`, response.StatusCode, responseBody)
 	}
 
 	if err != nil {
 		return nil, fmt.Errorf(`Error while reading body: %v`, err)
 	}
 
-	return reponseBody, nil
+	return responseBody, nil
+}
+
+func addAuthorization(request *http.Request, authorization string) {
+	if authorization != `` {
+		request.Header.Add(`Authorization`, authorization)
+	}
 }
 
 // ReadBody return content of a body request (defined as a ReadCloser)
@@ -39,20 +45,17 @@ func ReadBody(body io.ReadCloser) ([]byte, error) {
 // GetBody return body of given URL or error if something goes wrong
 func GetBody(url string, authorization string) ([]byte, error) {
 	request, err := http.NewRequest(`GET`, url, nil)
-
-	if authorization != `` {
-		request.Header.Add(`Authorization`, authorization)
-	}
-
 	if err != nil {
 		return nil, fmt.Errorf(`Error while creating request: %v`, err)
 	}
+
+	addAuthorization(request, authorization)
 
 	return doAndRead(request)
 }
 
 // PostJSONBody post given interface to URL with optional credential supplied
-func PostJSONBody(url string, body interface{}, user string, pass string) ([]byte, error) {
+func PostJSONBody(url string, body interface{}, authorization string) ([]byte, error) {
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while marshalling body: %v`, err)
@@ -63,10 +66,8 @@ func PostJSONBody(url string, body interface{}, user string, pass string) ([]byt
 		return nil, fmt.Errorf(`Error while creating request: %v`, err)
 	}
 
+	addAuthorization(request, authorization)
 	request.Header.Add(`Content-Type`, `application/json`)
-	if user != `` {
-		request.SetBasicAuth(user, pass)
-	}
 
 	return doAndRead(request)
 }

@@ -1,4 +1,4 @@
-package docker
+package httputils
 
 import (
 	"fmt"
@@ -21,13 +21,13 @@ func TestBadRequest(t *testing.T) {
 
 	for _, test := range tests {
 		writer := httptest.NewRecorder()
-		badRequest(writer, test.err)
+		BadRequest(writer, test.err)
 
 		if result := writer.Result().StatusCode; result != http.StatusBadRequest {
 			t.Errorf(`badRequest(%v) = %v, want %v`, test.err, result, http.StatusBadRequest)
 		}
 
-		if result, _ := readBody(writer.Result().Body); string(result) != string(test.want) {
+		if result, _ := ReadBody(writer.Result().Body); string(result) != string(test.want) {
 			t.Errorf(`badRequest(%v) = %v, want %v`, test.err, string(result), string(test.want))
 		}
 	}
@@ -47,13 +47,13 @@ func TestUnauthorized(t *testing.T) {
 
 	for _, test := range tests {
 		writer := httptest.NewRecorder()
-		unauthorized(writer, test.err)
+		Unauthorized(writer, test.err)
 
 		if result := writer.Result().StatusCode; result != http.StatusUnauthorized {
 			t.Errorf(`badRequest(%v) = %v, want %v`, test.err, result, http.StatusUnauthorized)
 		}
 
-		if result, _ := readBody(writer.Result().Body); string(result) != string(test.want) {
+		if result, _ := ReadBody(writer.Result().Body); string(result) != string(test.want) {
 			t.Errorf(`unauthorized(%v) = %v, want %v`, test.err, string(result), string(test.want))
 		}
 	}
@@ -67,7 +67,7 @@ func TestForbidden(t *testing.T) {
 
 	for range tests {
 		writer := httptest.NewRecorder()
-		forbidden(writer)
+		Forbidden(writer)
 
 		if result := writer.Result().StatusCode; result != http.StatusForbidden {
 			t.Errorf(`forbidden() = %v, want %v`, result, http.StatusForbidden)
@@ -89,7 +89,7 @@ func TestErrorHandler(t *testing.T) {
 
 	for _, test := range tests {
 		writer := httptest.NewRecorder()
-		errorHandler(writer, test.err)
+		InternalServer(writer, test.err)
 
 		if result := writer.Result().StatusCode; result != http.StatusInternalServerError {
 			t.Errorf(`errorHandler(%v) = %v, want %v`, test.err, result, http.StatusInternalServerError)

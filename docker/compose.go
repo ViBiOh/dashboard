@@ -11,6 +11,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/dashboard/httputils"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -316,7 +317,7 @@ func createContainer(user *auth.User, appName []byte, serviceName string, servic
 }
 
 func composeFailed(w http.ResponseWriter, user *auth.User, appName []byte, err error) {
-	errorHandler(w, err)
+	httputils.InternalServer(w, err)
 	if err != nil {
 		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err)
 	} else {
@@ -326,13 +327,13 @@ func composeFailed(w http.ResponseWriter, user *auth.User, appName []byte, err e
 
 func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
 	if len(appName) == 0 || len(composeFile) == 0 {
-		badRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
+		httputils.BadRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
 		return
 	}
 
 	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		errorHandler(w, fmt.Errorf(`[%s] Error while unmarshalling compose file: %v`, user.Username, err))
+		httputils.InternalServer(w, fmt.Errorf(`[%s] Error while unmarshalling compose file: %v`, user.Username, err))
 		return
 	}
 
@@ -358,7 +359,7 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 
 	if len(oldContainers) > 0 && oldContainers[0].Labels[ownerLabel] != user.Username {
 		composeFailed(w, user, appName, fmt.Errorf(`Application not owned`))
-		forbidden(w)
+		httputils.Forbidden(w)
 	}
 
 	newServices := make(map[string]*deployedService)

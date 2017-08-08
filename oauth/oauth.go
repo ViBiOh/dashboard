@@ -25,8 +25,12 @@ var githubHandler = http.StripPrefix(githubPrefix, github.Handler{})
 
 // Init configure OAuth provided
 func Init() {
-	basic.Init()
-	github.Init()
+	if err := basic.Init(); err != nil {
+		log.Fatalf(`Error while initializing Basic auth: %v`, err)
+	}
+	if err := github.Init(); err != nil {
+		log.Fatalf(`Error while initializing GitHub auth: %v`, err)
+	}
 }
 
 func handleGracefulClose(server *http.Server) {

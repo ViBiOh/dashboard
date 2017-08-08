@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/dashboard/httputils"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
@@ -27,7 +28,7 @@ func listServices(user *auth.User, appName string) ([]swarm.Service, error) {
 
 func listServicesHandler(w http.ResponseWriter, user *auth.User) {
 	if services, err := listServices(user, ``); err != nil {
-		errorHandler(w, err)
+		httputils.InternalServer(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, results{services})
 	}

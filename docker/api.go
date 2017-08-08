@@ -2,13 +2,13 @@ package docker
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"regexp"
 	"sync"
 	"time"
 
 	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/dashboard/httputils"
 	"github.com/ViBiOh/dashboard/jsonHttp"
 )
 
@@ -55,28 +55,9 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func badRequest(w http.ResponseWriter, err error) {
-	log.Printf(`HTTP/400 %v`, err)
-	http.Error(w, err.Error(), http.StatusBadRequest)
-}
-
-func unauthorized(w http.ResponseWriter, err error) {
-	log.Printf(`HTTP/401 %v`, err)
-	http.Error(w, err.Error(), http.StatusUnauthorized)
-}
-
-func forbidden(w http.ResponseWriter) {
-	http.Error(w, ``, http.StatusForbidden)
-}
-
-func errorHandler(w http.ResponseWriter, err error) {
-	log.Printf(`HTTP/500 %v`, err)
-	http.Error(w, err.Error(), http.StatusInternalServerError)
-}
-
 func infoHandler(w http.ResponseWriter) {
 	if info, err := docker.Info(context.Background()); err != nil {
-		errorHandler(w, err)
+		httputils.InternalServer(w, err)
 	} else {
 		jsonHttp.ResponseJSON(w, info)
 	}
@@ -94,7 +75,7 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath []byte, u
 		basicActionHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], deleteAction)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
 		if composeBody, err := readBody(r.Body); err != nil {
-			errorHandler(w, err)
+			httputils.InternalServer(w, err)
 		} else {
 			composeHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 		}
@@ -131,7 +112,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	user, err := auth.IsAuthenticatedByAuth(r.Header.Get(`Authorization`))
 	if err != nil {
-		unauthorized(w, err)
+		httputils.Unauthorized(w, err)
 		return
 	}
 

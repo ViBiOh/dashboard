@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ViBiOh/dashboard/fetch"
+	"github.com/ViBiOh/dashboard/httputils"
 )
 
 const basicPrefix = `Basic `
@@ -48,7 +48,7 @@ func LoadUsersProfiles(usersAndProfiles string) {
 }
 
 func isAuthenticatedByBasicAuth(authContent string) (*User, error) {
-	username, err := fetch.GetBody(*authURL+`/basic/user`, authContent)
+	username, err := httputils.GetBody(*authURL+`/basic/user`, authContent)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while reading file authentication: %v`, err)
 	}
@@ -61,7 +61,7 @@ func isAuthenticatedByBasicAuth(authContent string) (*User, error) {
 }
 
 func isAuthenticatedByGithubAuth(authContent string) (*User, error) {
-	username, err := fetch.GetBody(*authURL+`/github/user`, authContent)
+	username, err := httputils.GetBody(*authURL+`/github/user`, authContent)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while reading github authentication: %v`, err)
 	}
