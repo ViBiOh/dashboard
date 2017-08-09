@@ -21,7 +21,7 @@ const port = `1080`
 const restPrefix = `/`
 const websocketPrefix = `/ws/`
 
-var restHandler = owasp.Handler{H: cors.Handler{H: http.StripPrefix(restPrefix, docker.Handler{})}}
+var restHandler = owasp.Handler{Handler: cors.Handler{Handler: http.StripPrefix(restPrefix, docker.Handler{})}}
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func handleGracefulClose() {
