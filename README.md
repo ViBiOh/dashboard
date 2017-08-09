@@ -33,25 +33,9 @@ Role can be `admin`, `multi` or anything else.
 * `multi` : View only his containers (labeled with his name) and can deploy multiples apps.
 * others : View only his containers (labeled with his name) and can deploy only one app (erase all previously deployed containers)
 
-## Authentification
-
-You can use GitHub OAuth Provider or a simple username/password file for authentication.
-
-### GitHub OAuth Provider
+## GitHub OAuth Provider
 
 Create your OAuth app on [GitHub interface](https://github.com/settings/developers). The authorization callback URL must be in the form of `https://[URL_OF_DASHBOARD]/auth/github`.
-
-### Username/Password file
-
-Write user's credentials file with one line per user, each line having the following format :
-
-```
-[username],[bcrypt password]
-```
-
-You can generate bcrypted password using `bin/bcrypt_pass`.
-
-You have ton configure `-basicFile` filepath on the Auth API server and change variable `BASIC_AUTH_ENABLED` value from `false` to `true` on front server.
 
 ## HotDeploy
 
@@ -92,33 +76,27 @@ It will compile both API server, auth API server and password encrypter.
 ```
 Usage of dashboard:
   -authUrl string
-      URL of auth service
+    	URL of auth service
   -c string
-      URL to healthcheck (check and exit)
+    	URL to healthcheck (check and exit)
+  -corsHeaders string
+    	Access-Control-Allow-Headers (default "Content-Type")
+  -corsMethods string
+    	Access-Control-Allow-Methods (default "GET")
+  -corsOrigin string
+    	Access-Control-Allow-Origin (default "*")
+  -csp string
+    	Content-Security-Policy (default "default-src 'self'")
   -dockerHost string
-      Docker Host
+    	Docker Host (default "unix:///var/run/docker.sock")
   -dockerVersion string
-      Docker API Version
+    	Docker API Version
+  -hsts
+    	Indicate Strict Transport Security (default true)
   -users string
-      List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3
+    	List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3
   -ws string
-      Allowed WebSocket Origin pattern (default "^dashboard")
-```
-
-```
-Usage of auth:
-  -basicFile string
-      Path of authentification file
-  -c string
-      URL to healthcheck (check and exit)
-  -githubClientId string
-      GitHub OAuth Client ID
-  -githubClientSecret string
-      GitHub OAuth Client Secret
-  -githubState string
-      GitHub OAuth State
-  -port string
-      Listen port (default "1080")
+    	Allowed WebSocket Origin pattern (default "^dashboard")
 ```
 
 Password encrypter accepts one argument, the password, and output the bcrypted one.
