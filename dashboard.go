@@ -13,13 +13,15 @@ import (
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/docker"
 	"github.com/ViBiOh/httputils"
+	"github.com/ViBiOh/httputils/cors"
+	"github.com/ViBiOh/httputils/owasp"
 )
 
 const port = `1080`
 const restPrefix = `/`
 const websocketPrefix = `/ws/`
 
-var restHandler = http.StripPrefix(restPrefix, docker.Handler{})
+var restHandler = owasp.Handler{H: cors.Handler{H: http.StripPrefix(restPrefix, docker.Handler{})}}
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func handleGracefulClose() {

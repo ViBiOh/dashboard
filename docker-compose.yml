@@ -12,6 +12,10 @@ services:
     - https://auth.vibioh.fr
     - -users
     - vibioh:admin|lili1725:multi
+    - -corsHeaders
+    - Content-Type, Authorization
+    - -corsMethods
+    - GET, POST, DELETE
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr, dashboard-api.l3miage.fr'
