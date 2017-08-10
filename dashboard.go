@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"runtime"
 	"strings"
 	"time"
@@ -24,9 +24,9 @@ const websocketPrefix = `/ws/`
 var restHandler = owasp.Handler{Handler: cors.Handler{Handler: http.StripPrefix(restPrefix, docker.Handler{})}}
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
-func handleGracefulClose() {
+func handleGracefulClose() error {
 	if docker.CanBeGracefullyClosed() {
-		return
+		return nil
 	}
 
 	ticker := time.Tick(15 * time.Second)
@@ -36,10 +36,10 @@ func handleGracefulClose() {
 		select {
 		case <-ticker:
 			if docker.CanBeGracefullyClosed() {
-				return
+				return nil
 			}
 		case <-timeout:
-			os.Exit(1)
+			return fmt.Errorf(`Timeout exceeded for graceful close`)
 		}
 	}
 }
