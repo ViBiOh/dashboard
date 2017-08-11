@@ -83,10 +83,10 @@ func TestLoadUsersProfiles(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		loadUsersProfiles(test.usersAndProfiles)
+		LoadUsersProfiles(test.usersAndProfiles)
 
 		if result := len(users); result != test.want {
-			t.Errorf(`loadUsersProfiles(%v) = %v, want %v`, test.usersAndProfiles, result, test.want)
+			t.Errorf(`LoadUsersProfiles(%v) = %v, want %v`, test.usersAndProfiles, result, test.want)
 		}
 	}
 }
@@ -102,8 +102,8 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 	defer testServer.Close()
 
 	authURL = &testServer.URL
-	admin := User{`admin`, `admin`}
-	users = map[string]*User{`admin`: &admin}
+	admin := NewUser(`admin`, `admin`)
+	users = map[string]*User{`admin`: admin}
 
 	var tests = []struct {
 		authorization string
@@ -122,7 +122,7 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 		},
 		{
 			`admin`,
-			&admin,
+			admin,
 			nil,
 		},
 	}

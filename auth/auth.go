@@ -19,6 +19,11 @@ func (user *User) HasProfile(profile string) bool {
 	return strings.Contains(user.profiles, profile)
 }
 
+// NewUser creates new user with username and profiles
+func NewUser(username string, profiles string) *User {
+	return &User{username, profiles}
+}
+
 var users map[string]*User
 
 var (
@@ -28,12 +33,13 @@ var (
 
 // Init auth
 func Init() error {
-	loadUsersProfiles(*usersProfiles)
+	LoadUsersProfiles(*usersProfiles)
 
 	return nil
 }
 
-func loadUsersProfiles(usersAndProfiles string) {
+// LoadUsersProfiles parses users ands profiles from given string
+func LoadUsersProfiles(usersAndProfiles string) {
 	users = make(map[string]*User, 0)
 
 	if usersAndProfiles == `` {
@@ -51,7 +57,7 @@ func loadUsersProfiles(usersAndProfiles string) {
 			profiles = user[sepIndex+1:]
 		}
 
-		users[strings.ToLower(username)] = &User{username, profiles}
+		users[strings.ToLower(username)] = NewUser(username, profiles)
 	}
 }
 
