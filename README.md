@@ -17,7 +17,7 @@ Docker's images are available, `vibioh/dashboard-front`, `vibioh/dashboard-auth`
 
 By default, your origin domain name has to start with `dashboard` (e.g. dashboard.vibioh.fr) in order to allow websockets to work. You can override it by setting `-ws` option to the API server.
 
-### Roles
+## Roles
 
 You have to configure roles by setting `-users` on the API server with the following format:
 
@@ -98,5 +98,3 @@ Usage of dashboard:
   -ws string
     	Allowed WebSocket Origin pattern (default "^dashboard")
 ```
-
-Password encrypter accepts one argument, the password, and output the bcrypted one.
