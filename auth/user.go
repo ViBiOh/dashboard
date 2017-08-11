@@ -28,23 +28,30 @@ var (
 
 // Init auth
 func Init() error {
-	if *usersProfiles != `` {
-		LoadUsersProfiles(*usersProfiles)
-	}
+	loadUsersProfiles(*usersProfiles)
 
 	return nil
 }
 
-// LoadUsersProfiles load string chain of users and profiles
-func LoadUsersProfiles(usersAndProfiles string) {
+func loadUsersProfiles(usersAndProfiles string) {
 	users = make(map[string]*User, 0)
+
+	if usersAndProfiles == `` {
+		return
+	}
 
 	usersList := strings.Split(usersAndProfiles, `|`)
 	for _, user := range usersList {
-		sepIndex := strings.Index(user, `:`)
+		username := user
+		profiles := ``
 
-		username := user[:sepIndex]
-		users[strings.ToLower(username)] = &User{username, user[sepIndex+1:]}
+		sepIndex := strings.Index(user, `:`)
+		if sepIndex != -1 {
+			username = user[:sepIndex]
+			profiles = user[sepIndex+1:]
+		}
+
+		users[strings.ToLower(username)] = &User{username, profiles}
 	}
 }
 
