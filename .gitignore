@@ -10,5 +10,4 @@ package-lock.json
 
 # Go binary
 bin/
-users
 coverage.txt
