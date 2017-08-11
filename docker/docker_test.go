@@ -77,25 +77,34 @@ func TestLabelFilters(t *testing.T) {
 func TestHealthyStatusFilters(t *testing.T) {
 	var tests = []struct {
 		containers []string
-		want       string
+		want       []string
 	}{
 		{
 			nil,
-			``,
+			nil,
 		},
 		{
 			[]string{`abc123`, `def456`},
-			`abc123,def456`,
+			[]string{`abc123`, `def456`},
 		},
 	}
+
+	var failed bool
 
 	for _, test := range tests {
 		filters := filters.NewArgs()
 		healthyStatusFilters(&filters, test.containers)
 		resultEvent := strings.Join(filters.Get(`event`), `,`)
-		result := strings.Join(filters.Get(`container`), `,`)
+		rawResult := filters.Get(`container`)
 
-		if resultEvent != `health_status: healthy` || result != test.want {
+		result := strings.Join(rawResult, `,`)
+		for _, event := range test.want {
+			if !strings.Contains(result, event) {
+				failed = true
+			}
+		}
+
+		if resultEvent != `health_status: healthy` || len(rawResult) != len(test.want) || failed {
 			t.Errorf(`healthyStatusFilters(%v) = %v, want %v`, test.containers, result, test.want)
 		}
 	}

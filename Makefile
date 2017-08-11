@@ -15,9 +15,6 @@ deps:
 	go get -u github.com/ViBiOh/httputils/owasp
 	go get -u github.com/ViBiOh/alcotest/alcotest
 	go get -u github.com/gorilla/websocket
-	go get -u golang.org/x/crypto/bcrypt
-	go get -u golang.org/x/oauth2
-	go get -u golang.org/x/oauth2/github
 	go get -u gopkg.in/yaml.v2
 
 fmt:
