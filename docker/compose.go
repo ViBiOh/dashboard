@@ -243,10 +243,7 @@ func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, 
 	}
 
 	filtersArgs := filters.NewArgs()
-	if err := healthyStatusFilters(user, &filtersArgs, containersIdsWithHealthcheck); err != nil {
-		log.Printf(`[%s] Error while defining healthy filters: %v`, user.Username, err)
-		return true
-	}
+	healthyStatusFilters(&filtersArgs, containersIdsWithHealthcheck)
 
 	timeoutCtx, cancel := context.WithTimeout(ctx, DeployTimeout)
 	defer cancel()

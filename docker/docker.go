@@ -40,60 +40,30 @@ func labelFilters(user *auth.User, filtersArgs *filters.Args, appName string) er
 	}
 
 	if appName != `` && isMultiApp(user) {
-		if _, err := filters.ParseFlag(`label=`+appLabel+`=`+appName, *filtersArgs); err != nil {
-			return fmt.Errorf(`[%s] Error while parsing label for label=%s=%s: %v`, user.Username, appLabel, appName, err)
-		}
+		filtersArgs.Add(`label`, appLabel+`=`+appName)
 	} else if !isAdmin(user) {
-		if _, err := filters.ParseFlag(`label=`+ownerLabel+`=`+user.Username, *filtersArgs); err != nil {
-			return fmt.Errorf(`[%s] Error while parsing label for label=%s=%s: %v`, user.Username, ownerLabel, user.Username, err)
-		}
+		filtersArgs.Add(`label`, ownerLabel+`=`+user.Username)
 	}
 
 	return nil
 }
 
-func healthyStatusFilters(user *auth.User, filtersArgs *filters.Args, containersIds []string) error {
-	if _, err := filters.ParseFlag(`event=health_status: healthy`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=health_status: healthy: %v`, user.Username, err)
-	}
+func healthyStatusFilters(filtersArgs *filters.Args, containersIds []string) {
+	filtersArgs.Add(`event`, `health_status: healthy`)
 
 	for _, container := range containersIds {
-		if _, err := filters.ParseFlag(`container=`+container, *filtersArgs); err != nil {
-			return fmt.Errorf(`[%s] Error while parsing label for container=%s: %v`, user.Username, container, err)
-		}
+		filtersArgs.Add(`container`, container)
 	}
-
-	return nil
 }
 
-func eventFilters(user *auth.User, filtersArgs *filters.Args) error {
-	if _, err := filters.ParseFlag(`event=create`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=create: %v`, user.Username, err)
-	}
-	if _, err := filters.ParseFlag(`event=start`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=start: %v`, user.Username, err)
-	}
-	if _, err := filters.ParseFlag(`event=stop`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=stop: %v`, user.Username, err)
-	}
-	if _, err := filters.ParseFlag(`event=restart`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=restart: %v`, user.Username, err)
-	}
-	if _, err := filters.ParseFlag(`event=rename`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=rename: %v`, user.Username, err)
-	}
-	if _, err := filters.ParseFlag(`event=update`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=update: %v`, user.Username, err)
-	}
-	if _, err := filters.ParseFlag(`event=destroy`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=destroy: %v`, user.Username, err)
-	}
-	if _, err := filters.ParseFlag(`event=die`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=die: %v`, user.Username, err)
-	}
-	if _, err := filters.ParseFlag(`event=kill`, *filtersArgs); err != nil {
-		return fmt.Errorf(`[%s] Error while parsing label for event=kill: %v`, user.Username, err)
-	}
-
-	return nil
+func eventFilters(filtersArgs *filters.Args) {
+	filtersArgs.Add(`event`, `create`)
+	filtersArgs.Add(`event`, `start`)
+	filtersArgs.Add(`event`, `stop`)
+	filtersArgs.Add(`event`, `restart`)
+	filtersArgs.Add(`event`, `rename`)
+	filtersArgs.Add(`event`, `update`)
+	filtersArgs.Add(`event`, `destroy`)
+	filtersArgs.Add(`event`, `die`)
+	filtersArgs.Add(`event`, `kill`)
 }
