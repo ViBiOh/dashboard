@@ -22,7 +22,7 @@ func listContainers(user *auth.User, appName string) ([]types.Container, error) 
 	options := types.ContainerListOptions{All: true}
 
 	options.Filters = filters.NewArgs()
-	if err := labelFilters(&options.Filters, user, appName); err != nil {
+	if err := labelFilters(user, &options.Filters, appName); err != nil {
 		return nil, err
 	}
 

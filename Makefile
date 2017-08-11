@@ -3,6 +3,7 @@ default: deps fmt lint tst build
 deps:
 	go get -u golang.org/x/tools/cmd/goimports
 	go get -u github.com/golang/lint/golint
+	go get -u github.com/docker/docker/client
 	go get -u github.com/docker/docker/api/types
 	go get -u github.com/docker/docker/api/types/container
 	go get -u github.com/docker/docker/api/types/filters
@@ -13,7 +14,6 @@ deps:
 	go get -u github.com/ViBiOh/httputils/cors
 	go get -u github.com/ViBiOh/httputils/owasp
 	go get -u github.com/ViBiOh/alcotest/alcotest
-	go get -u github.com/docker/docker/client
 	go get -u github.com/gorilla/websocket
 	go get -u golang.org/x/crypto/bcrypt
 	go get -u golang.org/x/oauth2

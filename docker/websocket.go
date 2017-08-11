@@ -103,12 +103,12 @@ func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	defer cancel()
 
 	filtersArgs := filters.NewArgs()
-	if err := labelFilters(&filtersArgs, user, ``); err != nil {
-		log.Printf(`[%s] Events opening in error: %v`, user.Username, err)
+	if err := labelFilters(user, &filtersArgs, ``); err != nil {
+		log.Printf(`[%s] Error while adding label filters: %v`, user.Username, err)
 		return
 	}
-	if err := eventFilters(&filtersArgs); err != nil {
-		log.Printf(`[%s] Events opening in error: %v`, user.Username, err)
+	if err := eventFilters(user, &filtersArgs); err != nil {
+		log.Printf(`[%s] Error while adding events filters: %v`, user.Username, err)
 		return
 	}
 

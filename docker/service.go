@@ -11,14 +11,11 @@ import (
 	"github.com/docker/docker/api/types/swarm"
 )
 
-const ownerLabel = `owner`
-const appLabel = `app`
-
 func listServices(user *auth.User, appName string) ([]swarm.Service, error) {
 	options := types.ServiceListOptions{}
 
 	options.Filters = filters.NewArgs()
-	if err := labelFilters(&options.Filters, user, appName); err != nil {
+	if err := labelFilters(user, &options.Filters, appName); err != nil {
 		return nil, err
 	}
 
