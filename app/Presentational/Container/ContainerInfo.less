@@ -9,10 +9,19 @@
   flex-wrap: wrap;
 }
 
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .pastille {
+  .ellipsis;
+
   border-radius: 0.2rem;
   color: @white;
   display: inline-block;
+  max-width: calc(100vw - 1rem);
   padding: 0.8rem;
 }
 
@@ -30,14 +39,14 @@
 .container h2,
 .container h3 {
   margin-bottom: 0;
-  padding-left: 0.4rem;
+  padding: 0.1rem;
   width: 100%;
 }
 
 .container h2 {
   border: 0;
   margin: 0;
-  padding: 0 0 0 0.2rem;
+  padding: 0.1rem;
   text-align: center;
 }
 
