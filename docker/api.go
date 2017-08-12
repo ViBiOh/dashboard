@@ -69,17 +69,11 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath []byte, u
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
 		basicActionHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], deleteAction)
 	} else if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
-		if composeBody, err := readBody(r.Body); err != nil {
+		if composeBody, err := httputils.ReadBody(r.Body); err != nil {
 			httputils.InternalServer(w, err)
 		} else {
 			composeHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], composeBody)
 		}
-	}
-}
-
-func servicesHandler(w http.ResponseWriter, r *http.Request, urlPath []byte, user *auth.User) {
-	if listServicesRequest.Match(urlPath) && r.Method == http.MethodGet {
-		listServicesHandler(w, user)
 	}
 }
 

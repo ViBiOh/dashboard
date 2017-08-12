@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -57,21 +58,20 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		defer ws.Close()
-		return nil, nil, err
+		return nil, nil, fmt.Errorf(`Error while upgrading connection: %v`, err)
 	}
 
 	_, basicAuth, err := ws.ReadMessage()
 	if err != nil {
 		defer ws.Close()
-		return nil, nil, err
+		return nil, nil, fmt.Errorf(`Error while reading authentification message: %v`, err)
 	}
 
 	user, err := auth.IsAuthenticatedByAuth(string(basicAuth))
 	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
-
 		defer ws.Close()
-		return nil, nil, err
+		return nil, nil, fmt.Errorf(`Error while checking authentification: %v`, err)
 	}
 
 	return ws, user, nil
@@ -103,11 +103,8 @@ func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	defer cancel()
 
 	filtersArgs := filters.NewArgs()
+	labelFilters(user, &filtersArgs, ``)
 	eventFilters(&filtersArgs)
-	if err := labelFilters(user, &filtersArgs, ``); err != nil {
-		log.Printf(`[%s] Error while adding label filters: %v`, user.Username, err)
-		return
-	}
 
 	messages, errors := docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
 

@@ -34,18 +34,12 @@ func Init() error {
 	return nil
 }
 
-func labelFilters(user *auth.User, filtersArgs *filters.Args, appName string) error {
-	if user == nil {
-		return fmt.Errorf(`Unable to add label filters without user`)
-	}
-
+func labelFilters(user *auth.User, filtersArgs *filters.Args, appName string) {
 	if appName != `` && isMultiApp(user) {
 		filtersArgs.Add(`label`, appLabel+`=`+appName)
 	} else if !isAdmin(user) {
 		filtersArgs.Add(`label`, ownerLabel+`=`+user.Username)
 	}
-
-	return nil
 }
 
 func healthyStatusFilters(filtersArgs *filters.Args, containersIds []string) {

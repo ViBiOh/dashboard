@@ -1,7 +1,6 @@
 package docker
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
@@ -11,40 +10,29 @@ import (
 
 func TestLabelFilters(t *testing.T) {
 	var tests = []struct {
-		user    *auth.User
-		app     string
-		want    string
-		wantErr error
+		user *auth.User
+		app  string
+		want []string
 	}{
 		{
-			nil,
-			``,
-			``,
-			fmt.Errorf(`Unable to add label filters without user`),
-		},
-		{
 			auth.NewUser(`admin`, `admin`),
-			``,
 			``,
 			nil,
 		},
 		{
 			auth.NewUser(`guest`, `guest`),
 			``,
-			`owner=guest`,
-			nil,
+			[]string{`owner=guest`},
 		},
 		{
 			auth.NewUser(`admin`, `admin`),
 			`test`,
-			`app=test`,
-			nil,
+			[]string{`app=test`},
 		},
 		{
 			auth.NewUser(`guest`, `guest`),
 			`test`,
-			`owner=guest`,
-			nil,
+			[]string{`owner=guest`},
 		},
 	}
 
@@ -52,24 +40,19 @@ func TestLabelFilters(t *testing.T) {
 
 	for _, test := range tests {
 		filters := filters.NewArgs()
-		err := labelFilters(test.user, &filters, test.app)
-
-		result := strings.Join(filters.Get(`label`), `,`)
+		labelFilters(test.user, &filters, test.app)
+		rawResult := filters.Get(`label`)
 
 		failed = false
-
-		if err == nil && test.wantErr != nil {
-			failed = true
-		} else if err != nil && test.wantErr == nil {
-			failed = true
-		} else if err != nil && err.Error() != test.wantErr.Error() {
-			failed = true
-		} else if result != test.want {
-			failed = true
+		result := strings.Join(rawResult, `,`)
+		for _, filter := range test.want {
+			if !strings.Contains(result, filter) {
+				failed = true
+			}
 		}
 
-		if failed {
-			t.Errorf(`labelFilters(%v, %v) = (%v, %v), want (%v, %v)`, test.user, test.app, result, err, test.want, test.wantErr)
+		if len(rawResult) != len(test.want) || failed {
+			t.Errorf(`labelFilters(%v, %v) = %v, want %v`, test.user, test.app, result, test.want)
 		}
 	}
 }
@@ -98,8 +81,8 @@ func TestHealthyStatusFilters(t *testing.T) {
 		rawResult := filters.Get(`container`)
 
 		result := strings.Join(rawResult, `,`)
-		for _, event := range test.want {
-			if !strings.Contains(result, event) {
+		for _, filter := range test.want {
+			if !strings.Contains(result, filter) {
 				failed = true
 			}
 		}
@@ -128,8 +111,8 @@ func TestEventFilters(t *testing.T) {
 
 		failed = false
 		result := strings.Join(rawResult, `,`)
-		for _, event := range test.want {
-			if !strings.Contains(result, event) {
+		for _, filter := range test.want {
+			if !strings.Contains(result, filter) {
 				failed = true
 			}
 		}

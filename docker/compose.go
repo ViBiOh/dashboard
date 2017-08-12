@@ -139,14 +139,12 @@ func pullImage(image string, user *auth.User) error {
 		image = image + defaultTag
 	}
 
-	log.Printf(`[%s] Starting pull of image %s`, user.Username, image)
 	pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
 	if err != nil {
-		return fmt.Errorf(`[%s] Error while pulling image: %v`, user.Username, err)
+		return fmt.Errorf(`Error while pulling image: %v`, err)
 	}
 
-	readBody(pull)
-	log.Printf(`[%s] Ending pull of image %s`, user.Username, image)
+	httputils.ReadBody(pull)
 	return nil
 }
 
@@ -165,7 +163,7 @@ func cleanContainers(containers []types.Container, user *auth.User) {
 func renameDeployedContainers(containers map[string]*deployedService, user *auth.User) error {
 	for service, container := range containers {
 		if err := docker.ContainerRename(context.Background(), container.ID, getFinalName(container.Name)); err != nil {
-			return fmt.Errorf(`[%s] Error while renaming container %s: %v`, user.Username, service, err)
+			return fmt.Errorf(`Error while renaming container %s: %v`, service, err)
 		}
 	}
 
@@ -205,10 +203,9 @@ func deleteServices(appName []byte, services map[string]*deployedService, user *
 }
 
 func startServices(appName []byte, services map[string]*deployedService, user *auth.User) error {
-	log.Printf(`[%s] Starting services for %s`, user.Username, appName)
 	for service, container := range services {
 		if err := startContainer(container.ID); err != nil {
-			return fmt.Errorf(`[%s] Error while starting service %s for %s: %v`, user.Username, service, appName, err)
+			return fmt.Errorf(`Error while starting service %s for %s: %v`, service, appName, err)
 		}
 	}
 
@@ -275,13 +272,10 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 		backgroundMutex.Lock()
 		defer backgroundMutex.Unlock()
 
-		backgroundTasks[string(appName)] = false
+		delete(backgroundTasks, string(appName))
 	}()
 
-	log.Printf(`[%s] Waiting for %s to start...`, user.Username, appName)
-
 	if areContainersHealthy(ctx, user, appName, inspectServices(services, user)) {
-		log.Printf(`[%s] Health check succeeded for %s`, user.Username, appName)
 		cleanContainers(oldContainers, user)
 
 		if err := renameDeployedContainers(services, user); err != nil {
@@ -289,9 +283,8 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 		}
 		log.Printf(`[%s] Succeeded to deploy %s`, user.Username, appName)
 	} else {
-		log.Printf(`[%s] Health check failed for %s`, user.Username, appName)
 		deleteServices(appName, services, user)
-		log.Printf(`[%s] Failed to deploy %s`, user.Username, appName)
+		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, fmt.Errorf(`[Health check failed`))
 	}
 }
 
@@ -301,27 +294,25 @@ func createContainer(user *auth.User, appName []byte, serviceName string, servic
 	}
 
 	serviceFullName := getServiceFullName(string(appName), serviceName)
-	log.Printf(`[%s] Creating service %s for %s`, user.Username, serviceName, appName)
 
 	createdContainer, err := docker.ContainerCreate(context.Background(), getConfig(service, user, string(appName)), getHostConfig(service), getNetworkConfig(service, services), serviceFullName)
 	if err != nil {
-		err = fmt.Errorf(`[%s] Error while creating service %s for %s: %v`, user.Username, serviceName, appName, err)
-		return nil, err
+		return nil, fmt.Errorf(`Error while creating service %s for %s: %v`, serviceName, appName, err)
 	}
 
 	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
 }
 
 func composeFailed(w http.ResponseWriter, user *auth.User, appName []byte, err error) {
-	httputils.InternalServer(w, err)
-	if err != nil {
-		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err)
-	} else {
-		log.Printf(`[%s] Failed to deploy %s`, user.Username, appName)
-	}
+	httputils.InternalServer(w, fmt.Errorf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err))
 }
 
 func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
+	if user == nil {
+		httputils.BadRequest(w, fmt.Errorf(`A user is required`))
+		return
+	}
+
 	if len(appName) == 0 || len(composeFile) == 0 {
 		httputils.BadRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
 		return
@@ -329,14 +320,14 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 
 	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		httputils.InternalServer(w, fmt.Errorf(`[%s] Error while unmarshalling compose file: %v`, user.Username, err))
+		httputils.BadRequest(w, fmt.Errorf(`[%s] Error while unmarshalling compose file: %v`, user.Username, err))
 		return
 	}
 
 	appNameStr := string(appName)
-	backgroundMutex.Lock()
 
-	if value, ok := backgroundTasks[appNameStr]; ok && value {
+	backgroundMutex.Lock()
+	if _, ok := backgroundTasks[appNameStr]; ok {
 		backgroundMutex.Unlock()
 		composeFailed(w, user, appName, fmt.Errorf(`Application already in deployment`))
 		return
@@ -344,8 +335,6 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 
 	backgroundTasks[appNameStr] = true
 	backgroundMutex.Unlock()
-
-	log.Printf(`[%s] Deploying %s`, user.Username, appName)
 
 	oldContainers, err := listContainers(user, appNameStr)
 	if err != nil {

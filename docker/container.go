@@ -3,8 +3,6 @@ package docker
 import (
 	"context"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/ViBiOh/dashboard/auth"
@@ -22,9 +20,7 @@ func listContainers(user *auth.User, appName string) ([]types.Container, error) 
 	options := types.ContainerListOptions{All: true}
 
 	options.Filters = filters.NewArgs()
-	if err := labelFilters(user, &options.Filters, appName); err != nil {
-		return nil, err
-	}
+	labelFilters(user, &options.Filters, appName)
 
 	return docker.ContainerList(context.Background(), options)
 }
@@ -51,8 +47,7 @@ func rmContainer(containerID string) error {
 		return fmt.Errorf(`Error while inspecting containers: %v`, err)
 	}
 
-	err = docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true})
-	if err != nil {
+	if err := docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
 		return fmt.Errorf(`Error while removing containers: %v`, err)
 	}
 
@@ -60,9 +55,11 @@ func rmContainer(containerID string) error {
 }
 
 func rmImages(imageID string) error {
-	_, err := docker.ImageRemove(context.Background(), imageID, types.ImageRemoveOptions{})
+	if _, err := docker.ImageRemove(context.Background(), imageID, types.ImageRemoveOptions{}); err != nil {
+		return fmt.Errorf(`Error while removing images: %v`, err)
+	}
 
-	return err
+	return nil
 }
 
 func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
@@ -93,17 +90,14 @@ func getAction(action string) func(string) error {
 func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID []byte, action string) {
 	id := string(containerID)
 
-	allowed, err := isAllowed(user, id)
-	if !allowed {
+	if allowed, err := isAllowed(user, id); err != nil {
+		httputils.InternalServer(w, err)
+	} else if !allowed {
 		httputils.Forbidden(w)
-	} else if err != nil {
+	} else if err = getAction(action)(id); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		if err = getAction(action)(id); err != nil {
-			httputils.InternalServer(w, err)
-		} else {
-			w.Write(nil)
-		}
+		w.Write(nil)
 	}
 }
 
@@ -113,9 +107,4 @@ func listContainersHandler(w http.ResponseWriter, user *auth.User) {
 	} else {
 		httputils.ResponseArrayJSON(w, containers)
 	}
-}
-
-func readBody(body io.ReadCloser) ([]byte, error) {
-	defer body.Close()
-	return ioutil.ReadAll(body)
 }
