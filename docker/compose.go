@@ -50,7 +50,7 @@ type deployedService struct {
 }
 
 func getConfig(service *dockerComposeService, user *auth.User, appName string) *container.Config {
-	environments := make([]string, len(service.Environment))
+	environments := make([]string, 0, len(service.Environment))
 	for key, value := range service.Environment {
 		environments = append(environments, key+`=`+value)
 	}
