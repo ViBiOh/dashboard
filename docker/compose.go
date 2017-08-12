@@ -90,7 +90,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	}
 
 	if service.ReadOnly {
-		hostConfig.ReadonlyRootfs = service.ReadOnly
+		hostConfig.ReadonlyRootfs = true
 	}
 
 	if service.CPUShares != 0 {
@@ -115,7 +115,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices map[string
 		linkParts := strings.Split(link, linkSeparator)
 
 		target := linkParts[0]
-		if linkedService, ok := (deployedServices)[target]; ok {
+		if linkedService, ok := deployedServices[target]; ok {
 			target = getFinalName(linkedService.Name)
 		}
 
