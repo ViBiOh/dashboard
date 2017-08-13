@@ -196,7 +196,7 @@ func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.
 func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	ws, user, err := upgradeAndAuth(w, r)
 	if err != nil {
-		log.Print(err)
+		log.Printf(`Error while upgrading connection to websocket: %v`, err)
 		return
 	}
 	defer ws.Close()

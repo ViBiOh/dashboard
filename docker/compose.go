@@ -186,12 +186,10 @@ func pullImage(image string, user *auth.User) error {
 
 func cleanContainers(containers []types.Container, user *auth.User) {
 	for _, container := range containers {
-		log.Printf(`[%s] Stopping containers %s`, user.Username, strings.Join(container.Names, `, `))
 		stopContainer(container.ID)
 	}
 
 	for _, container := range containers {
-		log.Printf(`[%s] Deleting containers %s`, user.Username, strings.Join(container.Names, `, `))
 		rmContainer(container.ID)
 	}
 }
@@ -215,7 +213,6 @@ func getFinalName(serviceFullName string) string {
 }
 
 func deleteServices(appName []byte, services map[string]*deployedService, user *auth.User) {
-	log.Printf(`[%s] Deleting services for %s`, user.Username, appName)
 	for service, container := range services {
 		if infos, err := inspectContainer(container.ID); err != nil {
 			log.Printf(`[%s] Error while inspecting service %s for %s: %v`, user.Username, service, appName, err)
@@ -292,8 +289,6 @@ func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, 
 			return false
 		case message := <-messages:
 			healthyContainers[message.ID] = true
-			log.Printf(`[%s] Container %s for %s is healthy`, user.Username, appName, message.From)
-
 			if len(healthyContainers) == len(containersIdsWithHealthcheck) {
 				return true
 			}
@@ -317,9 +312,8 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 		cleanContainers(oldContainers, user)
 
 		if err := renameDeployedContainers(services, user); err != nil {
-			log.Print(err)
+			log.Printf(`Error while renaming deployed containers: %v`, err)
 		}
-		log.Printf(`[%s] Succeeded to deploy %s`, user.Username, appName)
 	} else {
 		deleteServices(appName, services, user)
 		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, fmt.Errorf(`[Health check failed`))
