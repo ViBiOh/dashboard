@@ -15,6 +15,7 @@ func TestGetConfig(t *testing.T) {
 		user    *auth.User
 		appName string
 		want    *container.Config
+		wantErr error
 	}{
 		{
 			&dockerComposeService{},
@@ -24,6 +25,7 @@ func TestGetConfig(t *testing.T) {
 				Labels: map[string]string{`owner`: `admin`, `app`: `test`},
 				Env:    []string{},
 			},
+			nil,
 		},
 		{
 			&dockerComposeService{
@@ -40,12 +42,29 @@ func TestGetConfig(t *testing.T) {
 				Env:    []string{`PATH=/usr/bin`},
 				Cmd:    []string{`entrypoint.sh`, `start`},
 			},
+			nil,
 		},
 	}
 
+	var failed bool
+
 	for _, test := range tests {
-		if result := getConfig(test.service, test.user, test.appName); !reflect.DeepEqual(result, test.want) {
-			t.Errorf(`getConfig(%v, %v, %v) = %v, want %v`, test.service, test.user, test.appName, result, test.want)
+		result, err := getConfig(test.service, test.user, test.appName)
+
+		failed = false
+
+		if err == nil && test.wantErr != nil {
+			failed = true
+		} else if err != nil && test.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != test.wantErr.Error() {
+			failed = true
+		} else if !reflect.DeepEqual(result, test.want) {
+			failed = true
+		}
+
+		if failed {
+			t.Errorf(`getConfig(%v, %v, %v) = (%v, %v), want (%v, %v)`, test.service, test.user, test.appName, result, err, test.want, test.wantErr)
 		}
 	}
 }

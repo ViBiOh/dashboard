@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	yaml "gopkg.in/yaml.v2"
 
@@ -27,6 +28,13 @@ const linkSeparator = `:`
 
 var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
+type dockerComposeHealthcheck struct {
+	Test     []string
+	Interval string
+	Timeout  string
+	Retries  int
+}
+
 type dockerComposeService struct {
 	Image       string
 	Command     []string
@@ -34,6 +42,7 @@ type dockerComposeService struct {
 	Labels      map[string]string
 	Links       []string
 	Ports       []string
+	Healthcheck *dockerComposeHealthcheck
 	ReadOnly    bool  `yaml:"read_only"`
 	CPUShares   int64 `yaml:"cpu_shares"`
 	MemoryLimit int64 `yaml:"mem_limit"`
@@ -49,7 +58,7 @@ type deployedService struct {
 	Name string
 }
 
-func getConfig(service *dockerComposeService, user *auth.User, appName string) *container.Config {
+func getConfig(service *dockerComposeService, user *auth.User, appName string) (*container.Config, error) {
 	environments := make([]string, 0, len(service.Environment))
 	for key, value := range service.Environment {
 		environments = append(environments, key+`=`+value)
@@ -72,7 +81,39 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) *
 		config.Cmd = service.Command
 	}
 
-	return &config
+	if service.Healthcheck != nil {
+		healthconfig := container.HealthConfig{}
+
+		if len(service.Healthcheck.Test) > 0 {
+			healthconfig.Test = service.Healthcheck.Test
+		}
+
+		if service.Healthcheck.Retries != 0 {
+			healthconfig.Retries = service.Healthcheck.Retries
+		}
+
+		if service.Healthcheck.Interval != `` {
+			interval, err := time.ParseDuration(service.Healthcheck.Interval)
+			if err != nil {
+				return nil, fmt.Errorf(`Error while parsing healthcheck interval: %v`, err)
+			}
+
+			healthconfig.Interval = interval
+		}
+
+		if service.Healthcheck.Timeout != `` {
+			timeout, err := time.ParseDuration(service.Healthcheck.Timeout)
+			if err != nil {
+				return nil, fmt.Errorf(`Error while parsing healthcheck timeout: %v`, err)
+			}
+
+			healthconfig.Timeout = timeout
+		}
+
+		config.Healthcheck = &healthconfig
+	}
+
+	return &config, nil
 }
 
 func getHostConfig(service *dockerComposeService) *container.HostConfig {
@@ -297,7 +338,12 @@ func createContainer(user *auth.User, appName []byte, serviceName string, servic
 
 	serviceFullName := getServiceFullName(string(appName), serviceName)
 
-	createdContainer, err := docker.ContainerCreate(context.Background(), getConfig(service, user, string(appName)), getHostConfig(service), getNetworkConfig(service, services), serviceFullName)
+	config, err := getConfig(service, user, string(appName))
+	if err != nil {
+		return nil, fmt.Errorf(`Error while getting config: %v`, err)
+	}
+
+	createdContainer, err := docker.ContainerCreate(context.Background(), config, getHostConfig(service), getNetworkConfig(service, services), serviceFullName)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while creating service %s for %s: %v`, serviceName, appName, err)
 	}
