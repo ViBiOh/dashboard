@@ -82,14 +82,9 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) (
 	}
 
 	if service.Healthcheck != nil {
-		healthconfig := container.HealthConfig{}
-
-		if len(service.Healthcheck.Test) > 0 {
-			healthconfig.Test = service.Healthcheck.Test
-		}
-
-		if service.Healthcheck.Retries != 0 {
-			healthconfig.Retries = service.Healthcheck.Retries
+		healthconfig := container.HealthConfig{
+			Test:    service.Healthcheck.Test,
+			Retries: service.Healthcheck.Retries,
 		}
 
 		if service.Healthcheck.Interval != `` {

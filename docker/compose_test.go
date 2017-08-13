@@ -1,8 +1,10 @@
 package docker
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/docker/docker/api/types/container"
@@ -17,6 +19,29 @@ func TestGetConfig(t *testing.T) {
 		want    *container.Config
 		wantErr error
 	}{
+		{
+			&dockerComposeService{
+				Healthcheck: &dockerComposeHealthcheck{
+					Interval: `abcd`,
+				},
+			},
+			auth.NewUser(`admin`, `admin`),
+			`test`,
+			nil,
+			fmt.Errorf(`Error while parsing healthcheck interval: time: invalid duration abcd`),
+		},
+		{
+			&dockerComposeService{
+				Healthcheck: &dockerComposeHealthcheck{
+					Interval: `30s`,
+					Timeout:  `abcd`,
+				},
+			},
+			auth.NewUser(`admin`, `admin`),
+			`test`,
+			nil,
+			fmt.Errorf(`Error while parsing healthcheck timeout: time: invalid duration abcd`),
+		},
 		{
 			&dockerComposeService{},
 			auth.NewUser(`admin`, `admin`),
@@ -33,6 +58,12 @@ func TestGetConfig(t *testing.T) {
 				Environment: map[string]string{`PATH`: `/usr/bin`},
 				Labels:      map[string]string{`CUSTOM_LABEL`: `testing`},
 				Command:     []string{`entrypoint.sh`, `start`},
+				Healthcheck: &dockerComposeHealthcheck{
+					Test:     []string{`CMD`, `alcotest`},
+					Retries:  10,
+					Interval: `30s`,
+					Timeout:  `10s`,
+				},
 			},
 			auth.NewUser(`admin`, `admin`),
 			`test`,
@@ -41,6 +72,12 @@ func TestGetConfig(t *testing.T) {
 				Labels: map[string]string{`CUSTOM_LABEL`: `testing`, `owner`: `admin`, `app`: `test`},
 				Env:    []string{`PATH=/usr/bin`},
 				Cmd:    []string{`entrypoint.sh`, `start`},
+				Healthcheck: &container.HealthConfig{
+					Test:     []string{`CMD`, `alcotest`},
+					Retries:  10,
+					Interval: time.Second * 30,
+					Timeout:  time.Second * 10,
+				},
 			},
 			nil,
 		},
