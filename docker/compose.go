@@ -185,6 +185,8 @@ func deleteServices(appName []byte, services map[string]*deployedService, user *
 			log.Printf(`[%s] Error while inspecting service %s for %s: %v`, user.Username, service, appName, err)
 		} else if infos.State.Health != nil {
 			logs := make([]string, 0)
+
+			logs = append(logs, "\n")
 			for _, log := range infos.State.Health.Log {
 				logs = append(logs, log.Output)
 			}
