@@ -28,6 +28,14 @@ var containerActionRequest = regexp.MustCompile(`^containers/([^/]+)/([^/]+)`)
 var servicesRequest = regexp.MustCompile(`^services`)
 var listServicesRequest = regexp.MustCompile(`^services/?$`)
 
+func getCtx() (context.Context, context.CancelFunc) {
+	return context.WithTimeout(context.Background(), 30*time.Second)
+}
+
+func getGracefulCtx() (context.Context, context.CancelFunc) {
+	return context.WithTimeout(context.Background(), DeployTimeout)
+}
+
 // CanBeGracefullyClosed indicates if application can terminate safely
 func CanBeGracefullyClosed() bool {
 	backgroundMutex.RLock()
@@ -51,7 +59,10 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func infoHandler(w http.ResponseWriter) {
-	if info, err := docker.Info(context.Background()); err != nil {
+	ctx, cancel := getCtx()
+	defer cancel()
+
+	if info, err := docker.Info(ctx); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
 		httputils.ResponseJSON(w, info)

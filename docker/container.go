@@ -1,7 +1,6 @@
 package docker
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -22,23 +21,38 @@ func listContainers(user *auth.User, appName string) ([]types.Container, error) 
 	options.Filters = filters.NewArgs()
 	labelFilters(user, &options.Filters, appName)
 
-	return docker.ContainerList(context.Background(), options)
+	ctx, cancel := getCtx()
+	defer cancel()
+
+	return docker.ContainerList(ctx, options)
 }
 
 func inspectContainer(containerID string) (types.ContainerJSON, error) {
-	return docker.ContainerInspect(context.Background(), containerID)
+	ctx, cancel := getCtx()
+	defer cancel()
+
+	return docker.ContainerInspect(ctx, containerID)
 }
 
 func startContainer(containerID string) error {
-	return docker.ContainerStart(context.Background(), string(containerID), types.ContainerStartOptions{})
+	ctx, cancel := getCtx()
+	defer cancel()
+
+	return docker.ContainerStart(ctx, string(containerID), types.ContainerStartOptions{})
 }
 
 func stopContainer(containerID string) error {
-	return docker.ContainerStop(context.Background(), containerID, nil)
+	ctx, cancel := getGracefulCtx()
+	defer cancel()
+
+	return docker.ContainerStop(ctx, containerID, nil)
 }
 
 func restartContainer(containerID string) error {
-	return docker.ContainerRestart(context.Background(), containerID, nil)
+	ctx, cancel := getCtx()
+	defer cancel()
+
+	return docker.ContainerRestart(ctx, containerID, nil)
 }
 
 func rmContainer(containerID string) error {
@@ -47,7 +61,10 @@ func rmContainer(containerID string) error {
 		return fmt.Errorf(`Error while inspecting containers: %v`, err)
 	}
 
-	if err := docker.ContainerRemove(context.Background(), containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
+	ctx, cancel := getCtx()
+	defer cancel()
+
+	if err := docker.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
 		return fmt.Errorf(`Error while removing containers: %v`, err)
 	}
 
@@ -55,7 +72,10 @@ func rmContainer(containerID string) error {
 }
 
 func rmImages(imageID string) error {
-	if _, err := docker.ImageRemove(context.Background(), imageID, types.ImageRemoveOptions{}); err != nil {
+	ctx, cancel := getCtx()
+	defer cancel()
+
+	if _, err := docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{}); err != nil {
 		return fmt.Errorf(`Error while removing images: %v`, err)
 	}
 

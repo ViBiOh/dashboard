@@ -1,7 +1,6 @@
 package docker
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -18,7 +17,10 @@ func listServices(user *auth.User, appName string) ([]swarm.Service, error) {
 	options.Filters = filters.NewArgs()
 	labelFilters(user, &options.Filters, appName)
 
-	return docker.ServiceList(context.Background(), options)
+	ctx, cancel := getCtx()
+	defer cancel()
+
+	return docker.ServiceList(ctx, options)
 }
 
 func listServicesHandler(w http.ResponseWriter, user *auth.User) {

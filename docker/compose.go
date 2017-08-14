@@ -175,7 +175,10 @@ func pullImage(image string, user *auth.User) error {
 		image = image + defaultTag
 	}
 
-	pull, err := docker.ImagePull(context.Background(), image, types.ImagePullOptions{})
+	ctx, cancel := getGracefulCtx()
+	defer cancel()
+
+	pull, err := docker.ImagePull(ctx, image, types.ImagePullOptions{})
 	if err != nil {
 		return fmt.Errorf(`Error while pulling image: %v`, err)
 	}
@@ -195,8 +198,11 @@ func cleanContainers(containers []types.Container, user *auth.User) {
 }
 
 func renameDeployedContainers(containers map[string]*deployedService, user *auth.User) error {
+	ctx, cancel := getCtx()
+	defer cancel()
+
 	for service, container := range containers {
-		if err := docker.ContainerRename(context.Background(), container.ID, getFinalName(container.Name)); err != nil {
+		if err := docker.ContainerRename(ctx, container.ID, getFinalName(container.Name)); err != nil {
 			return fmt.Errorf(`Error while renaming container %s: %v`, service, err)
 		}
 	}
@@ -332,7 +338,10 @@ func createContainer(user *auth.User, appName []byte, serviceName string, servic
 		return nil, fmt.Errorf(`Error while getting config: %v`, err)
 	}
 
-	createdContainer, err := docker.ContainerCreate(context.Background(), config, getHostConfig(service), getNetworkConfig(service, services), serviceFullName)
+	ctx, cancel := getCtx()
+	defer cancel()
+
+	createdContainer, err := docker.ContainerCreate(ctx, config, getHostConfig(service), getNetworkConfig(service, services), serviceFullName)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while creating service %s for %s: %v`, serviceName, appName, err)
 	}
