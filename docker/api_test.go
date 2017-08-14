@@ -1,7 +1,11 @@
 package docker
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
+
+	"github.com/docker/docker/client"
 )
 
 func TestCanBeGracefullyClosed(t *testing.T) {
@@ -24,6 +28,34 @@ func TestCanBeGracefullyClosed(t *testing.T) {
 
 		if result := CanBeGracefullyClosed(); result != test.want {
 			t.Errorf(`CanBeGracefullyClosed() = %v, want %v, for %v`, result, test.want, test.backgroundTasks)
+		}
+	}
+}
+
+func TestHealthHandler(t *testing.T) {
+	testDocker, _ := client.NewEnvClient()
+
+	var tests = []struct {
+		docker *client.Client
+		want   int
+	}{
+		{
+			nil,
+			http.StatusServiceUnavailable,
+		},
+		{
+			testDocker,
+			http.StatusOK,
+		},
+	}
+
+	for _, test := range tests {
+		docker = test.docker
+		w := httptest.NewRecorder()
+		healthHandler(w, nil)
+
+		if result := w.Result().StatusCode; result != test.want {
+			t.Errorf(`healthHandler() = %v, want %v, with docker=%v`, result, test.want, test.docker)
 		}
 	}
 }

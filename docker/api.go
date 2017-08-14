@@ -45,7 +45,7 @@ func CanBeGracefullyClosed() bool {
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	if docker != nil {
 		w.WriteHeader(http.StatusOK)
-	} else if docker == nil {
+	} else {
 		w.WriteHeader(http.StatusServiceUnavailable)
 	}
 }
