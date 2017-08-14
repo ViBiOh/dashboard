@@ -1,6 +1,8 @@
 package docker
 
 import (
+	"fmt"
+
 	"github.com/ViBiOh/dashboard/auth"
 )
 
@@ -31,7 +33,7 @@ func isAllowed(user *auth.User, containerID string) (bool, error) {
 	if !isAdmin(user) {
 		container, err := inspectContainer(string(containerID))
 		if err != nil {
-			return false, err
+			return false, fmt.Errorf(`Error while inspecting container: %v`, err)
 		}
 
 		owner, ok := container.Config.Labels[ownerLabel]
