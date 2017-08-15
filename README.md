@@ -11,7 +11,7 @@ Docker infrastructure management with security and simplicity as goals. It allow
 
 ## Docker
 
-Docker's images are available, `vibioh/dashboard-front`, `vibioh/dashboard-auth` and `vibioh/dashboard-api`, and a sample `docker-compose.yml`. Everything is almost configured, you only have to tweak domain's name, mainly configured for being used with [traefik](https://traefik.io), and adjust some secrets.
+Docker's images are available, `vibioh/dashboard-front` and `vibioh/dashboard-api`, and a sample `docker-compose.yml`. Everything is almost configured, you only have to tweak domain's name, mainly configured for being used with [traefik](https://traefik.io), and adjust some secrets.
 
 ## Websocket
 
@@ -33,7 +33,11 @@ Role can be `admin`, `multi` or anything else.
 * `multi` : View only his containers (labeled with his name) and can deploy multiples apps.
 * others : View only his containers (labeled with his name) and can deploy only one app (erase all previously deployed containers)
 
-## GitHub OAuth Provider
+## Authentification
+
+Authentification has been externalized into its own services in [vibioh/auth](githuh.com/vibioh/auth). Check out this project for configuring authentification for Dashboard.
+
+### GitHub OAuth Provider
 
 Create your OAuth app on [GitHub interface](https://github.com/settings/developers). The authorization callback URL must be in the form of `https://[URL_OF_DASHBOARD]/auth/github`.
 
