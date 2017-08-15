@@ -35,7 +35,7 @@ Role can be `admin`, `multi` or anything else.
 
 ## Authentification
 
-Authentification has been externalized into its own services in [vibioh/auth](githuh.com/vibioh/auth). Check out this project for configuring authentification for Dashboard.
+Authentification has been externalized into its own services in [vibioh/auth](https://github.com/vibioh/auth). Check out this project for configuring authentification for Dashboard.
 
 ### GitHub OAuth Provider
 
