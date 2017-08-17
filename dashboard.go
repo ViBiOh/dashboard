@@ -15,13 +15,13 @@ import (
 	"github.com/ViBiOh/httputils"
 	"github.com/ViBiOh/httputils/cors"
 	"github.com/ViBiOh/httputils/owasp"
+	"github.com/ViBiOh/httputils/prometheus"
 )
 
 const port = `1080`
-const restPrefix = `/`
 const websocketPrefix = `/ws/`
 
-var restHandler = owasp.Handler{Handler: cors.Handler{Handler: http.StripPrefix(restPrefix, docker.Handler{})}}
+var restHandler = prometheus.NewPrometheusHandler(`http`, owasp.Handler{Handler: cors.Handler{Handler: http.StripPrefix(`/`, docker.Handler{})}})
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func handleGracefulClose() error {
@@ -47,10 +47,8 @@ func handleGracefulClose() error {
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
 		websocketHandler.ServeHTTP(w, r)
-	} else if strings.HasPrefix(r.URL.Path, restPrefix) {
-		restHandler.ServeHTTP(w, r)
 	} else {
-		w.WriteHeader(http.StatusNotFound)
+		restHandler.ServeHTTP(w, r)
 	}
 }
 
