@@ -1,44 +1,11 @@
-import funtch from 'funtch';
-import btoa from '../Tools/btoa';
 import { getApiUrl, getWsUrl, STORAGE_KEY_AUTH } from '../Constants';
 import localStorageService from './LocalStorageService';
-import { customError } from './Commons';
-
-/**
- * Generate FetchBuilder for given URL with auth and error handler.
- * @param  {String} url              Wanted URL
- * @param  {String} authentification Auth value
- * @return {FetchBuilder} FetchBuilder pre-configured
- */
-function auth(url, authentification = localStorageService.getItem(STORAGE_KEY_AUTH)) {
-  if (!authentification) {
-    const authError = new Error('Authentification not find');
-    authError.noAuth = true;
-    throw authError;
-  }
-
-  return funtch.url(url).error(customError).auth(authentification);
-}
+import { auth } from './Commons';
 
 /**
  * Docker API Service.
  */
 export default class DockerService {
-  /**
-   * Login User given username and password. If success, store auth token in LocalStorage.
-   * @param  {String} username User's username
-   * @param  {String} password User's password
-   * @return {Promise}         Token wrapped in a Promise
-   */
-  static login(username, password) {
-    const hash = `Basic ${btoa(`${username}:${password}`)}`;
-
-    return auth(`${getApiUrl()}/auth`, hash).get().then((result) => {
-      localStorageService.setItem(STORAGE_KEY_AUTH, hash);
-      return result;
-    });
-  }
-
   /**
    * Docker's daemon information.
    * @return {Promise} Information of daemon

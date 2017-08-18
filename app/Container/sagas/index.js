@@ -5,7 +5,7 @@ import { push } from 'react-router-redux';
 import { STORAGE_KEY_AUTH } from '../../Constants';
 import DockerService from '../../Service/DockerService';
 import localStorageService from '../../Service/LocalStorageService';
-import OauthService from '../../Service/OauthService';
+import AuthService from '../../Service/AuthService';
 import actions from '../actions';
 
 /**
@@ -40,8 +40,14 @@ export function* goHomeSaga() {
  */
 export function* loginSaga(action) {
   try {
-    yield call(DockerService.login, action.username, action.password);
-    yield [put(actions.loginSucceeded()), put(actions.info()), put(actions.goHome())];
+    const hash = yield call(AuthService.basicLogin, action.username, action.password);
+
+    yield [
+      call([localStorageService, localStorageService.setItem], STORAGE_KEY_AUTH, hash),
+      put(actions.loginSucceeded()),
+      put(actions.info()),
+      put(actions.goHome()),
+    ];
   } catch (e) {
     yield put(actions.loginFailed(String(e)));
   }
@@ -54,7 +60,7 @@ export function* loginSaga(action) {
  */
 export function* getGithubAccesTokenSaga(action) {
   try {
-    const token = yield call(OauthService.getGithubAccessToken, action.state, action.code);
+    const token = yield call(AuthService.getGithubAccessToken, action.state, action.code);
 
     yield [
       call([localStorageService, localStorageService.setItem], STORAGE_KEY_AUTH, `GitHub ${token}`),

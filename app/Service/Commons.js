@@ -1,4 +1,6 @@
-import { errorHandler } from 'funtch';
+import funtch, { errorHandler } from 'funtch';
+import { STORAGE_KEY_AUTH } from '../Constants';
+import localStorageService from './LocalStorageService';
 
 /**
  * Custom error handler that add toString to error object.
@@ -20,4 +22,20 @@ export function customError(response) {
       }),
     ),
   );
+}
+
+/**
+ * Generate FetchBuilder for given URL with auth and error handler.
+ * @param  {String} url              Wanted URL
+ * @param  {String} authentification Auth value
+ * @return {FetchBuilder} FetchBuilder pre-configured
+ */
+export function auth(url, authentification = localStorageService.getItem(STORAGE_KEY_AUTH)) {
+  if (!authentification) {
+    const authError = new Error('Authentification not find');
+    authError.noAuth = true;
+    throw authError;
+  }
+
+  return funtch.url(url).error(customError).auth(authentification);
 }

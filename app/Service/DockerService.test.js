@@ -1,7 +1,6 @@
 import test from 'ava';
 import sinon from 'sinon';
 import funtch from 'funtch';
-import btoa from '../Tools/btoa';
 import { STORAGE_KEY_AUTH } from '../Constants';
 import localStorageService from './LocalStorageService';
 import DockerService from './DockerService';
@@ -49,22 +48,6 @@ test.beforeEach(() => {
 test.afterEach(() => {
   funtch.url.restore();
   localStorageService.getItem.restore();
-});
-
-test.serial('should login with given username and password', t =>
-  DockerService.login('admin', 'password').then((result) => {
-    t.true(/auth$/.test(result.url));
-    t.is(result.auth, `Basic ${btoa('admin:password')}`);
-  }),
-);
-
-test.serial('should store token in localStorage on login', (t) => {
-  const setItemSpy = sinon.spy(localStorageService, 'setItem');
-
-  return DockerService.login('admin', 'password').then(() => {
-    localStorageService.setItem.restore();
-    t.true(setItemSpy.calledWith(STORAGE_KEY_AUTH, `Basic ${btoa('admin:password')}`));
-  });
 });
 
 test.serial('should throw error if not auth find', (t) => {

@@ -1,11 +1,12 @@
 import funtch from 'funtch';
+import btoa from '../Tools/btoa';
 import { getAuthApiUrl } from '../Constants';
-import { customError } from './Commons';
+import { customError, auth } from './Commons';
 
 /**
  * OAuth API Service.
  */
-export default class OauthService {
+export default class AuthService {
   /**
    * Retrieve access token
    * @param  {String} state State provided during oauth process
@@ -21,5 +22,17 @@ export default class OauthService {
       )
       .error(customError)
       .get();
+  }
+
+  /**
+   * Login User given username and password.
+   * @param  {String} username User's username
+   * @param  {String} password User's password
+   * @return {Promise}         Token wrapped in a Promise
+   */
+  static basicLogin(username, password) {
+    const hash = `Basic ${btoa(`${username}:${password}`)}`;
+
+    return auth(`${getAuthApiUrl()}/user`, hash).get().then(() => hash);
   }
 }

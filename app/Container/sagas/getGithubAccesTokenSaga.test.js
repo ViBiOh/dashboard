@@ -1,18 +1,18 @@
 import test from 'ava';
 import { call, put } from 'redux-saga/effects';
 import { STORAGE_KEY_AUTH } from '../../Constants';
-import OauthService from '../../Service/OauthService';
+import AuthService from '../../Service/AuthService';
 import localStorageService from '../../Service/LocalStorageService';
 import actions from '../actions';
 import { getGithubAccesTokenSaga } from './';
 
-test('should call OauthService.getGithubAccessToken with given state and code', (t) => {
+test('should call AuthService.getGithubAccessToken with given state and code', (t) => {
   const iterator = getGithubAccesTokenSaga({
     state: 'state',
     code: 'secret',
   });
 
-  t.deepEqual(iterator.next().value, call(OauthService.getGithubAccessToken, 'state', 'secret'));
+  t.deepEqual(iterator.next().value, call(AuthService.getGithubAccessToken, 'state', 'secret'));
 });
 
 test('should store token, put success, fetching info and go home after API call', (t) => {
