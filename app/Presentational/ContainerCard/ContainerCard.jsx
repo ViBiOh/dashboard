@@ -23,7 +23,7 @@ const ContainerCard = ({ container, onClick }) =>
         {container.Image}
       </em>
       <strong>
-        {container.Names.join(', ')}
+        {container.Names[0]}
       </strong>
     </span>
     <span>
