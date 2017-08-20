@@ -9,7 +9,7 @@ services:
     - -ws
     - ^dashboard(?:-api)?\.vibioh\.fr
     - -authUrl
-    - http://auth:1080
+    - https://auth.vibioh.fr
     - -users
     - vibioh:admin|lili1725:multi
     - -corsHeaders
@@ -20,8 +20,6 @@ services:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr, dashboard-api.l3miage.fr'
       traefik.port: '1080'
-    external_links:
-    - auth_auth:auth
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     logging:
