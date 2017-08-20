@@ -18,7 +18,7 @@ services:
     - GET, POST, DELETE
     labels:
       traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr, dashboard-api.l3miage.fr'
+      traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
       traefik.port: '1080'
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -43,7 +43,7 @@ services:
     - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api.vibioh.fr auth.vibioh.fr;"
     labels:
       traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: dashboard.vibioh.fr, dashboard.l3miage.fr'
+      traefik.frontend.rule: 'Host: dashboard.vibioh.fr'
       traefik.port: '1080'
     environment:
       API_URL: 'https://dashboard-api.vibioh.fr'
