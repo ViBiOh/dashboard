@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  auth:
+    image: vibioh/auth
+    command:
+    - -hsts=false
+    - -basicUsers
+    - admin:$2a$12$NSZOP5MbJ8mq5gh9BixTueksuMCgDpgxOxLvfpuKRWUN8MlJEvG5y
+    labels:
+      traefik.frontend.passHostHeader: 'true'
+      traefik.frontend.rule: 'Host: auth'
+      traefik.port: '1080'
+
+  api:
+    command:
+    - -dockerVersion
+    - '1.24'
+    - -authUrl
+    - http://auth:1080
+    - -users
+    - admin:admin
+    - -corsHeaders
+    - Content-Type, Authorization
+    - -corsMethods
+    - GET, POST, DELETE
+    labels:
+      traefik.frontend.passHostHeader: 'true'
+      traefik.frontend.rule: 'Host: dashboard-api'
+      traefik.port: '1080'
+    links:
+    - auth
+
+  front:
+    command:
+    - -hsts=false
+    - -spa
+    - -env
+    - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
+    - -csp
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api auth;"
+    labels:
+      traefik.frontend.passHostHeader: 'true'
+      traefik.frontend.rule: 'Host: dashboard'
+      traefik.port: '1080'
+    environment:
+      API_URL: 'http://dashboard-api'
+      WS_URL: 'ws://dashboard-api/ws'
+      AUTH_URL: 'http://auth'
+      BASIC_AUTH_ENABLED: 'true'
