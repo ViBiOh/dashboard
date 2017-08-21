@@ -8,13 +8,24 @@ services:
     - -basicUsers
     - ${BASIC_USERS}
     - -corsHeaders
-    - Content-Type, Authorization
+    - Content-Type,Authorization
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: auth'
       traefik.port: '1080'
+    logging:
+      driver: json-file
+      options:
+        max-size: '50m'
+    restart: on-failure:5
+    read_only: true
+    cpu_shares: 128
+    mem_limit: 33554432
+    security_opt:
+    - no-new-privileges
 
   api:
+    image: vibioh/dashboard-api
     command:
     - -dockerVersion
     - '1.24'
@@ -25,15 +36,28 @@ services:
     - -corsHeaders
     - Content-Type, Authorization
     - -corsMethods
-    - GET, POST, DELETE
+    - GET,POST,DELETE
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api'
       traefik.port: '1080'
     links:
     - auth
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: '50m'
+    restart: on-failure:5
+    read_only: true
+    cpu_shares: 128
+    mem_limit: 33554432
+    security_opt:
+    - no-new-privileges
 
   front:
+    image: vibioh/dashboard-front
     command:
     - -hsts=false
     - -spa
@@ -50,3 +74,18 @@ services:
       WS_URL: 'ws://dashboard-api/ws'
       AUTH_URL: 'http://auth'
       BASIC_AUTH_ENABLED: 'true'
+    logging:
+      driver: json-file
+      options:
+        max-size: '50m'
+    restart: on-failure:5
+    read_only: true
+    cpu_shares: 128
+    mem_limit: 67108864
+    security_opt:
+    - no-new-privileges
+
+networks:
+  default:
+    external:
+      name: traefik
