@@ -83,6 +83,7 @@
     "babel-polyfill": "latest",
     "chart.js": "latest",
     "classnames": "latest",
+    "express": "latest",
     "funtch": "latest",
     "history": "latest",
     "moment": "latest",
