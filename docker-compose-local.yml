@@ -40,7 +40,7 @@ services:
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: dashboard-api auth;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' ws: dashboard-api auth;"
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard'
