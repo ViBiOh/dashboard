@@ -77,6 +77,6 @@ func main() {
 		Handler: http.HandlerFunc(dashboardHandler),
 	}
 
-	go server.ListenAndServe()
+	go log.Print(server.ListenAndServe())
 	httputils.ServerGracefulClose(server, handleGracefulClose)
 }

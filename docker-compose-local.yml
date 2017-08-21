@@ -6,7 +6,9 @@ services:
     command:
     - -hsts=false
     - -basicUsers
-    - admin:$2a$12$NSZOP5MbJ8mq5gh9BixTueksuMCgDpgxOxLvfpuKRWUN8MlJEvG5y
+    - ${BASIC_USERS}
+    - -corsHeaders
+    - Content-Type, Authorization
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: auth'

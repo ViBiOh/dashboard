@@ -102,3 +102,11 @@ Usage of dashboard:
   -ws string
     	Allowed WebSocket Origin pattern (default "^dashboard")
 ```
+
+
+## Local run
+
+```
+export BASIC_USERS='admin:$2a$12$NSZOP5MbJ8mq5gh9BixTueksuMCgDpgxOxLvfpuKRWUN8MlJEvG5y'
+docker-compose -p dashboard -f docker-compose.yml -f docker-compose-local.yml up -d
+```
