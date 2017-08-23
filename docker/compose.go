@@ -365,7 +365,7 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 		return
 	}
 
-	bytes.Replace(composeFile, []byte(`$$`), []byte(`$`), -1)
+	composeFile = bytes.Replace(composeFile, []byte(`$$`), []byte(`$`), -1)
 
 	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
