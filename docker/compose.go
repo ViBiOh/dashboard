@@ -1,7 +1,6 @@
 package docker
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"log"
@@ -364,8 +363,6 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 		httputils.BadRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
 		return
 	}
-
-	composeFile = bytes.Replace(composeFile, []byte(`$$`), []byte(`$`), -1)
 
 	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
