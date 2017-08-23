@@ -221,7 +221,7 @@ func getFinalName(serviceFullName string) string {
 func deleteServices(appName []byte, services map[string]*deployedService, user *auth.User) {
 	for service, container := range services {
 		if infos, err := inspectContainer(container.ID); err != nil {
-			log.Printf(`[%s] Error while inspecting service %s for %s: %v`, user.Username, service, appName, err)
+			log.Printf(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service, err)
 		} else if infos.State.Health != nil {
 			logs := make([]string, 0)
 
@@ -230,15 +230,15 @@ func deleteServices(appName []byte, services map[string]*deployedService, user *
 				logs = append(logs, log.Output)
 			}
 
-			log.Printf(`[%s] Healthcheck output for %s: %s`, user.Username, service, logs)
+			log.Printf(`[%s] [%s] Healthcheck output for %s: %s`, user.Username, appName, service, logs)
 		}
 
 		if err := stopContainer(container.ID); err != nil {
-			log.Printf(`[%s] Error while stopping service %s for %s: %v`, user.Username, service, appName, err)
+			log.Printf(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service, err)
 		}
 
 		if err := rmContainer(container.ID); err != nil {
-			log.Printf(`[%s] Error while deleting service %s for %s: %v`, user.Username, service, appName, err)
+			log.Printf(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service, err)
 		}
 	}
 }
@@ -246,7 +246,7 @@ func deleteServices(appName []byte, services map[string]*deployedService, user *
 func startServices(appName []byte, services map[string]*deployedService, user *auth.User) error {
 	for service, container := range services {
 		if err := startContainer(container.ID); err != nil {
-			return fmt.Errorf(`Error while starting service %s for %s: %v`, service, appName, err)
+			return fmt.Errorf(`[%s] [%s] Error while starting service %s: %v`, user.Username, appName, service, err)
 		}
 	}
 
@@ -299,7 +299,7 @@ func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, 
 				return true
 			}
 		case err := <-errors:
-			log.Printf(`[%s] Error while reading healthy events: %v`, user.Username, err)
+			log.Printf(`[%s] [%s] Error while reading healthy events: %v`, user.Username, appName, err)
 			return false
 		}
 	}
@@ -318,11 +318,11 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 		cleanContainers(oldContainers, user)
 
 		if err := renameDeployedContainers(services, user); err != nil {
-			log.Printf(`Error while renaming deployed containers: %v`, err)
+			log.Printf(`[%s] [%s] Error while renaming deployed containers: %v`, user.Username, appName, err)
 		}
 	} else {
 		deleteServices(appName, services, user)
-		log.Printf(`[%s] Failed to deploy %s: %v`, user.Username, appName, fmt.Errorf(`[Health check failed`))
+		log.Printf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, fmt.Errorf(`[Health check failed`))
 	}
 }
 
@@ -335,7 +335,7 @@ func createContainer(user *auth.User, appName []byte, serviceName string, servic
 
 	config, err := getConfig(service, user, string(appName))
 	if err != nil {
-		return nil, fmt.Errorf(`Error while getting config: %v`, err)
+		return nil, fmt.Errorf(`[%s] [%s] Error while getting config: %v`, user.Username, appName, err)
 	}
 
 	ctx, cancel := getCtx()
@@ -343,14 +343,14 @@ func createContainer(user *auth.User, appName []byte, serviceName string, servic
 
 	createdContainer, err := docker.ContainerCreate(ctx, config, getHostConfig(service), getNetworkConfig(service, services), serviceFullName)
 	if err != nil {
-		return nil, fmt.Errorf(`Error while creating service %s for %s: %v`, serviceName, appName, err)
+		return nil, fmt.Errorf(`[%s] [%s] Error while creating service %s: %v`, user.Username, appName, serviceName, err)
 	}
 
 	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
 }
 
 func composeFailed(w http.ResponseWriter, user *auth.User, appName []byte, err error) {
-	httputils.InternalServer(w, fmt.Errorf(`[%s] Failed to deploy %s: %v`, user.Username, appName, err))
+	httputils.InternalServer(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
 }
 
 func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
@@ -366,7 +366,7 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 
 	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		httputils.BadRequest(w, fmt.Errorf(`[%s] Error while unmarshalling compose file: %v`, user.Username, err))
+		httputils.BadRequest(w, fmt.Errorf(`[%s] [%s] Error while unmarshalling compose file: %v`, user.Username, appName, err))
 		return
 	}
 
@@ -375,7 +375,7 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 	backgroundMutex.Lock()
 	if _, ok := backgroundTasks[appNameStr]; ok {
 		backgroundMutex.Unlock()
-		composeFailed(w, user, appName, fmt.Errorf(`Application already in deployment`))
+		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application already in deployment`, user.Username, appName))
 		return
 	}
 
@@ -389,7 +389,7 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 	}
 
 	if len(oldContainers) > 0 && oldContainers[0].Labels[ownerLabel] != user.Username {
-		composeFailed(w, user, appName, fmt.Errorf(`Application not owned`))
+		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application not owned`, user.Username, appName))
 		httputils.Forbidden(w)
 	}
 
