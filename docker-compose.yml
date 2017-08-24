@@ -4,12 +4,14 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
+    - -prometheusMetricsRemoteHost
+    - ^dashboard-api:1080$$
     - -dockerVersion
     - '1.24'
     - -ws
     - ^dashboard(?:-api)?\.vibioh\.fr
     - -authUrl
-    - http://auth:1080
+    - https://auth:1080
     - -users
     - vibioh:admin|lili1725:multi
     - -corsHeaders
@@ -38,6 +40,8 @@ services:
   front:
     image: vibioh/dashboard-front
     command:
+    - -prometheusMetricsRemoteHost
+    - ^dashboard:1080$$
     - -spa
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE

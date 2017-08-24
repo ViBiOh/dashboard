@@ -63,7 +63,7 @@ func LoadUsersProfiles(usersAndProfiles string) {
 
 // IsAuthenticatedByAuth check if Autorization Header matches a User
 func IsAuthenticatedByAuth(authContent string) (*User, error) {
-	username, err := httputils.GetBody(*authURL+`/user`, authContent)
+	username, err := httputils.GetBody(*authURL+`/user`, authContent, true)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while getting username: %v`, err)
 	}
