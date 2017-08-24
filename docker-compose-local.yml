@@ -4,14 +4,14 @@ services:
   auth:
     image: vibioh/auth
     command:
-    - -hsts=false
     - -basicUsers
-    - ${BASIC_USERS}
+    - admin:$$2a$$12$$NSZOP5MbJ8mq5gh9BixTueksuMCgDpgxOxLvfpuKRWUN8MlJEvG5y
     - -corsHeaders
     - Content-Type,Authorization
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: auth'
+      traefik.protocol: 'https'
       traefik.port: '1080'
     logging:
       driver: json-file
@@ -27,10 +27,11 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
+    - -hsts=false
     - -dockerVersion
     - '1.24'
     - -authUrl
-    - http://auth:1080
+    - https://auth:1080
     - -users
     - admin:admin
     - -corsHeaders
@@ -72,7 +73,7 @@ services:
     environment:
       API_URL: 'http://dashboard-api'
       WS_URL: 'ws://dashboard-api/ws'
-      AUTH_URL: 'http://auth'
+      AUTH_URL: 'https://auth'
       BASIC_AUTH_ENABLED: 'true'
     logging:
       driver: json-file
