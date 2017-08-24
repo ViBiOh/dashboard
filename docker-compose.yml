@@ -25,6 +25,10 @@ services:
       traefik.port: '1080'
     external_links:
     - auth_auth:auth
+    networks:
+      traefik:
+        aliases:
+        - dashboard-api
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     logging:
@@ -59,6 +63,10 @@ services:
       BASIC_AUTH_ENABLED: 'false'
       GITHUB_OAUTH_STATE: '${GITHUB_OAUTH_STATE}'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
+    networks:
+      traefik:
+        aliases:
+        - dashboard
     logging:
       driver: json-file
       options:
