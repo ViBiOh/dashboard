@@ -26,7 +26,7 @@ services:
     external_links:
     - auth_auth:auth
     networks:
-      traefik:
+      default:
         aliases:
         - dashboard-api
     volumes:
@@ -64,7 +64,7 @@ services:
       GITHUB_OAUTH_STATE: '${GITHUB_OAUTH_STATE}'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
     networks:
-      traefik:
+      default:
         aliases:
         - dashboard
     logging:
