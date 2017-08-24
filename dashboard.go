@@ -13,6 +13,7 @@ import (
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/docker"
 	"github.com/ViBiOh/httputils"
+	"github.com/ViBiOh/httputils/cert"
 	"github.com/ViBiOh/httputils/cors"
 	"github.com/ViBiOh/httputils/owasp"
 	"github.com/ViBiOh/httputils/prometheus"
@@ -54,6 +55,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	url := flag.String(`c`, ``, `URL to healthcheck (check and exit)`)
+	tlsCert := flag.String(`tlsCert`, ``, `TLS PEM Certificate file`)
+	tlsKey := flag.String(`tlsKey`, ``, `TLS PEM Key file`)
 	flag.Parse()
 
 	if *url != `` {
@@ -77,6 +80,16 @@ func main() {
 		Handler: http.HandlerFunc(dashboardHandler),
 	}
 
-	go log.Print(server.ListenAndServe())
+	if *tlsCert != `` {
+		go log.Panic(server.ListenAndServeTLS(*tlsCert, *tlsKey))
+	} else {
+		certPEMBlock, keyPEMBlock, err := cert.GenerateCert(`ViBiOh`, []string{`localhost`})
+		if err != nil {
+			log.Panicf(`Error while generating certificate: %v`, err)
+		}
+
+		go log.Panic(cert.ListenAndServeTLS(server, certPEMBlock, keyPEMBlock))
+	}
+
 	httputils.ServerGracefulClose(server, handleGracefulClose)
 }

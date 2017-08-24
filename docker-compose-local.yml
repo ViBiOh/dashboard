@@ -27,7 +27,6 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
-    - -hsts=false
     - -dockerVersion
     - '1.24'
     - -authUrl
@@ -41,6 +40,7 @@ services:
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api'
+      traefik.protocol: 'https'
       traefik.port: '1080'
     links:
     - auth
