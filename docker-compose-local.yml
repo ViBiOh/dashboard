@@ -8,11 +8,8 @@ services:
     - admin:$$2a$$12$$NSZOP5MbJ8mq5gh9BixTueksuMCgDpgxOxLvfpuKRWUN8MlJEvG5y
     - -corsHeaders
     - Content-Type,Authorization
-    labels:
-      traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: auth'
-      traefik.protocol: 'https'
-      traefik.port: '1080'
+    ports:
+    - 1000:1080/tcp
     logging:
       driver: json-file
       options:
@@ -34,18 +31,15 @@ services:
     - -users
     - admin:admin
     - -corsHeaders
-    - Content-Type, Authorization
+    - Content-Type,Authorization
     - -corsMethods
     - GET,POST,DELETE
-    labels:
-      traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: dashboard-api'
-      traefik.protocol: 'https'
-      traefik.port: '1080'
     links:
     - auth
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+    - 1001:1080/tcp
     logging:
       driver: json-file
       options:
@@ -60,21 +54,19 @@ services:
   front:
     image: vibioh/dashboard-front
     command:
-    - -hsts=false
+    - -tls
     - -spa
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' ws: dashboard-api auth;"
-    labels:
-      traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: dashboard'
-      traefik.port: '1080'
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: localhost:1001 localhost:1000;"
     environment:
-      API_URL: 'http://dashboard-api'
-      WS_URL: 'ws://dashboard-api/ws'
-      AUTH_URL: 'https://auth'
+      API_URL: 'https://localhost:1001'
+      WS_URL: 'wss://localhost:1001/ws'
+      AUTH_URL: 'https://localhost:1000'
       BASIC_AUTH_ENABLED: 'true'
+    ports:
+    - 443:1080/tcp
     logging:
       driver: json-file
       options:

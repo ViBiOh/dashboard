@@ -47,6 +47,7 @@ services:
     command:
     - -prometheusMetricsRemoteHost
     - ^dashboard:1080$$
+    - -tls
     - -spa
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE
