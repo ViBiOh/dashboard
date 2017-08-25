@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 function readVariableIfRequired() {
   if [ -z "${!1}" ]; then
     read -p "${1}=" $1
@@ -29,6 +31,7 @@ function docker-compose-deploy() {
 
   oldServices=`docker ps -f name=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR}* -q`
 
+  docker-compose -p ${PROJECT_FULLNAME} config -q
   docker-compose -p ${PROJECT_FULLNAME} pull
   docker-compose -p ${PROJECT_FULLNAME} up -d
   servicesCount=`docker-compose -p ${PROJECT_FULLNAME} ps -q | wc -l`
