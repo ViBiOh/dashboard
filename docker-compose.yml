@@ -56,6 +56,7 @@ services:
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr'
+      traefik.protocol: 'https'
       traefik.port: '1080'
     environment:
       API_URL: 'https://dashboard-api.vibioh.fr'
