@@ -4,8 +4,8 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
-    - -prometheusMetricsRemoteHost
-    - ^dashboard-api:1080$$
+    - -prometheusMetricsHost
+    - dashboard-api:1080
     - -dockerVersion
     - '1.24'
     - -ws
@@ -45,8 +45,8 @@ services:
   front:
     image: vibioh/dashboard-front
     command:
-    - -prometheusMetricsRemoteHost
-    - ^dashboard:1080$$
+    - -prometheusMetricsHost
+    - dashboard:1080
     - -tls
     - -spa
     - -env
