@@ -51,12 +51,12 @@ function docker-compose-deploy() {
 
   if [ ! -z "${oldServices}" ]; then
     echo Stopping old containers
-    docker stop --time=180 ${oldServices}
+    docker stop --time=180 ${oldServices} || true
   fi
 
   if [ ! -z "${oldServices}" ]; then
     echo Removing old containers
-    docker rm -f -v ${oldServices}
+    docker rm -f -v ${oldServices} || true
   fi
 
   echo Deploy succeed!
