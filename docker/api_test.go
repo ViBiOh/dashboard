@@ -9,7 +9,7 @@ import (
 )
 
 func TestCanBeGracefullyClosed(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		backgroundTasks map[string]bool
 		want            bool
 	}{
@@ -23,11 +23,11 @@ func TestCanBeGracefullyClosed(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		backgroundTasks = test.backgroundTasks
+	for _, testCase := range cases {
+		backgroundTasks = testCase.backgroundTasks
 
-		if result := CanBeGracefullyClosed(); result != test.want {
-			t.Errorf(`CanBeGracefullyClosed() = %v, want %v, for %v`, result, test.want, test.backgroundTasks)
+		if result := CanBeGracefullyClosed(); result != testCase.want {
+			t.Errorf(`CanBeGracefullyClosed() = %v, want %v, for %v`, result, testCase.want, testCase.backgroundTasks)
 		}
 	}
 }
@@ -35,7 +35,7 @@ func TestCanBeGracefullyClosed(t *testing.T) {
 func TestHealthHandler(t *testing.T) {
 	testDocker, _ := client.NewEnvClient()
 
-	var tests = []struct {
+	var cases = []struct {
 		docker *client.Client
 		want   int
 	}{
@@ -49,13 +49,13 @@ func TestHealthHandler(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		docker = test.docker
+	for _, testCase := range cases {
+		docker = testCase.docker
 		w := httptest.NewRecorder()
 		healthHandler(w, nil)
 
-		if result := w.Result().StatusCode; result != test.want {
-			t.Errorf(`healthHandler() = %v, want %v, with docker=%v`, result, test.want, test.docker)
+		if result := w.Result().StatusCode; result != testCase.want {
+			t.Errorf(`healthHandler() = %v, want %v, with docker=%v`, result, testCase.want, testCase.docker)
 		}
 	}
 }

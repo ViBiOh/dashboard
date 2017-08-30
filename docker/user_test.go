@@ -7,7 +7,7 @@ import (
 )
 
 func TestIsAdmin(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		user *auth.User
 		want bool
 	}{
@@ -25,15 +25,15 @@ func TestIsAdmin(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		if result := isAdmin(test.user); result != test.want {
-			t.Errorf(`isAdmin(%v) = %v, want %v`, test.user, result, test.want)
+	for _, testCase := range cases {
+		if result := isAdmin(testCase.user); result != testCase.want {
+			t.Errorf(`isAdmin(%v) = %v, want %v`, testCase.user, result, testCase.want)
 		}
 	}
 }
 
 func TestIsMultiApp(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		user *auth.User
 		want bool
 	}{
@@ -51,9 +51,9 @@ func TestIsMultiApp(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		if result := isMultiApp(test.user); result != test.want {
-			t.Errorf(`isMultiApp(%v) = %v, want %v`, test.user, result, test.want)
+	for _, testCase := range cases {
+		if result := isMultiApp(testCase.user); result != testCase.want {
+			t.Errorf(`isMultiApp(%v) = %v, want %v`, testCase.user, result, testCase.want)
 		}
 	}
 }

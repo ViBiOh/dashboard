@@ -8,7 +8,7 @@ import (
 )
 
 func TestHasProfile(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		instance User
 		profile  string
 		want     bool
@@ -35,15 +35,15 @@ func TestHasProfile(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		if result := test.instance.HasProfile(test.profile); result != test.want {
-			t.Errorf(`%v.HasProfile(%v) = %v, want %v`, test.profile, test.instance, result, test.want)
+	for _, testCase := range cases {
+		if result := testCase.instance.HasProfile(testCase.profile); result != testCase.want {
+			t.Errorf(`%v.HasProfile(%v) = %v, want %v`, testCase.profile, testCase.instance, result, testCase.want)
 		}
 	}
 }
 
 func TestInit(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		usersProfiles string
 		want          int
 	}{
@@ -53,18 +53,18 @@ func TestInit(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		usersProfiles = &test.usersProfiles
+	for _, testCase := range cases {
+		usersProfiles = &testCase.usersProfiles
 		Init()
 
-		if result := len(users); result != test.want {
-			t.Errorf(`Init() = %v, want %v, with usersProfiles = %v`, result, test.want, test.usersProfiles)
+		if result := len(users); result != testCase.want {
+			t.Errorf(`Init() = %v, want %v, with usersProfiles = %v`, result, testCase.want, testCase.usersProfiles)
 		}
 	}
 }
 
 func TestLoadUsersProfiles(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		usersAndProfiles string
 		want             int
 	}{
@@ -82,11 +82,11 @@ func TestLoadUsersProfiles(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		LoadUsersProfiles(test.usersAndProfiles)
+	for _, testCase := range cases {
+		LoadUsersProfiles(testCase.usersAndProfiles)
 
-		if result := len(users); result != test.want {
-			t.Errorf(`LoadUsersProfiles(%v) = %v, want %v`, test.usersAndProfiles, result, test.want)
+		if result := len(users); result != testCase.want {
+			t.Errorf(`LoadUsersProfiles(%v) = %v, want %v`, testCase.usersAndProfiles, result, testCase.want)
 		}
 	}
 }
@@ -105,7 +105,7 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 	admin := NewUser(`admin`, `admin`)
 	users = map[string]*User{`admin`: admin}
 
-	var tests = []struct {
+	var cases = []struct {
 		authorization string
 		want          *User
 		wantErr       error
@@ -129,23 +129,23 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 
 	var failed bool
 
-	for _, test := range tests {
-		result, err := IsAuthenticatedByAuth(test.authorization)
+	for _, testCase := range cases {
+		result, err := IsAuthenticatedByAuth(testCase.authorization)
 
 		failed = false
 
-		if err == nil && test.wantErr != nil {
+		if err == nil && testCase.wantErr != nil {
 			failed = true
-		} else if err != nil && test.wantErr == nil {
+		} else if err != nil && testCase.wantErr == nil {
 			failed = true
-		} else if err != nil && err.Error() != test.wantErr.Error() {
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
 			failed = true
-		} else if result != test.want {
+		} else if result != testCase.want {
 			failed = true
 		}
 
 		if failed {
-			t.Errorf(`IsAuthenticatedByAuth(%v) = (%v, %v), want (%v, %v)`, test.authorization, result, err, test.want, test.wantErr)
+			t.Errorf(`IsAuthenticatedByAuth(%v) = (%v, %v), want (%v, %v)`, testCase.authorization, result, err, testCase.want, testCase.wantErr)
 		}
 	}
 }

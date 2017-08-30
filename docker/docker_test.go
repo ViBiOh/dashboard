@@ -9,7 +9,7 @@ import (
 )
 
 func TestLabelFilters(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		user *auth.User
 		app  string
 		want []string
@@ -38,27 +38,27 @@ func TestLabelFilters(t *testing.T) {
 
 	var failed bool
 
-	for _, test := range tests {
+	for _, testCase := range cases {
 		filters := filters.NewArgs()
-		labelFilters(test.user, &filters, test.app)
+		labelFilters(testCase.user, &filters, testCase.app)
 		rawResult := filters.Get(`label`)
 
 		failed = false
 		result := strings.Join(rawResult, `,`)
-		for _, filter := range test.want {
+		for _, filter := range testCase.want {
 			if !strings.Contains(result, filter) {
 				failed = true
 			}
 		}
 
-		if len(rawResult) != len(test.want) || failed {
-			t.Errorf(`labelFilters(%v, %v) = %v, want %v`, test.user, test.app, result, test.want)
+		if len(rawResult) != len(testCase.want) || failed {
+			t.Errorf(`labelFilters(%v, %v) = %v, want %v`, testCase.user, testCase.app, result, testCase.want)
 		}
 	}
 }
 
 func TestHealthyStatusFilters(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		containers []string
 		want       []string
 	}{
@@ -74,27 +74,27 @@ func TestHealthyStatusFilters(t *testing.T) {
 
 	var failed bool
 
-	for _, test := range tests {
+	for _, testCase := range cases {
 		filters := filters.NewArgs()
-		healthyStatusFilters(&filters, test.containers)
+		healthyStatusFilters(&filters, testCase.containers)
 		resultEvent := strings.Join(filters.Get(`event`), `,`)
 		rawResult := filters.Get(`container`)
 
 		result := strings.Join(rawResult, `,`)
-		for _, filter := range test.want {
+		for _, filter := range testCase.want {
 			if !strings.Contains(result, filter) {
 				failed = true
 			}
 		}
 
-		if resultEvent != `health_status: healthy` || len(rawResult) != len(test.want) || failed {
-			t.Errorf(`healthyStatusFilters(%v) = %v, want %v`, test.containers, result, test.want)
+		if resultEvent != `health_status: healthy` || len(rawResult) != len(testCase.want) || failed {
+			t.Errorf(`healthyStatusFilters(%v) = %v, want %v`, testCase.containers, result, testCase.want)
 		}
 	}
 }
 
 func TestEventFilters(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		want []string
 	}{
 		{
@@ -104,21 +104,21 @@ func TestEventFilters(t *testing.T) {
 
 	var failed bool
 
-	for _, test := range tests {
+	for _, testCase := range cases {
 		filters := filters.NewArgs()
 		eventFilters(&filters)
 		rawResult := filters.Get(`event`)
 
 		failed = false
 		result := strings.Join(rawResult, `,`)
-		for _, filter := range test.want {
+		for _, filter := range testCase.want {
 			if !strings.Contains(result, filter) {
 				failed = true
 			}
 		}
 
-		if len(rawResult) != len(test.want) || failed {
-			t.Errorf(`eventFilters() = %v, want %v`, result, test.want)
+		if len(rawResult) != len(testCase.want) || failed {
+			t.Errorf(`eventFilters() = %v, want %v`, result, testCase.want)
 		}
 	}
 }

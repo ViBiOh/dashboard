@@ -12,7 +12,7 @@ import (
 )
 
 func TestGetConfig(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		service *dockerComposeService
 		user    *auth.User
 		appName string
@@ -85,29 +85,29 @@ func TestGetConfig(t *testing.T) {
 
 	var failed bool
 
-	for _, test := range tests {
-		result, err := getConfig(test.service, test.user, test.appName)
+	for _, testCase := range cases {
+		result, err := getConfig(testCase.service, testCase.user, testCase.appName)
 
 		failed = false
 
-		if err == nil && test.wantErr != nil {
+		if err == nil && testCase.wantErr != nil {
 			failed = true
-		} else if err != nil && test.wantErr == nil {
+		} else if err != nil && testCase.wantErr == nil {
 			failed = true
-		} else if err != nil && err.Error() != test.wantErr.Error() {
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
 			failed = true
-		} else if !reflect.DeepEqual(result, test.want) {
+		} else if !reflect.DeepEqual(result, testCase.want) {
 			failed = true
 		}
 
 		if failed {
-			t.Errorf(`getConfig(%v, %v, %v) = (%v, %v), want (%v, %v)`, test.service, test.user, test.appName, result, err, test.want, test.wantErr)
+			t.Errorf(`getConfig(%v, %v, %v) = (%v, %v), want (%v, %v)`, testCase.service, testCase.user, testCase.appName, result, err, testCase.want, testCase.wantErr)
 		}
 	}
 }
 
 func TestGetHostConfig(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		service *dockerComposeService
 		want    *container.HostConfig
 	}{
@@ -168,15 +168,15 @@ func TestGetHostConfig(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		if result := getHostConfig(test.service); !reflect.DeepEqual(result, test.want) {
-			t.Errorf(`getHostConfig(%v) = %v, want %v`, test.service, result, test.want)
+	for _, testCase := range cases {
+		if result := getHostConfig(testCase.service); !reflect.DeepEqual(result, testCase.want) {
+			t.Errorf(`getHostConfig(%v) = %v, want %v`, testCase.service, result, testCase.want)
 		}
 	}
 }
 
 func TestGetNetworkConfig(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		service          *dockerComposeService
 		deployedServices map[string]*deployedService
 		want             *network.NetworkingConfig
@@ -231,15 +231,15 @@ func TestGetNetworkConfig(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		if result := getNetworkConfig(test.service, test.deployedServices); !reflect.DeepEqual(result, test.want) {
-			t.Errorf(`getNetworkConfig(%v, %v) = %v, want %v`, test.service, test.deployedServices, result, test.want)
+	for _, testCase := range cases {
+		if result := getNetworkConfig(testCase.service, testCase.deployedServices); !reflect.DeepEqual(result, testCase.want) {
+			t.Errorf(`getNetworkConfig(%v, %v) = %v, want %v`, testCase.service, testCase.deployedServices, result, testCase.want)
 		}
 	}
 }
 
 func TestGetServiceFullName(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		app     string
 		service string
 		want    string
@@ -251,15 +251,15 @@ func TestGetServiceFullName(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		if result := getServiceFullName(test.app, test.service); result != test.want {
-			t.Errorf(`getServiceFullName(%v, %v) = %v, want %v`, test.app, test.service, result, test.want)
+	for _, testCase := range cases {
+		if result := getServiceFullName(testCase.app, testCase.service); result != testCase.want {
+			t.Errorf(`getServiceFullName(%v, %v) = %v, want %v`, testCase.app, testCase.service, result, testCase.want)
 		}
 	}
 }
 
 func TestGetFinalName(t *testing.T) {
-	var tests = []struct {
+	var cases = []struct {
 		serviceFullName string
 		want            string
 	}{
@@ -273,9 +273,9 @@ func TestGetFinalName(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		if result := getFinalName(test.serviceFullName); result != test.want {
-			t.Errorf(`getFinalName(%v) = %v, want %v`, test.serviceFullName, result, test.want)
+	for _, testCase := range cases {
+		if result := getFinalName(testCase.serviceFullName); result != testCase.want {
+			t.Errorf(`getFinalName(%v) = %v, want %v`, testCase.serviceFullName, result, testCase.want)
 		}
 	}
 }
