@@ -78,6 +78,11 @@ func main() {
 		Handler: http.HandlerFunc(dashboardHandler),
 	}
 
-	go log.Panic(cert.ListenAndServeTLS(server))
-	httputils.ServerGracefulClose(server, handleGracefulClose)
+	var serveError = make(chan error)
+	go func() {
+		defer close(serveError)
+		serveError <- cert.ListenAndServeTLS(server)
+	}()
+
+	httputils.ServerGracefulClose(server, serveError, handleGracefulClose)
 }
