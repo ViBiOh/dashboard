@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"runtime"
 	"strings"
 	"time"
 
@@ -61,8 +60,6 @@ func main() {
 		alcotest.Do(url)
 		return
 	}
-
-	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	if err := auth.Init(); err != nil {
 		log.Printf(`Error while initializing auth: %v`, err)
