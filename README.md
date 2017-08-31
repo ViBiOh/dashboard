@@ -117,5 +117,6 @@ Usage of dashboard:
 ## Local run
 
 ```
+export GIT_COMMIT=`git log --pretty=format:'%h' -n 1`
 docker-compose -p dashboard -f docker-compose-local.yml up -d
 ```
