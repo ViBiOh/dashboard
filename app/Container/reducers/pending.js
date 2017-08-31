@@ -1,14 +1,4 @@
-import actions from '../actions';
-
-const pendingActions = [
-  actions.LOGIN,
-  actions.GET_ACCESS_TOKEN,
-  actions.INFO,
-  actions.FETCH_CONTAINERS,
-  actions.FETCH_CONTAINER,
-  actions.ACTION_CONTAINER,
-  actions.COMPOSE,
-];
+const startPending = /^(.*?)_REQUEST$/;
 const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
 
 /**
@@ -18,13 +8,15 @@ const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
  * @return {Object}        New state
  */
 export default (state = {}, action) => {
-  if (pendingActions.includes(action.type)) {
-    return { ...state, [action.type]: true };
+  const start = startPending.exec(action.type);
+  if (start && start.length > 1) {
+    return { ...state, [start[1]]: true };
   }
 
-  const result = endPending.exec(action.type);
-  if (result && state[result[1]]) {
-    return { ...state, [result[1]]: false };
+  const end = endPending.exec(action.type);
+  if (end && state[end[1]]) {
+    return { ...state, [end[1]]: false };
   }
+
   return state;
 };
