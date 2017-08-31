@@ -9,7 +9,7 @@ services:
     - -dockerVersion
     - '1.24'
     - -ws
-    - ^dashboard(?:-api)?\.vibioh\.fr
+    - ^dashboard-api\.vibioh\.fr$$
     - -authUrl
     - https://auth:1080
     - -users
