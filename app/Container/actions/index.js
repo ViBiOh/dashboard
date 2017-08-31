@@ -44,6 +44,7 @@ export const makeApiActionCreator = (camelCaseName, inputs = [], outputs = []) =
   const typeName = toTypeName(camelCaseName);
 
   return {
+    [typeName]: typeName,
     ...makeActionAndTypeCreator(`${typeName}_REQUEST`, camelCaseName, inputs),
     ...makeActionAndTypeCreator(`${typeName}_SUCCEEDED`, `${camelCaseName}Succeeded`, outputs),
     ...makeActionAndTypeCreator(`${typeName}_FAILED`, `${camelCaseName}Failed`, ['error']),

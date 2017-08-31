@@ -305,15 +305,15 @@ export function* changeFilterSaga(action) {
  */
 export default function* appSaga() {
   yield takeLatest(actions.GO_HOME, goHomeSaga);
-  yield takeLatest(actions.GET_GITHUB_ACCESS_TOKEN, getGithubAccesTokenSaga);
-  yield takeLatest(actions.LOGIN, loginSaga);
-  yield takeLatest(actions.LOGOUT, logoutSaga);
-  yield takeLatest(actions.INFO, infoSaga);
-  yield takeLatest(actions.FETCH_SERVICES, fetchServicesSaga);
-  yield takeLatest(actions.FETCH_CONTAINERS, fetchContainersSaga);
-  yield takeLatest(actions.FETCH_CONTAINER, fetchContainerSaga);
-  yield takeLatest(actions.ACTION_CONTAINER, actionContainerSaga);
-  yield takeLatest(actions.COMPOSE, composeSaga);
+  yield takeLatest(actions.GET_GITHUB_ACCESS_TOKEN_REQUEST, getGithubAccesTokenSaga);
+  yield takeLatest(actions.LOGIN_REQUEST, loginSaga);
+  yield takeLatest(actions.LOGOUT_REQUEST, logoutSaga);
+  yield takeLatest(actions.INFO_REQUEST, infoSaga);
+  yield takeLatest(actions.FETCH_SERVICES_REQUEST, fetchServicesSaga);
+  yield takeLatest(actions.FETCH_CONTAINERS_REQUEST, fetchContainersSaga);
+  yield takeLatest(actions.FETCH_CONTAINER_REQUEST, fetchContainerSaga);
+  yield takeLatest(actions.ACTION_CONTAINER_REQUEST, actionContainerSaga);
+  yield takeLatest(actions.COMPOSE_REQUEST, composeSaga);
   yield takeLatest(actions.OPEN_BUS, busSaga);
   yield takeLatest(actions.CHANGE_FILTER, changeFilterSaga);
 }
