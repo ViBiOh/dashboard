@@ -1,13 +1,26 @@
 import test from 'ava';
 import { makeOpenCloseActionCreator } from './';
 
-test('should work with default value', (t) => {
-  t.is(
-    makeOpenCloseActionCreator('actionType', ['id'], ['token']).OPEN_ACTION_TYPE,
-    'OPEN_ACTION_TYPE',
-  );
-  t.is(
-    makeOpenCloseActionCreator('actionType', ['id'], ['token']).CLOSE_ACTION_TYPE,
-    'CLOSE_ACTION_TYPE',
-  );
+test('should return action type', (t) => {
+  const busActions = makeOpenCloseActionCreator('channel');
+  t.is(busActions.OPEN_CHANNEL, 'OPEN_CHANNEL');
+  t.is(busActions.CLOSE_CHANNEL, 'CLOSE_CHANNEL');
+  t.is(busActions.CHANNEL_OPENED, 'CHANNEL_OPENED');
+  t.is(busActions.CHANNEL_CLOSED, 'CHANNEL_CLOSED');
+});
+
+test('should return action creator', (t) => {
+  const busActions = makeOpenCloseActionCreator('channel');
+  t.deepEqual(busActions.openChannel(), {
+    type: 'OPEN_CHANNEL',
+  });
+  t.deepEqual(busActions.closeChannel(), {
+    type: 'CLOSE_CHANNEL',
+  });
+  t.deepEqual(busActions.channelOpened(), {
+    type: 'CHANNEL_OPENED',
+  });
+  t.deepEqual(busActions.channelClosed(), {
+    type: 'CHANNEL_CLOSED',
+  });
 });

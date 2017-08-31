@@ -58,13 +58,13 @@ export const makeApiActionCreator = (camelCaseName, inputs = [], outputs = []) =
  * @param  {Array}  closes        Properties' names of close action
  * @return {[type]}               An object container constants and functions for requesting WS
  */
-export const makeOpenCloseActionCreator = (camelCaseName, opens = [], closes = []) => {
+export const makeOpenCloseActionCreator = (camelCaseName) => {
   const typeName = toTypeName(camelCaseName);
   const camelSuffix = camelCaseName.replace(/^(.)/, (all, char) => char.toUpperCase());
 
   return {
-    ...makeActionAndTypeCreator(`OPEN_${typeName}`, `open${camelSuffix}`, opens),
-    ...makeActionAndTypeCreator(`CLOSE_${typeName}`, `close${camelSuffix}`, closes),
+    ...makeActionAndTypeCreator(`OPEN_${typeName}`, `open${camelSuffix}`),
+    ...makeActionAndTypeCreator(`CLOSE_${typeName}`, `close${camelSuffix}`),
     ...makeActionAndTypeCreator(`${typeName}_OPENED`, `${camelCaseName}Opened`),
     ...makeActionAndTypeCreator(`${typeName}_CLOSED`, `${camelCaseName}Closed`),
   };
