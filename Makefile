@@ -1,4 +1,4 @@
-default: deps fmt lint tst build
+default: deps format lint tst build
 
 deps:
 	go get -u golang.org/x/tools/cmd/goimports
@@ -18,8 +18,9 @@ deps:
 	go get -u github.com/ViBiOh/alcotest/alcotest
 	go get -u github.com/gorilla/websocket
 	go get -u gopkg.in/yaml.v2
+	npm install --ignore-scripts
 
-fmt:
+format:
 	goimports -w **/*.go *.go
 	gofmt -s -w **/*.go *.go
 
@@ -32,3 +33,18 @@ tst:
 
 build:
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard dashboard.go
+
+format-front:
+	npm run format
+
+lint-front:
+	npm run lint
+
+tst-front:
+	npm test
+
+build-front:
+	npm run build
+
+doc:
+	npm run doc

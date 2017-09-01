@@ -103,22 +103,42 @@ test.serial('should create container with given args', t =>
 
 [
   { method: 'info', args: [], httpMethod: 'get', url: /info$/ },
-  { method: 'containerInfos', args: ['test'], httpMethod: 'get', url: /containers\/test\/$/ },
+  {
+    method: 'containerInfos',
+    args: ['test'],
+    httpMethod: 'get',
+    url: /containers\/test\/$/,
+  },
   {
     method: 'containerCreate',
     args: ['test', 'composeFileContent'],
     httpMethod: 'post',
     url: /containers\/test\/$/,
   },
-  { method: 'containerStart', args: ['test'], httpMethod: 'post', url: /containers\/test\/start$/ },
-  { method: 'containerStop', args: ['test'], httpMethod: 'post', url: /containers\/test\/stop$/ },
+  {
+    method: 'containerStart',
+    args: ['test'],
+    httpMethod: 'post',
+    url: /containers\/test\/start$/,
+  },
+  {
+    method: 'containerStop',
+    args: ['test'],
+    httpMethod: 'post',
+    url: /containers\/test\/stop$/,
+  },
   {
     method: 'containerRestart',
     args: ['test'],
     httpMethod: 'post',
     url: /containers\/test\/restart$/,
   },
-  { method: 'containerDelete', args: ['test'], httpMethod: 'delete', url: /containers\/test\/$/ },
+  {
+    method: 'containerDelete',
+    args: ['test'],
+    httpMethod: 'delete',
+    url: /containers\/test\/$/,
+  },
 ].forEach((param) => {
   test.serial(`for ${param.method}`, t =>
     DockerService[param.method].apply(null, param.args).then((result) => {

@@ -1,137 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Docker Deploy</title>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/themes/prism-okaidia.min.css" />
-    <style>
-      blockquote {
-        border-left: solid 4px #eee;
-        padding-left: 8px;
-        font-style: italic;
-        margin-left: 0;
-        padding: 8px;
+
+<head>
+  <title>Docker Deploy</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/themes/prism-okaidia.min.css" />
+  <style>
+    blockquote {
+      border-left: solid 4px #eee;
+      padding-left: 8px;
+      font-style: italic;
+      margin-left: 0;
+      padding: 8px;
+    }
+
+    .ui.micro.label {
+      font-size: .25rem;
+    }
+
+    .ui.transaction.accordion .title {
+      text-align: center;
+    }
+
+    .ui.transaction.accordion .content {
+      border-top: solid 1px #ddd !important;
+      border-bottom: solid 1px #ddd !important;
+      background-color: rgba(0, 0, 0, .03);
+      padding: 0.5em 1em !important;
+    }
+
+    .ui.transaction.accordion .content.active {
+      margin-top: 0.5em;
+    }
+
+    .ui.basic.label {
+      text-align: left;
+      overflow: auto;
+    }
+
+    .resource .ui.sub.header {
+      text-transform: none;
+    }
+
+    @media only screen and (min-width: 768px) {
+      .sidewrap {
+        margin-right: 2rem;
       }
 
-      .ui.micro.label {
-        font-size: .25rem;
+      .sidenav {
+        left: 0;
+        top: 0;
+        width: inherit;
+        position: fixed !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+        padding-left: 0.5rem;
       }
+    }
+  </style>
+</head>
 
-      .ui.transaction.accordion .title {
-        text-align: center;
-      }
+<body>
+  <div class="ui padded grid">
+    <div class="sidewrap four wide computer five wide tablet sixteen wide mobile column">
+      <div class="sidenav">
 
-      .ui.transaction.accordion .content {
-        border-top: solid 1px #ddd !important;
-        border-bottom: solid 1px #ddd !important;
-        background-color: rgba(0,0,0,.03);
-        padding: 0.5em 1em !important;
-      }
-
-      .ui.transaction.accordion .content.active {
-        margin-top: 0.5em;
-      }
-
-      .ui.basic.label {
-        text-align: left;
-        overflow: auto;
-      }
-
-      .resource .ui.sub.header {
-        text-transform: none;
-      }
-
-      @media only screen and (min-width: 768px) {
-        .sidewrap {
-          margin-right: 2rem;
-        }
-
-        .sidenav {
-          left: 0;
-          top: 0;
-          width: inherit;
-          position: fixed !important;
-          height: 100% !important;
-          overflow-y: auto !important;
-          padding-left: 0.5rem;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="ui padded grid">
-      <div class="sidewrap four wide computer five wide tablet sixteen wide mobile column">
-        <div class="sidenav">
-          
-<div class="ui horizontal divider">
-  <a href="#introduction">Introduction</a>
-</div>
-<div class="ui fluid secondary vertical menu">
-  <a class="item" href="#introduction">Docker Deploy</a>
-</div>
+        <div class="ui horizontal divider">
+          <a href="#introduction">Introduction</a>
+        </div>
+        <div class="ui fluid secondary vertical menu">
+          <a class="item" href="#introduction">Docker Deploy</a>
+        </div>
 
 
-<div class="ui accordion fluid">
-  
-    
-    <div class="title active">
-      <i class="dropdown icon"></i>
-      
-        <strong>Containers</strong>
-      
-    </div>
-    <div class="content active">
-      <div class="ui fluid secondary vertical menu">
-      
-        <a class="item green" href="#containers-list-all-containers">
+        <div class="ui accordion fluid">
+
+
+          <div class="title active">
+            <i class="dropdown icon"></i>
+
+            <strong>Containers</strong>
+
+          </div>
+          <div class="content active">
+            <div class="ui fluid secondary vertical menu">
+
+              <a class="item green" href="#containers-list-all-containers">
           <i class="ui green empty circular label"></i>
           
             <span>List All Containers</span>
           
         </a>
-      
-        <a class="item blue" href="#containers-create-a-new-application">
+
+              <a class="item blue" href="#containers-create-a-new-application">
           <i class="ui blue empty circular label"></i>
           
             <span>Create a new Application</span>
           
         </a>
-      
-      </div>
-    </div>
-    
-  
-</div>
+
+            </div>
+          </div>
 
 
         </div>
+
+
       </div>
-      <div class="eleven wide computer ten wide tablet sixteen wide mobile column">
-        
-<div class="ui hidden divider header"></div>
-<h1 class="ui huge header" id="introduction">Docker Deploy</h1>
-<hr class="ui divider">
-<div class="description">
-  <p>Docker deploy helps you to manage Docker containers on a host.</p>
-
-</div>
-
-        <div class="ui hidden divider"></div>
-        
-
-  <div class="ui horizontal divider" >
-    
-  </div>
-  <div class="ui header center aligned">
-    <div class="ui sub header">
-      
     </div>
-  </div>
-  
-    
+    <div class="eleven wide computer ten wide tablet sixteen wide mobile column">
+
+      <div class="ui hidden divider header"></div>
+      <h1 class="ui huge header" id="introduction">Docker Deploy</h1>
+      <hr class="ui divider">
+      <div class="description">
+        <p>Docker deploy helps you to manage Docker containers on a host.</p>
+
+      </div>
+
+      <div class="ui hidden divider"></div>
+
+
+      <div class="ui horizontal divider">
+
+      </div>
+      <div class="ui header center aligned">
+        <div class="ui sub header">
+
+        </div>
+      </div>
+
+
       <div class="ui stacked segments">
         <div class="ui basic segment resource">
           <div class="ui purple huge ribbon label">
@@ -139,169 +141,169 @@
           </div>
           <div class="ui header">
             <div class="ui sub header">
-              
+
             </div>
           </div>
         </div>
 
-        
-          
-<div class="ui grey horizontal small divider header">
-  <i class="ui grey micro circular label"></i>
-  <i class="ui pink micro circular label"></i>
-  <i class="ui grey micro circular label"></i>
-</div>
 
-          <div class="ui basic segment">
-            <h3 class="ui block center aligned header" id="containers-list-all-containers">
-              List All Containers
-            </h3>
-            <div class="description"></div>
 
-            
-              <h4 class="ui horizontal divider">
-                REQUEST
-              </h4>
-              <div class="description"></div>
-              <div class="fluid ui large labeled button">
-                <div class="ui green large button">
-                  <h3>GET</h3>
-                </div>
-                <a class="ui basic fluid green label">
+        <div class="ui grey horizontal small divider header">
+          <i class="ui grey micro circular label"></i>
+          <i class="ui pink micro circular label"></i>
+          <i class="ui grey micro circular label"></i>
+        </div>
+
+        <div class="ui basic segment">
+          <h3 class="ui block center aligned header" id="containers-list-all-containers">
+            List All Containers
+          </h3>
+          <div class="description"></div>
+
+
+          <h4 class="ui horizontal divider">
+            REQUEST
+          </h4>
+          <div class="description"></div>
+          <div class="fluid ui large labeled button">
+            <div class="ui green large button">
+              <h3>GET</h3>
+            </div>
+            <a class="ui basic fluid green label">
                   <code>https://dashboard-api.vibioh.fr/containers</code>
                 </a>
-              </div>
-              
-              
-                
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td class="four wide">Authorization</td>
-      <td><code>Basic ABC123</code></td>
-    </tr>
-  
-  </tbody>
-</table>
+          </div>
 
-              
-              
 
-              <h4 class="ui horizontal divider">RESPONSE</h4>
-              <div class="description"></div>
-              
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-  </tbody>
-</table>
 
-              <div class="ui stacked orange segment">
-                <div class="ui fluid transaction accordion">
-                  <div class="title center aligned">
-                    <a class="ui orange circular label">
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td class="four wide">Authorization</td>
+                <td><code>Basic ABC123</code></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+
+
+
+          <h4 class="ui horizontal divider">RESPONSE</h4>
+          <div class="description"></div>
+
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+
+          <div class="ui stacked orange segment">
+            <div class="ui fluid transaction accordion">
+              <div class="title center aligned">
+                <a class="ui orange circular label">
                       401
                     </a>
-                    <code></code>
-                  </div>
-                  <div class="content tabbed">
-                    <div class="ui top attached tabular menu">
-                      <a data-tab="body" class="active item">BODY</a>
-                      <a data-tab="schema" class="item">SCHEMA</a>
-                    </div>
-                    <div class="ui bottom attached active tab segment" data-tab="body">
-                      <pre style="white-space: inherit">
+                <code></code>
+              </div>
+              <div class="content tabbed">
+                <div class="ui top attached tabular menu">
+                  <a data-tab="body" class="active item">BODY</a>
+                  <a data-tab="schema" class="item">SCHEMA</a>
+                </div>
+                <div class="ui bottom attached active tab segment" data-tab="body">
+                  <pre style="white-space: inherit">
                         <code class="language-"></code>
                       </pre>
-                    </div>
-                    <div class="ui bottom attached tab segment" data-tab="schema">
-                      <pre style="white-space: inherit">
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="schema">
+                  <pre style="white-space: inherit">
                         <code class="language-json"></code>
                       </pre>
-                    </div>
-                  </div>
                 </div>
               </div>
-            
-              <h4 class="ui horizontal divider">
-                REQUEST
-              </h4>
-              <div class="description"></div>
-              <div class="fluid ui large labeled button">
-                <div class="ui green large button">
-                  <h3>GET</h3>
-                </div>
-                <a class="ui basic fluid green label">
+            </div>
+          </div>
+
+          <h4 class="ui horizontal divider">
+            REQUEST
+          </h4>
+          <div class="description"></div>
+          <div class="fluid ui large labeled button">
+            <div class="ui green large button">
+              <h3>GET</h3>
+            </div>
+            <a class="ui basic fluid green label">
                   <code>https://dashboard-api.vibioh.fr/containers</code>
                 </a>
-              </div>
-              
-              
-                
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td class="four wide">Authorization</td>
-      <td><code>Basic ABC123</code></td>
-    </tr>
-  
-  </tbody>
-</table>
+          </div>
 
-              
-              
 
-              <h4 class="ui horizontal divider">RESPONSE</h4>
-              <div class="description"></div>
-              
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td class="four wide">Content-Type</td>
-      <td><code>application/json</code></td>
-    </tr>
-  
-  </tbody>
-</table>
 
-              <div class="ui stacked blue segment">
-                <div class="ui fluid transaction accordion">
-                  <div class="title center aligned">
-                    <a class="ui blue circular label">
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td class="four wide">Authorization</td>
+                <td><code>Basic ABC123</code></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+
+
+
+          <h4 class="ui horizontal divider">RESPONSE</h4>
+          <div class="description"></div>
+
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td class="four wide">Content-Type</td>
+                <td><code>application/json</code></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="ui stacked blue segment">
+            <div class="ui fluid transaction accordion">
+              <div class="title center aligned">
+                <a class="ui blue circular label">
                       200
                     </a>
-                    <code>application/json</code>
-                  </div>
-                  <div class="content tabbed">
-                    <div class="ui top attached tabular menu">
-                      <a data-tab="body" class="active item">BODY</a>
-                      <a data-tab="schema" class="item">SCHEMA</a>
-                    </div>
-                    <div class="ui bottom attached active tab segment" data-tab="body">
-                      <pre style="white-space: inherit">
+                <code>application/json</code>
+              </div>
+              <div class="content tabbed">
+                <div class="ui top attached tabular menu">
+                  <a data-tab="body" class="active item">BODY</a>
+                  <a data-tab="schema" class="item">SCHEMA</a>
+                </div>
+                <div class="ui bottom attached active tab segment" data-tab="body">
+                  <pre style="white-space: inherit">
                         <code class="language-json">    {
       &#34;results&#34;: [
         {
@@ -375,7 +377,7 @@
             &#34;com.docker.compose.service&#34;: &#34;front&#34;,
             &#34;com.docker.compose.version&#34;: &#34;1.8.0&#34;,
             &#34;traefik.frontend.passHostHeader&#34;: &#34;true&#34;,
-            &#34;traefik.frontend.rule&#34;: &#34;Host: dashboard.vibioh.fr, dashboard.l3miage.fr&#34;,
+            &#34;traefik.frontend.rule&#34;: &#34;Host: dashboard.vibioh.fr&#34;,
             &#34;traefik.port&#34;: &#34;1080&#34;
           },
           &#34;State&#34;: &#34;running&#34;,
@@ -407,77 +409,77 @@
     }
 </code>
                       </pre>
-                    </div>
-                    <div class="ui bottom attached tab segment" data-tab="schema">
-                      <pre style="white-space: inherit">
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="schema">
+                  <pre style="white-space: inherit">
                         <code class="language-json"></code>
                       </pre>
-                    </div>
-                  </div>
                 </div>
               </div>
-            
+            </div>
           </div>
-        
-          
-<div class="ui grey horizontal small divider header">
-  <i class="ui grey micro circular label"></i>
-  <i class="ui pink micro circular label"></i>
-  <i class="ui grey micro circular label"></i>
-</div>
 
-          <div class="ui basic segment">
-            <h3 class="ui block center aligned header" id="containers-create-a-new-application">
-              Create a new Application
-            </h3>
-            <div class="description"></div>
+        </div>
 
-            
-              <h4 class="ui horizontal divider">
-                REQUEST
-              </h4>
-              <div class="description"></div>
-              <div class="fluid ui large labeled button">
-                <div class="ui blue large button">
-                  <h3>POST</h3>
-                </div>
-                <a class="ui basic fluid blue label">
+
+        <div class="ui grey horizontal small divider header">
+          <i class="ui grey micro circular label"></i>
+          <i class="ui pink micro circular label"></i>
+          <i class="ui grey micro circular label"></i>
+        </div>
+
+        <div class="ui basic segment">
+          <h3 class="ui block center aligned header" id="containers-create-a-new-application">
+            Create a new Application
+          </h3>
+          <div class="description"></div>
+
+
+          <h4 class="ui horizontal divider">
+            REQUEST
+          </h4>
+          <div class="description"></div>
+          <div class="fluid ui large labeled button">
+            <div class="ui blue large button">
+              <h3>POST</h3>
+            </div>
+            <a class="ui basic fluid blue label">
                   <code>https://dashboard-api.vibioh.fr/containers/{app_name}</code>
                 </a>
-              </div>
-              
-              
-                
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td class="four wide">Authorization</td>
-      <td><code>Basic ABC123</code></td>
-    </tr>
-  
-  </tbody>
-</table>
+          </div>
 
-              
-              
-                <div class="ui stacked segment">
-                  <div class="ui fluid transaction accordion">
-                    <div class="title">
-                      <code></code>
-                    </div>
-                    <div class="content tabbed">
-                      <div class="ui top attached tabular menu">
-                        <a data-tab="body" class="active item">BODY</a>
-                        <a data-tab="schema" class="item">SCHEMA</a>
-                      </div>
-                      <div class="ui bottom attached active tab segment" data-tab="body">
-                        <pre style="white-space: inherit">
+
+
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td class="four wide">Authorization</td>
+                <td><code>Basic ABC123</code></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+
+
+          <div class="ui stacked segment">
+            <div class="ui fluid transaction accordion">
+              <div class="title">
+                <code></code>
+              </div>
+              <div class="content tabbed">
+                <div class="ui top attached tabular menu">
+                  <a data-tab="body" class="active item">BODY</a>
+                  <a data-tab="schema" class="item">SCHEMA</a>
+                </div>
+                <div class="ui bottom attached active tab segment" data-tab="body">
+                  <pre style="white-space: inherit">
                           <code class="language-">version: &#39;2&#39;
 
 services:
@@ -504,103 +506,103 @@ networks:
       name: traefik
 </code>
                         </pre>
-                      </div>
-                      <div class="ui bottom attached tab segment" data-tab="schema">
-                        <pre style="white-space: inherit">
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="schema">
+                  <pre style="white-space: inherit">
                           <code class="language-json"></code>
                         </pre>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-              
+              </div>
+            </div>
+          </div>
 
-              <h4 class="ui horizontal divider">RESPONSE</h4>
-              <div class="description"></div>
-              
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-  </tbody>
-</table>
 
-              <div class="ui stacked  segment">
-                <div class="ui fluid transaction accordion">
-                  <div class="title center aligned">
-                    <a class="ui  circular label">
+          <h4 class="ui horizontal divider">RESPONSE</h4>
+          <div class="description"></div>
+
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+
+          <div class="ui stacked  segment">
+            <div class="ui fluid transaction accordion">
+              <div class="title center aligned">
+                <a class="ui  circular label">
                       400
                     </a>
-                    <code></code>
-                  </div>
-                  <div class="content tabbed">
-                    <div class="ui top attached tabular menu">
-                      <a data-tab="body" class="active item">BODY</a>
-                      <a data-tab="schema" class="item">SCHEMA</a>
-                    </div>
-                    <div class="ui bottom attached active tab segment" data-tab="body">
-                      <pre style="white-space: inherit">
+                <code></code>
+              </div>
+              <div class="content tabbed">
+                <div class="ui top attached tabular menu">
+                  <a data-tab="body" class="active item">BODY</a>
+                  <a data-tab="schema" class="item">SCHEMA</a>
+                </div>
+                <div class="ui bottom attached active tab segment" data-tab="body">
+                  <pre style="white-space: inherit">
                         <code class="language-"></code>
                       </pre>
-                    </div>
-                    <div class="ui bottom attached tab segment" data-tab="schema">
-                      <pre style="white-space: inherit">
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="schema">
+                  <pre style="white-space: inherit">
                         <code class="language-json"></code>
                       </pre>
-                    </div>
-                  </div>
                 </div>
               </div>
-            
-              <h4 class="ui horizontal divider">
-                REQUEST
-              </h4>
-              <div class="description"></div>
-              <div class="fluid ui large labeled button">
-                <div class="ui blue large button">
-                  <h3>POST</h3>
-                </div>
-                <a class="ui basic fluid blue label">
+            </div>
+          </div>
+
+          <h4 class="ui horizontal divider">
+            REQUEST
+          </h4>
+          <div class="description"></div>
+          <div class="fluid ui large labeled button">
+            <div class="ui blue large button">
+              <h3>POST</h3>
+            </div>
+            <a class="ui basic fluid blue label">
                   <code>https://dashboard-api.vibioh.fr/containers/{app_name}</code>
                 </a>
-              </div>
-              
-              
-                
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td class="four wide">Authorization</td>
-      <td><code>Basic ABC123</code></td>
-    </tr>
-  
-  </tbody>
-</table>
+          </div>
 
-              
-              
-                <div class="ui stacked segment">
-                  <div class="ui fluid transaction accordion">
-                    <div class="title">
-                      <code></code>
-                    </div>
-                    <div class="content tabbed">
-                      <div class="ui top attached tabular menu">
-                        <a data-tab="body" class="active item">BODY</a>
-                        <a data-tab="schema" class="item">SCHEMA</a>
-                      </div>
-                      <div class="ui bottom attached active tab segment" data-tab="body">
-                        <pre style="white-space: inherit">
+
+
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td class="four wide">Authorization</td>
+                <td><code>Basic ABC123</code></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+
+
+          <div class="ui stacked segment">
+            <div class="ui fluid transaction accordion">
+              <div class="title">
+                <code></code>
+              </div>
+              <div class="content tabbed">
+                <div class="ui top attached tabular menu">
+                  <a data-tab="body" class="active item">BODY</a>
+                  <a data-tab="schema" class="item">SCHEMA</a>
+                </div>
+                <div class="ui bottom attached active tab segment" data-tab="body">
+                  <pre style="white-space: inherit">
                           <code class="language-">version: &#39;2&#39;
 
 services:
@@ -627,103 +629,103 @@ networks:
       name: traefik
 </code>
                         </pre>
-                      </div>
-                      <div class="ui bottom attached tab segment" data-tab="schema">
-                        <pre style="white-space: inherit">
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="schema">
+                  <pre style="white-space: inherit">
                           <code class="language-json"></code>
                         </pre>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-              
+              </div>
+            </div>
+          </div>
 
-              <h4 class="ui horizontal divider">RESPONSE</h4>
-              <div class="description"></div>
-              
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-  </tbody>
-</table>
 
-              <div class="ui stacked orange segment">
-                <div class="ui fluid transaction accordion">
-                  <div class="title center aligned">
-                    <a class="ui orange circular label">
+          <h4 class="ui horizontal divider">RESPONSE</h4>
+          <div class="description"></div>
+
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+
+          <div class="ui stacked orange segment">
+            <div class="ui fluid transaction accordion">
+              <div class="title center aligned">
+                <a class="ui orange circular label">
                       401
                     </a>
-                    <code></code>
-                  </div>
-                  <div class="content tabbed">
-                    <div class="ui top attached tabular menu">
-                      <a data-tab="body" class="active item">BODY</a>
-                      <a data-tab="schema" class="item">SCHEMA</a>
-                    </div>
-                    <div class="ui bottom attached active tab segment" data-tab="body">
-                      <pre style="white-space: inherit">
+                <code></code>
+              </div>
+              <div class="content tabbed">
+                <div class="ui top attached tabular menu">
+                  <a data-tab="body" class="active item">BODY</a>
+                  <a data-tab="schema" class="item">SCHEMA</a>
+                </div>
+                <div class="ui bottom attached active tab segment" data-tab="body">
+                  <pre style="white-space: inherit">
                         <code class="language-"></code>
                       </pre>
-                    </div>
-                    <div class="ui bottom attached tab segment" data-tab="schema">
-                      <pre style="white-space: inherit">
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="schema">
+                  <pre style="white-space: inherit">
                         <code class="language-json"></code>
                       </pre>
-                    </div>
-                  </div>
                 </div>
               </div>
-            
-              <h4 class="ui horizontal divider">
-                REQUEST
-              </h4>
-              <div class="description"></div>
-              <div class="fluid ui large labeled button">
-                <div class="ui blue large button">
-                  <h3>POST</h3>
-                </div>
-                <a class="ui basic fluid blue label">
+            </div>
+          </div>
+
+          <h4 class="ui horizontal divider">
+            REQUEST
+          </h4>
+          <div class="description"></div>
+          <div class="fluid ui large labeled button">
+            <div class="ui blue large button">
+              <h3>POST</h3>
+            </div>
+            <a class="ui basic fluid blue label">
                   <code>https://dashboard-api.vibioh.fr/containers/{app_name}</code>
                 </a>
-              </div>
-              
-              
-                
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td class="four wide">Authorization</td>
-      <td><code>Basic ABC123</code></td>
-    </tr>
-  
-  </tbody>
-</table>
+          </div>
 
-              
-              
-                <div class="ui stacked segment">
-                  <div class="ui fluid transaction accordion">
-                    <div class="title">
-                      <code></code>
-                    </div>
-                    <div class="content tabbed">
-                      <div class="ui top attached tabular menu">
-                        <a data-tab="body" class="active item">BODY</a>
-                        <a data-tab="schema" class="item">SCHEMA</a>
-                      </div>
-                      <div class="ui bottom attached active tab segment" data-tab="body">
-                        <pre style="white-space: inherit">
+
+
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td class="four wide">Authorization</td>
+                <td><code>Basic ABC123</code></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+
+
+          <div class="ui stacked segment">
+            <div class="ui fluid transaction accordion">
+              <div class="title">
+                <code></code>
+              </div>
+              <div class="content tabbed">
+                <div class="ui top attached tabular menu">
+                  <a data-tab="body" class="active item">BODY</a>
+                  <a data-tab="schema" class="item">SCHEMA</a>
+                </div>
+                <div class="ui bottom attached active tab segment" data-tab="body">
+                  <pre style="white-space: inherit">
                           <code class="language-">version: &#39;2&#39;
 
 services:
@@ -750,51 +752,51 @@ networks:
       name: traefik
 </code>
                         </pre>
-                      </div>
-                      <div class="ui bottom attached tab segment" data-tab="schema">
-                        <pre style="white-space: inherit">
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="schema">
+                  <pre style="white-space: inherit">
                           <code class="language-json"></code>
                         </pre>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-              
+              </div>
+            </div>
+          </div>
 
-              <h4 class="ui horizontal divider">RESPONSE</h4>
-              <div class="description"></div>
-              
-<table class="ui celled definition table">
-  <thead>
-    <tr>
-      <th colspan="2">Headers</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td class="four wide">Content-Type</td>
-      <td><code>application/json</code></td>
-    </tr>
-  
-  </tbody>
-</table>
 
-              <div class="ui stacked blue segment">
-                <div class="ui fluid transaction accordion">
-                  <div class="title center aligned">
-                    <a class="ui blue circular label">
+          <h4 class="ui horizontal divider">RESPONSE</h4>
+          <div class="description"></div>
+
+          <table class="ui celled definition table">
+            <thead>
+              <tr>
+                <th colspan="2">Headers</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td class="four wide">Content-Type</td>
+                <td><code>application/json</code></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="ui stacked blue segment">
+            <div class="ui fluid transaction accordion">
+              <div class="title center aligned">
+                <a class="ui blue circular label">
                       200
                     </a>
-                    <code>application/json</code>
-                  </div>
-                  <div class="content tabbed">
-                    <div class="ui top attached tabular menu">
-                      <a data-tab="body" class="active item">BODY</a>
-                      <a data-tab="schema" class="item">SCHEMA</a>
-                    </div>
-                    <div class="ui bottom attached active tab segment" data-tab="body">
-                      <pre style="white-space: inherit">
+                <code>application/json</code>
+              </div>
+              <div class="content tabbed">
+                <div class="ui top attached tabular menu">
+                  <a data-tab="body" class="active item">BODY</a>
+                  <a data-tab="schema" class="item">SCHEMA</a>
+                </div>
+                <div class="ui bottom attached active tab segment" data-tab="body">
+                  <pre style="white-space: inherit">
                         <code class="language-json">{
     &#34;results&#34;: {
         &#34;spring&#34;: {
@@ -805,57 +807,46 @@ networks:
 }
 </code>
                       </pre>
-                    </div>
-                    <div class="ui bottom attached tab segment" data-tab="schema">
-                      <pre style="white-space: inherit">
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="schema">
+                  <pre style="white-space: inherit">
                         <code class="language-json"></code>
                       </pre>
-                    </div>
-                  </div>
                 </div>
               </div>
-            
+            </div>
           </div>
-        
-        </div>
-      <div class="ui hidden divider"></div>
-    
-  
 
+        </div>
 
       </div>
+      <div class="ui hidden divider"></div>
+
+
+
+
     </div>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/accordion.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/tab.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/transition.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/popup.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/prism.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/components/prism-json.min.js"></script>
-    <script type="text/javascript">
-      $(function() {
-        $('.ui.accordion').accordion({ animateChildren: false, duration: 0 });
-        $('.content.tabbed').each(function(index) {
-          $('.ui.tabular .item', $(this)).tab({ context: $(this) });
-        });
-        $('.ui.vertical.menu').on('click', '.item', function() {
-          $('.ui.vertical.menu .item').removeClass('active');
-          $(this).addClass('active');
-        });
-        $('.ui.empty.circular.label').popup();
+  </div>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/accordion.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/tab.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/transition.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/popup.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/prism.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/components/prism-json.min.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $('.ui.accordion').accordion({ animateChildren: false, duration: 0 });
+      $('.content.tabbed').each(function (index) {
+        $('.ui.tabular .item', $(this)).tab({ context: $(this) });
       });
-    </script>
-  </body>
+      $('.ui.vertical.menu').on('click', '.item', function () {
+        $('.ui.vertical.menu .item').removeClass('active');
+        $(this).addClass('active');
+      });
+      $('.ui.empty.circular.label').popup();
+    });
+  </script>
+</body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-

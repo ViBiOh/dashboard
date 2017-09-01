@@ -28,10 +28,14 @@ test('should have an empty default state', t =>
   t.deepEqual(reducer(undefined, {}), { entries: [] }));
 
 test('should create empty array on OPEN_STATS', t =>
-  t.deepEqual(reducer(undefined, { type: actions.OPEN_STATS }), { entries: [] }));
+  t.deepEqual(reducer(undefined, { type: actions.OPEN_STATS }), {
+    entries: [],
+  }));
 
 test('should create empty array on CLOSE_STATS', t =>
-  t.deepEqual(reducer(undefined, { type: actions.CLOSE_STATS }), { entries: [] }));
+  t.deepEqual(reducer(undefined, { type: actions.CLOSE_STATS }), {
+    entries: [],
+  }));
 
 test('should append given stats on ADD_STAT', t =>
   t.deepEqual(reducer({ entries: [] }, { type: actions.ADD_STAT, stat }), {

@@ -12,7 +12,10 @@ test('should not redirect on login', (t) => {
 
 test('should redirect to login if 401', (t) => {
   t.deepEqual(
-    onErrorAction('logoutFailed', { toString: () => 'Test failed', status: 401 }),
+    onErrorAction('logoutFailed', {
+      toString: () => 'Test failed',
+      status: 401,
+    }),
     push('/login'),
   );
 });
