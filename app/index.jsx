@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import actions from './Container/actions';
+import actions from './actions';
 import { init } from './Constants';
 import appStore from './Store';
 import App from './App';
