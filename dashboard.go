@@ -21,7 +21,7 @@ import (
 const port = `1080`
 const websocketPrefix = `/ws/`
 
-var restHandler = prometheus.NewPrometheusHandler(`http`, owasp.Handler{Handler: cors.Handler{Handler: http.StripPrefix(`/`, docker.Handler{})}})
+var restHandler = prometheus.NewPrometheusHandler(`http`, owasp.Handler{Handler: cors.Handler{Handler: docker.Handler{}}})
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func handleGracefulClose() error {

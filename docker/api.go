@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"regexp"
+	"strings"
 	"sync"
 	"time"
 
@@ -13,20 +14,16 @@ import (
 
 // DeployTimeout indicates delay for application to deploy before rollback
 const DeployTimeout = 3 * time.Minute
+const healthPrefix = `/infos`
+const infoPrefix = `/infos`
+const containersPrefix = `/containers`
+const servicesPrefix = `/services`
 
 var backgroundMutex = sync.RWMutex{}
 var backgroundTasks = make(map[string]bool)
 
-var healthRequest = regexp.MustCompile(`^health$`)
-var infoRequest = regexp.MustCompile(`info/?$`)
-
-var containersRequest = regexp.MustCompile(`^containers`)
-var listContainersRequest = regexp.MustCompile(`^containers/?$`)
-var containerRequest = regexp.MustCompile(`^containers/([^/]+)/?$`)
-var containerActionRequest = regexp.MustCompile(`^containers/([^/]+)/([^/]+)`)
-
-var servicesRequest = regexp.MustCompile(`^services`)
-var listServicesRequest = regexp.MustCompile(`^services/?$`)
+var containerRequest = regexp.MustCompile(`^/([^/]+)/?$`)
+var containerActionRequest = regexp.MustCompile(`^/([^/]+)/([^/]+)`)
 
 func getCtx() (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), 30*time.Second)
@@ -69,22 +66,24 @@ func infoHandler(w http.ResponseWriter) {
 	}
 }
 
-func containersHandler(w http.ResponseWriter, r *http.Request, urlPath []byte, user *auth.User) {
-	if listContainersRequest.Match(urlPath) && r.Method == http.MethodGet {
-		listContainersHandler(w, user)
-	} else if containerRequest.Match(urlPath) && r.Method == http.MethodGet {
-		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPath)[1])
-	} else if containerActionRequest.Match(urlPath) && r.Method == http.MethodPost {
-		matches := containerActionRequest.FindSubmatch(urlPath)
+func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
+	urlPathByte := []byte(urlPath)
+
+	if containerRequest.MatchString(urlPath) && r.Method == http.MethodGet {
+		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPathByte)[1])
+	} else if containerActionRequest.MatchString(urlPath) && r.Method == http.MethodPost {
+		matches := containerActionRequest.FindSubmatch(urlPathByte)
 		basicActionHandler(w, user, matches[1], string(matches[2]))
-	} else if containerRequest.Match(urlPath) && r.Method == http.MethodDelete {
-		basicActionHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], deleteAction)
-	} else if containerRequest.Match(urlPath) && r.Method == http.MethodPost {
+	} else if containerRequest.MatchString(urlPath) && r.Method == http.MethodDelete {
+		basicActionHandler(w, user, containerRequest.FindSubmatch(urlPathByte)[1], deleteAction)
+	} else if containerRequest.MatchString(urlPath) && r.Method == http.MethodPost {
 		if composeBody, err := httputils.ReadBody(r.Body); err != nil {
 			httputils.InternalServer(w, err)
 		} else {
-			composeHandler(w, user, containerRequest.FindSubmatch(urlPath)[1], composeBody)
+			composeHandler(w, user, containerRequest.FindSubmatch(urlPathByte)[1], composeBody)
 		}
+	} else if strings.HasPrefix(urlPath, `/`) {
+		listContainersHandler(w, user)
 	}
 }
 
@@ -98,9 +97,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	urlPath := []byte(r.URL.Path)
-
-	if healthRequest.Match(urlPath) && r.Method == http.MethodGet {
+	if strings.HasPrefix(r.URL.Path, healthPrefix) && r.Method == http.MethodGet {
 		healthHandler(w, r)
 		return
 	}
@@ -111,11 +108,11 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if infoRequest.Match(urlPath) && r.Method == http.MethodGet {
+	if strings.HasPrefix(r.URL.Path, infoPrefix) && r.Method == http.MethodGet {
 		infoHandler(w)
-	} else if containersRequest.Match(urlPath) {
-		containersHandler(w, r, urlPath, user)
-	} else if servicesRequest.Match(urlPath) {
-		servicesHandler(w, r, urlPath, user)
+	} else if strings.HasPrefix(r.URL.Path, containersPrefix) {
+		containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
+	} else if strings.HasPrefix(r.URL.Path, servicesPrefix) {
+		servicesHandler(w, r, strings.TrimPrefix(r.URL.Path, servicesPrefix), user)
 	}
 }

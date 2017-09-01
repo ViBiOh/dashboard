@@ -99,19 +99,33 @@
     "redux-saga": "latest"
   },
   "ava": {
-    "files": ["app/**/*.test.js"],
-    "require": ["ignore-styles", "./test/setup.js"],
+    "files": [
+      "app/**/*.test.js"
+    ],
+    "require": [
+      "ignore-styles",
+      "./test/setup.js"
+    ],
     "concurrency": 4,
     "babel": "inherit"
   },
   "babel": {
-    "presets": ["es2015", "react"],
-    "plugins": ["transform-object-rest-spread"]
+    "presets": [
+      "es2015",
+      "react"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
   },
   "esdoc": {
     "source": "./app",
-    "includes": [".(js|jsx)$"],
-    "excludes": [".test\\.(js|jsx)$"],
+    "includes": [
+      ".(js|jsx)$"
+    ],
+    "excludes": [
+      ".test\\.(js|jsx)$"
+    ],
     "destination": "./doc",
     "plugins": [
       {
