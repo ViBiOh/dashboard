@@ -14,7 +14,7 @@ import (
 
 // DeployTimeout indicates delay for application to deploy before rollback
 const DeployTimeout = 3 * time.Minute
-const healthPrefix = `/infos`
+const healthPrefix = `/health`
 const infoPrefix = `/infos`
 const containersPrefix = `/containers`
 const servicesPrefix = `/services`
