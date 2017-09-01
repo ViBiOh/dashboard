@@ -11,7 +11,7 @@ export default (state = false, action) => {
     case actions.BUS_OPENED:
       return true;
     case actions.BUS_CLOSED:
-      return true;
+      return false;
     default:
       return state;
   }
