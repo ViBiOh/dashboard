@@ -23,3 +23,7 @@ test('should work with nested object in array', (t) => {
     ['test', 'null', 'undefined', 0],
   );
 });
+
+test('should work with other thing than array or object', (t) => {
+  t.deepEqual(flatValues('string'), ['string']);
+});

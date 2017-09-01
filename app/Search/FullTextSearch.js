@@ -1,5 +1,16 @@
+/**
+ * Minimum length of words for trying to clean.
+ */
 const CLEAN_SEARCH_MIN_LENGTH = 1;
-const CLEAN_WORDS_MIN_LENTH = 2;
+
+/**
+ * Minimum length of words kept when cleaning.
+ */
+const CLEAN_WORDS_MIN_LENGTH = 2;
+
+/**
+ * Maximum clean search percentage when cleaning
+ */
 const CLEAN_SEARCH_PERCENTAGE = 0.5;
 
 /**
@@ -52,7 +63,7 @@ export function cleanSearchValues(values) {
   }
 
   if (values.length > CLEAN_SEARCH_MIN_LENGTH) {
-    const filteredValues = values.filter(v => v.length > CLEAN_WORDS_MIN_LENTH);
+    const filteredValues = values.filter(v => v.length > CLEAN_WORDS_MIN_LENGTH);
     if (filteredValues.length / values.length > CLEAN_SEARCH_PERCENTAGE) {
       return filteredValues;
     }

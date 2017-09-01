@@ -1,5 +1,9 @@
 import funtch from 'funtch';
 
+/**
+ * App context that store variables.
+ * @type {Object}
+ */
 let context = {};
 
 /**

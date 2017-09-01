@@ -1,5 +1,8 @@
 import actions from '../actions';
 
+const startError = /_FAILED$/;
+const endError = /_SUCCEEDED$/;
+
 /**
  * Error's reducer.
  * @param  {Object} state  Existing error's state
@@ -7,10 +10,10 @@ import actions from '../actions';
  * @return {Object}        New state
  */
 export default (state = '', action) => {
-  if (action.type === actions.SET_ERROR || /FAILED/.test(action.type)) {
+  if (action.type === actions.SET_ERROR || startError.test(action.type)) {
     return action.error;
   }
-  if (/SUCCEEDED/.test(action.type)) {
+  if (endError.test(action.type)) {
     return '';
   }
 
