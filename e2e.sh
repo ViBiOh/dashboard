@@ -10,8 +10,10 @@ echo Checking everything started fine
 sleep 5
 docker ps -a
 docker-compose -p dashboard -f docker-compose-local.yml logs
-curl -k -X GET https://localhost:108/
-curl -k -u admin:admin -X GET https://localhost:1081/info
+curl -k -u admin:admin -X GET https://127.0.0.1:1081/info || true
+curl -k -u admin:admin -X GET https://localhost:1081/info || true
+curl -k -X GET https://127.0.0.1:1080/ || true
+curl -k -X GET https://localhost:1080/ || true
 
 echo Running e2e tests
 npm run test:e2e
