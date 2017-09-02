@@ -14,6 +14,7 @@
     "doc": "./node_modules/.bin/esdoc",
     "start": "npm run copy:html && API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://auth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_OAUTH_STATE=RandomStringForViBiOhInfrastructure GITHUB_OAUTH_CLIENT_ID=8c451219bd1bb8760af6 ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test": "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
+    "test:e2e": "./node_modules/.bin/codeceptjs run --steps",
     "build": "npm run format && npm run lint && npm test && npm run mustache && npm run copy:web && ./node_modules/.bin/webpack --progress -p"
   },
   "repository": {
@@ -47,6 +48,7 @@
     "babel-plugin-transform-object-rest-spread": "latest",
     "babel-preset-es2015": "latest",
     "babel-preset-react": "latest",
+    "codeceptjs-webdriverio": "latest",
     "css-loader": "latest",
     "enzyme": "latest",
     "esdoc": "latest",

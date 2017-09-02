@@ -1,0 +1,18 @@
+{
+  "tests": "./e2e/*.js",
+  "timeout": 10000,
+  "output": "./e2e/output",
+  "helpers": {
+    "WebDriverIO": {
+      "protocol": "https",
+      "host": "selenium.vibioh.fr",
+      "port": "443",
+      "url": "https://dashboard.vibioh.fr",
+      "browser": "chrome"
+    }
+  },
+  "include": {},
+  "bootstrap": false,
+  "mocha": {},
+  "name": "funds"
+}
