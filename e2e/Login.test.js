@@ -1,6 +1,12 @@
 Feature('Login');
 
-Scenario('Basic auth login', (I, loginPage) => {
+Scenario('Basic auth error', (I, loginPage) => {
+  I.amOnPage('/login');
+  loginPage.basicLogin('admin', 'invalid');
+  I.seeElement('#error');
+});
+
+Scenario('Basic auth success', (I, loginPage) => {
   I.amOnPage('/login');
   loginPage.basicLogin('admin', 'admin');
   I.waitForVisible('#search', 5);

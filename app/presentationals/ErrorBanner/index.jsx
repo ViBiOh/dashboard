@@ -10,7 +10,7 @@ import style from './index.less';
 const ErrorBanner = ({ error }) => {
   if (error) {
     return (
-      <div className={style.error}>
+      <div id="error" className={style.error}>
         {error}
       </div>
     );
