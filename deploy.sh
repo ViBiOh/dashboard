@@ -43,9 +43,9 @@ function docker-compose-deploy() {
   if [ "${servicesCount}" != "${healthyCount}" ]; then
     echo "Containers didn't start, reverting..."
 
-    docker-compose -p ${PROJECT_FULLNAME} logs
-    docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{range .State.Health.Log}}{{.Output}}{{end}}'
-    docker-compose -p ${PROJECT_FULLNAME} rm --force --stop -v
+    docker-compose -p ${PROJECT_FULLNAME} logs || true
+    docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{range .State.Health.Log}}{{.Output}}{{end}}' || true
+    docker-compose -p ${PROJECT_FULLNAME} rm --force --stop -v || true
     return 1
   fi
 
