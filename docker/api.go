@@ -15,7 +15,7 @@ import (
 // DeployTimeout indicates delay for application to deploy before rollback
 const DeployTimeout = 3 * time.Minute
 const healthPrefix = `/health`
-const infoPrefix = `/infos`
+const infoPrefix = `/info`
 const containersPrefix = `/containers`
 const servicesPrefix = `/services`
 
@@ -64,7 +64,7 @@ func infoHandler(w http.ResponseWriter) {
 func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
 	urlPathByte := []byte(urlPath)
 
-	if urlPath == `/` && r.Method == http.MethodGet {
+	if (urlPath == `/` || urlPath == ``) && r.Method == http.MethodGet {
 		listContainersHandler(w, user)
 	} else if containerRequest.MatchString(urlPath) && r.Method == http.MethodGet {
 		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPathByte)[1])
