@@ -5,6 +5,10 @@ import { push } from 'react-router-redux';
 import actions from '../actions';
 import ContainersList from '../presentationals/ContainersList';
 
+/**
+ * Select props from Redux state.
+ * @param {Object} state Current state
+ */
 const mapStateToProps = state => ({
   pending: !!state.pending[actions.INFO] || !!state.pending[actions.FETCH_CONTAINERS],
   containersTotalCount: state.containers ? state.containers.length : 0,
@@ -13,6 +17,10 @@ const mapStateToProps = state => ({
   error: state.error,
 });
 
+/**
+ * Provide dispatch functions in props.
+ * @param {Function} dispatch Redux dispatch function
+ */
 const mapDispatchToProps = dispatch => ({
   onRefresh: () => dispatch(actions.info()),
   onAdd: () => dispatch(push('/containers/New')),

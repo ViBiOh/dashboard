@@ -2,6 +2,10 @@ import { connect } from 'react-redux';
 import actions from '../actions';
 import GithubAuth from '../presentationals/Login/GithubAuth';
 
+/**
+ * Select props from Redux state.
+ * @param {Object} state Current state
+ */
 const mapStateToProps = (state, props) => {
   const queryParam = new URLSearchParams(props.location.search);
 
@@ -13,6 +17,10 @@ const mapStateToProps = (state, props) => {
   };
 };
 
+/**
+ * Provide dispatch functions in props.
+ * @param {Function} dispatch Redux dispatch function
+ */
 const mapDispatchToProps = dispatch => ({
   getAccessToken: (state, code) => dispatch(actions.getGithubAccessToken(state, code)),
 });

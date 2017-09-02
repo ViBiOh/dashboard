@@ -80,6 +80,10 @@ ContainerComponent.defaultProps = {
   stats: null,
 };
 
+/**
+ * Select props from Redux state.
+ * @param {Object} state Current state
+ */
 const mapStateToProps = (state, props) => ({
   pending: !!state.pending[actions.FETCH_CONTAINER],
   pendingAction: !!state.pending[actions.ACTION_CONTAINER],
@@ -91,6 +95,10 @@ const mapStateToProps = (state, props) => ({
   containerId: props.match.params.containerId,
 });
 
+/**
+ * Provide dispatch functions in props.
+ * @param {Function} dispatch Redux dispatch function
+ */
 const mapDispatchToProps = dispatch => ({
   fetchContainer: id => dispatch(actions.fetchContainer(id)),
   actionContainer: (action, id) => dispatch(actions.actionContainer(action, id)),
