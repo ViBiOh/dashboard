@@ -9,6 +9,7 @@ const Github = () =>
     className={style.icons}
     title="Login with GitHub"
     rel="noopener noreferrer"
+    data-auth-github
   >
     <FaGithub />
   </a>);

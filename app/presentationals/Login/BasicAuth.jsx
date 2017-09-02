@@ -24,6 +24,7 @@ const BasicAuth = ({ pending, onLogin, error }) => {
       <h2>Login</h2>
       <input
         ref={e => setRef(refs, 'loginInput', e)}
+        id="login"
         name="login"
         type="text"
         placeholder="login"
@@ -31,12 +32,13 @@ const BasicAuth = ({ pending, onLogin, error }) => {
       />
       <input
         ref={e => setRef(refs, 'passwordInput', e)}
+        id="password"
         name="password"
         type="password"
         placeholder="password"
         onKeyDown={e => onKeyDown(e, submit)}
       />
-      <div className={style.center}>
+      <div className={style.center} data-auth-basic-submit>
         <ThrobberButton onClick={submit} pending={pending}>
           Login
         </ThrobberButton>

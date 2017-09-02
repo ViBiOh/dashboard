@@ -8,6 +8,7 @@ const Basic = () =>
     className={style.icons}
     title="Login with username/password"
     rel="noopener noreferrer"
+    data-auth-basic
   >
     <FaUnlockAlt />
   </a>);

@@ -1,6 +1,4 @@
 {
-  "tests": "./e2e/*.js",
-  "timeout": 10000,
   "output": "./e2e/output",
   "helpers": {
     "WebDriverIO": {
@@ -16,8 +14,14 @@
       }
     }
   },
-  "include": {},
-  "bootstrap": false,
+  "include": {
+    "loginPage": "e2e/pages/Login.js"
+  },
   "mocha": {},
+  "bootstrap": false,
+  "teardown": null,
+  "hooks": [],
+  "tests": "./e2e/*.test.js",
+  "timeout": 10000,
   "name": "dashboard"
 }
