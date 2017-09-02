@@ -1,7 +1,7 @@
 import test from 'ava';
 import React from 'react';
 import { shallow } from 'enzyme';
-import Throbber from './Throbber';
+import Throbber from './';
 
 test('should render into a div', (t) => {
   t.is(shallow(<Throbber />).type(), 'div');

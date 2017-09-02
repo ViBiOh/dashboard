@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import React from 'react';
 import { shallow } from 'enzyme';
 import Toolbar from '../Toolbar';
-import Throbber from '../Throbber/Throbber';
+import Throbber from '../Throbber';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import Container from './Container';
 import ContainerInfo from './ContainerInfo';

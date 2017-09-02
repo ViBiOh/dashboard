@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '../Button';
-import Throbber from './Throbber';
+import Button from '../../Button';
+import Throbber from '../';
 
 /**
  * Throbber wrapped in a Button for displaying background task on click.

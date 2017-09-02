@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBanner from '../ErrorBanner';
-import Throbber from '../Throbber/Throbber';
+import Throbber from '../Throbber';
 
 /**
  * GithubAuth Component.

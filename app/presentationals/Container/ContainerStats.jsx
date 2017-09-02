@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { STATS_COUNT } from '../../reducers/stats';
-import Throbber from '../Throbber/Throbber';
+import Throbber from '../Throbber';
 import Graph from './Graph';
 import style from './ContainerStats.less';
 

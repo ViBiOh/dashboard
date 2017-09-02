@@ -7,7 +7,7 @@ import FaCubes from 'react-icons/lib/fa/cubes';
 import Toolbar from '../Toolbar';
 import Button from '../Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
-import Throbber from '../Throbber/Throbber';
+import Throbber from '../Throbber';
 import ErrorBanner from '../ErrorBanner';
 import FilterBar from '../Filter';
 import ContainerCard from '../ContainerCard';

@@ -5,16 +5,12 @@ module.exports = {
     I = actor();
   },
 
-  basicIcon: {
-    css: '[data-auth-basic]',
-  },
+  basicIcon: '[data-auth-basic]',
   fields: {
     login: '#login',
-    pass: '#password',
+    password: '#password',
   },
-  submit: {
-    css: '[data-auth-basic-submit]',
-  },
+  submit: '[data-auth-basic-submit]',
 
   basicLogin(login, password) {
     I.click(this.basicIcon);

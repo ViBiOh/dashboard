@@ -9,7 +9,7 @@ import FaRetweet from 'react-icons/lib/fa/retweet';
 import Toolbar from '../Toolbar';
 import Button from '../Button';
 import ErrorBanner from '../ErrorBanner';
-import Throbber from '../Throbber/Throbber';
+import Throbber from '../Throbber';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import ContainerInfo from './ContainerInfo';
 import ContainerStats from './ContainerStats';

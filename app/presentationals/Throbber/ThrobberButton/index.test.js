@@ -2,9 +2,9 @@ import test from 'ava';
 import sinon from 'sinon';
 import React from 'react';
 import { shallow } from 'enzyme';
-import ThrobberButton from './ThrobberButton';
-import Button from '../Button';
-import Throbber from './Throbber';
+import Button from '../../Button';
+import Throbber from '../';
+import ThrobberButton from './';
 
 test('should render as a Button', (t) => {
   t.is(shallow(<ThrobberButton onClick={() => null} />).type(), Button);
