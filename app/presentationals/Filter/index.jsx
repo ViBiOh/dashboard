@@ -7,6 +7,7 @@ import style from './index.less';
  */
 const Filter = ({ value, onChange }) =>
   (<input
+    id="search"
     type="text"
     name="search"
     placeholder="Filter..."
