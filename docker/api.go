@@ -19,8 +19,7 @@ const infoPrefix = `/infos`
 const containersPrefix = `/containers`
 const servicesPrefix = `/services`
 
-var backgroundMutex = sync.RWMutex{}
-var backgroundTasks = make(map[string]bool)
+var backgroundTasks = sync.Map{}
 
 var containerRequest = regexp.MustCompile(`^/([^/]+)/?$`)
 var containerActionRequest = regexp.MustCompile(`^/([^/]+)/([^/]+)`)
@@ -34,17 +33,13 @@ func getGracefulCtx() (context.Context, context.CancelFunc) {
 }
 
 // CanBeGracefullyClosed indicates if application can terminate safely
-func CanBeGracefullyClosed() bool {
-	backgroundMutex.RLock()
-	defer backgroundMutex.RUnlock()
+func CanBeGracefullyClosed() (canBe bool) {
+	backgroundTasks.Range(func(_ interface{}, value interface{}) bool {
+		canBe = !value.(bool)
+		return canBe
+	})
 
-	for _, value := range backgroundTasks {
-		if value {
-			return false
-		}
-	}
-
-	return true
+	return
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +64,9 @@ func infoHandler(w http.ResponseWriter) {
 func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
 	urlPathByte := []byte(urlPath)
 
-	if containerRequest.MatchString(urlPath) && r.Method == http.MethodGet {
+	if urlPath == `/` && r.Method == http.MethodGet {
+		listContainersHandler(w, user)
+	} else if containerRequest.MatchString(urlPath) && r.Method == http.MethodGet {
 		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPathByte)[1])
 	} else if containerActionRequest.MatchString(urlPath) && r.Method == http.MethodPost {
 		matches := containerActionRequest.FindSubmatch(urlPathByte)
@@ -82,8 +79,6 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 		} else {
 			composeHandler(w, user, containerRequest.FindSubmatch(urlPathByte)[1], composeBody)
 		}
-	} else if strings.HasPrefix(urlPath, `/`) {
-		listContainersHandler(w, user)
 	}
 }
 

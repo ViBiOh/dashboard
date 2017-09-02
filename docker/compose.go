@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"regexp"
 	"strings"
 	"time"
 
@@ -22,12 +21,11 @@ import (
 
 const minMemory = 16777216
 const maxMemory = 805306368
+const tagSeparator = `:`
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
 const linkSeparator = `:`
-
-var imageTag = regexp.MustCompile(`^\S*?:\S+$`)
 
 type dockerComposeHealthcheck struct {
 	Test     []string
@@ -172,7 +170,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices map[string
 }
 
 func pullImage(image string, user *auth.User) error {
-	if !imageTag.MatchString(image) {
+	if !strings.Contains(image, tagSeparator) {
 		image = image + defaultTag
 	}
 
@@ -308,12 +306,7 @@ func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, 
 
 func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.User, appName []byte, services map[string]*deployedService, oldContainers []types.Container) {
 	defer cancel()
-	defer func() {
-		backgroundMutex.Lock()
-		defer backgroundMutex.Unlock()
-
-		delete(backgroundTasks, string(appName))
-	}()
+	defer backgroundTasks.Delete(string(appName))
 
 	if areContainersHealthy(ctx, user, appName, inspectServices(services, user)) {
 		cleanContainers(oldContainers, user)
@@ -375,15 +368,11 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 
 	appNameStr := string(appName)
 
-	backgroundMutex.Lock()
-	if _, ok := backgroundTasks[appNameStr]; ok {
-		backgroundMutex.Unlock()
+	if _, ok := backgroundTasks.Load(appNameStr); ok {
 		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application already in deployment`, user.Username, appName))
 		return
 	}
-
-	backgroundTasks[appNameStr] = true
-	backgroundMutex.Unlock()
+	backgroundTasks.Store(appNameStr, true)
 
 	oldContainers, err := listContainers(user, appNameStr)
 	if err != nil {

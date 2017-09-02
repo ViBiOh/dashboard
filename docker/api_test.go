@@ -3,6 +3,7 @@ package docker
 import (
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 
 	"github.com/docker/docker/client"
@@ -24,7 +25,10 @@ func TestCanBeGracefullyClosed(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		backgroundTasks = testCase.backgroundTasks
+		backgroundTasks = sync.Map{}
+		for key, value := range testCase.backgroundTasks {
+			backgroundTasks.Store(key, value)
+		}
 
 		if result := CanBeGracefullyClosed(); result != testCase.want {
 			t.Errorf(`CanBeGracefullyClosed() = %v, want %v, for %v`, result, testCase.want, testCase.backgroundTasks)
