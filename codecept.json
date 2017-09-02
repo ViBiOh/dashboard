@@ -19,5 +19,5 @@
   "include": {},
   "bootstrap": false,
   "mocha": {},
-  "name": "funds"
+  "name": "dashboard"
 }
