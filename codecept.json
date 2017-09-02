@@ -7,7 +7,7 @@
       "protocol": "https",
       "host": "selenium.vibioh.fr",
       "port": "443",
-      "url": "https://localhost:1080",
+      "url": "https://localhost",
       "browser": "chrome",
       "desiredCapabilities": {
         "javascriptEnabled": true,
