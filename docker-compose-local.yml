@@ -5,13 +5,13 @@ services:
     image: vibioh/auth
     command:
     - -tlshosts
-    - localhost:1080
+    - localhost:1082
     - -basicUsers
     - admin:$$2a$$12$$NSZOP5MbJ8mq5gh9BixTueksuMCgDpgxOxLvfpuKRWUN8MlJEvG5y
     - -corsHeaders
     - Content-Type,Authorization
     ports:
-    - 1080:1080/tcp
+    - 1082:1080/tcp
     logging:
       driver: json-file
       options:
@@ -61,20 +61,22 @@ services:
     image: vibioh/dashboard-front
     command:
     - -tls
+    - -tlshosts
+    - localhost:1080
     - -spa
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: localhost:1081 localhost:1080;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline' www.google-analytics.com cdnjs.cloudflare.com ajax.googleapis.com cdn.ravenjs.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com data: ; img-src 'self' www.google-analytics.com data: ; connect-src 'self' wss: localhost:1081 localhost:1082;"
     - -push
     - /static/app.js?v=${GIT_COMMIT},/static/app.css?v=${GIT_COMMIT}
     environment:
       API_URL: 'https://localhost:1081'
       WS_URL: 'wss://localhost:1081/ws'
-      AUTH_URL: 'https://localhost:1080'
+      AUTH_URL: 'https://localhost:1082'
       BASIC_AUTH_ENABLED: 'true'
     ports:
-    - 443:1080/tcp
+    - 1080:1080/tcp
     logging:
       driver: json-file
       options:
