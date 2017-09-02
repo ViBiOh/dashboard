@@ -4,9 +4,9 @@
   "output": "./e2e/output",
   "helpers": {
     "WebDriverIO": {
-      "protocol": "https",
-      "host": "selenium.vibioh.fr",
-      "port": "443",
+      "protocol": "http",
+      "host": "localhost",
+      "port": "4444",
       "url": "https://localhost:1080",
       "browser": "chrome",
       "desiredCapabilities": {
