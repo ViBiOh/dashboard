@@ -106,7 +106,7 @@
     ],
     "require": [
       "ignore-styles",
-      "./test/setup.js"
+      "./app/helpers/Test.js"
     ],
     "concurrency": 4,
     "babel": "inherit"
@@ -176,5 +176,10 @@
       "selector-list-comma-newline-after": null,
       "indentation": null
     }
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "all"
   }
 }
