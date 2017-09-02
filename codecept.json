@@ -15,7 +15,7 @@
     }
   },
   "include": {
-    "loginPage": "e2e/pages/Login.js"
+    "loginPage": "./e2e/pages/Login.js"
   },
   "mocha": {},
   "bootstrap": false,
