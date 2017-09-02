@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/docker/docker/api/types"
@@ -20,12 +21,12 @@ const ignoredByteLogSize = 8
 const tailSize = `100`
 const start = `start`
 const stop = `stop`
+const busPrefix = `/bus`
 
 var (
-	eventsDemand        = regexp.MustCompile(`^events (\S+)`)
-	logsDemand          = regexp.MustCompile(`^logs (\S+)(?: (.+))?`)
-	statsDemand         = regexp.MustCompile(`^stats (\S+)(?: (.+))?`)
-	busWebsocketRequest = regexp.MustCompile(`bus`)
+	eventsDemand = regexp.MustCompile(`^events (\S+)`)
+	logsDemand   = regexp.MustCompile(`^logs (\S+)(?: (.+))?`)
+	statsDemand  = regexp.MustCompile(`^stats (\S+)(?: (.+))?`)
 )
 
 var (
@@ -256,9 +257,7 @@ type WebsocketHandler struct {
 }
 
 func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	urlPath := []byte(r.URL.Path)
-
-	if busWebsocketRequest.Match(urlPath) {
+	if strings.HasPrefix(r.URL.Path, busPrefix) {
 		busWebsocketHandler(w, r)
 	}
 }

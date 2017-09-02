@@ -34,6 +34,8 @@ func getGracefulCtx() (context.Context, context.CancelFunc) {
 
 // CanBeGracefullyClosed indicates if application can terminate safely
 func CanBeGracefullyClosed() (canBe bool) {
+	canBe = true
+
 	backgroundTasks.Range(func(_ interface{}, value interface{}) bool {
 		canBe = !value.(bool)
 		return canBe
