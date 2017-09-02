@@ -8,7 +8,12 @@
       "host": "selenium.vibioh.fr",
       "port": "443",
       "url": "https://localhost:1080",
-      "browser": "chrome"
+      "browser": "chrome",
+      "desiredCapabilities": {
+        "javascriptEnabled": true,
+        "webStorageEnabled": true,
+        "acceptSslCerts": true
+      }
     }
   },
   "include": {},
