@@ -5,6 +5,10 @@ import actions from '../actions';
 import Container from '../presentationals/Container/Container';
 
 class ContainerComponent extends Component {
+  /**
+   * React lifecycle.
+   * Fetch container and open streams for bus if bus provided.
+   */
   componentDidMount() {
     this.props.fetchContainer(this.props.containerId);
 
@@ -13,26 +17,46 @@ class ContainerComponent extends Component {
     }
   }
 
+  /**
+   * React lifecycle.
+   * Open streams for bus if bus provided.
+   * @param {Object} nextProps Next props for component
+   */
   componentWillReceiveProps(nextProps) {
     if (!this.props.bus && nextProps.bus) {
       this.openStreams();
     }
   }
 
+  /**
+   * React lifecycle.
+   * Close previously opened streams.
+   */
   componentWillUnmount() {
     this.closeStreams();
   }
 
+  /**
+   * Open streams in bus for given container.
+   * @memberof ContainerComponent
+   */
   openStreams() {
     this.props.openLogs(this.props.containerId);
     this.props.openStats(this.props.containerId);
   }
 
+  /**
+   * Close streams in bus for given container.
+   * @memberof ContainerComponent
+   */
   closeStreams() {
     this.props.closeLogs();
     this.props.closeStats();
   }
 
+  /**
+   * React lifecycle.
+   */
   render() {
     const { container } = this.props;
 

@@ -34,6 +34,7 @@ const mapDispatchToProps = dispatch => ({
  */
 export class ContainersListContainerComponent extends Component {
   /**
+   * React lifecycle.
    * Retrieval of query string for synchronizing ReduxState and History.
    */
   componentDidMount() {
@@ -47,6 +48,7 @@ export class ContainersListContainerComponent extends Component {
   }
 
   /**
+   * React lifecycle.
    * Render of presentational component.
    */
   render() {
