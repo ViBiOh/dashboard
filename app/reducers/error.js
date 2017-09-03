@@ -1,6 +1,15 @@
 import actions from '../actions';
 
+/**
+ * Start error regex.
+ * @type {RegExp}
+ */
 const startError = /_FAILED$/;
+
+/**
+ * End error regex.
+ * @type {RegExp}
+ */
 const endError = /_SUCCEEDED$/;
 
 /**

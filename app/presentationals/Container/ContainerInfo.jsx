@@ -4,6 +4,10 @@ import moment from 'moment';
 import { humanSize } from '../../helpers/statHelper';
 import style from './ContainerInfo.less';
 
+/**
+ * Regex for parsing environment variables.
+ * @type {RegExp}
+ */
 const ENV_PARSER = /(.*?)=(.*)/;
 
 /**

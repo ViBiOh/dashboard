@@ -11,6 +11,9 @@ import ComposeContainer from './containers/ComposeContainer';
 import ContainerContainer from './containers/ContainerContainer';
 import history from './History';
 
+/**
+ * Application wrapper.
+ */
 const App = () =>
   (<Router history={history}>
     <Main>

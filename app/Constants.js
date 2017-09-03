@@ -13,6 +13,12 @@ let context = {};
 const STORAGE_KEY_AUTH = 'auth';
 
 /**
+ * Maximum number of stats stored (one per second)
+ * @type {Number}
+ */
+export const STATS_COUNT = 60;
+
+/**
  * Initialize context from remote endpoint
  * @return {Promise<Object>} Context
  */
@@ -25,6 +31,11 @@ function init() {
   });
 }
 
+/**
+ * Get given key from context.
+ * @param {String} key Wanted key
+ * @return {String} Value from context
+ */
 function getFromContext(key) {
   return context[key];
 }

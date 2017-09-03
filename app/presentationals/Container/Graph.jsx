@@ -8,6 +8,7 @@ import style from './Graph.less';
  */
 export default class Graph extends Component {
   /**
+   * React lifecycle.
    * Update chart at first mount.
    */
   componentDidMount() {
@@ -15,6 +16,7 @@ export default class Graph extends Component {
   }
 
   /**
+   * React lifecycle.
    * Update chart at props update.
    */
   componentWillReceiveProps(newProps) {
@@ -22,6 +24,7 @@ export default class Graph extends Component {
   }
 
   /**
+   * React lifecycle.
    * Destroying chart on unmount.
    */
   componentWillUnmount() {
@@ -64,6 +67,7 @@ export default class Graph extends Component {
   }
 
   /**
+   * React lifecycle.
    * Render chart.js
    * @return {ReactComponent} chart.js in a canvas
    */

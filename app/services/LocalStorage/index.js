@@ -1,3 +1,7 @@
+/**
+ * Local storage for checking availability.
+ * @type {String}
+ */
 const localStorageKeyCheck = 'localStorageKeyCheck'.split('').reverse();
 
 /**
@@ -72,4 +76,7 @@ export class LocalStorage {
   }
 }
 
+/**
+ * LocalStorage service proxy instance.
+ */
 export default new LocalStorage();

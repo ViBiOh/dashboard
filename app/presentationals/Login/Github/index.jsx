@@ -8,6 +8,7 @@ import Throbber from '../../Throbber';
  */
 export default class GithubAuth extends Component {
   /**
+   * React lifecycle.
    * If no error provided, exhcange code for access token
    */
   componentDidMount() {
@@ -17,6 +18,7 @@ export default class GithubAuth extends Component {
   }
 
   /**
+   * React lifecycle.
    * Show Throbber or ErrorBanner for explaining
    * @return {ReactComponent} Component
    */

@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import actions from '../actions';
 import Container from '../presentationals/Container/Container';
 
+/**
+ * Container.
+ * @extends {Component}
+ */
 class ContainerComponent extends Component {
   /**
    * React lifecycle.
@@ -136,5 +140,4 @@ const mapDispatchToProps = dispatch => ({
 /**
  * Container for handling container view.
  */
-const ContainerContainer = connect(mapStateToProps, mapDispatchToProps)(ContainerComponent);
-export default ContainerContainer;
+export default connect(mapStateToProps, mapDispatchToProps)(ContainerComponent);

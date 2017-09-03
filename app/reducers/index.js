@@ -11,6 +11,10 @@ import error from './error';
 import bus from './bus';
 import filter from './filter';
 
+/**
+ * Combined reducers of app.
+ * @type {Function}
+ */
 const reducers = combineReducers({
   bus,
   container,
@@ -24,6 +28,12 @@ const reducers = combineReducers({
   stats,
 });
 
+/**
+ * Overriden app reducers for handling filter from query or redux.
+ * @param {Object} state Previous state
+ * @param {Object} action Action dispatched
+ * @return {Object} New state
+ */
 function appReducers(state, action) {
   const nextState = reducers(state, action);
 

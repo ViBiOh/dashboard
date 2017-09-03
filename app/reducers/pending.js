@@ -1,4 +1,13 @@
+/**
+ * Start pending regex.
+ * @type {RegExp}
+ */
 const startPending = /^(.*?)_REQUEST$/;
+
+/**
+ * End pending regex.
+ * @type {RegExp}
+ */
 const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
 
 /**

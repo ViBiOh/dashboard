@@ -1,14 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { STATS_COUNT } from '../../reducers/stats';
+import { STATS_COUNT } from '../../Constants';
 import Throbber from '../Throbber';
 import Graph from './Graph';
 import style from './ContainerStats.less';
 
+/**
+ * CPU line color.
+ * @type {String}
+ */
 const CPU_COLOR = '#337ab7';
+
+/**
+ * Memory line color.
+ * @type {String}
+ */
 const MEMORY_COLOR = '#5cb85c';
 
+/**
+ * Default labels for a better rendering of graph.
+ */
 const labels = [];
+
 for (let i = 0; i < STATS_COUNT; i += 1) {
   labels.push('');
 }

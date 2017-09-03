@@ -5,6 +5,10 @@ import FaCloud from 'react-icons/lib/fa/cloud';
 import Button from '../Button/';
 import style from './index.less';
 
+/**
+ * Green status regex.
+ * @type {RegExp}
+ */
 const GREEN_STATUS = /up/i;
 
 /**

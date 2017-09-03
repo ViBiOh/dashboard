@@ -1,5 +1,9 @@
 import actions from '../actions';
 
+/**
+ * Initial state for logs.
+ * @type {Array}
+ */
 const initialState = [];
 
 /**

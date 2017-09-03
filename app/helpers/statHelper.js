@@ -1,3 +1,7 @@
+/**
+ * Bytes size.
+ * @type {Number}
+ */
 const BYTES_SIZE = 1024;
 
 /**

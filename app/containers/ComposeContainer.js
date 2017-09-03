@@ -20,9 +20,7 @@ const mapDispatchToProps = dispatch => ({
   onBack: () => dispatch(actions.goHome()),
 });
 
-const ComposeContainer = connect(mapStateToProps, mapDispatchToProps)(Compose);
-
 /**
  * Container for handling compose view.
  */
-export default ComposeContainer;
+export default connect(mapStateToProps, mapDispatchToProps)(Compose);

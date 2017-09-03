@@ -1,4 +1,5 @@
 import actions from '../actions';
+import { STATS_COUNT } from '../Constants';
 import {
   BYTES_NAMES,
   humanSizeScale,
@@ -8,11 +9,9 @@ import {
 } from '../helpers/statHelper';
 
 /**
- * Maximum number of stats stored (one per second)
- * @type {Number}
+ * Default initial state with empty entries.
+ * @type {Object}
  */
-export const STATS_COUNT = 60;
-
 const initialState = {
   entries: [],
 };
