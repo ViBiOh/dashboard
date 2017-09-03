@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import actions from '../actions';
-import GithubAuth from '../presentationals/Login/GithubAuth';
+import GithubAuth from '../presentationals/Login/Github';
 
 /**
  * Select props from Redux state.

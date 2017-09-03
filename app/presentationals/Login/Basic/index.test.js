@@ -2,7 +2,7 @@ import test from 'ava';
 import sinon from 'sinon';
 import React from 'react';
 import { mount } from 'enzyme';
-import BasicAuth from './BasicAuth';
+import BasicAuth from './';
 
 test('should render into a span', (t) => {
   const onLogin = sinon.spy();

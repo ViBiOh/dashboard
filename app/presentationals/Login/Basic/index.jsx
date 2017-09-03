@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import onKeyDown from '../../helpers/input';
-import setRef from '../../helpers/ref';
-import ThrobberButton from '../Throbber/ThrobberButton';
-import ErrorBanner from '../ErrorBanner';
-import style from './Login.less';
+import onKeyDown from '../../../helpers/input';
+import setRef from '../../../helpers/ref';
+import ThrobberButton from '../../Throbber/ThrobberButton';
+import ErrorBanner from '../../ErrorBanner';
+import style from '../index.less';
 
 /**
  * BasicAuth auth form.
@@ -38,7 +38,7 @@ const BasicAuth = ({ pending, onLogin, error }) => {
         placeholder="password"
         onKeyDown={e => onKeyDown(e, submit)}
       />
-      <div className={style.center} data-auth-basic-submit>
+      <div className={style.center} data-basic-auth-submit>
         <ThrobberButton onClick={submit} pending={pending}>
           Login
         </ThrobberButton>

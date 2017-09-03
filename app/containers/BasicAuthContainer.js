@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import actions from '../actions';
-import BasicAuth from '../presentationals/Login/BasicAuth';
+import BasicAuth from '../presentationals/Login/Basic';
 
 /**
  * Select props from Redux state.
