@@ -63,3 +63,33 @@ func TestHealthHandler(t *testing.T) {
 		}
 	}
 }
+
+func TestInfoHandler(t *testing.T) {
+	var cases = []struct {
+		statusCode int
+		message    string
+		want       int
+	}{
+		{
+			500,
+			`Internal server error`,
+			500,
+		},
+		{
+			200,
+			`{"ID":"daemonID","Containers": 3}`,
+			200,
+		},
+	}
+
+	for _, testCase := range cases {
+		docker = mockClient(t, testCase.statusCode, testCase.message)
+
+		w := httptest.NewRecorder()
+		infoHandler(w)
+
+		if result := w.Result().StatusCode; result != testCase.want {
+			t.Errorf(`infoHandler() = %v, want %v, with docker=%v`, result, testCase.want, testCase.message)
+		}
+	}
+}
