@@ -33,7 +33,7 @@ services:
     - -dockerVersion
     - '1.24'
     - -authUrl
-    - https://localhost:1082
+    - https://auth:1080
     - -users
     - admin:admin
     - -corsHeaders
@@ -42,6 +42,8 @@ services:
     - GET,POST,DELETE
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
+    links:
+    - auth
     ports:
     - 1081:1080/tcp
     logging:
