@@ -56,6 +56,7 @@ func InitWebsocket() error {
 }
 
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
+	remoteIP := auth.GetRemoteIP(r)
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		defer ws.Close()
@@ -68,8 +69,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 		return nil, nil, fmt.Errorf(`Error while reading authentification message: %v`, err)
 	}
 
-	log.Printf(`RemoteIP %v and %v`, auth.GetRemoteIP(r), r.Header)
-	user, err := auth.IsAuthenticatedByAuth(string(basicAuth), auth.GetRemoteIP(r))
+	user, err := auth.IsAuthenticatedByAuth(string(basicAuth), remoteIP)
 	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
 		defer ws.Close()
