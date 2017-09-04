@@ -22,6 +22,7 @@ const tailSize = `100`
 const start = `start`
 const stop = `stop`
 const busPrefix = `/bus`
+const forwardedForHeader = `X-Forwarded-For`
 
 var (
 	eventsDemand = regexp.MustCompile(`^events (\S+)`)
@@ -68,7 +69,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 		return nil, nil, fmt.Errorf(`Error while reading authentification message: %v`, err)
 	}
 
-	user, err := auth.IsAuthenticatedByAuth(string(basicAuth))
+	user, err := auth.IsAuthenticatedByAuth(string(basicAuth), r.Header.Get(forwardedForHeader))
 	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
 		defer ws.Close()

@@ -99,7 +99,7 @@ func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := auth.IsAuthenticatedByAuth(r.Header.Get(`Authorization`))
+	user, err := auth.IsAuthenticated(r)
 	if err != nil {
 		httputils.Unauthorized(w, err)
 		return

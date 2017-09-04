@@ -130,7 +130,7 @@ func TestIsAuthenticatedByAuth(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		result, err := IsAuthenticatedByAuth(testCase.authorization)
+		result, err := IsAuthenticatedByAuth(testCase.authorization, `127.0.0.1`)
 
 		failed = false
 

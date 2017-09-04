@@ -3,10 +3,14 @@ package auth
 import (
 	"flag"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/ViBiOh/httputils"
 )
+
+const authorizationHeader = `Authorization`
+const forwardedForHeader = `X-Forwarded-For`
 
 // User of the app
 type User struct {
@@ -61,9 +65,19 @@ func LoadUsersProfiles(usersAndProfiles string) {
 	}
 }
 
-// IsAuthenticatedByAuth check if Autorization Header matches a User
-func IsAuthenticatedByAuth(authContent string) (*User, error) {
-	username, err := httputils.GetBody(*authURL+`/user`, authContent, true)
+// IsAuthenticated check if request has correct headers for authentification
+func IsAuthenticated(r *http.Request) (*User, error) {
+	return IsAuthenticatedByAuth(r.Header.Get(authorizationHeader), r.Header.Get(forwardedForHeader))
+}
+
+// IsAuthenticatedByAuth check if authorization is correct
+func IsAuthenticatedByAuth(authContent, remoteIP string) (*User, error) {
+	headers := map[string]string{
+		authorizationHeader: authContent,
+		forwardedForHeader:  remoteIP,
+	}
+
+	username, err := httputils.GetBody(*authURL+`/user`, headers, true)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while getting username: %v`, err)
 	}
