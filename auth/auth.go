@@ -3,6 +3,7 @@ package auth
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -67,6 +68,7 @@ func LoadUsersProfiles(usersAndProfiles string) {
 
 // IsAuthenticated check if request has correct headers for authentification
 func IsAuthenticated(r *http.Request) (*User, error) {
+	log.Printf(`IsAuthenticated %v, %v`, r.Header.Get(authorizationHeader), r.Header.Get(forwardedForHeader))
 	return IsAuthenticatedByAuth(r.Header.Get(authorizationHeader), r.Header.Get(forwardedForHeader))
 }
 
@@ -76,6 +78,8 @@ func IsAuthenticatedByAuth(authContent, remoteIP string) (*User, error) {
 		authorizationHeader: authContent,
 		forwardedForHeader:  remoteIP,
 	}
+
+	log.Printf(`IsAuthenticatedByAuth %v, %v, %v`, authContent, remoteIP, headers)
 
 	username, err := httputils.GetBody(*authURL+`/user`, headers, true)
 	if err != nil {
