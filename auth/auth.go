@@ -65,7 +65,8 @@ func LoadUsersProfiles(usersAndProfiles string) {
 	}
 }
 
-func getRemoteIP(r *http.Request) string {
+// GetRemoteIP returns remote IP
+func GetRemoteIP(r *http.Request) string {
 	if r == nil {
 		return ``
 	}
@@ -80,14 +81,14 @@ func getRemoteIP(r *http.Request) string {
 
 // IsAuthenticated check if request has correct headers for authentification
 func IsAuthenticated(r *http.Request) (*User, error) {
-	return IsAuthenticatedByAuth(r.Header.Get(authorizationHeader), r)
+	return IsAuthenticatedByAuth(r.Header.Get(authorizationHeader), GetRemoteIP(r))
 }
 
 // IsAuthenticatedByAuth check if authorization is correct
-func IsAuthenticatedByAuth(authContent string, r *http.Request) (*User, error) {
+func IsAuthenticatedByAuth(authContent, remoteIP string) (*User, error) {
 	headers := map[string]string{
 		authorizationHeader: authContent,
-		forwardedForHeader:  getRemoteIP(r),
+		forwardedForHeader:  remoteIP,
 	}
 
 	username, err := httputils.GetBody(*authURL+`/user`, headers, true)
