@@ -6,6 +6,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
 
@@ -66,24 +67,21 @@ func TestHealthHandler(t *testing.T) {
 
 func TestInfoHandler(t *testing.T) {
 	var cases = []struct {
-		statusCode int
-		message    string
-		want       int
+		message interface{}
+		want    int
 	}{
 		{
-			500,
-			`Internal server error`,
+			nil,
 			500,
 		},
 		{
-			200,
-			`{"ID":"daemonID","Containers": 3}`,
+			&types.Info{ID: "test ID", Containers: 3},
 			200,
 		},
 	}
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.statusCode, testCase.message)
+		docker = mockClient(t, testCase.message)
 
 		w := httptest.NewRecorder()
 		infoHandler(w)
