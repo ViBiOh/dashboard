@@ -3,6 +3,7 @@ package docker
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -30,13 +31,10 @@ func marshalContent(t *testing.T, message interface{}) (*http.Response, error) {
 }
 
 func mockClient(t *testing.T, message interface{}) *client.Client {
-	docker, err := client.NewClient(`http://localhost`, `test`, &http.Client{
+	docker, err := client.NewClient(`http://localhost`, ``, &http.Client{
 		Transport: mockTransport(func(*http.Request) (*http.Response, error) {
 			if message == nil {
-				return &http.Response{
-					StatusCode: http.StatusInternalServerError,
-					Body:       ioutil.NopCloser(bytes.NewReader([]byte(`internal server error`))),
-				}, nil
+				return nil, fmt.Errorf(`internal server error`)
 			}
 			return marshalContent(t, message)
 		}),
@@ -49,7 +47,7 @@ func mockClient(t *testing.T, message interface{}) *client.Client {
 }
 
 func mockClientHandler(t *testing.T, action func(*http.Request) (*http.Response, error)) *client.Client {
-	docker, err := client.NewClient(`http://localhost`, `test`, &http.Client{
+	docker, err := client.NewClient(`http://localhost`, ``, &http.Client{
 		Transport: mockTransport(action),
 	}, nil)
 
