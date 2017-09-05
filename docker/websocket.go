@@ -56,6 +56,9 @@ func InitWebsocket() error {
 }
 
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
+	log.Printf(`headers: %v
+remoteaddr: %v
+request: %v`, r.Header, r.RemoteAddr, r)
 	remoteIP := auth.GetRemoteIP(r)
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
