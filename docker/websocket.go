@@ -257,7 +257,6 @@ type WebsocketHandler struct {
 }
 
 func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Printf(`request: %v`, r)
 	if strings.HasPrefix(r.URL.Path, busPrefix) {
 		busWebsocketHandler(w, r)
 	}
