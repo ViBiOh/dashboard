@@ -68,7 +68,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 		return nil, nil, fmt.Errorf(`Error while reading authentification message: %v`, err)
 	}
 
-	user, err := auth.IsAuthenticatedByAuth(string(basicAuth), auth.GetRemoteIP(r))
+	user, err := auth.IsAuthenticatedByAuth(string(basicAuth), ws.RemoteAddr().String())
 	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
 		defer ws.Close()
