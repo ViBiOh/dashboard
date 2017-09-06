@@ -18,6 +18,14 @@
     "loginPage": "./e2e/pages/Login.js"
   },
   "mocha": {},
+  "multiple": {
+    "basic": {
+      "browsers": [
+        { "browser": "chrome", "windowSize": "maximize" },
+        { "browser": "chrome", "windowSize": "375x667" }
+      ]
+    }
+  },
   "bootstrap": false,
   "teardown": null,
   "hooks": [],
