@@ -20,7 +20,8 @@
   background-color: transparent;
   border: 0.1rem solid @card-border;
   display: inline-flex;
-  flex: 1 1 calc(~'100% / 4 - @{card-margin}');
+  flex: 1 1;
+  flex-basis: calc(~'100% / 4 - @{card-margin}');
   flex-wrap: wrap;
   margin: @card-margin / 2;
   max-width: calc(~'100% / 4 - @{card-margin}');
@@ -80,21 +81,24 @@
 
 @media screen and (min-width: 1208px) and (max-width: 1609px) {
   .card {
-    flex: 1 1 calc(~'100% / 3 - @{card-margin}');
+    flex: 1 1;
+    flex-basis: calc(~'100% / 3 - @{card-margin}');
     max-width: calc(~'100% / 3 - @{card-margin}');
   }
 }
 
 @media screen and (min-width: 806px) and (max-width: 1207px) {
   .card {
-    flex: 1 1 calc(~'100% / 2 - @{card-margin}');
+    flex: 1 1;
+    flex-basis: calc(~'100% / 2 - @{card-margin}');
     max-width: calc(~'100% / 2 - @{card-margin}');
   }
 }
 
 @media screen and (max-width: 805px) {
   .card {
-    flex: 1 1 calc(~'100% - @{card-margin}');
+    flex: 1 1;
+    flex-basis: calc(~'100% - @{card-margin}');
     max-width: calc(~'100% - @{card-margin}');
   }
 }
