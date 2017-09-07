@@ -32,12 +32,15 @@ func TestListServices(t *testing.T) {
 			errors.New(`error during connect: Get http://localhost/services?filters=%7B%22label%22%3A%7B%22owner%3Dtest%22%3Atrue%7D%7D: internal server error`),
 		},
 	}
+
 	var failed bool
+
 	for _, testCase := range cases {
 		docker = mockClient(t, testCase.dockerResponse)
 		result, err := listServices(testCase.user, testCase.appName)
 
 		failed = false
+
 		if err == nil && testCase.wantErr != nil {
 			failed = true
 		} else if err != nil && testCase.wantErr == nil {
@@ -47,6 +50,7 @@ func TestListServices(t *testing.T) {
 		} else if !reflect.DeepEqual(result, testCase.want) {
 			failed = true
 		}
+
 		if failed {
 			t.Errorf(`listServices(%v,  %v) = (%v, %v), want (%v, %v)`, testCase.user, testCase.appName, result, err, testCase.want, testCase.wantErr)
 		}
