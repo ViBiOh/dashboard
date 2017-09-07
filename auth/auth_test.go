@@ -91,6 +91,111 @@ func TestLoadUsersProfiles(t *testing.T) {
 	}
 }
 
+func TestGetRemoteIP(t *testing.T) {
+	var cases = []struct {
+		header     string
+		remoteAddr string
+		want       string
+	}{
+		{
+			``,
+			``,
+			``,
+		},
+		{
+			``,
+			`127.0.0.1`,
+			`127.0.0.1`,
+		},
+		{
+			`192.168.0.1`,
+			`127.0.0.1`,
+			`192.168.0.1`,
+		},
+		{
+			`192.168.0.1`,
+			``,
+			`192.168.0.1`,
+		},
+	}
+
+	var req *http.Request
+
+	for _, testCase := range cases {
+		req = nil
+
+		if testCase.header != `` || testCase.remoteAddr != `` {
+			req = httptest.NewRequest(http.MethodGet, `/`, nil)
+			req.Header.Set(forwardedForHeader, testCase.header)
+			req.RemoteAddr = testCase.remoteAddr
+		}
+
+		if result := GetRemoteIP(req); result != testCase.want {
+			t.Errorf(`GetRemoteIp(%v) = %v, want %v`, req, result, testCase.want)
+		}
+	}
+}
+
+func TestIsAuthenticated(t *testing.T) {
+	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get(`Authorization`) == `unauthorized` {
+			w.WriteHeader(http.StatusUnauthorized)
+		} else {
+			w.Write([]byte(r.Header.Get(`Authorization`)))
+		}
+	}))
+	defer testServer.Close()
+
+	authURL = &testServer.URL
+	admin := NewUser(`admin`, `admin`)
+	users = map[string]*User{`admin`: admin}
+
+	var cases = []struct {
+		authorization string
+		want          *User
+		wantErr       error
+	}{
+		{
+			`unauthorized`,
+			nil,
+			fmt.Errorf(`Error while getting username: Error status 401: `),
+		},
+		{
+			`guest`,
+			nil,
+			fmt.Errorf(`[guest] Not allowed to use app`),
+		},
+		{
+			`admin`,
+			admin,
+			nil,
+		},
+	}
+
+	var failed bool
+
+	for _, testCase := range cases {
+		req := httptest.NewRequest(http.MethodGet, testServer.URL, nil)
+		req.Header.Set(authorizationHeader, testCase.authorization)
+		result, err := IsAuthenticated(req)
+
+		failed = false
+
+		if err == nil && testCase.wantErr != nil {
+			failed = true
+		} else if err != nil && testCase.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
+			failed = true
+		} else if result != testCase.want {
+			failed = true
+		}
+
+		if failed {
+			t.Errorf(`IsAuthenticated(%v) = (%v, %v), want (%v, %v)`, req, result, err, testCase.want, testCase.wantErr)
+		}
+	}
+}
 func TestIsAuthenticatedByAuth(t *testing.T) {
 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get(`Authorization`) == `unauthorized` {
