@@ -3,7 +3,7 @@ Feature('Login');
 Scenario('Basic auth error', (I, loginPage) => {
   I.amOnPage('/login');
   loginPage.basicLogin('admin', 'invalid');
-  I.waitForVisible('[data-error]');
+  I.waitForVisible('[data-error]', 5);
   I.seeElement('[data-error]');
 });
 
