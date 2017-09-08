@@ -81,7 +81,7 @@ export function cleanSearchValues(values) {
  */
 export function buildFullTextRegex(value) {
   const wildcard = '[\\s\\S]*';
-  const flags = 'gimy';
+  const flags = 'gim';
   if (value.trim() === '') {
     return new RegExp(wildcard, flags);
   }
@@ -143,7 +143,9 @@ export function flatValues(o) {
   }
 
   if (typeof o === 'object') {
-    const values = Object.values(o).filter(e => typeof e !== 'function').map(flatValues);
+    const values = Object.values(o)
+      .filter(e => typeof e !== 'function')
+      .map(flatValues);
 
     return [].concat(...values);
   }

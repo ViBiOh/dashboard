@@ -9,11 +9,11 @@ import style from './index.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Login with username/password
  */
-const Login = () =>
-  (<span className={style.flex}>
+const Login = () => (
+  <span className={style.flex}>
     <h2>Login</h2>
     <div className={style.center}>
-      {getFromContext('BASIC_AUTH_ENABLED') === 'true' &&
+      {getFromContext('BASIC_AUTH_ENABLED') === 'true' && (
         <a
           href="/auth/basic"
           className={style.icons}
@@ -22,8 +22,9 @@ const Login = () =>
           data-login-basic
         >
           <FaUnlockAlt />
-        </a>}
-      {getFromContext('GITHUB_OAUTH_CLIENT_ID') &&
+        </a>
+      )}
+      {getFromContext('GITHUB_OAUTH_CLIENT_ID') && (
         <a
           href={getGithubOauthUrl()}
           className={style.icons}
@@ -32,9 +33,11 @@ const Login = () =>
           data-login-github
         >
           <FaGithub />
-        </a>}
+        </a>
+      )}
     </div>
-  </span>);
+  </span>
+);
 
 Login.displayName = 'Login';
 

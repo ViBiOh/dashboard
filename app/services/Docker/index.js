@@ -19,7 +19,9 @@ export default class Docker {
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static containers() {
-    return auth(`${getApiUrl()}/containers`).get().then(({ results }) => results);
+    return auth(`${getApiUrl()}/containers`)
+      .get()
+      .then(({ results }) => results);
   }
 
   /**
@@ -96,6 +98,8 @@ export default class Docker {
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static services() {
-    return auth(`${getApiUrl()}/services`).get().then(({ results }) => results);
+    return auth(`${getApiUrl()}/services`)
+      .get()
+      .then(({ results }) => results);
   }
 }

@@ -5,8 +5,8 @@ import style from './index.less';
 /**
  * Input for setting filter value.
  */
-const Filter = ({ value, onChange }) =>
-  (<input
+const Filter = ({ value, onChange }) => (
+  <input
     data-search
     type="text"
     name="search"
@@ -14,7 +14,8 @@ const Filter = ({ value, onChange }) =>
     value={value}
     className={style.search}
     onChange={e => onChange(e.target.value)}
-  />);
+  />
+);
 
 Filter.displayName = 'Filter';
 

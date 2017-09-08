@@ -14,8 +14,8 @@ import history from './History';
 /**
  * Application wrapper.
  */
-const App = () =>
-  (<Router history={history}>
+const App = () => (
+  <Router history={history}>
     <Main>
       <Route exact path="/" component={ContainersListContainer} />
       <Route path="/login" component={Login} />
@@ -26,7 +26,8 @@ const App = () =>
         <Route path="/containers/:containerId" component={ContainerContainer} />
       </Switch>
     </Main>
-  </Router>);
+  </Router>
+);
 
 App.displayName = 'App';
 

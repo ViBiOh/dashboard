@@ -10,11 +10,11 @@ import style from './ContainerNetwork.less';
 const ContainerNetwork = ({ container }) => {
   const networkContent =
     container.NetworkSettings.Networks &&
-    Object.keys(container.NetworkSettings.Networks).map(network =>
-      (<span key={network} className={style.item}>
+    Object.keys(container.NetworkSettings.Networks).map(network => (
+      <span key={network} className={style.item}>
         {network} | {container.NetworkSettings.Networks[network].IPAddress}
-      </span>),
-    );
+      </span>
+    ));
 
   const linkContent =
     container.NetworkSettings.Networks &&
@@ -27,21 +27,21 @@ const ContainerNetwork = ({ container }) => {
       )
       .map(link => link.split(':'))
       .filter(parts => parts.length > 1)
-      .map(parts =>
-        (<span key={parts[1]} className={style.item}>
+      .map(parts => (
+        <span key={parts[1]} className={style.item}>
           {parts[0]} | {parts[1]}
-        </span>),
-      );
+        </span>
+      ));
 
   const portContent =
     container.NetworkSettings.Ports &&
     Object.keys(container.NetworkSettings.Ports)
       .filter(port => container.NetworkSettings.Ports[port])
-      .map(port =>
-        (<span key={port} className={style.item}>
+      .map(port => (
+        <span key={port} className={style.item}>
           {port} | {container.NetworkSettings.Ports[port].map(p => p.HostPort).join(', ')}
-        </span>),
-      );
+        </span>
+      ));
 
   return (
     <span className={style.container}>

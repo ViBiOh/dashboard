@@ -10,17 +10,19 @@ import localStorage from '../LocalStorage';
 // eslint-disable-next-line import/prefer-default-export
 export function customError(response) {
   return new Promise((resolve, reject) =>
-    errorHandler(response).then(resolve).catch(err =>
-      reject({
-        ...err,
-        toString: () => {
-          if (typeof err.content === 'string') {
-            return err.content;
-          }
-          return JSON.stringify(err.content);
-        },
-      }),
-    ),
+    errorHandler(response)
+      .then(resolve)
+      .catch(err =>
+        reject({
+          ...err,
+          toString: () => {
+            if (typeof err.content === 'string') {
+              return err.content;
+            }
+            return JSON.stringify(err.content);
+          },
+        }),
+      ),
   );
 }
 
@@ -37,5 +39,8 @@ export function auth(url, authentification = localStorage.getItem(STORAGE_KEY_AU
     throw authError;
   }
 
-  return funtch.url(url).error(customError).auth(authentification);
+  return funtch
+    .url(url)
+    .error(customError)
+    .auth(authentification);
 }

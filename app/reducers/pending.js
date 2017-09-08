@@ -8,7 +8,7 @@ const startPending = /^(.*?)_REQUEST$/;
  * End pending regex.
  * @type {RegExp}
  */
-const endPending = /^(.*?)_(SUCCEEDED|FAILED)$/;
+const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
 
 /**
  * Pendings' reducer.

@@ -12,7 +12,12 @@ test('should have no label by default', (t) => {
 });
 
 test('should have label when given', (t) => {
-  t.is(shallow(<Throbber label="test" />).find('span').text(), 'test');
+  t.is(
+    shallow(<Throbber label="test" />)
+      .find('span')
+      .text(),
+    'test',
+  );
 });
 
 test('should have no label if vertical', (t) => {
@@ -20,6 +25,8 @@ test('should have no label if vertical', (t) => {
 });
 
 test('should have 4 styles if vertical and row-responsive', (t) => {
-  const wrapper = shallow(<Throbber white vertical horizontalSm />).find('div').at(1);
+  const wrapper = shallow(<Throbber white vertical horizontalSm />)
+    .find('div')
+    .at(1);
   t.is(wrapper.prop('className').split(' ').length, 4);
 });

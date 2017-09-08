@@ -21,11 +21,11 @@ const ContainerInfo = ({ container }) => {
     labelContent = [
       <h3 key="labelsHeader">Labels</h3>,
       <span key="labels" className={style.labels}>
-        {Object.keys(container.Config.Labels).map(label =>
-          (<span key={label} className={style.item}>
+        {Object.keys(container.Config.Labels).map(label => (
+          <span key={label} className={style.item}>
             {label} | {container.Config.Labels[label]}
-          </span>),
-        )}
+          </span>
+        ))}
       </span>,
     ];
   }
@@ -39,11 +39,11 @@ const ContainerInfo = ({ container }) => {
           .filter(e => !!e)
           .map(env => ENV_PARSER.exec(env))
           .filter(parts => parts !== null && parts.length > 2)
-          .map(parts =>
-            (<span key={parts[1]} className={style.item}>
+          .map(parts => (
+            <span key={parts[1]} className={style.item}>
               {parts[1]} | {parts[2]}
-            </span>),
-          )}
+            </span>
+          ))}
       </span>,
     ];
   }
@@ -58,21 +58,15 @@ const ContainerInfo = ({ container }) => {
       <h3 key="config">Config</h3>
       <span key="id" className={style.info}>
         <span className={style.label}>Id</span>
-        <span>
-          {String(container.Id).substring(0, 12)}
-        </span>
+        <span>{String(container.Id).substring(0, 12)}</span>
       </span>
       <span key="created" className={style.info}>
         <span className={style.label}>Created</span>
-        <span>
-          {moment(container.Created).fromNow()}
-        </span>
+        <span>{moment(container.Created).fromNow()}</span>
       </span>
       <span key="image" className={style.info}>
         <span className={style.label}>Image</span>
-        <span>
-          {container.Config.Image}
-        </span>
+        <span>{container.Config.Image}</span>
       </span>
       <span key="command" className={style.info}>
         <span className={style.label}>Command</span>
@@ -80,30 +74,37 @@ const ContainerInfo = ({ container }) => {
       </span>
       <h3 key="hostConfig">HostConfig</h3>
       <span key="hostLabels" className={style.labels}>
-        {container.HostConfig.RestartPolicy &&
+        {container.HostConfig.RestartPolicy && (
           <span key="restart" className={style.item}>
             Restart | {container.HostConfig.RestartPolicy.Name}
-            {container.HostConfig.RestartPolicy.MaximumRetryCount
-              ? `:${container.HostConfig.RestartPolicy.MaximumRetryCount}`
-              : ''}
-          </span>}
-        {container.HostConfig.ReadonlyRootfs &&
+            {container.HostConfig.RestartPolicy.MaximumRetryCount ? (
+              `:${container.HostConfig.RestartPolicy.MaximumRetryCount}`
+            ) : (
+              ''
+            )}
+          </span>
+        )}
+        {container.HostConfig.ReadonlyRootfs && (
           <span key="read-only" className={style.item}>
             read-only
-          </span>}
-        {container.HostConfig.CpuShares > 0 &&
+          </span>
+        )}
+        {container.HostConfig.CpuShares > 0 && (
           <span key="cpu" className={style.item}>
             CPU Shares | {container.HostConfig.CpuShares}
-          </span>}
-        {container.HostConfig.Memory > 0 &&
+          </span>
+        )}
+        {container.HostConfig.Memory > 0 && (
           <span key="memory" className={style.item}>
             Memory limit | {humanSize(container.HostConfig.Memory)}
-          </span>}
+          </span>
+        )}
         {container.HostConfig.SecurityOpt &&
-          container.HostConfig.SecurityOpt.length > 0 &&
+        container.HostConfig.SecurityOpt.length > 0 && (
           <span key="security" className={style.item}>
             Security | {container.HostConfig.SecurityOpt.join(', ')}
-          </span>}
+          </span>
+        )}
       </span>
       {labelContent}
       {envContent}
