@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import SearchParams from '../helpers/SearchParams';
 import actions from '../actions';
 import ContainersList from '../presentationals/ContainersList';
 
@@ -38,7 +39,7 @@ export class ContainersListContainerComponent extends Component {
    * Retrieval of query string for synchronizing ReduxState and History.
    */
   componentDidMount() {
-    const queryFilter = new URLSearchParams(this.props.location.search).get('filter');
+    const queryFilter = SearchParams(this.props.location.search).filter;
 
     if (queryFilter && !this.props.filter) {
       this.props.onFilterChange(queryFilter);
