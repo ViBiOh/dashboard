@@ -33,8 +33,8 @@ export function onErrorAction(calledAction, error) {
  * Saga of Going back action :
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* goHomeSaga(action) {
-  yield [put(actions.setError('')), put(push(`/${action.redirect}`))];
+export function* goHomeSaga({ redirect = '' }) {
+  yield [put(actions.setError('')), put(push(`/${redirect}`))];
 }
 
 /**
