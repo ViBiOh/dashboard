@@ -12,7 +12,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     pending: !!state.pending[actions.GET_GITHUB_ACCES_TOKEN],
-    error: queryParam.error_description,
+    error: queryParam.error_description || state.error,
     state: queryParam.state,
     code: queryParam.code,
   };
