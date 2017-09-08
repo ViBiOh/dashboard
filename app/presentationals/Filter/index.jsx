@@ -1,23 +1,58 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { DEBOUNCE_TIMEOUT } from '../../Constants';
 import style from './index.less';
 
 /**
  * Input for setting filter value.
  */
-const Filter = ({ value, onChange }) => (
-  <input
-    data-search
-    type="text"
-    name="search"
-    placeholder="Filter..."
-    value={value}
-    className={style.search}
-    onChange={e => onChange(e.target.value)}
-  />
-);
+export default class Filter extends Component {
+  /**
+   * Creates an instance of Filter.
+   * @param {Object} props React initial props
+   */
+  constructor(props) {
+    super(props);
 
-Filter.displayName = 'Filter';
+    this.state = {
+      value: props.value,
+    };
+
+    this.debouncedOnChange = this.debouncedOnChange.bind(this);
+  }
+
+  /**
+   * Trigger on change event after a small delay.
+   * @param {String} value New value of filter
+   */
+  debouncedOnChange(value) {
+    clearTimeout(this.onChangeTimeout);
+
+    this.setState({ value });
+
+    this.onChangeTimeout = setTimeout(() => {
+      this.props.onChange(this.state.value);
+    }, DEBOUNCE_TIMEOUT);
+  }
+
+  /**
+   * React lifecycle.
+   * @return {ReactComponent} DOM Node
+   */
+  render() {
+    return (
+      <input
+        data-search
+        type="text"
+        name="search"
+        placeholder="Filter..."
+        value={this.state.value}
+        className={style.search}
+        onChange={e => this.debouncedOnChange(e.target.value)}
+      />
+    );
+  }
+}
 
 Filter.propTypes = {
   value: PropTypes.string,
@@ -27,5 +62,3 @@ Filter.propTypes = {
 Filter.defaultProps = {
   value: '',
 };
-
-export default Filter;

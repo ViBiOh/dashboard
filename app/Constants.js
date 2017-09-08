@@ -19,6 +19,12 @@ const STORAGE_KEY_AUTH = 'auth';
 export const STATS_COUNT = 60;
 
 /**
+ * Timeout for input debounce.
+ * @type {Number}
+ */
+export const DEBOUNCE_TIMEOUT = 300;
+
+/**
  * Initialize context from remote endpoint
  * @return {Promise<Object>} Context
  */
