@@ -4,4 +4,6 @@ export default function (content) {
     // eslint-disable-next-line no-param-reassign
     params[key] = typeof value === 'undefined' ? true : decodeURIComponent(value);
   });
+
+  return params;
 }
