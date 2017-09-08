@@ -7,7 +7,7 @@
     "copy:html": "mkdir -p ./dist && cp ./app/index.html ./dist/",
     "copy:web": "cp ./web/*.txt ./web/*.html ./dist/ && cp ./web/favicon/* ./dist/",
     "mustache": "./node_modules/js-index-builder/index.js -t \"./app/*.html\" -b `git log --pretty=format:'%h' -n 1` -o ./dist/",
-    "format": "./node_modules/.bin/prettier --print-width 100 --single-quote --trailing-comma all --color --write \"./app/**/*.{js,jsx,less}\"",
+    "format": "./node_modules/.bin/prettier --color --write \"./app/**/*.{js,jsx,less}\"",
     "stylelint": "./node_modules/.bin/stylelint \"app/**/*.{css,less}\"",
     "eslint": "./node_modules/.bin/eslint --fix --ext .jsx \"./app/**/*.{js,jsx}\"",
     "lint": "npm run eslint && npm run stylelint",
