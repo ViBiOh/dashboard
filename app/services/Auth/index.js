@@ -33,8 +33,6 @@ export default class Auth {
   static basicLogin(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${getAuthApiUrl()}/user`, hash)
-      .get()
-      .then(() => hash);
+    return auth(`${getAuthApiUrl()}/user`, hash).get().then(() => hash);
   }
 }

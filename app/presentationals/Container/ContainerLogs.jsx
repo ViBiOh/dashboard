@@ -7,12 +7,13 @@ import style from './ContainerLogs.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Container's logs.
  */
-const ContainerLogs = ({ logs }) => (
-  <span className={style.container}>
+const ContainerLogs = ({ logs }) =>
+  (<span className={style.container}>
     <h3>Logs</h3>
-    <pre className={style.code}>{logs.join('\n')}</pre>
-  </span>
-);
+    <pre className={style.code}>
+      {logs.join('\n')}
+    </pre>
+  </span>);
 
 ContainerLogs.displayName = 'ContainerLogs';
 

@@ -1,4 +1,5 @@
 import funtch from 'funtch';
+import { computeRedirectSearch } from './helpers/SearchParams';
 
 /**
  * App context that store variables.
@@ -74,10 +75,14 @@ function getAuthApiUrl() {
  * Return Github Oauth API endpoint URL
  * @return {String} WebSocket endpoint URL
  */
-function getGithubOauthUrl() {
+function getGithubOauthUrl(redirect) {
   return `http://github.com/login/oauth/authorize?client_id=${encodeURIComponent(
     getFromContext('GITHUB_OAUTH_CLIENT_ID'),
-  )}&state=${encodeURIComponent(getFromContext('GITHUB_OAUTH_STATE'))}`;
+  )}&state=${encodeURIComponent(
+    getFromContext('GITHUB_OAUTH_STATE'),
+  )}&redirect_uri=${encodeURIComponent(
+    getFromContext('GITHUB_REDIRECT_URI') || `${document.location.origin}/auth/github`,
+  )}${computeRedirectSearch(redirect)}`;
 }
 
 /**

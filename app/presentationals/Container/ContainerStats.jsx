@@ -92,11 +92,9 @@ const ContainerStats = ({ stats }) => {
     <span className={style.container}>
       <h3>Monitoring</h3>
       <div className={style.content}>
-        {entries.length > 0 ? (
-          <Graph type="line" data={data} options={options} />
-        ) : (
-          <Throbber label="Loading graph" />
-        )}
+        {entries.length > 0
+          ? <Graph type="line" data={data} options={options} />
+          : <Throbber label="Loading graph" />}
       </div>
     </span>
   );

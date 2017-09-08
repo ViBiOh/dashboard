@@ -19,10 +19,7 @@ export const makeActionCreator = (type, ...argNames) => (...args) => {
  * @param  {string} name A camel case action name
  * @return {string}      Snake upper case type name
  */
-export const toTypeName = name =>
-  String(name)
-    .replace(/([A-Z])/g, '_$1')
-    .toUpperCase();
+export const toTypeName = name => String(name).replace(/([A-Z])/g, '_$1').toUpperCase();
 
 /**
  * Action creator : return the function and the constant for the given action
@@ -132,8 +129,8 @@ export const makeBusActionCreator = (camelCaseName) => {
  * App's actions.
  */
 export default {
-  ...makeApiActionCreator('getGithubAccessToken', ['state', 'code']),
-  ...makeApiActionCreator('login', ['username', 'password']),
+  ...makeApiActionCreator('getGithubAccessToken', ['state', 'code', 'redirect']),
+  ...makeApiActionCreator('login', ['username', 'password', 'redirect']),
   ...makeApiActionCreator('logout'),
   ...makeApiActionCreator('info', [], ['infos']),
   ...makeApiActionCreator('fetchServices', [], ['services']),
@@ -148,6 +145,6 @@ export default {
   ...makeActionAndTypeCreator('ADD_LOG', 'addLog', ['log']),
   ...makeActionAndTypeCreator('ADD_STAT', 'addStat', ['stat']),
   ...makeActionAndTypeCreator('SET_ERROR', 'setError', ['error']),
-  ...makeActionAndTypeCreator('GO_HOME', 'goHome'),
+  ...makeActionAndTypeCreator('GO_HOME', 'goHome', ['redirect']),
   ...makeActionAndTypeCreator('CHANGE_FILTER', 'changeFilter', ['value']),
 };

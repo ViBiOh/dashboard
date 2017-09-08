@@ -59,7 +59,7 @@ const config = {
   },
 
   devServer: {
-    setup: app => {
+    setup: (app) => {
       app.get('/env', (req, res) => {
         res.json({
           API_URL: process.env.API_URL,
@@ -68,6 +68,7 @@ const config = {
           BASIC_AUTH_ENABLED: process.env.BASIC_AUTH_ENABLED,
           GITHUB_OAUTH_CLIENT_ID: process.env.GITHUB_OAUTH_CLIENT_ID,
           GITHUB_OAUTH_STATE: process.env.GITHUB_OAUTH_STATE,
+          GITHUB_REDIRECT_URI: process.env.GITHUB_REDIRECT_URI,
         });
       });
     },

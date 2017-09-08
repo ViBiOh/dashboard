@@ -16,6 +16,6 @@ test('should redirect to login if 401', (t) => {
       toString: () => 'Test failed',
       status: 401,
     }),
-    push('/login'),
+    push('/login?redirect=about%3Ablank'),
   );
 });

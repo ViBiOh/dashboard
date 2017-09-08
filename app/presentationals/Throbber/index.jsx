@@ -7,9 +7,13 @@ import style from './index.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Throbber with label and title if provided
  */
-const Throbber = ({ label, title, white, vertical, horizontalSm }) => (
-  <div className={style.container} title={title}>
-    {!vertical && label ? <span>{label}</span> : null}
+const Throbber = ({ label, title, white, vertical, horizontalSm }) =>
+  (<div className={style.container} title={title}>
+    {!vertical && label
+      ? <span>
+        {label}
+      </span>
+      : null}
     <div
       className={`${style.throbber} ${white && style.white} ${vertical &&
         style.column} ${horizontalSm && style['row-responsive']}`}
@@ -18,8 +22,7 @@ const Throbber = ({ label, title, white, vertical, horizontalSm }) => (
       <div className={style.bounce2} />
       <div className={style.bounce3} />
     </div>
-  </div>
-);
+  </div>);
 
 Throbber.displayname = 'Throbber';
 

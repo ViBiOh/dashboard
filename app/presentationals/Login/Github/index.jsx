@@ -13,7 +13,7 @@ export default class GithubAuth extends Component {
    */
   componentDidMount() {
     if (!this.props.error) {
-      this.props.getAccessToken(this.props.state, this.props.code);
+      this.props.getAccessToken(this.props.state, this.props.code, this.props.redirect);
     }
   }
 
@@ -40,6 +40,7 @@ GithubAuth.propTypes = {
   state: PropTypes.string,
   code: PropTypes.string,
   error: PropTypes.string,
+  redirect: PropTypes.string,
 };
 
 GithubAuth.defaultProps = {
@@ -47,4 +48,5 @@ GithubAuth.defaultProps = {
   state: '',
   code: '',
   error: '',
+  redirect: '',
 };

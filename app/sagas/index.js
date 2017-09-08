@@ -2,10 +2,11 @@ import 'babel-polyfill';
 import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { push } from 'react-router-redux';
-import { STORAGE_KEY_AUTH } from '..//Constants';
+import { STORAGE_KEY_AUTH } from '../Constants';
 import Docker from '../services/Docker';
 import localStorage from '../services/LocalStorage';
 import Auth from '../services/Auth';
+import SearchParams, { computeRedirectSearch } from '../helpers/SearchParams';
 import actions from '../actions';
 
 /**
@@ -16,7 +17,14 @@ import actions from '../actions';
  */
 export function onErrorAction(calledAction, error) {
   if (error.status === 401 || error.noAuth) {
-    return push('/login');
+    let redirect = SearchParams(document.location.search).redirect;
+    if (!redirect) {
+      redirect = document.location.href
+        .replace(document.location.origin, '')
+        .replace(/^\/(login)?/, '');
+    }
+
+    return push(`/login${computeRedirectSearch(redirect)}`);
   }
   return actions[calledAction](String(error));
 }
@@ -25,8 +33,8 @@ export function onErrorAction(calledAction, error) {
  * Saga of Going back action :
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* goHomeSaga() {
-  yield [put(actions.setError('')), put(push('/'))];
+export function* goHomeSaga(action) {
+  yield [put(actions.setError('')), put(push(`/${action.redirect}`))];
 }
 
 /**
@@ -46,7 +54,7 @@ export function* loginSaga(action) {
       call([localStorage, localStorage.setItem], STORAGE_KEY_AUTH, hash),
       put(actions.loginSucceeded()),
       put(actions.info()),
-      put(actions.goHome()),
+      put(actions.goHome(action.redirect)),
     ];
   } catch (e) {
     yield put(actions.loginFailed(String(e)));
@@ -66,7 +74,7 @@ export function* getGithubAccesTokenSaga(action) {
       call([localStorage, localStorage.setItem], STORAGE_KEY_AUTH, `GitHub ${token}`),
       put(actions.getGithubAccessTokenSucceeded()),
       put(actions.info()),
-      put(actions.goHome()),
+      put(actions.goHome(action.redirect)),
     ];
   } catch (e) {
     yield put(actions.getGithubAccessTokenFailed(String(e)));

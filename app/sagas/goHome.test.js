@@ -5,7 +5,7 @@ import actions from '../actions';
 import { goHomeSaga } from './';
 
 test('should clear errors and redirect to root', (t) => {
-  const iterator = goHomeSaga();
+  const iterator = goHomeSaga({ redirect: 'list' });
 
-  t.deepEqual(iterator.next().value, [put(actions.setError('')), put(push('/'))]);
+  t.deepEqual(iterator.next().value, [put(actions.setError('')), put(push('/list'))]);
 });

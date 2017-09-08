@@ -16,29 +16,34 @@ const GREEN_STATUS = /up/i;
  * @param {Object} props Props of the component.
  * @return {React.Component} Card with summarized details of container.
  */
-const ContainerCard = ({ container, onClick }) => (
-  <Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
+const ContainerCard = ({ container, onClick }) =>
+  (<Button type="none" className={style.card} onClick={() => onClick(container.Id)}>
     <div
       className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`}
       title={container.Status}
     />
     <span className={style.column}>
-      <em className={style.image}>{container.Image}</em>
-      <strong>{container.Names[0]}</strong>
+      <em className={style.image}>
+        {container.Image}
+      </em>
+      <strong>
+        {container.Names[0]}
+      </strong>
     </span>
     <span>
       {moment.unix(container.Created).fromNow()}
-      {container.Labels && container.Labels.owner ? (
-        <div className={style.owner}>by {container.Labels.owner}</div>
-      ) : null}
-      {container.Ports.some(port => port.IP) ? (
-        <div className={style.external} title="Has external IP">
+      {container.Labels && container.Labels.owner
+        ? <div className={style.owner}>
+            by {container.Labels.owner}
+        </div>
+        : null}
+      {container.Ports.some(port => port.IP)
+        ? <div className={style.external} title="Has external IP">
           <FaCloud />
         </div>
-      ) : null}
+        : null}
     </span>
-  </Button>
-);
+  </Button>);
 
 ContainerCard.displayName = 'ContainerCard';
 

@@ -15,6 +15,7 @@ const mapStateToProps = (state, props) => {
     error: queryParam.error_description || state.error,
     state: queryParam.state,
     code: queryParam.code,
+    redirect: queryParam.redirect,
   };
 };
 
@@ -23,7 +24,8 @@ const mapStateToProps = (state, props) => {
  * @param {Function} dispatch Redux dispatch function
  */
 const mapDispatchToProps = dispatch => ({
-  getAccessToken: (state, code) => dispatch(actions.getGithubAccessToken(state, code)),
+  getAccessToken: (state, code, redirect) =>
+    dispatch(actions.getGithubAccessToken(state, code, redirect)),
 });
 
 /**

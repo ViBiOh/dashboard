@@ -11,7 +11,11 @@ import style from './index.less';
 const Button = ({ children, type, active, className, ...buttonProps }) => {
   let content = children;
   if (Array.isArray(children)) {
-    content = <div className={style.wrapper}>{children}</div>;
+    content = (
+      <div className={style.wrapper}>
+        {children}
+      </div>
+    );
   }
 
   const btnClassNames = classnames({

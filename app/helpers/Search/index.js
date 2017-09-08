@@ -143,9 +143,7 @@ export function flatValues(o) {
   }
 
   if (typeof o === 'object') {
-    const values = Object.values(o)
-      .filter(e => typeof e !== 'function')
-      .map(flatValues);
+    const values = Object.values(o).filter(e => typeof e !== 'function').map(flatValues);
 
     return [].concat(...values);
   }
