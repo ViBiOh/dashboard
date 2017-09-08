@@ -1,6 +1,7 @@
 import test from 'ava';
 import actions from '../actions';
-import reducer, { STATS_COUNT } from './stats';
+import { STATS_COUNT } from '../Constants';
+import reducer from './stats';
 
 const stat = {
   read: '2017-05-13T13:18:55.001886639Z',
