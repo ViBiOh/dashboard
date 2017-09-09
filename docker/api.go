@@ -70,7 +70,7 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 		containerID := containerRequest.FindStringSubmatch(urlPath)[1]
 
 		if r.Method == http.MethodGet {
-			basicActionHandler(w, user, containerID, inspectAction)
+			basicActionHandler(w, user, containerID, getAction)
 		} else if r.Method == http.MethodDelete {
 			basicActionHandler(w, user, containerID, deleteAction)
 		} else {

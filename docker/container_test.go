@@ -64,19 +64,19 @@ func TestInspectContainer(t *testing.T) {
 	var cases = []struct {
 		dockerResponse interface{}
 		containerID    string
-		want           types.ContainerJSON
+		want           *types.ContainerJSON
 		wantErr        error
 	}{
 		{
 			types.ContainerJSON{},
 			`test`,
-			types.ContainerJSON{},
+			&types.ContainerJSON{},
 			nil,
 		},
 		{
 			nil,
 			``,
-			types.ContainerJSON{},
+			&types.ContainerJSON{},
 			errors.New(`error during connect: Get http://localhost/containers/json: internal server error`),
 		},
 	}
@@ -126,7 +126,7 @@ func TestStartContainer(t *testing.T) {
 
 	for _, testCase := range cases {
 		docker = mockClient(t, testCase.dockerResponse)
-		err := startContainer(testCase.containerID)
+		_, err := startContainer(testCase.containerID, nil)
 
 		failed = false
 		if err == nil && testCase.wantErr != nil {
@@ -165,7 +165,7 @@ func TestStopContainer(t *testing.T) {
 
 	for _, testCase := range cases {
 		docker = mockClient(t, testCase.dockerResponse)
-		err := stopContainer(testCase.containerID)
+		_, err := stopContainer(testCase.containerID, nil)
 
 		failed = false
 		if err == nil && testCase.wantErr != nil {
@@ -204,7 +204,7 @@ func TestRestartContainer(t *testing.T) {
 
 	for _, testCase := range cases {
 		docker = mockClient(t, testCase.dockerResponse)
-		err := restartContainer(testCase.containerID)
+		_, err := restartContainer(testCase.containerID, nil)
 
 		failed = false
 		if err == nil && testCase.wantErr != nil {

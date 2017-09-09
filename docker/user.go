@@ -31,18 +31,17 @@ func isAllowed(user *auth.User, containerID string) (bool, *types.ContainerJSON,
 		return false, nil, fmt.Errorf(`User is required for checking rights`)
 	}
 
-	if !isAdmin(user) {
-		container, err := inspectContainer(containerID)
-		if err != nil {
-			return false, nil, fmt.Errorf(`Error while inspecting container: %v`, err)
-		}
+	container, err := inspectContainer(containerID)
+	if err != nil {
+		return false, nil, fmt.Errorf(`Error while inspecting container: %v`, err)
+	}
 
+	if !isAdmin(user) {
 		owner, ok := container.Config.Labels[ownerLabel]
 		if !ok || owner != user.Username {
 			return false, nil, nil
 		}
-		return true, &container, nil
 	}
 
-	return true, nil, nil
+	return true, container, nil
 }

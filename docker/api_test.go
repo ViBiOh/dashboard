@@ -144,7 +144,7 @@ func TestContainersHandler(t *testing.T) {
 			httptest.NewRequest(http.MethodPost, `/`, nil),
 			`/containerID/start`,
 			auth.NewUser(`admin`, `admin`),
-			``,
+			`null`,
 			http.StatusOK,
 		},
 	}

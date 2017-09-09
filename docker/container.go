@@ -10,7 +10,7 @@ import (
 	"github.com/docker/docker/api/types/filters"
 )
 
-const inspectAction = `get`
+const getAction = `get`
 const startAction = `start`
 const stopAction = `stop`
 const restartAction = `restart`
@@ -28,48 +28,56 @@ func listContainers(user *auth.User, appName string) ([]types.Container, error) 
 	return docker.ContainerList(ctx, options)
 }
 
-func inspectContainer(containerID string) (types.ContainerJSON, error) {
+func inspectContainer(containerID string) (*types.ContainerJSON, error) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	return docker.ContainerInspect(ctx, containerID)
+	container, err := docker.ContainerInspect(ctx, containerID)
+	return &container, err
 }
 
-func startContainer(containerID string) error {
+func getContainer(containerID string, container *types.ContainerJSON) (interface{}, error) {
+	return container, nil
+}
+
+func startContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	return docker.ContainerStart(ctx, string(containerID), types.ContainerStartOptions{})
+	return nil, docker.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
 }
 
-func stopContainer(containerID string) error {
+func stopContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
 	ctx, cancel := getGracefulCtx()
 	defer cancel()
 
-	return docker.ContainerStop(ctx, containerID, nil)
+	return nil, docker.ContainerStop(ctx, containerID, nil)
 }
 
-func restartContainer(containerID string) error {
+func restartContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	return docker.ContainerRestart(ctx, containerID, nil)
+	return nil, docker.ContainerRestart(ctx, containerID, nil)
 }
 
-func rmContainer(containerID string) error {
-	container, err := inspectContainer(containerID)
-	if err != nil {
-		return fmt.Errorf(`Error while inspecting containers: %v`, err)
-	}
-
+func rmContainer(containerID string, container *types.ContainerJSON) (interface{}, error) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	if err := docker.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
-		return fmt.Errorf(`Error while removing containers: %v`, err)
+	var err error
+
+	if err = docker.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
+		return nil, fmt.Errorf(`Error while removing container: %v`, err)
 	}
 
-	return rmImages(container.Image)
+	if container == nil {
+		if container, err = inspectContainer(containerID); err != nil {
+			return nil, fmt.Errorf(`Error while inspecting container: %v`, err)
+		}
+	}
+
+	return nil, rmImages(container.Image)
 }
 
 func rmImages(imageID string) error {
@@ -83,8 +91,10 @@ func rmImages(imageID string) error {
 	return nil
 }
 
-func getAction(action string) func(string) error {
+func doAction(action string) func(string, *types.ContainerJSON) (interface{}, error) {
 	switch action {
+	case getAction:
+		return getContainer
 	case startAction:
 		return startContainer
 	case stopAction:
@@ -94,8 +104,8 @@ func getAction(action string) func(string) error {
 	case deleteAction:
 		return rmContainer
 	default:
-		return func(string) error {
-			return fmt.Errorf(`Unknown action %s`, action)
+		return func(string, *types.ContainerJSON) (interface{}, error) {
+			return nil, fmt.Errorf(`Unknown action %s`, action)
 		}
 	}
 }
@@ -105,20 +115,10 @@ func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID stri
 		httputils.InternalServer(w, err)
 	} else if !allowed {
 		httputils.Forbidden(w)
-	} else if action == inspectAction {
-		if container != nil {
-			httputils.ResponseJSON(w, *container)
-		} else {
-			if container, err := inspectContainer(containerID); err != nil {
-				httputils.InternalServer(w, err)
-			} else {
-				httputils.ResponseJSON(w, container)
-			}
-		}
-	} else if err = getAction(action)(containerID); err != nil {
+	} else if result, err := doAction(action)(containerID, container); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		w.Write(nil)
+		httputils.ResponseJSON(w, result)
 	}
 }
 

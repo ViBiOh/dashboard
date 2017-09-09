@@ -188,11 +188,11 @@ func pullImage(image string, user *auth.User) error {
 
 func cleanContainers(containers []types.Container, user *auth.User) {
 	for _, container := range containers {
-		stopContainer(container.ID)
+		stopContainer(container.ID, nil)
 	}
 
 	for _, container := range containers {
-		rmContainer(container.ID)
+		rmContainer(container.ID, nil)
 	}
 }
 
@@ -219,7 +219,8 @@ func getFinalName(serviceFullName string) string {
 
 func deleteServices(appName string, services map[string]*deployedService, user *auth.User) {
 	for service, container := range services {
-		if infos, err := inspectContainer(container.ID); err != nil {
+		infos, err := inspectContainer(container.ID)
+		if err != nil {
 			log.Printf(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service, err)
 		} else if infos.State.Health != nil {
 			logs := make([]string, 0)
@@ -232,11 +233,11 @@ func deleteServices(appName string, services map[string]*deployedService, user *
 			log.Printf(`[%s] [%s] Healthcheck output for %s: %s`, user.Username, appName, service, logs)
 		}
 
-		if err := stopContainer(container.ID); err != nil {
+		if _, err := stopContainer(container.ID, infos); err != nil {
 			log.Printf(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service, err)
 		}
 
-		if err := rmContainer(container.ID); err != nil {
+		if _, err := rmContainer(container.ID, infos); err != nil {
 			log.Printf(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service, err)
 		}
 	}
@@ -244,7 +245,7 @@ func deleteServices(appName string, services map[string]*deployedService, user *
 
 func startServices(appName string, services map[string]*deployedService, user *auth.User) error {
 	for service, container := range services {
-		if err := startContainer(container.ID); err != nil {
+		if _, err := startContainer(container.ID, nil); err != nil {
 			return fmt.Errorf(`[%s] [%s] Error while starting service %s: %v`, user.Username, appName, service, err)
 		}
 	}
@@ -261,7 +262,7 @@ func inspectServices(services map[string]*deployedService, user *auth.User) []*t
 			log.Printf(`[%s] Error while inspecting container %s: %v`, user.Username, service, err)
 		}
 
-		containers = append(containers, &infos)
+		containers = append(containers, infos)
 	}
 
 	return containers
