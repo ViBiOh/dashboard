@@ -6,16 +6,20 @@
   "scripts": {
     "copy:html": "mkdir -p ./dist && cp ./app/index.html ./dist/",
     "copy:web": "cp ./web/*.txt ./web/*.html ./dist/ && cp ./web/favicon/* ./dist/",
-    "mustache": "./node_modules/js-index-builder/index.js -t \"./app/*.html\" -b `git log --pretty=format:'%h' -n 1` -o ./dist/",
+    "mustache":
+      "./node_modules/js-index-builder/index.js -t \"./app/*.html\" -b `git log --pretty=format:'%h' -n 1` -o ./dist/",
     "format": "./node_modules/.bin/prettier --color --write \"./app/**/*.{js,jsx,less}\"",
     "stylelint": "./node_modules/.bin/stylelint \"app/**/*.{css,less}\"",
     "eslint": "./node_modules/.bin/eslint --fix --ext .jsx \"./app/**/*.{js,jsx}\"",
     "lint": "npm run eslint && npm run stylelint",
     "doc": "./node_modules/.bin/esdoc",
-    "start": "npm run copy:html && API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://auth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_OAUTH_STATE=RandomStringForViBiOhInfrastructure GITHUB_OAUTH_CLIENT_ID=8c451219bd1bb8760af6 GITHUB_REDIRECT_URI=https://dashboard.vibioh.fr/auth/github ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
-    "test": "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
+    "start":
+      "npm run copy:html && API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://auth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_OAUTH_STATE=RandomStringForViBiOhInfrastructure GITHUB_OAUTH_CLIENT_ID=8c451219bd1bb8760af6 GITHUB_REDIRECT_URI=https://dashboard.vibioh.fr/auth/github ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
+    "test":
+      "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
     "test:e2e": "./node_modules/.bin/codeceptjs run-multiple --all",
-    "build": "npm run format && npm run lint && npm test && npm run mustache && npm run copy:web && ./node_modules/.bin/webpack --progress -p"
+    "build":
+      "npm run format && npm run lint && npm test && npm run mustache && npm run copy:web && ./node_modules/.bin/webpack --progress -p"
   },
   "repository": {
     "type": "git",
@@ -102,7 +106,7 @@
   },
   "ava": {
     "files": ["app/**/*.test.js"],
-    "require": ["ignore-styles", "./app/helpers/Test.js"],
+    "require": ["ignore-styles", "./app/utils/Test.js"],
     "concurrency": 4,
     "babel": "inherit"
   },

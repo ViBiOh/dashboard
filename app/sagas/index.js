@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { push } from 'react-router-redux';
@@ -6,7 +5,7 @@ import { STORAGE_KEY_AUTH } from '../Constants';
 import Docker from '../services/Docker';
 import localStorage from '../services/LocalStorage';
 import Auth from '../services/Auth';
-import SearchParams, { computeRedirectSearch } from '../helpers/SearchParams';
+import SearchParams, { computeRedirectSearch } from '../utils/SearchParams';
 import actions from '../actions';
 
 /**

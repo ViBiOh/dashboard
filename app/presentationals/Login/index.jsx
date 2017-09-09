@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import FaUnlockAlt from 'react-icons/lib/fa/unlock-alt';
 import FaGithub from 'react-icons/lib/fa/github';
 import { getFromContext, getGithubOauthUrl } from '../../Constants';
-import SearchParams, { computeRedirectSearch } from '../../helpers/SearchParams';
+import SearchParams, { computeRedirectSearch } from '../../utils/SearchParams';
 import style from './index.less';
 
 /**
@@ -18,7 +18,7 @@ const Login = ({ location }) => {
     <span className={style.flex}>
       <h2>Login</h2>
       <div className={style.center}>
-        {getFromContext('BASIC_AUTH_ENABLED') === 'true' &&
+        {getFromContext('BASIC_AUTH_ENABLED') === 'true' && (
           <a
             href={`/auth/basic${computeRedirectSearch(redirect)}`}
             className={style.icons}
@@ -27,8 +27,9 @@ const Login = ({ location }) => {
             data-login-basic
           >
             <FaUnlockAlt />
-          </a>}
-        {getFromContext('GITHUB_OAUTH_CLIENT_ID') &&
+          </a>
+        )}
+        {getFromContext('GITHUB_OAUTH_CLIENT_ID') && (
           <a
             href={getGithubOauthUrl(redirect)}
             className={style.icons}
@@ -37,7 +38,8 @@ const Login = ({ location }) => {
             data-login-github
           >
             <FaGithub />
-          </a>}
+          </a>
+        )}
       </div>
     </span>
   );

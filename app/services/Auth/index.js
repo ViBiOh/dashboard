@@ -1,5 +1,5 @@
 import funtch from 'funtch';
-import btoa from '../../helpers/btoa';
+import btoa from '../../utils/btoa';
 import { getAuthApiUrl } from '../../Constants';
 import { customError, auth } from '../Commons';
 
@@ -33,6 +33,8 @@ export default class Auth {
   static basicLogin(username, password) {
     const hash = `Basic ${btoa(`${username}:${password}`)}`;
 
-    return auth(`${getAuthApiUrl()}/user`, hash).get().then(() => hash);
+    return auth(`${getAuthApiUrl()}/user`, hash)
+      .get()
+      .then(() => hash);
   }
 }

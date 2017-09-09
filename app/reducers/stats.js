@@ -6,7 +6,7 @@ import {
   scaleSize,
   cpuPercentageMax,
   computeCpuPercentage,
-} from '../helpers/statHelper';
+} from '../utils/statHelper';
 
 /**
  * Default initial state with empty entries.

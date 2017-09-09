@@ -1,5 +1,5 @@
 import funtch from 'funtch';
-import { computeRedirectSearch } from './helpers/SearchParams';
+import { computeRedirectSearch } from './utils/SearchParams';
 
 /**
  * App context that store variables.
@@ -11,7 +11,7 @@ let context = {};
  * Name of Key for storage
  * @type {String}
  */
-const STORAGE_KEY_AUTH = 'auth';
+export const STORAGE_KEY_AUTH = 'auth';
 
 /**
  * Maximum number of stats stored (one per second)
@@ -29,7 +29,7 @@ export const DEBOUNCE_TIMEOUT = 300;
  * Initialize context from remote endpoint
  * @return {Promise<Object>} Context
  */
-function init() {
+export function init() {
   return new Promise((resolve) => {
     funtch.get('/env').then((env) => {
       context = env;
@@ -43,7 +43,7 @@ function init() {
  * @param {String} key Wanted key
  * @return {String} Value from context
  */
-function getFromContext(key) {
+export function getFromContext(key) {
   return context[key];
 }
 
@@ -51,7 +51,7 @@ function getFromContext(key) {
  * Return API endpoint URL
  * @return {String} API endpoint URL
  */
-function getApiUrl() {
+export function getApiUrl() {
   return getFromContext('API_URL');
 }
 
@@ -59,7 +59,7 @@ function getApiUrl() {
  * Return WebSocket endpoint URL
  * @return {String} WebSocket endpoint URL
  */
-function getWsUrl() {
+export function getWsUrl() {
   return getFromContext('WS_URL');
 }
 
@@ -67,7 +67,7 @@ function getWsUrl() {
  * Return OAuth API endpoint URL
  * @return {String} WebSocket endpoint URL
  */
-function getAuthApiUrl() {
+export function getAuthApiUrl() {
   return getFromContext('AUTH_URL');
 }
 
@@ -75,7 +75,7 @@ function getAuthApiUrl() {
  * Return Github Oauth API endpoint URL
  * @return {String} WebSocket endpoint URL
  */
-function getGithubOauthUrl(redirect) {
+export function getGithubOauthUrl(redirect) {
   return `http://github.com/login/oauth/authorize?client_id=${encodeURIComponent(
     getFromContext('GITHUB_OAUTH_CLIENT_ID'),
   )}&state=${encodeURIComponent(
@@ -84,17 +84,3 @@ function getGithubOauthUrl(redirect) {
     getFromContext('GITHUB_REDIRECT_URI') || `${document.location.origin}/auth/github`,
   )}${computeRedirectSearch(redirect)}`;
 }
-
-/**
- * URL for API requests
- * @type {String}
- */
-export {
-  init,
-  getFromContext,
-  getApiUrl,
-  getWsUrl,
-  getAuthApiUrl,
-  getGithubOauthUrl,
-  STORAGE_KEY_AUTH,
-};

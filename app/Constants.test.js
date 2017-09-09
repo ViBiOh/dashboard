@@ -49,3 +49,30 @@ test.serial('should return GitHub login URL with variables from env', (t) => {
     'http://github.com/login/oauth/authorize?client_id=GITHUB_ID&state=GITHUB_STATE&redirect_uri=localhost',
   );
 });
+
+test.serial(
+  'should return GitHub login URL with current document.location if no redirect URI provided',
+  (t) => {
+    funtch.get.restore();
+    sinon.stub(funtch, 'get').callsFake(url =>
+      Promise.resolve({
+        url,
+        API_URL: 'localhost',
+        WS_URL: 'ws://localhost',
+        AUTH_URL: 'localhost/oauth',
+        GITHUB_OAUTH_CLIENT_ID: 'GITHUB_ID',
+        GITHUB_OAUTH_STATE: 'GITHUB_STATE',
+      }),
+    );
+
+    return new Promise((resolve) => {
+      init().then(() => {
+        t.is(
+          getGithubOauthUrl(),
+          'http://github.com/login/oauth/authorize?client_id=GITHUB_ID&state=GITHUB_STATE&redirect_uri=null%2Fauth%2Fgithub',
+        );
+        resolve();
+      });
+    });
+  },
+);

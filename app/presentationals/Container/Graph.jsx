@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Chart from 'chart.js';
-import setRef from '../../helpers/ref';
+import setRef from '../../utils/ref';
 import style from './Graph.less';
 
 /**

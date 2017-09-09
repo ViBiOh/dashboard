@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import GithubAuth from '../presentationals/Login/Github';
-import SearchParams from '../helpers/SearchParams';
+import SearchParams from '../utils/SearchParams';
 import actions from '../actions';
 
 /**

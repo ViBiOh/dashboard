@@ -31,7 +31,10 @@ test('should call submit on enter key down', (t) => {
   const onLogin = sinon.spy();
   const wrapper = mount(<BasicAuth onLogin={onLogin} />);
 
-  wrapper.find('input').at(0).simulate('keyDown', { keyCode: 13 });
+  wrapper
+    .find('input')
+    .at(0)
+    .simulate('keyDown', { keyCode: 13 });
 
   t.true(onLogin.called);
 });
@@ -40,7 +43,10 @@ test('should not call submit on other key down', (t) => {
   const onLogin = sinon.spy();
   const wrapper = mount(<BasicAuth onLogin={onLogin} />);
 
-  wrapper.find('input').at(1).simulate('keyDown', { keyCode: 10 });
+  wrapper
+    .find('input')
+    .at(1)
+    .simulate('keyDown', { keyCode: 10 });
 
   t.false(onLogin.called);
 });

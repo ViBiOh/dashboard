@@ -1,7 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
 import funtch from 'funtch';
-import btoa from '../../helpers/btoa';
+import btoa from '../../utils/btoa';
 import Auth from './';
 
 test.beforeEach(() => {

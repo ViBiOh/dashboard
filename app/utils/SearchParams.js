@@ -4,7 +4,7 @@
  * @returns {String} redirect query string
  */
 export function computeRedirectSearch(redirect) {
-  if (redirect) {
+  if (Boolean(redirect) && String(redirect).trim() !== '') {
     return `?redirect=${encodeURIComponent(redirect)}`;
   }
   return '';
