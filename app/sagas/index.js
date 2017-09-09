@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { push } from 'react-router-redux';
