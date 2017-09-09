@@ -1,7 +1,7 @@
 /**
  * Compute redirect param if provided.
  * @param {String} redirect Wanted redirect
- * @returns {String} redirect query string
+ * @returns {String} Encoded redirect query string
  */
 export function computeRedirectSearch(redirect) {
   if (Boolean(redirect) && String(redirect).trim() !== '') {
@@ -17,7 +17,12 @@ export function computeRedirectSearch(redirect) {
  */
 export default function (content) {
   const params = {};
-  content.replace(/\??([^=]+)=?([^&]*)&?/g, (match, key, value) => {
+
+  if (!content) {
+    return params;
+  }
+
+  content.replace(/^\?/, '').replace(/([^&=]+)(?:=([^&]*))?/gm, (match, key, value) => {
     // eslint-disable-next-line no-param-reassign
     params[key] = typeof value === 'undefined' ? true : decodeURIComponent(value);
   });
