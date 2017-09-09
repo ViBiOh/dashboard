@@ -14,6 +14,10 @@ export default class Filter extends Component {
   constructor(props) {
     super(props);
 
+    /**
+     * React state of component.
+     * @type {Object}
+     */
     this.state = {
       value: props.value,
     };
@@ -30,6 +34,9 @@ export default class Filter extends Component {
 
     this.setState({ value });
 
+    /**
+     * Timeout key for making a debounce.
+     */
     this.onChangeTimeout = setTimeout(() => {
       this.props.onChange(this.state.value);
     }, DEBOUNCE_TIMEOUT);
