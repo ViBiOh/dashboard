@@ -10,6 +10,7 @@ import (
 	"github.com/docker/docker/api/types/filters"
 )
 
+const inspectAction = `get`
 const startAction = `start`
 const stopAction = `stop`
 const restartAction = `restart`
@@ -82,14 +83,6 @@ func rmImages(imageID string) error {
 	return nil
 }
 
-func inspectContainerHandler(w http.ResponseWriter, containerID string) {
-	if container, err := inspectContainer(containerID); err != nil {
-		httputils.InternalServer(w, err)
-	} else {
-		httputils.ResponseJSON(w, container)
-	}
-}
-
 func getAction(action string) func(string) error {
 	switch action {
 	case startAction:
@@ -108,10 +101,20 @@ func getAction(action string) func(string) error {
 }
 
 func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID string, action string) {
-	if allowed, err := isAllowed(user, containerID); err != nil {
+	if allowed, container, err := isAllowed(user, containerID); err != nil {
 		httputils.InternalServer(w, err)
 	} else if !allowed {
 		httputils.Forbidden(w)
+	} else if action == inspectAction {
+		if container != nil {
+			httputils.ResponseJSON(w, *container)
+		} else {
+			if container, err := inspectContainer(containerID); err != nil {
+				httputils.InternalServer(w, err)
+			} else {
+				httputils.ResponseJSON(w, container)
+			}
+		}
 	} else if err = getAction(action)(containerID); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
