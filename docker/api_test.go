@@ -6,6 +6,8 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/httputils"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
@@ -88,6 +90,76 @@ func TestInfoHandler(t *testing.T) {
 
 		if result := w.Result().StatusCode; result != testCase.want {
 			t.Errorf(`infoHandler() = %v, want %v, with docker=%v`, result, testCase.want, testCase.message)
+		}
+	}
+}
+
+func TestContainersHandler(t *testing.T) {
+	var cases = []struct {
+		dockerResponse interface{}
+		response       *http.Request
+		urlPath        string
+		user           *auth.User
+		want           string
+		wantStatus     int
+	}{
+		{
+			nil,
+			httptest.NewRequest(http.MethodHead, `/`, nil),
+			`/`,
+			auth.NewUser(`admin`, `admin`),
+			``,
+			http.StatusMethodNotAllowed,
+		},
+		{
+			[]types.Container{
+				{ID: `test`},
+			},
+			httptest.NewRequest(http.MethodGet, `/`, nil),
+			``,
+			auth.NewUser(`admin`, `admin`),
+			`{"results":[{"Id":"test","Names":null,"Image":"","ImageID":"","Command":"","Created":0,"Ports":null,"Labels":null,"State":"","Status":"","HostConfig":{},"NetworkSettings":null,"Mounts":null}]}`,
+			http.StatusOK,
+		},
+		{
+			[]types.Container{
+				{ID: `test`},
+			},
+			httptest.NewRequest(http.MethodGet, `/`, nil),
+			`/`,
+			auth.NewUser(`admin`, `admin`),
+			`{"results":[{"Id":"test","Names":null,"Image":"","ImageID":"","Command":"","Created":0,"Ports":null,"Labels":null,"State":"","Status":"","HostConfig":{},"NetworkSettings":null,"Mounts":null}]}`,
+			http.StatusOK,
+		},
+		{
+			types.ContainerJSON{},
+			httptest.NewRequest(http.MethodGet, `/`, nil),
+			`/containerID`,
+			auth.NewUser(`admin`, `admin`),
+			`{"Mounts":null,"Config":null,"NetworkSettings":null}`,
+			http.StatusOK,
+		},
+		{
+			types.ContainerJSON{},
+			httptest.NewRequest(http.MethodPost, `/`, nil),
+			`/containerID/start`,
+			auth.NewUser(`admin`, `admin`),
+			``,
+			http.StatusOK,
+		},
+	}
+
+	for _, testCase := range cases {
+		docker = mockClient(t, testCase.dockerResponse)
+		writer := httptest.NewRecorder()
+		containersHandler(writer, testCase.response, testCase.urlPath, testCase.user)
+
+		if writer.Code != testCase.wantStatus {
+			t.Errorf(`containersHandler(%v, %v, %v) = %v, want %v`, testCase.response, testCase.urlPath, testCase.user, writer.Code, testCase.wantStatus)
+		}
+
+		if result, _ := httputils.ReadBody(writer.Result().Body); string(result) != testCase.want {
+			t.Errorf(`containersHandler(%v, %v, %v) = %v, want %v`, testCase.response, testCase.urlPath, testCase.user, string(result), testCase.want)
 		}
 	}
 }

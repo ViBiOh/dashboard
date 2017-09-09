@@ -82,8 +82,8 @@ func rmImages(imageID string) error {
 	return nil
 }
 
-func inspectContainerHandler(w http.ResponseWriter, containerID []byte) {
-	if container, err := inspectContainer(string(containerID)); err != nil {
+func inspectContainerHandler(w http.ResponseWriter, containerID string) {
+	if container, err := inspectContainer(containerID); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
 		httputils.ResponseJSON(w, container)
@@ -107,14 +107,12 @@ func getAction(action string) func(string) error {
 	}
 }
 
-func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID []byte, action string) {
-	id := string(containerID)
-
-	if allowed, err := isAllowed(user, id); err != nil {
+func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID string, action string) {
+	if allowed, err := isAllowed(user, containerID); err != nil {
 		httputils.InternalServer(w, err)
 	} else if !allowed {
 		httputils.Forbidden(w)
-	} else if err = getAction(action)(id); err != nil {
+	} else if err = getAction(action)(containerID); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
 		w.Write(nil)

@@ -217,7 +217,7 @@ func getFinalName(serviceFullName string) string {
 	return strings.TrimSuffix(serviceFullName, deploySuffix)
 }
 
-func deleteServices(appName []byte, services map[string]*deployedService, user *auth.User) {
+func deleteServices(appName string, services map[string]*deployedService, user *auth.User) {
 	for service, container := range services {
 		if infos, err := inspectContainer(container.ID); err != nil {
 			log.Printf(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service, err)
@@ -242,7 +242,7 @@ func deleteServices(appName []byte, services map[string]*deployedService, user *
 	}
 }
 
-func startServices(appName []byte, services map[string]*deployedService, user *auth.User) error {
+func startServices(appName string, services map[string]*deployedService, user *auth.User) error {
 	for service, container := range services {
 		if err := startContainer(container.ID); err != nil {
 			return fmt.Errorf(`[%s] [%s] Error while starting service %s: %v`, user.Username, appName, service, err)
@@ -267,7 +267,7 @@ func inspectServices(services map[string]*deployedService, user *auth.User) []*t
 	return containers
 }
 
-func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, containers []*types.ContainerJSON) bool {
+func areContainersHealthy(ctx context.Context, user *auth.User, appName string, containers []*types.ContainerJSON) bool {
 	containersIdsWithHealthcheck := make([]string, 0, len(containers))
 	for _, container := range containers {
 		if container.Config.Healthcheck != nil && len(container.Config.Healthcheck.Test) != 0 {
@@ -304,9 +304,9 @@ func areContainersHealthy(ctx context.Context, user *auth.User, appName []byte, 
 	}
 }
 
-func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.User, appName []byte, services map[string]*deployedService, oldContainers []types.Container) {
+func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.User, appName string, services map[string]*deployedService, oldContainers []types.Container) {
 	defer cancel()
-	defer backgroundTasks.Delete(string(appName))
+	defer backgroundTasks.Delete(appName)
 
 	if areContainersHealthy(ctx, user, appName, inspectServices(services, user)) {
 		cleanContainers(oldContainers, user)
@@ -320,14 +320,14 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	}
 }
 
-func createContainer(user *auth.User, appName []byte, serviceName string, services map[string]*deployedService, service *dockerComposeService) (*deployedService, error) {
+func createContainer(user *auth.User, appName string, serviceName string, services map[string]*deployedService, service *dockerComposeService) (*deployedService, error) {
 	if err := pullImage(service.Image, user); err != nil {
 		return nil, err
 	}
 
-	serviceFullName := getServiceFullName(string(appName), serviceName)
+	serviceFullName := getServiceFullName(appName, serviceName)
 
-	config, err := getConfig(service, user, string(appName))
+	config, err := getConfig(service, user, appName)
 	if err != nil {
 		return nil, fmt.Errorf(`[%s] [%s] Error while getting config: %v`, user.Username, appName, err)
 	}
@@ -343,11 +343,11 @@ func createContainer(user *auth.User, appName []byte, serviceName string, servic
 	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
 }
 
-func composeFailed(w http.ResponseWriter, user *auth.User, appName []byte, err error) {
+func composeFailed(w http.ResponseWriter, user *auth.User, appName string, err error) {
 	httputils.InternalServer(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
 }
 
-func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, composeFile []byte) {
+func composeHandler(w http.ResponseWriter, user *auth.User, appName string, composeFile []byte) {
 	if user == nil {
 		httputils.BadRequest(w, fmt.Errorf(`A user is required`))
 		return
@@ -366,15 +366,13 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName []byte, comp
 		return
 	}
 
-	appNameStr := string(appName)
-
-	if _, ok := backgroundTasks.Load(appNameStr); ok {
+	if _, ok := backgroundTasks.Load(appName); ok {
 		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application already in deployment`, user.Username, appName))
 		return
 	}
-	backgroundTasks.Store(appNameStr, true)
+	backgroundTasks.Store(appName, true)
 
-	oldContainers, err := listContainers(user, appNameStr)
+	oldContainers, err := listContainers(user, appName)
 	if err != nil {
 		composeFailed(w, user, appName, err)
 		return

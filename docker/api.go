@@ -64,23 +64,29 @@ func infoHandler(w http.ResponseWriter) {
 }
 
 func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
-	urlPathByte := []byte(urlPath)
-
 	if (urlPath == `/` || urlPath == ``) && r.Method == http.MethodGet {
 		listContainersHandler(w, user)
-	} else if containerRequest.MatchString(urlPath) && r.Method == http.MethodGet {
-		inspectContainerHandler(w, containerRequest.FindSubmatch(urlPathByte)[1])
+	} else if containerRequest.MatchString(urlPath) {
+		containerID := containerRequest.FindStringSubmatch(urlPath)[1]
+
+		if r.Method == http.MethodGet {
+			inspectContainerHandler(w, containerID)
+		} else if r.Method == http.MethodDelete {
+			basicActionHandler(w, user, containerID, deleteAction)
+		} else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
 	} else if containerActionRequest.MatchString(urlPath) && r.Method == http.MethodPost {
-		matches := containerActionRequest.FindSubmatch(urlPathByte)
-		basicActionHandler(w, user, matches[1], string(matches[2]))
-	} else if containerRequest.MatchString(urlPath) && r.Method == http.MethodDelete {
-		basicActionHandler(w, user, containerRequest.FindSubmatch(urlPathByte)[1], deleteAction)
+		matches := containerActionRequest.FindStringSubmatch(urlPath)
+		basicActionHandler(w, user, matches[1], matches[2])
 	} else if containerRequest.MatchString(urlPath) && r.Method == http.MethodPost {
 		if composeBody, err := httputils.ReadBody(r.Body); err != nil {
 			httputils.InternalServer(w, err)
 		} else {
-			composeHandler(w, user, containerRequest.FindSubmatch(urlPathByte)[1], composeBody)
+			composeHandler(w, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
 		}
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 
