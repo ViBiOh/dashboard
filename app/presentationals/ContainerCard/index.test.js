@@ -13,7 +13,7 @@ test.beforeEach(() => {
       Image: '',
       Created: 0,
       Status: 'up',
-      Names: [],
+      Names: ['awesome_container'],
       Ports: [],
     },
     onClick: sinon.spy(),
@@ -30,7 +30,7 @@ test("should call onClick with container's Id", (t) => {
   const wrapper = shallow(<ContainerCard {...props} />);
   wrapper.simulate('click');
 
-  t.true(props.onClick.withArgs(1).calledOnce);
+  t.true(props.onClick.withArgs('awesome_container').calledOnce);
 });
 
 test('should have red color on up', (t) => {
