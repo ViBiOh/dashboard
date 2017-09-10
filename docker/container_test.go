@@ -3,11 +3,15 @@ package docker
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 
 	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/httputils"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 )
 
 func TestListContainers(t *testing.T) {
@@ -303,6 +307,67 @@ func TestDoAction(t *testing.T) {
 	for _, testCase := range cases {
 		if result := doAction(testCase.action); fmt.Sprintf(`%p`, result) != fmt.Sprintf(`%p`, testCase.want) {
 			t.Errorf(`doAction(%v) = %p, want %p`, testCase.action, result, testCase.want)
+		}
+	}
+}
+
+func TestBasicActionHandler(t *testing.T) {
+	var cases = []struct {
+		dockerResponse interface{}
+		user           *auth.User
+		containerID    string
+		action         string
+		want           string
+		wantStatus     int
+	}{
+		{
+			nil,
+			auth.NewUser(`guest`, `guest`),
+			`test`,
+			getAction,
+			`Error while inspecting container: error during connect: Get http://localhost/containers/test/json: internal server error
+`,
+			http.StatusInternalServerError,
+		},
+		{
+			types.ContainerJSON{Config: &container.Config{}},
+			auth.NewUser(`guest`, `guest`),
+			`test`,
+			getAction,
+			`
+`,
+			http.StatusForbidden,
+		},
+		{
+			types.ContainerJSON{},
+			auth.NewUser(`admin`, `admin`),
+			`test`,
+			`unknwon`,
+			`Unknown action test
+`,
+			http.StatusInternalServerError,
+		},
+		{
+			types.ContainerJSON{},
+			auth.NewUser(`admin`, `admin`),
+			`test`,
+			getAction,
+			`{"Mounts":null,"Config":null,"NetworkSettings":null}`,
+			http.StatusOK,
+		},
+	}
+
+	for _, testCase := range cases {
+		docker = mockClient(t, testCase.dockerResponse)
+		writer := httptest.NewRecorder()
+		basicActionHandler(writer, testCase.user, testCase.containerID, testCase.action)
+
+		if result := writer.Code; result != testCase.wantStatus {
+			t.Errorf(`basicActionHandler(%v, %v, %v) = %v, want %v`, testCase.user, testCase.containerID, testCase.action, result, testCase.wantStatus)
+		}
+
+		if result, _ := httputils.ReadBody(writer.Result().Body); string(result) != testCase.want {
+			t.Errorf(`basicActionHandler(%v, %v, %v) = %v, want %v`, testCase.user, testCase.containerID, testCase.action, string(result), testCase.want)
 		}
 	}
 }

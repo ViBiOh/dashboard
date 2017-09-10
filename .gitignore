@@ -12,3 +12,4 @@ e2e/output
 # Go binary
 bin/
 coverage.txt
+debug.test
