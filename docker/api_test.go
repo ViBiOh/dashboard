@@ -109,7 +109,7 @@ func TestContainersHandler(t *testing.T) {
 			`/`,
 			auth.NewUser(`admin`, `admin`),
 			``,
-			http.StatusMethodNotAllowed,
+			http.StatusNotFound,
 		},
 		{
 			[]types.Container{

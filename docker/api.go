@@ -73,20 +73,20 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 			basicActionHandler(w, user, containerID, getAction)
 		} else if r.Method == http.MethodDelete {
 			basicActionHandler(w, user, containerID, deleteAction)
+		} else if r.Method == http.MethodPost {
+			if composeBody, err := httputils.ReadBody(r.Body); err != nil {
+				httputils.InternalServer(w, err)
+			} else {
+				composeHandler(w, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
+			}
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	} else if containerActionRequest.MatchString(urlPath) && r.Method == http.MethodPost {
 		matches := containerActionRequest.FindStringSubmatch(urlPath)
 		basicActionHandler(w, user, matches[1], matches[2])
-	} else if containerRequest.MatchString(urlPath) && r.Method == http.MethodPost {
-		if composeBody, err := httputils.ReadBody(r.Body); err != nil {
-			httputils.InternalServer(w, err)
-		} else {
-			composeHandler(w, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
-		}
 	} else {
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusNotFound)
 	}
 }
 
