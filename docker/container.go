@@ -91,6 +91,10 @@ func rmImages(imageID string) error {
 	return nil
 }
 
+func invalidAction(action string, _ *types.ContainerJSON) (interface{}, error) {
+	return nil, fmt.Errorf(`Unknown action %s`, action)
+}
+
 func doAction(action string) func(string, *types.ContainerJSON) (interface{}, error) {
 	switch action {
 	case getAction:
@@ -104,9 +108,7 @@ func doAction(action string) func(string, *types.ContainerJSON) (interface{}, er
 	case deleteAction:
 		return rmContainer
 	default:
-		return func(string, *types.ContainerJSON) (interface{}, error) {
-			return nil, fmt.Errorf(`Unknown action %s`, action)
-		}
+		return invalidAction
 	}
 }
 

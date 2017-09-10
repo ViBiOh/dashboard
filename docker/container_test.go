@@ -2,6 +2,7 @@ package docker
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -104,20 +105,61 @@ func TestInspectContainer(t *testing.T) {
 	}
 }
 
+func TestGetContainer(t *testing.T) {
+	var cases = []struct {
+		containerID string
+		container   *types.ContainerJSON
+		want        interface{}
+		wantErr     error
+	}{
+		{
+			`test`,
+			&types.ContainerJSON{},
+			&types.ContainerJSON{},
+			nil,
+		},
+	}
+
+	var failed bool
+
+	for _, testCase := range cases {
+		result, err := getContainer(testCase.containerID, testCase.container)
+
+		failed = false
+
+		if err == nil && testCase.wantErr != nil {
+			failed = true
+		} else if err != nil && testCase.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
+			failed = true
+		} else if !reflect.DeepEqual(result, testCase.want) {
+			failed = true
+		}
+
+		if failed {
+			t.Errorf(`getContainer(%v, %v) = (%v, %v), want (%v, %v)`, testCase.containerID, testCase.container, result, err, testCase.want, testCase.wantErr)
+		}
+	}
+}
+
 func TestStartContainer(t *testing.T) {
 	var cases = []struct {
 		dockerResponse interface{}
 		containerID    string
+		want           interface{}
 		wantErr        error
 	}{
 		{
 			types.ContainerJSON{},
 			`test`,
 			nil,
+			nil,
 		},
 		{
 			nil,
 			``,
+			nil,
 			errors.New(`error during connect: Post http://localhost/containers/start: internal server error`),
 		},
 	}
@@ -147,16 +189,19 @@ func TestStopContainer(t *testing.T) {
 	var cases = []struct {
 		dockerResponse interface{}
 		containerID    string
+		want           interface{}
 		wantErr        error
 	}{
 		{
 			types.ContainerJSON{},
 			`test`,
 			nil,
+			nil,
 		},
 		{
 			nil,
 			``,
+			nil,
 			errors.New(`error during connect: Post http://localhost/containers/stop: internal server error`),
 		},
 	}
@@ -186,16 +231,19 @@ func TestRestartContainer(t *testing.T) {
 	var cases = []struct {
 		dockerResponse interface{}
 		containerID    string
+		want           interface{}
 		wantErr        error
 	}{
 		{
 			types.ContainerJSON{},
 			`test`,
 			nil,
+			nil,
 		},
 		{
 			nil,
 			``,
+			nil,
 			errors.New(`error during connect: Post http://localhost/containers/restart: internal server error`),
 		},
 	}
@@ -217,6 +265,44 @@ func TestRestartContainer(t *testing.T) {
 
 		if failed {
 			t.Errorf(`restartContainer(%v) = (%v), want (%v)`, testCase.containerID, err, testCase.wantErr)
+		}
+	}
+}
+
+func TestDoAction(t *testing.T) {
+	var cases = []struct {
+		action string
+		want   func(string, *types.ContainerJSON) (interface{}, error)
+	}{
+		{
+			getAction,
+			getContainer,
+		},
+		{
+			startAction,
+			startContainer,
+		},
+		{
+			stopAction,
+			stopContainer,
+		},
+		{
+			restartAction,
+			restartContainer,
+		},
+		{
+			deleteAction,
+			rmContainer,
+		},
+		{
+			`unknown`,
+			invalidAction,
+		},
+	}
+
+	for _, testCase := range cases {
+		if result := doAction(testCase.action); fmt.Sprintf(`%p`, result) != fmt.Sprintf(`%p`, testCase.want) {
+			t.Errorf(`doAction(%v) = %p, want %p`, testCase.action, result, testCase.want)
 		}
 	}
 }
