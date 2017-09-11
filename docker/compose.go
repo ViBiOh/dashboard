@@ -169,7 +169,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices map[string
 	}
 }
 
-func pullImage(image string, user *auth.User) error {
+func pullImage(image string) error {
 	if !strings.Contains(image, tagSeparator) {
 		image = image + defaultTag
 	}
@@ -186,7 +186,7 @@ func pullImage(image string, user *auth.User) error {
 	return nil
 }
 
-func cleanContainers(containers []types.Container, user *auth.User) {
+func cleanContainers(containers []types.Container) {
 	for _, container := range containers {
 		stopContainer(container.ID, nil)
 	}
@@ -196,7 +196,7 @@ func cleanContainers(containers []types.Container, user *auth.User) {
 	}
 }
 
-func renameDeployedContainers(containers map[string]*deployedService, user *auth.User) error {
+func renameDeployedContainers(containers map[string]*deployedService) error {
 	ctx, cancel := getCtx()
 	defer cancel()
 
@@ -243,10 +243,10 @@ func deleteServices(appName string, services map[string]*deployedService, user *
 	}
 }
 
-func startServices(appName string, services map[string]*deployedService, user *auth.User) error {
+func startServices(services map[string]*deployedService) error {
 	for service, container := range services {
 		if _, err := startContainer(container.ID, nil); err != nil {
-			return fmt.Errorf(`[%s] [%s] Error while starting service %s: %v`, user.Username, appName, service, err)
+			return fmt.Errorf(`Error while starting service %s: %v`, service, err)
 		}
 	}
 
@@ -310,9 +310,9 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	defer backgroundTasks.Delete(appName)
 
 	if areContainersHealthy(ctx, user, appName, inspectServices(services, user)) {
-		cleanContainers(oldContainers, user)
+		cleanContainers(oldContainers)
 
-		if err := renameDeployedContainers(services, user); err != nil {
+		if err := renameDeployedContainers(services); err != nil {
 			log.Printf(`[%s] [%s] Error while renaming deployed containers: %v`, user.Username, appName, err)
 		}
 	} else {
@@ -322,7 +322,7 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 }
 
 func createContainer(user *auth.User, appName string, serviceName string, services map[string]*deployedService, service *dockerComposeService) (*deployedService, error) {
-	if err := pullImage(service.Image, user); err != nil {
+	if err := pullImage(service.Image); err != nil {
 		return nil, err
 	}
 
@@ -330,7 +330,7 @@ func createContainer(user *auth.User, appName string, serviceName string, servic
 
 	config, err := getConfig(service, user, appName)
 	if err != nil {
-		return nil, fmt.Errorf(`[%s] [%s] Error while getting config: %v`, user.Username, appName, err)
+		return nil, fmt.Errorf(`Error while getting config: %v`, err)
 	}
 
 	ctx, cancel := getCtx()
@@ -338,7 +338,7 @@ func createContainer(user *auth.User, appName string, serviceName string, servic
 
 	createdContainer, err := docker.ContainerCreate(ctx, config, getHostConfig(service), getNetworkConfig(service, services), serviceFullName)
 	if err != nil {
-		return nil, fmt.Errorf(`[%s] [%s] Error while creating service %s: %v`, user.Username, appName, serviceName, err)
+		return nil, fmt.Errorf(`Error while creating service %s: %v`, serviceName, err)
 	}
 
 	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
@@ -385,8 +385,9 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName string, comp
 	}
 
 	newServices := make(map[string]*deployedService)
+	var deployedService *deployedService
 	for serviceName, service := range compose.Services {
-		if deployedService, err := createContainer(user, appName, serviceName, newServices, &service); err != nil {
+		if deployedService, err = createContainer(user, appName, serviceName, newServices, &service); err != nil {
 			break
 		} else {
 			newServices[serviceName] = deployedService
@@ -397,7 +398,7 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName string, comp
 	go finishDeploy(ctx, cancel, user, appName, newServices, oldContainers)
 
 	if err == nil {
-		err = startServices(appName, newServices, user)
+		err = startServices(newServices)
 	}
 
 	if err != nil {

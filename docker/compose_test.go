@@ -1,12 +1,14 @@
 package docker
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"testing"
 	"time"
 
 	"github.com/ViBiOh/dashboard/auth"
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 )
@@ -234,6 +236,96 @@ func TestGetNetworkConfig(t *testing.T) {
 	for _, testCase := range cases {
 		if result := getNetworkConfig(testCase.service, testCase.deployedServices); !reflect.DeepEqual(result, testCase.want) {
 			t.Errorf(`getNetworkConfig(%v, %v) = %v, want %v`, testCase.service, testCase.deployedServices, result, testCase.want)
+		}
+	}
+}
+
+func TestPullImage(t *testing.T) {
+	var cases = []struct {
+		dockerResponse interface{}
+		image          string
+		wantErr        error
+	}{
+		{
+			nil,
+			`test`,
+			errors.New(`Error while pulling image: error during connect: Post http://localhost/images/create?fromImage=test&tag=latest: internal server error`),
+		},
+		{
+			types.ContainerJSON{},
+			`test`,
+			nil,
+		},
+		{
+			types.ContainerJSON{},
+			`test:version`,
+			nil,
+		},
+	}
+
+	var failed bool
+
+	for _, testCase := range cases {
+		docker = mockClient(t, testCase.dockerResponse)
+		err := pullImage(testCase.image)
+
+		failed = false
+
+		if err == nil && testCase.wantErr != nil {
+			failed = true
+		} else if err != nil && testCase.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
+			failed = true
+		}
+
+		if failed {
+			t.Errorf(`pullImage(%v) = %v, want %v`, testCase.image, err, testCase.wantErr)
+		}
+	}
+}
+
+func TestRenameDeployedContainers(t *testing.T) {
+	var cases = []struct {
+		dockerResponse interface{}
+		containers     map[string]*deployedService
+		wantErr        error
+	}{
+		{
+			nil,
+			nil,
+			nil,
+		},
+		{
+			nil,
+			map[string]*deployedService{`test`: {}},
+			errors.New(`Error while renaming container test: error during connect: Post http://localhost/containers/rename?name=: internal server error`),
+		},
+		{
+			types.ContainerJSON{},
+			map[string]*deployedService{`test`: {}},
+			nil,
+		},
+	}
+
+	var failed bool
+
+	for _, testCase := range cases {
+		docker = mockClient(t, testCase.dockerResponse)
+		err := renameDeployedContainers(testCase.containers)
+
+		failed = false
+
+		if err == nil && testCase.wantErr != nil {
+			failed = true
+		} else if err != nil && testCase.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
+			failed = true
+		}
+
+		if failed {
+			t.Errorf(`renameDeployedContainers(%v) = %v, want %v`, testCase.containers, err, testCase.wantErr)
 		}
 	}
 }
