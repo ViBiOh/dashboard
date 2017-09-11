@@ -5,5 +5,7 @@ module.exports = {
     I = actor();
   },
 
-  name: '[data-container-name]',
+  name: {
+    css: '[data-container-name]',
+  },
 };
