@@ -6,11 +6,12 @@ module.exports = {
   },
 
   basicIcon: '[data-login-basic]',
+  error: '[data-error]',
+  submit: '[data-basic-auth-submit]',
   fields: {
     login: '#login',
     password: '#password',
   },
-  submit: '[data-basic-auth-submit]',
 
   basicLogin(login, password) {
     I.click(this.basicIcon);

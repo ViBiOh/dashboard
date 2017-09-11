@@ -3,13 +3,13 @@ Feature('Login');
 Scenario('Basic auth error', (I, loginPage) => {
   I.amOnPage('/login');
   loginPage.basicLogin('admin', 'invalid');
-  I.waitForVisible('[data-error]', 5);
-  I.seeElement('[data-error]');
+  I.waitForVisible(loginPage.error, 5);
+  I.seeElement(loginPage.error);
 });
 
-Scenario('Basic auth success', (I, loginPage) => {
+Scenario('Basic auth success', (I, loginPage, listPage) => {
   I.amOnPage('/login');
   loginPage.basicLogin('admin', 'admin');
-  I.waitForVisible('[data-search]', 5);
+  I.waitForVisible(listPage.search, 5);
   I.see('vibioh/dashboard');
 });
