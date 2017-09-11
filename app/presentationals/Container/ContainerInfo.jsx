@@ -51,7 +51,11 @@ const ContainerInfo = ({ container }) => {
   return (
     <span className={style.container}>
       <h2>
-        <span key="status" className={container.State.Running ? style.green : style.red}>
+        <span
+          key="status"
+          className={container.State.Running ? style.green : style.red}
+          data-container-name
+        >
           {String(container.Name).replace(/^\//, '')}
         </span>
       </h2>

@@ -7,4 +7,5 @@ module.exports = {
 
   search: '[data-search]',
   error: '[data-error]',
+  card: '[data-container-card]',
 };

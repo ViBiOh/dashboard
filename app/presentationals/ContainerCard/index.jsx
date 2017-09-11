@@ -20,7 +20,7 @@ const ContainerCard = ({ container, onClick }) => {
   const name = container.Names[0].replace(/^\//, '');
 
   return (
-    <Button type="none" className={style.card} onClick={() => onClick(name)}>
+    <Button type="none" className={style.card} onClick={() => onClick(name)} data-container-card>
       <div
         className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`}
         title={container.Status}
