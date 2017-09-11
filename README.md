@@ -69,13 +69,15 @@ First goal of this tool was to be available for students to deploy containers on
 
 ## Build
 
+### Server
+
 In order to build the server stuff, run the following command.
 
 ```
 make
 ```
 
-It will compile both API server, auth API server and password encrypter.
+It will compile API server.
 
 ```
 Usage of dashboard:
@@ -111,6 +113,15 @@ Usage of dashboard:
     	List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3
   -ws string
     	Allowed WebSocket Origin pattern (default "^dashboard")
+```
+
+### Front
+
+In order to build the front stuff, run the following command:
+
+```
+npm install
+npm run build
 ```
 
 
