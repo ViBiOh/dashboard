@@ -39,5 +39,7 @@ func listServicesHandler(w http.ResponseWriter, user *auth.User) {
 func servicesHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
 	if (urlPath == `/` || urlPath == ``) && r.Method == http.MethodGet {
 		listServicesHandler(w, user)
+	} else {
+		w.WriteHeader(http.StatusNotFound)
 	}
 }
