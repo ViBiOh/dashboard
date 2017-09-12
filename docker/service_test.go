@@ -39,7 +39,7 @@ func TestListServices(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		result, err := listServices(testCase.user, testCase.appName)
 
 		failed = false
@@ -90,7 +90,7 @@ func TestListServicesHandler(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		writer := httptest.NewRecorder()
 		listServicesHandler(writer, testCase.user)
 
@@ -132,7 +132,7 @@ func TestServicesHandler(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		writer := httptest.NewRecorder()
 
 		servicesHandler(writer, testCase.r, testCase.urlPath, testCase.user)

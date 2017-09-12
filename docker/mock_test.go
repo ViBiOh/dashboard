@@ -30,9 +30,19 @@ func marshalContent(t *testing.T, message interface{}) (*http.Response, error) {
 	}, nil
 }
 
-func mockClient(t *testing.T, message interface{}) *client.Client {
+func mockClient(t *testing.T, messages []interface{}) *client.Client {
+	var message interface{}
+	current := 0
+
 	docker, err := client.NewClient(`http://localhost`, ``, &http.Client{
 		Transport: mockTransport(func(*http.Request) (*http.Response, error) {
+			if current < len(messages) {
+				message = messages[current]
+			} else {
+				message = nil
+			}
+			current++
+
 			if message == nil {
 				return nil, fmt.Errorf(`internal server error`)
 			}
@@ -43,16 +53,6 @@ func mockClient(t *testing.T, message interface{}) *client.Client {
 	if err != nil {
 		t.Errorf(`Error while creating mock client: %v`, err)
 	}
-	return docker
-}
 
-func mockClientHandler(t *testing.T, action func(*http.Request) (*http.Response, error)) *client.Client {
-	docker, err := client.NewClient(`http://localhost`, ``, &http.Client{
-		Transport: mockTransport(action),
-	}, nil)
-
-	if err != nil {
-		t.Errorf(`Error while creating mock client: %v`, err)
-	}
 	return docker
 }

@@ -116,7 +116,7 @@ func TestIsAllowed(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		result, container, err := isAllowed(testCase.user, testCase.containerID)
 
 		failed = false

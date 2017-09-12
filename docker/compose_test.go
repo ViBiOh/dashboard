@@ -3,11 +3,14 @@ package docker
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 	"time"
 
 	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/httputils"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
@@ -266,7 +269,7 @@ func TestPullImage(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		err := pullImage(testCase.image)
 
 		failed = false
@@ -311,7 +314,7 @@ func TestRenameDeployedContainers(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		err := renameDeployedContainers(testCase.containers)
 
 		failed = false
@@ -326,6 +329,51 @@ func TestRenameDeployedContainers(t *testing.T) {
 
 		if failed {
 			t.Errorf(`renameDeployedContainers(%v) = %v, want %v`, testCase.containers, err, testCase.wantErr)
+		}
+	}
+}
+
+func TestStartServices(t *testing.T) {
+	var cases = []struct {
+		dockerResponse interface{}
+		services       map[string]*deployedService
+		wantErr        error
+	}{
+		{
+			nil,
+			nil,
+			nil,
+		},
+		{
+			nil,
+			map[string]*deployedService{`test`: {}},
+			errors.New(`Error while starting service test: error during connect: Post http://localhost/containers/start: internal server error`),
+		},
+		{
+			types.ContainerJSON{},
+			map[string]*deployedService{`test`: {}},
+			nil,
+		},
+	}
+
+	var failed bool
+
+	for _, testCase := range cases {
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
+		err := startServices(testCase.services)
+
+		failed = false
+
+		if err == nil && testCase.wantErr != nil {
+			failed = true
+		} else if err != nil && testCase.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
+			failed = true
+		}
+
+		if failed {
+			t.Errorf(`startServices(%v) = (%v), want (%v)`, testCase.services, err, testCase.wantErr)
 		}
 	}
 }
@@ -368,6 +416,39 @@ func TestGetFinalName(t *testing.T) {
 	for _, testCase := range cases {
 		if result := getFinalName(testCase.serviceFullName); result != testCase.want {
 			t.Errorf(`getFinalName(%v) = %v, want %v`, testCase.serviceFullName, result, testCase.want)
+		}
+	}
+}
+
+func TestComposeFailed(t *testing.T) {
+	var cases = []struct {
+		user       *auth.User
+		appName    string
+		err        error
+		want       string
+		wantStatus int
+	}{
+		{
+			auth.NewUser(`admin`, `admin`),
+			`test`,
+			errors.New(`test unit error`),
+			`[admin] [test] Failed to deploy: test unit error
+`,
+			http.StatusInternalServerError,
+		},
+	}
+
+	for _, testCase := range cases {
+		writer := httptest.NewRecorder()
+
+		composeFailed(writer, testCase.user, testCase.appName, testCase.err)
+
+		if result := writer.Code; result != testCase.wantStatus {
+			t.Errorf(`composeFailed(%v, %v, %v) = %v, want %v`, testCase.user, testCase.appName, testCase.err, result, testCase.wantStatus)
+		}
+
+		if result, _ := httputils.ReadBody(writer.Result().Body); string(result) != testCase.want {
+			t.Errorf(`composeFailed(%v, %v, %v) = %v, want %v`, testCase.user, testCase.appName, testCase.err, string(result), testCase.want)
 		}
 	}
 }

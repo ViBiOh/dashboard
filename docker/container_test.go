@@ -45,7 +45,7 @@ func TestListContainers(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		result, err := listContainers(testCase.user, testCase.appName)
 
 		failed = false
@@ -89,7 +89,7 @@ func TestInspectContainer(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		result, err := inspectContainer(testCase.containerID)
 
 		failed = false
@@ -171,7 +171,7 @@ func TestStartContainer(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		_, err := startContainer(testCase.containerID, nil)
 
 		failed = false
@@ -213,7 +213,7 @@ func TestStopContainer(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		_, err := stopContainer(testCase.containerID, nil)
 
 		failed = false
@@ -255,7 +255,7 @@ func TestRestartContainer(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		_, err := restartContainer(testCase.containerID, nil)
 
 		failed = false
@@ -269,6 +269,107 @@ func TestRestartContainer(t *testing.T) {
 
 		if failed {
 			t.Errorf(`restartContainer(%v) = (%v), want (%v)`, testCase.containerID, err, testCase.wantErr)
+		}
+	}
+}
+
+func TestRmContainer(t *testing.T) {
+	var cases = []struct {
+		dockerResponses []interface{}
+		containerID     string
+		container       *types.ContainerJSON
+		wantErr         error
+	}{
+		{
+			[]interface{}{nil},
+			`test`,
+			nil,
+			errors.New(`Error while removing container: error during connect: Delete http://localhost/containers/test?force=1&v=1: internal server error`),
+		},
+		{
+			[]interface{}{types.ContainerJSON{}},
+			`test`,
+			nil,
+			errors.New(`Error while inspecting container: error during connect: Get http://localhost/containers/test/json: internal server error`),
+		},
+		{
+			[]interface{}{types.ContainerJSON{}},
+			`test`,
+			&types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}},
+			errors.New(`Error while removing images: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
+		},
+		{
+			[]interface{}{types.ContainerJSON{}, &types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}}},
+			`test`,
+			nil,
+			errors.New(`Error while removing images: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
+		},
+		{
+			[]interface{}{types.ContainerJSON{}, []types.ImageDeleteResponseItem{}},
+			`test`,
+			&types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}},
+			nil,
+		},
+	}
+
+	var failed bool
+
+	for _, testCase := range cases {
+		docker = mockClient(t, testCase.dockerResponses)
+		_, err := rmContainer(testCase.containerID, testCase.container)
+
+		failed = false
+
+		if err == nil && testCase.wantErr != nil {
+			failed = true
+		} else if err != nil && testCase.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
+			failed = true
+		}
+
+		if failed {
+			t.Errorf(`rmContainer(%v, %v) = (%v), want (%v)`, testCase.containerID, testCase.container, err, testCase.wantErr)
+		}
+	}
+}
+
+func TestRmImages(t *testing.T) {
+	var cases = []struct {
+		dockerResponse interface{}
+		imageID        string
+		wantErr        error
+	}{
+		{
+			nil,
+			`test`,
+			errors.New(`Error while removing images: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
+		},
+		{
+			[]types.ImageDeleteResponseItem{},
+			`test`,
+			nil,
+		},
+	}
+
+	var failed bool
+
+	for _, testCase := range cases {
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
+		err := rmImages(testCase.imageID)
+
+		failed = false
+
+		if err == nil && testCase.wantErr != nil {
+			failed = true
+		} else if err != nil && testCase.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
+			failed = true
+		}
+
+		if failed {
+			t.Errorf(`rmImages(%v) = (%v), want (%v)`, testCase.imageID, err, testCase.wantErr)
 		}
 	}
 }
@@ -358,7 +459,7 @@ func TestBasicActionHandler(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		writer := httptest.NewRecorder()
 		basicActionHandler(writer, testCase.user, testCase.containerID, testCase.action)
 

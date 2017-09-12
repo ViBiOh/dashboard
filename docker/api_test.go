@@ -69,8 +69,8 @@ func TestHealthHandler(t *testing.T) {
 
 func TestInfoHandler(t *testing.T) {
 	var cases = []struct {
-		message interface{}
-		want    int
+		dockerResponse interface{}
+		want           int
 	}{
 		{
 			nil,
@@ -83,25 +83,25 @@ func TestInfoHandler(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.message)
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 
 		w := httptest.NewRecorder()
 		infoHandler(w)
 
 		if result := w.Result().StatusCode; result != testCase.want {
-			t.Errorf(`infoHandler() = %v, want %v, with docker=%v`, result, testCase.want, testCase.message)
+			t.Errorf(`infoHandler() = %v, want %v`, result, testCase.want)
 		}
 	}
 }
 
 func TestContainersHandler(t *testing.T) {
 	var cases = []struct {
-		dockerResponse interface{}
-		response       *http.Request
-		urlPath        string
-		user           *auth.User
-		want           string
-		wantStatus     int
+		dockerResponses []interface{}
+		response        *http.Request
+		urlPath         string
+		user            *auth.User
+		want            string
+		wantStatus      int
 	}{
 		{
 			nil,
@@ -112,9 +112,9 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusNotFound,
 		},
 		{
-			[]types.Container{
+			[]interface{}{[]types.Container{
 				{ID: `test`},
-			},
+			}},
 			httptest.NewRequest(http.MethodGet, `/`, nil),
 			``,
 			auth.NewUser(`admin`, `admin`),
@@ -122,9 +122,9 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusOK,
 		},
 		{
-			[]types.Container{
+			[]interface{}{[]types.Container{
 				{ID: `test`},
-			},
+			}},
 			httptest.NewRequest(http.MethodGet, `/`, nil),
 			`/`,
 			auth.NewUser(`admin`, `admin`),
@@ -132,7 +132,7 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusOK,
 		},
 		{
-			types.ContainerJSON{},
+			[]interface{}{types.ContainerJSON{}},
 			httptest.NewRequest(http.MethodGet, `/`, nil),
 			`/containerID`,
 			auth.NewUser(`admin`, `admin`),
@@ -140,7 +140,7 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusOK,
 		},
 		{
-			types.ContainerJSON{},
+			[]interface{}{types.ContainerJSON{}, types.ContainerJSON{}},
 			httptest.NewRequest(http.MethodPost, `/`, nil),
 			`/containerID/start`,
 			auth.NewUser(`admin`, `admin`),
@@ -150,7 +150,7 @@ func TestContainersHandler(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		docker = mockClient(t, testCase.dockerResponse)
+		docker = mockClient(t, testCase.dockerResponses)
 		writer := httptest.NewRecorder()
 		containersHandler(writer, testCase.response, testCase.urlPath, testCase.user)
 
