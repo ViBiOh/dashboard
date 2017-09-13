@@ -186,14 +186,20 @@ func pullImage(image string) error {
 	return nil
 }
 
-func cleanContainers(containers []types.Container) {
+func cleanContainers(containers []types.Container) error {
 	for _, container := range containers {
-		stopContainer(container.ID, nil)
+		if _, err := stopContainer(container.ID, nil); err != nil {
+			return fmt.Errorf(`Error while stopping container %s: %v`, container.Names, err)
+		}
 	}
 
 	for _, container := range containers {
-		rmContainer(container.ID, nil)
+		if _, err := rmContainer(container.ID, nil); err != nil {
+			return fmt.Errorf(`Error while deleting container %s: %v`, container.Names, err)
+		}
 	}
+
+	return nil
 }
 
 func renameDeployedContainers(containers map[string]*deployedService) error {
@@ -253,16 +259,16 @@ func startServices(services map[string]*deployedService) error {
 	return nil
 }
 
-func inspectServices(services map[string]*deployedService, user *auth.User) []*types.ContainerJSON {
+func inspectServices(services map[string]*deployedService, user *auth.User, appName string) []*types.ContainerJSON {
 	containers := make([]*types.ContainerJSON, 0, len(services))
 
 	for service, container := range services {
 		infos, err := inspectContainer(container.ID)
 		if err != nil {
-			log.Printf(`[%s] Error while inspecting container %s: %v`, user.Username, service, err)
+			log.Printf(`[%s] [%s] Error while inspecting container %s: %v`, user.Username, appName, service, err)
+		} else {
+			containers = append(containers, infos)
 		}
-
-		containers = append(containers, infos)
 	}
 
 	return containers
@@ -309,8 +315,10 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	defer cancel()
 	defer backgroundTasks.Delete(appName)
 
-	if areContainersHealthy(ctx, user, appName, inspectServices(services, user)) {
-		cleanContainers(oldContainers)
+	if areContainersHealthy(ctx, user, appName, inspectServices(services, user, appName)) {
+		if err := cleanContainers(oldContainers); err != nil {
+			log.Printf(`[%s] [%s] Error while cleaning old containers: %v`, user.Username, appName, err)
+		}
 
 		if err := renameDeployedContainers(services); err != nil {
 			log.Printf(`[%s] [%s] Error while renaming deployed containers: %v`, user.Username, appName, err)

@@ -288,6 +288,56 @@ func TestPullImage(t *testing.T) {
 	}
 }
 
+func TestCleanContainers(t *testing.T) {
+	var cases = []struct {
+		dockerResponses []interface{}
+		containers      []types.Container
+		wantErr         error
+	}{
+		{
+			nil,
+			nil,
+			nil,
+		},
+		{
+			nil,
+			[]types.Container{{Names: []string{`test`}}},
+			errors.New(`Error while stopping container [test]: error during connect: Post http://localhost/containers/stop: internal server error`),
+		},
+		{
+			[]interface{}{types.ContainerJSON{}},
+			[]types.Container{{Names: []string{`test`}}},
+			errors.New(`Error while deleting container [test]: Error while removing container: error during connect: Delete http://localhost/containers?force=1&v=1: internal server error`),
+		},
+		{
+			[]interface{}{types.ContainerJSON{}, types.ContainerJSON{}, types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}}, []types.ImageDeleteResponseItem{}},
+			[]types.Container{{Names: []string{`test`}}},
+			nil,
+		},
+	}
+
+	var failed bool
+
+	for _, testCase := range cases {
+		docker = mockClient(t, testCase.dockerResponses)
+		err := cleanContainers(testCase.containers)
+
+		failed = false
+
+		if err == nil && testCase.wantErr != nil {
+			failed = true
+		} else if err != nil && testCase.wantErr == nil {
+			failed = true
+		} else if err != nil && err.Error() != testCase.wantErr.Error() {
+			failed = true
+		}
+
+		if failed {
+			t.Errorf(`cleanContainers(%v) = %v, want %v`, testCase.containers, err, testCase.wantErr)
+		}
+	}
+}
+
 func TestRenameDeployedContainers(t *testing.T) {
 	var cases = []struct {
 		dockerResponse interface{}
@@ -416,6 +466,46 @@ func TestGetFinalName(t *testing.T) {
 	for _, testCase := range cases {
 		if result := getFinalName(testCase.serviceFullName); result != testCase.want {
 			t.Errorf(`getFinalName(%v) = %v, want %v`, testCase.serviceFullName, result, testCase.want)
+		}
+	}
+}
+
+func TestInspectServices(t *testing.T) {
+	var cases = []struct {
+		dockerResponse interface{}
+		services       map[string]*deployedService
+		user           *auth.User
+		appName        string
+		want           []*types.ContainerJSON
+	}{
+		{
+			nil,
+			nil,
+			nil,
+			``,
+			[]*types.ContainerJSON{},
+		},
+		{
+			nil,
+			map[string]*deployedService{`test`: {}},
+			auth.NewUser(`admin`, `admin`),
+			`test`,
+			[]*types.ContainerJSON{},
+		},
+		{
+			types.ContainerJSON{},
+			map[string]*deployedService{`test`: {}},
+			auth.NewUser(`admin`, `admin`),
+			`test`,
+			[]*types.ContainerJSON{{}},
+		},
+	}
+
+	for _, testCase := range cases {
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
+
+		if result := inspectServices(testCase.services, testCase.user, testCase.appName); !reflect.DeepEqual(result, testCase.want) {
+			t.Errorf(`inspectServices(%v, %v, %v) = %v, want %v`, testCase.services, testCase.user, testCase.appName, result, testCase.want)
 		}
 	}
 }
