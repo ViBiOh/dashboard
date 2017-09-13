@@ -80,8 +80,8 @@
     "react-test-renderer": "latest",
     "sinon": "latest",
     "style-loader": "latest",
-    "stylelint": "7",
-    "stylelint-config-standard": "16",
+    "stylelint": "latest",
+    "stylelint-config-standard": "latest",
     "webpack": "latest",
     "webpack-dev-server": "latest"
   },
