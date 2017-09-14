@@ -96,6 +96,7 @@ func TestInfoHandler(t *testing.T) {
 
 func TestContainersHandler(t *testing.T) {
 	var cases = []struct {
+		caseName        string
 		dockerResponses []interface{}
 		response        *http.Request
 		urlPath         string
@@ -104,6 +105,7 @@ func TestContainersHandler(t *testing.T) {
 		wantStatus      int
 	}{
 		{
+			`Not found method and path`,
 			nil,
 			httptest.NewRequest(http.MethodHead, `/`, nil),
 			`/`,
@@ -112,6 +114,7 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusNotFound,
 		},
 		{
+			`List containers with empty path`,
 			[]interface{}{[]types.Container{
 				{ID: `test`},
 			}},
@@ -122,6 +125,7 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusOK,
 		},
 		{
+			`List containers with slash path`,
 			[]interface{}{[]types.Container{
 				{ID: `test`},
 			}},
@@ -132,6 +136,7 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusOK,
 		},
 		{
+			`Inspect container`,
 			[]interface{}{types.ContainerJSON{}},
 			httptest.NewRequest(http.MethodGet, `/`, nil),
 			`/containerID`,
@@ -140,9 +145,28 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusOK,
 		},
 		{
+			`State action on container`,
 			[]interface{}{types.ContainerJSON{}, types.ContainerJSON{}},
 			httptest.NewRequest(http.MethodPost, `/`, nil),
 			`/containerID/start`,
+			auth.NewUser(`admin`, `admin`),
+			`null`,
+			http.StatusOK,
+		},
+		{
+			`Method not allowed`,
+			[]interface{}{types.ContainerJSON{}, types.ContainerJSON{}},
+			httptest.NewRequest(http.MethodHead, `/`, nil),
+			`/containerID`,
+			auth.NewUser(`admin`, `admin`),
+			``,
+			http.StatusMethodNotAllowed,
+		},
+		{
+			`Delete container`,
+			[]interface{}{types.ContainerJSONBase{ID: `test`, Image: `test`}, types.ContainerJSONBase{}, []types.ImageDeleteResponseItem{}},
+			httptest.NewRequest(http.MethodDelete, `/`, nil),
+			`/containerID`,
 			auth.NewUser(`admin`, `admin`),
 			`null`,
 			http.StatusOK,
@@ -154,8 +178,8 @@ func TestContainersHandler(t *testing.T) {
 		writer := httptest.NewRecorder()
 		containersHandler(writer, testCase.response, testCase.urlPath, testCase.user)
 
-		if writer.Code != testCase.wantStatus {
-			t.Errorf(`containersHandler(%v, %v, %v) = %v, want %v`, testCase.response, testCase.urlPath, testCase.user, writer.Code, testCase.wantStatus)
+		if result := writer.Code; result != testCase.wantStatus {
+			t.Errorf(`containersHandler(%v, %v, %v) = %v, want %v`, testCase.response, testCase.urlPath, testCase.user, result, testCase.wantStatus)
 		}
 
 		if result, _ := httputils.ReadBody(writer.Result().Body); string(result) != testCase.want {

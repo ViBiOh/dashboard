@@ -472,3 +472,43 @@ func TestBasicActionHandler(t *testing.T) {
 		}
 	}
 }
+
+func TestListContainersHandler(t *testing.T) {
+	var cases = []struct {
+		dockerResponse interface{}
+		user           *auth.User
+		want           string
+		wantStatus     int
+	}{
+		{
+			nil,
+			auth.NewUser(`admin`, `admin`),
+			`error during connect: Get http://localhost/containers/json?all=1&limit=0: internal server error
+`,
+			http.StatusInternalServerError,
+		},
+		{
+			[]types.Container{
+				{ID: `test`},
+			},
+			auth.NewUser(`admin`, `admin`),
+			`{"results":[{"Id":"test","Names":null,"Image":"","ImageID":"","Command":"","Created":0,"Ports":null,"Labels":null,"State":"","Status":"","HostConfig":{},"NetworkSettings":null,"Mounts":null}]}`,
+			http.StatusOK,
+		},
+	}
+
+	for _, testCase := range cases {
+		docker = mockClient(t, []interface{}{testCase.dockerResponse})
+		writer := httptest.NewRecorder()
+
+		listContainersHandler(writer, testCase.user)
+
+		if result := writer.Code; result != testCase.wantStatus {
+			t.Errorf(`listContainersHandler(%v) = %v, want %v`, testCase.user, result, testCase.wantStatus)
+		}
+
+		if result, _ := httputils.ReadBody(writer.Result().Body); string(result) != testCase.want {
+			t.Errorf(`listContainersHandler(%v) = %v, want %v`, testCase.user, string(result), testCase.want)
+		}
+	}
+}
