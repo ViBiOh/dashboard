@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ErrorBanner from '../../ErrorBanner';
 import Throbber from '../../Throbber';
 
 /**
- * GithubAuth Component.
+ * Github Component.
  */
-export default class GithubAuth extends Component {
+export default class Github extends Component {
   /**
    * React lifecycle.
    * If no error provided, exhcange code for access token
@@ -23,9 +22,6 @@ export default class GithubAuth extends Component {
    * @return {ReactComponent} Component
    */
   render() {
-    if (this.props.error) {
-      return <ErrorBanner error={this.props.error} />;
-    }
     if (this.props.pending) {
       return <Throbber label="Getting access token" />;
     }
@@ -34,19 +30,19 @@ export default class GithubAuth extends Component {
   }
 }
 
-GithubAuth.propTypes = {
-  getAccessToken: PropTypes.func.isRequired,
-  pending: PropTypes.bool,
-  state: PropTypes.string,
+Github.propTypes = {
   code: PropTypes.string,
   error: PropTypes.string,
+  getAccessToken: PropTypes.func.isRequired,
+  pending: PropTypes.bool,
   redirect: PropTypes.string,
+  state: PropTypes.string,
 };
 
-GithubAuth.defaultProps = {
-  pending: false,
-  state: '',
+Github.defaultProps = {
   code: '',
   error: '',
+  pending: false,
   redirect: '',
+  state: '',
 };

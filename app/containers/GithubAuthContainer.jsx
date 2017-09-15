@@ -1,21 +1,24 @@
+import React from 'react';
 import { connect } from 'react-redux';
-import GithubAuth from '../presentationals/Login/Github';
 import SearchParams from '../utils/SearchParams';
 import actions from '../actions';
+import Wrapper from '../presentationals/Login/Wrapper';
+import Github from '../presentationals/Login/Github';
 
 /**
  * Select props from Redux state.
  * @param {Object} state Current state
  */
 const mapStateToProps = (state, props) => {
-  const queryParam = SearchParams(props.location.search);
+  const params = SearchParams(props.location.search);
 
   return {
     pending: !!state.pending[actions.GET_GITHUB_ACCES_TOKEN],
-    error: queryParam.error_description || state.error,
-    state: queryParam.state,
-    code: queryParam.code,
-    redirect: queryParam.redirect,
+    error: params.error_description || state.error,
+    state: params.state,
+    code: params.code,
+    redirect: params.redirect,
+    component: <Github />,
   };
 };
 
@@ -29,6 +32,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 /**
- * GithubAuth connected.
+ * Github connected.
  */
-export default connect(mapStateToProps, mapDispatchToProps)(GithubAuth);
+export default connect(mapStateToProps, mapDispatchToProps)(Wrapper);

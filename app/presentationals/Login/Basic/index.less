@@ -1,0 +1,32 @@
+@import '../../../style.less';
+
+.container {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.container input[type='text'],
+.container input[type='password'] {
+  border: 0.1rem solid @grey;
+  border-radius: 0.2rem;
+  margin: 0.4rem;
+  padding: 2rem;
+  text-align: center;
+  width: 50%;
+}
+
+@media screen and (max-width: 1023px) {
+  .container input[type='text'],
+  .container input[type='password'] {
+    width: 90%;
+  }
+}
+
+.buttons {
+  margin: 0 auto;
+  width: 100%;
+}

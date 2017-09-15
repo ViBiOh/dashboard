@@ -38,6 +38,14 @@ export function* goHomeSaga({ redirect = '' }) {
 }
 
 /**
+ * Go to login page
+ * @yield {Function} Saga effects to sequence flow of work
+ */
+export function* goLoginSaga({ redirect = '' }) {
+  yield [put(actions.setError('')), put(push(`/login${computeRedirectSearch(redirect)}`))];
+}
+
+/**
  * Saga of Login action :
  * - Login
  * - Fetch containers on succeed
@@ -313,6 +321,7 @@ export function* changeFilterSaga(action) {
  */
 export default function* appSaga() {
   yield takeLatest(actions.GO_HOME, goHomeSaga);
+  yield takeLatest(actions.GO_LOGIN, goLoginSaga);
   yield takeLatest(actions.GET_GITHUB_ACCESS_TOKEN_REQUEST, getGithubAccesTokenSaga);
   yield takeLatest(actions.LOGIN_REQUEST, loginSaga);
   yield takeLatest(actions.LOGOUT_REQUEST, logoutSaga);

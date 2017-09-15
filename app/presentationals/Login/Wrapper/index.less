@@ -1,0 +1,18 @@
+@import '../../../style.less';
+
+.container {
+  display: inline-flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.container h2 {
+  width: 100%;
+  text-align: center;
+}
+
+@media screen and (max-width: @small) {
+  .container {
+    flex-wrap: wrap;
+  }
+}

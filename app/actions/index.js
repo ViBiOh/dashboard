@@ -149,5 +149,6 @@ export default {
   ...makeActionAndTypeCreator('ADD_STAT', 'addStat', ['stat']),
   ...makeActionAndTypeCreator('SET_ERROR', 'setError', ['error']),
   ...makeActionAndTypeCreator('GO_HOME', 'goHome', ['redirect']),
+  ...makeActionAndTypeCreator('GO_LOGIN', 'goLogin', ['redirect']),
   ...makeActionAndTypeCreator('CHANGE_FILTER', 'changeFilter', ['value']),
 };

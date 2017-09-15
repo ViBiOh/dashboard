@@ -3,25 +3,22 @@ import PropTypes from 'prop-types';
 import onKeyDown from '../../../utils/input';
 import setRef from '../../../utils/ref';
 import ThrobberButton from '../../Throbber/ThrobberButton';
-import ErrorBanner from '../../ErrorBanner';
-import style from '../index.less';
+import style from './index.less';
 
 /**
- * BasicAuth auth form.
+ * Basic auth form.
  * @param {Object} props Props of the component.
  * @return {React.Component} Login with username/password
  */
-const BasicAuth = ({ pending, onLogin, error }) => {
+const Basic = ({ redirect, pending, onLogin }) => {
   const refs = {};
 
   function submit() {
-    onLogin(refs.loginInput.value, refs.passwordInput.value);
+    onLogin(refs.loginInput.value, refs.passwordInput.value, redirect);
   }
 
   return (
-    <span className={style.flex}>
-      <ErrorBanner error={error} />
-      <h2>Login</h2>
+    <span className={style.container}>
       <input
         ref={e => setRef(refs, 'loginInput', e)}
         id="login"
@@ -38,8 +35,8 @@ const BasicAuth = ({ pending, onLogin, error }) => {
         placeholder="password"
         onKeyDown={e => onKeyDown(e, submit)}
       />
-      <div className={style.center} data-basic-auth-submit>
-        <ThrobberButton onClick={submit} pending={pending}>
+      <div className={style.buttons}>
+        <ThrobberButton onClick={submit} pending={pending} data-basic-auth-submit>
           Login
         </ThrobberButton>
       </div>
@@ -47,17 +44,18 @@ const BasicAuth = ({ pending, onLogin, error }) => {
   );
 };
 
-BasicAuth.displayName = 'BasicAuth';
+Basic.displayName = 'Basic';
 
-BasicAuth.propTypes = {
+Basic.propTypes = {
+  onLogin: PropTypes.func,
   pending: PropTypes.bool,
-  onLogin: PropTypes.func.isRequired,
-  error: PropTypes.string,
+  redirect: PropTypes.string,
 };
 
-BasicAuth.defaultProps = {
+Basic.defaultProps = {
+  onLogin: () => null,
   pending: false,
-  error: '',
+  redirect: '',
 };
 
-export default BasicAuth;
+export default Basic;

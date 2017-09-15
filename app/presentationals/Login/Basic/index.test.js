@@ -11,13 +11,6 @@ test('should render into a span', (t) => {
   t.true(wrapper.find('span').length >= 1);
 });
 
-test('should have a h2 title', (t) => {
-  const onLogin = sinon.spy();
-  const wrapper = mount(<BasicAuth onLogin={onLogin} />);
-
-  t.is(wrapper.find('h2').text(), 'Login');
-});
-
 test('should call given onLogin method', (t) => {
   const onLogin = sinon.spy();
   const wrapper = mount(<BasicAuth onLogin={onLogin} />);
