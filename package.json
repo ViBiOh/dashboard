@@ -17,7 +17,7 @@
       "npm run copy:html && API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://auth.vibioh.fr BASIC_AUTH_ENABLED=true GITHUB_OAUTH_STATE=RandomStringForViBiOhInfrastructure GITHUB_OAUTH_CLIENT_ID=8c451219bd1bb8760af6 GITHUB_REDIRECT_URI=https://dashboard.vibioh.fr/auth/github ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test":
       "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
-    "test:e2e": "./node_modules/.bin/codeceptjs run-multiple --all",
+    "test:e2e": "./node_modules/.bin/codeceptjs run-multiple --all --verbose",
     "build":
       "npm run format && npm run lint && npm test && npm run mustache && npm run copy:web && ./node_modules/.bin/webpack --progress -p"
   },
