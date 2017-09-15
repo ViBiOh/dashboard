@@ -9,8 +9,17 @@ docker-compose -p dashboard -f docker-compose.e2e.yml up -d
 echo Checking everything started fine
 docker-compose -p dashboard -f docker-compose.e2e.yml logs
 
+set +e
+
 echo Running e2e tests
 npm run test:e2e
 
+echo Checking running logs
+docker-compose -p dashboard -f docker-compose.e2e.yml logs
+
+set -e
+
 echo Stopping started containers
 docker-compose -p dashboard -f docker-compose.e2e.yml stop
+
+exit $result
