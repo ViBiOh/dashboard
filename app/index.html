@@ -1,51 +1,56 @@
 <!DOCTYPE html>
 <html class="no-js" lang="fr">
-  <head>
-    <base href="/">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="description" content="Dashboard of containers on ViBiOh's infrastructure">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Dashboard ViBiOh's Infrastructure" />
-    <meta property="og:description" content="Dashboard of containers on ViBiOh's infrastructure">
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://dashboard.vibioh.fr" />
-    <meta property="og:image" content="https://dashboard.vibioh.fr/android-chrome-512x512.png?v={{version}}" />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:creator" content="@ViBiOh">
-    <meta name="twitter:site" content="https://dashboard.vibioh.fr">
-    <meta name="twitter:image" content="https://dashboard.vibioh.fr/android-chrome-512x512.png?v={{version}}">
-    <meta name="twitter:title" content="Dashboard ViBiOh's Infrastructure">
-    <meta name="twitter:description" content="Dashboard of containers on ViBiOh's infrastructure">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v={{version}}">
-    <link rel="icon" type="image/png" href="/favicon-32x32.png?v={{version}}" sizes="32x32">
-    <link rel="icon" type="image/png" href="/favicon-16x16.png?v={{version}}" sizes="16x16">
-    <link rel="manifest" href="/manifest.json?v={{version}}">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg?v={{version}}" color="#5bbad5">
-    <meta name="theme-color" content="#ffffff">
-    <title>dashboard</title>
-  </head>
-  <body>
-    <header>
-      <h1 title="{{version}}">dashboard</h1>
-    </header>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <div id="root"></div>
-  </body>
+
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="description" content="Dashboard of containers on ViBiOh's infrastructure">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Dashboard ViBiOh's Infrastructure" />
+  <meta property="og:description" content="Dashboard of containers on ViBiOh's infrastructure">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dashboard.vibioh.fr" />
+  <meta property="og:image" content="https://dashboard.vibioh.fr/android-chrome-512x512.png?v={{version}}" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:creator" content="@ViBiOh">
+  <meta name="twitter:site" content="https://dashboard.vibioh.fr">
+  <meta name="twitter:image" content="https://dashboard.vibioh.fr/android-chrome-512x512.png?v={{version}}">
+  <meta name="twitter:title" content="Dashboard ViBiOh's Infrastructure">
+  <meta name="twitter:description" content="Dashboard of containers on ViBiOh's infrastructure">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v={{version}}">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png?v={{version}}" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-16x16.png?v={{version}}" sizes="16x16">
+  <link rel="manifest" href="/manifest.json?v={{version}}">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg?v={{version}}" color="#5bbad5">
+  <meta name="theme-color" content="#ffffff">
+  <title>dashboard</title>
+</head>
+
+<body>
+  <header>
+    <h1 title="{{version}}">dashboard</h1>
+  </header>
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <div id="root"></div>
+</body>
+
 </html>
 <script async="true" src="static/app.js?v={{version}}"></script>
 <link rel="stylesheet" href="static/app.css?v={{version}}">
-<script async="true" src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous" onload="Raven.config('https://5ee66ccb9e844b0fa322bbe87c0c02f6@sentry.io/198607').install()"></script>
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  (function (i, s, o, g, r, a, m) {
+  i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+    (i[r].q = i[r].q || []).push(arguments)  
+}, i[r].l = 1 * new Date(); a = s.createElement(o),
+    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
   ga('create', 'UA-31358436-6', 'auto');
   ga('send', 'pageview');
+
 </script>
