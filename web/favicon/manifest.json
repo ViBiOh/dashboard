@@ -1,5 +1,6 @@
 {
 	"name": "Docker",
+	"short_name": "Docker",
 	"icons": [
 		{
 			"src": "\/android-chrome-192x192.png",
