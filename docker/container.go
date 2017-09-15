@@ -67,14 +67,14 @@ func rmContainer(containerID string, container *types.ContainerJSON) (interface{
 
 	var err error
 
-	if err = docker.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
-		return nil, fmt.Errorf(`Error while removing container: %v`, err)
-	}
-
 	if container == nil {
 		if container, err = inspectContainer(containerID); err != nil {
 			return nil, fmt.Errorf(`Error while inspecting container: %v`, err)
 		}
+	}
+
+	if err = docker.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
+		return nil, fmt.Errorf(`Error while removing container: %v`, err)
 	}
 
 	return nil, rmImages(container.Image)
