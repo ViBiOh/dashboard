@@ -7,7 +7,7 @@ services:
     - -tlshosts
     - localhost:1080,auth:1080
     - -basicUsers
-    - admin:$$2a$$12$$NSZOP5MbJ8mq5gh9BixTueksuMCgDpgxOxLvfpuKRWUN8MlJEvG5y
+    - admin:${ADMIN_PASSWORD}
     - -corsHeaders
     - Content-Type,Authorization
     logging:

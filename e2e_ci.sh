@@ -4,6 +4,7 @@ set -e
 
 echo Starting Dashboard with local configuration
 export GIT_COMMIT=`git log --pretty=format:'%h' -n 1`
+export ADMIN_PASSWORD=`bcrypt admin`
 docker-compose -p dashboard -f docker-compose.e2e.yml up -d
 
 set +e

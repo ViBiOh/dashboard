@@ -18,7 +18,6 @@ import (
 	"github.com/ViBiOh/httputils/prometheus"
 )
 
-const port = `1080`
 const websocketPrefix = `/ws`
 
 var restHandler = prometheus.NewPrometheusHandler(`http`, owasp.Handler{Handler: cors.Handler{Handler: docker.Handler{}}})
@@ -54,6 +53,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	url := flag.String(`c`, ``, `URL to healthcheck (check and exit)`)
+	port := flag.String(`port`, `1080`, `Listen port`)
+	tls := flag.Bool(`tls`, true, `Serve TLS content`)
 	flag.Parse()
 
 	if *url != `` {
@@ -68,17 +69,23 @@ func main() {
 		log.Printf(`Error while initializing docker: %v`, err)
 	}
 
-	log.Print(`Starting server on port ` + port)
+	log.Print(`Starting server on port ` + *port)
 
 	server := &http.Server{
-		Addr:    `:` + port,
+		Addr:    `:` + *port,
 		Handler: http.HandlerFunc(dashboardHandler),
 	}
 
 	var serveError = make(chan error)
 	go func() {
 		defer close(serveError)
-		serveError <- cert.ListenAndServeTLS(server)
+		if *tls {
+			log.Print(`Listening with TLS enabled`)
+			serveError <- cert.ListenAndServeTLS(server)
+		} else {
+			log.Print(`⚠ dashboard is running without secure connection ⚠`)
+			serveError <- server.ListenAndServe()
+		}
 	}()
 
 	httputils.ServerGracefulClose(server, serveError, handleGracefulClose)
