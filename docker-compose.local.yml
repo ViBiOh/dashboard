@@ -4,8 +4,7 @@ services:
   auth:
     image: vibioh/auth
     command:
-    - -tlshosts
-    - localhost:1082
+    - -tls=false
     - -basicUsers
     - admin:${ADMIN_PASSWORD}
     - -corsHeaders
@@ -26,14 +25,13 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
-    - -tlshosts
-    - localhost:1081
+    - -tls=false
     - -ws
     - .*
     - -dockerVersion
     - '1.24'
     - -authUrl
-    - https://auth:1080
+    - http://auth:1080
     - -users
     - admin:admin
     - -corsHeaders
@@ -60,9 +58,6 @@ services:
   front:
     image: vibioh/dashboard-front
     command:
-    - -tls
-    - -tlshosts
-    - localhost:1080
     - -spa
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED
@@ -71,9 +66,9 @@ services:
     - -push
     - /static/app.js?v=${GIT_COMMIT},/static/app.css?v=${GIT_COMMIT}
     environment:
-      API_URL: 'https://localhost:1081'
+      API_URL: 'http://localhost:1081'
       WS_URL: 'wss://localhost:1081/ws'
-      AUTH_URL: 'https://localhost:1082'
+      AUTH_URL: 'http://localhost:1082'
       BASIC_AUTH_ENABLED: 'true'
     ports:
     - 1080:1080/tcp
