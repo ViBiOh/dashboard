@@ -83,9 +83,10 @@ services:
     - no-new-privileges
 
   chrome:
-    image: selenium/standalone-chrome
+    image: selenium/standalone-chrome-debug
     ports:
     - 4444:4444/tcp
+    - 5900:5900/tcp
     links:
     - auth
     - api

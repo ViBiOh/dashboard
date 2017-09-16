@@ -6,18 +6,18 @@ echo Starting Dashboard with local configuration
 export GIT_COMMIT=`git log --pretty=format:'%h' -n 1`
 docker-compose -p dashboard -f docker-compose.e2e.yml up -d
 
-echo Checking everything started fine
-docker-compose -p dashboard -f docker-compose.e2e.yml logs
-
 set +e
 
 echo Running e2e tests
 npm run test:e2e
-
-echo Checking running logs
-docker-compose -p dashboard -f docker-compose.e2e.yml logs
+result=$?
 
 set -e
+
+if [ "${result}" != "0" ]; then
+    echo Checking logs on failure
+    docker-compose -p dashboard -f docker-compose.e2e.yml logs
+fi
 
 echo Stopping started containers
 docker-compose -p dashboard -f docker-compose.e2e.yml stop
