@@ -50,7 +50,7 @@
     "babel-core": "latest",
     "babel-loader": "latest",
     "babel-plugin-transform-object-rest-spread": "latest",
-    "babel-preset-es2015": "latest",
+    "babel-preset-env": "latest",
     "babel-preset-react": "latest",
     "codeceptjs-webdriverio": "latest",
     "css-loader": "latest",
@@ -111,7 +111,7 @@
     "babel": "inherit"
   },
   "babel": {
-    "presets": ["es2015", "react"],
+    "presets": ["env", "react"],
     "plugins": ["transform-object-rest-spread"]
   },
   "esdoc": {

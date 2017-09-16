@@ -81,11 +81,9 @@ const ContainerInfo = ({ container }) => {
         {container.HostConfig.RestartPolicy && (
           <span key="restart" className={style.item}>
             Restart | {container.HostConfig.RestartPolicy.Name}
-            {container.HostConfig.RestartPolicy.MaximumRetryCount ? (
-              `:${container.HostConfig.RestartPolicy.MaximumRetryCount}`
-            ) : (
-              ''
-            )}
+            {container.HostConfig.RestartPolicy.MaximumRetryCount
+              ? `:${container.HostConfig.RestartPolicy.MaximumRetryCount}`
+              : ''}
           </span>
         )}
         {container.HostConfig.ReadonlyRootfs && (
@@ -104,11 +102,11 @@ const ContainerInfo = ({ container }) => {
           </span>
         )}
         {container.HostConfig.SecurityOpt &&
-        container.HostConfig.SecurityOpt.length > 0 && (
-          <span key="security" className={style.item}>
-            Security | {container.HostConfig.SecurityOpt.join(', ')}
-          </span>
-        )}
+          container.HostConfig.SecurityOpt.length > 0 && (
+            <span key="security" className={style.item}>
+              Security | {container.HostConfig.SecurityOpt.join(', ')}
+            </span>
+          )}
       </span>
       {labelContent}
       {envContent}

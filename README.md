@@ -129,5 +129,6 @@ npm run build
 
 ```
 export GIT_COMMIT=`git log --pretty=format:'%h' -n 1`
+export ADMIN_PASSWORD=`bcrypt admin`
 docker-compose -p dashboard -f docker-compose.local.yml up -d
 ```
