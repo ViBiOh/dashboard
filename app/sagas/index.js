@@ -21,7 +21,7 @@ export function onErrorAction(calledAction, error) {
     if (!redirect) {
       redirect = document.location.href
         .replace(document.location.origin, '')
-        .replace(/^\/(login)?/, '');
+        .replace(/^\/(?:login\/?)?/, '');
     }
 
     return push(`/login${computeRedirectSearch(redirect)}`);
