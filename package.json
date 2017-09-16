@@ -21,6 +21,7 @@
     "html-minify":
       "./node_modules/.bin/html-minifier --config-file ./html-minifier.json --input-dir ./tmp --output-dir ./dist",
     "web": "npm run copy:web && npm run mustache && npm run html-minify",
+    "prebuild": "mkdir -p ./dist",
     "build":
       "npm run format && npm run lint && npm test && npm run doc && npm run web && ./node_modules/.bin/webpack --progress -p"
   },
