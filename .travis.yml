@@ -32,6 +32,6 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_STATE=${GITHUB_OAUTH_STATE} bash -s" 2>/dev/null -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git vibioh.fr
+  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_STATE=${GITHUB_OAUTH_STATE} GA_ID=${GA_ID} bash -s" 2>/dev/null -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git vibioh.fr
   on:
     branch: master
