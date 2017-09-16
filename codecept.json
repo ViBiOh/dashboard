@@ -5,7 +5,7 @@
       "protocol": "http",
       "host": "localhost",
       "port": "4444",
-      "url": "https://front:1080",
+      "url": "http://front:1080",
       "browser": "chrome",
       "desiredCapabilities": {
         "javascriptEnabled": true,
