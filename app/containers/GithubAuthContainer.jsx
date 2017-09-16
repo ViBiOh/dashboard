@@ -18,7 +18,6 @@ const mapStateToProps = (state, props) => {
     state: params.state,
     code: params.code,
     redirect: params.redirect,
-    component: <Github />,
   };
 };
 
@@ -27,8 +26,12 @@ const mapStateToProps = (state, props) => {
  * @param {Function} dispatch Redux dispatch function
  */
 const mapDispatchToProps = dispatch => ({
-  getAccessToken: (state, code, redirect) =>
-    dispatch(actions.getGithubAccessToken(state, code, redirect)),
+  component: (
+    <Github
+      getAccessToken={(state, code, redirect) =>
+        dispatch(actions.getGithubAccessToken(state, code, redirect))}
+    />
+  ),
 });
 
 /**

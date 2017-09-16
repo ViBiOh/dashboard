@@ -16,7 +16,6 @@ const mapStateToProps = (state, props) => {
     pending: !!state.pending[actions.LOGIN],
     error: state.error,
     redirect: params.redirect,
-    component: <Basic />,
   };
 };
 
@@ -25,7 +24,12 @@ const mapStateToProps = (state, props) => {
  * @param {Function} dispatch Redux dispatch function
  */
 const mapDispatchToProps = dispatch => ({
-  onLogin: (username, password, redirect) => dispatch(actions.login(username, password, redirect)),
+  component: (
+    <Basic
+      onLogin={(username, password, redirect) =>
+        dispatch(actions.login(username, password, redirect))}
+    />
+  ),
 });
 
 /**

@@ -47,13 +47,12 @@ const Basic = ({ redirect, pending, onLogin }) => {
 Basic.displayName = 'Basic';
 
 Basic.propTypes = {
-  onLogin: PropTypes.func,
+  onLogin: PropTypes.func.isRequired,
   pending: PropTypes.bool,
   redirect: PropTypes.string,
 };
 
 Basic.defaultProps = {
-  onLogin: () => null,
   pending: false,
   redirect: '',
 };
