@@ -72,6 +72,14 @@ export function getAuthApiUrl() {
 }
 
 /**
+ * Return OAuth API endpoint URL
+ * @return {String} WebSocket endpoint URL
+ */
+export function getGaId() {
+  return getFromContext('GA_ID');
+}
+
+/**
  * Return Github Oauth API endpoint URL
  * @return {String} WebSocket endpoint URL
  */

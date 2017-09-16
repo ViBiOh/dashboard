@@ -96,6 +96,7 @@
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-ga": "latest",
     "react-icons": "latest",
     "react-redux": "latest",
     "react-router": "latest",

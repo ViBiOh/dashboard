@@ -1,7 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
 import funtch from 'funtch';
-import { init, getApiUrl, getWsUrl, getAuthApiUrl, getGithubOauthUrl } from './Constants';
+import { init, getApiUrl, getWsUrl, getAuthApiUrl, getGaId, getGithubOauthUrl } from './Constants';
 
 test.beforeEach(() => {
   sinon.stub(funtch, 'get').callsFake(url =>
@@ -10,6 +10,7 @@ test.beforeEach(() => {
       API_URL: 'localhost',
       WS_URL: 'ws://localhost',
       AUTH_URL: 'localhost/oauth',
+      GA_ID: 'UA-000000-01',
       GITHUB_OAUTH_CLIENT_ID: 'GITHUB_ID',
       GITHUB_OAUTH_STATE: 'GITHUB_STATE',
       GITHUB_REDIRECT_URI: 'localhost',
@@ -40,6 +41,11 @@ test.serial('should return WS_URL from context', (t) => {
 test.serial('should return AUTH_URL from context', (t) => {
   init();
   t.is(getAuthApiUrl(), 'localhost/oauth');
+});
+
+test.serial('should return GA_ID from context', (t) => {
+  init();
+  t.is(getGaId(), 'UA-000000-01');
 });
 
 test.serial('should return GitHub login URL with variables from env', (t) => {
