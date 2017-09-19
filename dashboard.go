@@ -16,11 +16,12 @@ import (
 	"github.com/ViBiOh/httputils/cors"
 	"github.com/ViBiOh/httputils/owasp"
 	"github.com/ViBiOh/httputils/prometheus"
+	"github.com/ViBiOh/httputils/rate"
 )
 
 const websocketPrefix = `/ws`
 
-var restHandler = prometheus.NewPrometheusHandler(`http`, owasp.Handler{Handler: cors.Handler{Handler: docker.Handler{}}})
+var restHandler = prometheus.NewPrometheusHandler(`http`, owasp.Handler{Handler: cors.Handler{Handler: rate.Handler{Handler: docker.Handler{}}}})
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func handleGracefulClose() error {
