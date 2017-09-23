@@ -52,11 +52,14 @@ export function customError(response) {
         reject({
           ...err,
           toString: () => {
-            if (typeof err.content === 'string') {
-              return err.content;
-            } else if (!err.content && httpErrorMessage[err.status]) {
+            if (!err.content && httpErrorMessage[err.status]) {
               return httpErrorMessage[err.status];
             }
+
+            if (typeof err.content === 'string') {
+              return err.content;
+            }
+
             return JSON.stringify(err.content);
           },
         }),

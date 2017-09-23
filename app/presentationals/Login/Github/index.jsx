@@ -22,7 +22,7 @@ export default class Github extends Component {
    * @return {ReactComponent} Component
    */
   render() {
-    if (this.props.pending) {
+    if (!this.props.error) {
       return <Throbber label="Getting access token" />;
     }
 
@@ -34,7 +34,6 @@ Github.propTypes = {
   code: PropTypes.string,
   error: PropTypes.string,
   getAccessToken: PropTypes.func.isRequired,
-  pending: PropTypes.bool,
   redirect: PropTypes.string,
   state: PropTypes.string,
 };

@@ -11,12 +11,12 @@ function defaultProps() {
   };
 }
 
-test('should always render as null if not pending', (t) => {
-  t.is(shallow(<Github {...defaultProps()} />).type(), null);
+test('should always render as Throbber if not error', (t) => {
+  t.is(shallow(<Github {...defaultProps()} />).type(), Throbber);
 });
 
-test('should always render as null if not pending', (t) => {
-  t.is(shallow(<Github {...defaultProps()} pending />).type(), Throbber);
+test('should render as null if error', (t) => {
+  t.is(shallow(<Github {...defaultProps()} error={'Invalid'} />).type(), Throbber);
 });
 
 test('should retrieve access token if no error', (t) => {

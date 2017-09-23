@@ -13,7 +13,6 @@ const mapStateToProps = (state, props) => {
   const params = SearchParams(props.location.search);
 
   return {
-    pending: !!state.pending[actions.GET_GITHUB_ACCES_TOKEN],
     error: params.error_description || state.error,
     state: params.state,
     code: params.code,
