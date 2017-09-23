@@ -16,7 +16,7 @@ test('should always render as Throbber if not error', (t) => {
 });
 
 test('should render as null if error', (t) => {
-  t.is(shallow(<Github {...defaultProps()} error={'Invalid'} />).type(), Throbber);
+  t.is(shallow(<Github {...defaultProps()} error="Invalid" />).type(), null);
 });
 
 test('should retrieve access token if no error', (t) => {
