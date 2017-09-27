@@ -54,6 +54,7 @@
     "codeceptjs-webdriverio": "latest",
     "css-loader": "latest",
     "enzyme": "latest",
+    "enzyme-adapter-react-16": "latest",
     "esdoc": "latest",
     "esdoc-coverage-plugin": "latest",
     "esdoc-ecmascript-proposal-plugin": "latest",
