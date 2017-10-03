@@ -13,7 +13,7 @@
     "start": "API_URL=http://localhost:1080 WS_URL=ws://localhost:1080/ws AUTH_URL=http://localhost:1081 BASIC_AUTH_ENABLED=true ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test": "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
     "test:e2e": "./node_modules/.bin/codeceptjs run-multiple --all",
-    "copy:web": "cp ./web/*.txt ./web/*.html ./dist/ && cp ./web/favicon/* ./dist/",
+    "copy:web": "cp ./web/*.txt ./dist/ && cp ./web/favicon/* ./dist/",
     "mustache": "./node_modules/js-index-builder/index.js --template \"./app/*.html\" --partials \"./web/partials/*.html\" --bust `git log --pretty=format:'%h' -n 1` --output ./tmp/",
     "html-minify": "./node_modules/.bin/html-minifier --config-file ./html-minifier.json --input-dir ./tmp --output-dir ./dist",
     "web": "npm run copy:web && npm run mustache && npm run html-minify",
