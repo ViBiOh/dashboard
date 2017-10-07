@@ -12,7 +12,7 @@ import style from './index.less';
  * @return {React.Component} Login with username/password
  */
 const Login = ({ location }) => {
-  const redirect = SearchParams(location.search).redirect;
+  const { redirect } = SearchParams(location.search);
 
   return (
     <span className={style.flex}>

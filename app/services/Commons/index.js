@@ -49,7 +49,7 @@ export function customError(response) {
     errorHandler(response)
       .then(resolve)
       .catch(err =>
-        reject({
+        reject(new Error({
           ...err,
           toString: () => {
             if (!err.content && httpErrorMessage[err.status]) {
@@ -62,9 +62,7 @@ export function customError(response) {
 
             return JSON.stringify(err.content);
           },
-        }),
-      ),
-  );
+        }))));
 }
 
 /**

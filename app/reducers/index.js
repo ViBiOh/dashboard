@@ -43,8 +43,7 @@ function appReducers(state, action) {
   ) {
     const regexFilter = buildFullTextRegex(nextState.filter);
     nextState.filteredContainers = nextState.containers.filter(e =>
-      fullTextRegexFilter(flatValues(e).join(' '), regexFilter),
-    );
+      fullTextRegexFilter(flatValues(e).join(' '), regexFilter));
   }
 
   return nextState;

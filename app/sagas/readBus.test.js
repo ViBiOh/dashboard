@@ -13,7 +13,7 @@ test('should call Docker.streamBus and fork a write saga', (t) => {
   const busSpy = sinon.stub(Docker, 'streamBus').callsFake(() => websocket);
 
   const iterator = readBusSaga({});
-  const value = iterator.next().value;
+  const { value } = iterator.next();
   Docker.streamBus.restore();
 
   t.true(busSpy.called);

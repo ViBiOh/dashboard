@@ -11,7 +11,7 @@ test('should add toString to a rejected response', t =>
     .then(t.fail)
     .catch((err) => {
       t.true(typeof err.toString === 'function');
-      t.is(String(err), 'error');
+      t.is(String(err), 'Error: error');
     }));
 
 test('should add http error to a rejected response', t =>
@@ -23,7 +23,7 @@ test('should add http error to a rejected response', t =>
     .then(t.fail)
     .catch((err) => {
       t.true(typeof err.toString === 'function');
-      t.is(String(err), 'Bad Request');
+      t.is(String(err), 'Error: Bad Request');
     }));
 
 test('should add toString to a rejected response if JSON', t =>
@@ -35,5 +35,5 @@ test('should add toString to a rejected response if JSON', t =>
     .then(t.fail)
     .catch((err) => {
       t.true(typeof err.toString === 'function');
-      t.is(String(err), '{"content":"error"}');
+      t.is(String(err), 'Error: {"content":"error"}');
     }));

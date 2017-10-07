@@ -37,9 +37,12 @@ test('should render a div list with ContainerCard if not pending', (t) => {
     },
   ];
 
-  const wrapper = shallow(
-    <ContainersList {...defaultProps} containers={containers} containersTotalCount={1} />,
-  );
+  const props = {
+    ...defaultProps,
+    containers,
+    containersTotalCount: 1,
+  };
+  const wrapper = shallow(<ContainersList {...props} />);
 
   t.is(wrapper.find('div').length, 1);
   t.is(wrapper.find('ContainerCard').length, 1);
@@ -54,9 +57,12 @@ test('should render a div list with ContainerCard if not pending', (t) => {
 });
 
 test('should indicate filtered list', (t) => {
-  const wrapper = shallow(
-    <ContainersList {...defaultProps} containers={[]} containersTotalCount={1} />,
-  );
+  const props = {
+    ...defaultProps,
+    containers: [],
+    containersTotalCount: 1,
+  };
+  const wrapper = shallow(<ContainersList {...props} />);
 
   t.is(
     wrapper

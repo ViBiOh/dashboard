@@ -14,7 +14,9 @@ import style from './index.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Compose form with inputs.
  */
-const Compose = ({ onCompose, onBack, pending, error }) => {
+const Compose = ({
+  onCompose, onBack, pending, error,
+}) => {
   const refs = {};
 
   /**

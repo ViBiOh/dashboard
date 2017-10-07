@@ -39,11 +39,9 @@ test.afterEach(() => {
 test.serial('should forge request to get github access token', t =>
   Auth.getGithubAccessToken('state', 'code').then(({ url }) => {
     t.is(url, 'undefined/token/github?state=state&code=code');
-  }),
-);
+  }));
 
 test.serial('should basicLogin with given username and password', t =>
   Auth.basicLogin('admin', 'password').then((result) => {
     t.is(result, `Basic ${btoa('admin:password')}`);
-  }),
-);
+  }));

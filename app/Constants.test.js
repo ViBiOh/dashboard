@@ -13,8 +13,7 @@ test.beforeEach(() => {
       GITHUB_OAUTH_CLIENT_ID: 'GITHUB_ID',
       GITHUB_OAUTH_STATE: 'GITHUB_STATE',
       GITHUB_REDIRECT_URI: 'localhost',
-    }),
-  );
+    }));
 });
 
 test.afterEach(() => {
@@ -24,8 +23,7 @@ test.afterEach(() => {
 test.serial('should fetch data from /env', t =>
   init().then(({ url }) => {
     t.truthy(/env/i.test(url));
-  }),
-);
+  }));
 
 test.serial('should return API_URL from context', (t) => {
   init();
@@ -62,8 +60,7 @@ test.serial(
         AUTH_URL: 'localhost/oauth',
         GITHUB_OAUTH_CLIENT_ID: 'GITHUB_ID',
         GITHUB_OAUTH_STATE: 'GITHUB_STATE',
-      }),
-    );
+      }));
 
     return new Promise((resolve) => {
       init().then(() => {

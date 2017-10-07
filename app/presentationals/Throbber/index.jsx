@@ -7,7 +7,9 @@ import style from './index.less';
  * @param {Object} props Props of the component.
  * @return {React.Component} Throbber with label and title if provided
  */
-const Throbber = ({ label, title, white, vertical, horizontalSm }) => (
+const Throbber = ({
+  label, title, white, vertical, horizontalSm,
+}) => (
   <div className={style.container} title={title}>
     {!vertical && label ? <span>{label}</span> : null}
     <div

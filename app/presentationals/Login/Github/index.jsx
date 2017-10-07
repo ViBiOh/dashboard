@@ -41,7 +41,6 @@ Github.propTypes = {
 Github.defaultProps = {
   code: '',
   error: '',
-  pending: false,
   redirect: '',
   state: '',
 };

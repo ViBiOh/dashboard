@@ -17,7 +17,7 @@ import actions from '../actions';
  */
 export function onErrorAction(calledAction, error) {
   if (error.status === 401 || error.noAuth) {
-    let redirect = SearchParams(document.location.search).redirect;
+    let { redirect } = SearchParams(document.location.search);
     if (!redirect) {
       redirect = document.location.href
         .replace(document.location.origin, '')

@@ -15,11 +15,9 @@ test('should render with a Throbber if pending', (t) => {
 });
 
 test('should render with children if not pending', (t) => {
-  const wrapper = shallow(
-    <ThrobberButton onClick={() => null}>
-      <span>Test</span>
-    </ThrobberButton>,
-  );
+  const wrapper = shallow(<ThrobberButton onClick={() => null}>
+    <span>Test</span>
+                          </ThrobberButton>);
 
   t.is(wrapper.find('span').length, 1);
 });

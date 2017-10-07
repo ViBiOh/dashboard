@@ -97,10 +97,8 @@ ContainersList.propTypes = {
 
 ContainersList.defaultProps = {
   pending: false,
-  pendingInfo: false,
   containersTotalCount: 0,
   containers: null,
-  infos: null,
   filter: '',
   error: '',
 };

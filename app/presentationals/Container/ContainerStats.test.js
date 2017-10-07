@@ -16,9 +16,8 @@ test('should not render Graph if entries are empty is not provided', (t) => {
 });
 
 test('should display logs if given', (t) => {
-  const wrapper = shallow(
-    <ContainerStats
-      stats={{
+  const wrapper = shallow(<ContainerStats
+    stats={{
         cpuLimit: 800,
         memoryLimit: 16,
         memoryScale: 2,
@@ -29,8 +28,7 @@ test('should display logs if given', (t) => {
           },
         ],
       }}
-    />,
-  );
+  />);
 
   t.is(wrapper.type(), 'span');
 });

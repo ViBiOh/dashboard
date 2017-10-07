@@ -8,7 +8,9 @@ import style from './index.less';
  * @param Object} props Props of the component.
  * @return {React.Component} Button with rendered children.
  */
-const Button = ({ children, type, active, className, ...buttonProps }) => {
+const Button = ({
+  children, type, active, className, ...buttonProps
+}) => {
   let content = children;
   if (Array.isArray(children)) {
     content = <div className={style.wrapper}>{children}</div>;
@@ -32,8 +34,7 @@ Button.displayName = 'Button';
 
 Button.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  type: PropTypes.oneOf(['transparent', 'primary', 'success', 'info', 'warning', 'danger', 'none'])
-    .isRequired,
+  type: PropTypes.oneOf(['transparent', 'primary', 'success', 'info', 'warning', 'danger', 'none']),
   active: PropTypes.bool,
   className: PropTypes.string,
 };

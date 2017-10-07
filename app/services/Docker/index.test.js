@@ -61,8 +61,7 @@ test.serial('should throw error if not auth find', (t) => {
 test.serial('should list containers with auth', t =>
   Docker.containers().then(() => {
     t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
-  }),
-);
+  }));
 
 test.serial('should return results when listing containers', (t) => {
   data = {
@@ -79,8 +78,7 @@ test.serial('should return results when listing containers', (t) => {
 test.serial('should list services with auth', t =>
   Docker.services().then(() => {
     t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
-  }),
-);
+  }));
 
 test.serial('should return results when listing services', (t) => {
   data = {
@@ -98,11 +96,15 @@ test.serial('should create container with given args', t =>
   Docker.containerCreate('test', 'composeFileContent').then((result) => {
     t.true(/containers\/test\/$/.test(result.url));
     t.is(result.content, 'composeFileContent');
-  }),
-);
+  }));
 
 [
-  { method: 'info', args: [], httpMethod: 'get', url: /info$/ },
+  {
+    method: 'info',
+    args: [],
+    httpMethod: 'get',
+    url: /info$/,
+  },
   {
     method: 'containerInfos',
     args: ['test'],
@@ -145,8 +147,7 @@ test.serial('should create container with given args', t =>
       t.is(result.method, param.httpMethod);
       t.true(param.url.test(result.url));
       t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
-    }),
-  );
+    }));
 });
 
 test.serial('should send auth on streamBus opening', (t) => {

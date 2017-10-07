@@ -86,13 +86,11 @@ export function buildFullTextRegex(value) {
     return new RegExp(wildcard, flags);
   }
 
-  const values = cleanSearchValues(
-    replaceAccentedChar(value)
-      .replace(/[\]/\\^$*+?.(){}|[-]/gim, ' ')
-      .trim()
-      .replace(/\s+/, ' ')
-      .split(' '),
-  );
+  const values = cleanSearchValues(replaceAccentedChar(value)
+    .replace(/[\]/\\^$*+?.(){}|[-]/gim, ' ')
+    .trim()
+    .replace(/\s+/, ' ')
+    .split(' '));
   const textGroup = `(${values.join('|')})`;
 
   const parts = [wildcard];

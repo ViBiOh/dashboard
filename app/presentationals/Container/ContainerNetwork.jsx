@@ -19,12 +19,10 @@ const ContainerNetwork = ({ container }) => {
   const linkContent =
     container.NetworkSettings.Networks &&
     []
-      .concat(
-        ...Object.keys(container.NetworkSettings.Networks)
-          .map(networkName => container.NetworkSettings.Networks[networkName])
-          .filter(network => network.Links)
-          .map(network => network.Links),
-      )
+      .concat(...Object.keys(container.NetworkSettings.Networks)
+        .map(networkName => container.NetworkSettings.Networks[networkName])
+        .filter(network => network.Links)
+        .map(network => network.Links))
       .map(link => link.split(':'))
       .filter(parts => parts.length > 1)
       .map(parts => (

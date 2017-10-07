@@ -21,15 +21,13 @@ test('should render as null if error', (t) => {
 
 test('should retrieve access token if no error', (t) => {
   const getAccessToken = sinon.spy();
-  const wrapper = shallow(
-    <Github
-      {...defaultProps()}
-      state="test"
-      code="1234567890"
-      redirect="containers"
-      getAccessToken={getAccessToken}
-    />,
-  );
+  const wrapper = shallow(<Github
+    {...defaultProps()}
+    state="test"
+    code="1234567890"
+    redirect="containers"
+    getAccessToken={getAccessToken}
+  />);
 
   wrapper.instance().componentDidMount();
   t.true(getAccessToken.calledWith('test', '1234567890', 'containers'));
@@ -37,16 +35,14 @@ test('should retrieve access token if no error', (t) => {
 
 test('should not retrieve access token if error', (t) => {
   const getAccessToken = sinon.spy();
-  const wrapper = shallow(
-    <Github
-      {...defaultProps()}
-      error="invalid"
-      state="test"
-      code="1234567890"
-      redirect="containers"
-      getAccessToken={getAccessToken}
-    />,
-  );
+  const wrapper = shallow(<Github
+    {...defaultProps()}
+    error="invalid"
+    state="test"
+    code="1234567890"
+    redirect="containers"
+    getAccessToken={getAccessToken}
+  />);
 
   wrapper.instance().componentDidMount();
   t.false(getAccessToken.called);
