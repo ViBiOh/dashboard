@@ -277,36 +277,49 @@ func TestRmContainer(t *testing.T) {
 	var cases = []struct {
 		dockerResponses []interface{}
 		containerID     string
+		failOnImageFail bool
 		container       *types.ContainerJSON
 		wantErr         error
 	}{
 		{
 			[]interface{}{},
 			`test`,
+			true,
 			nil,
 			errors.New(`Error while inspecting container: error during connect: Get http://localhost/containers/test/json: internal server error`),
 		},
 		{
 			[]interface{}{types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}}},
 			`test`,
+			true,
 			nil,
 			errors.New(`Error while removing container: error during connect: Delete http://localhost/containers/test?force=1&v=1: internal server error`),
 		},
 		{
 			[]interface{}{types.ContainerJSON{}},
 			`test`,
+			true,
 			&types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}},
-			errors.New(`Error while removing images: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
+			errors.New(`Error while removing image: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
 		},
 		{
 			[]interface{}{types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}}, &types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}}},
 			`test`,
+			true,
 			nil,
-			errors.New(`Error while removing images: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
+			errors.New(`Error while removing image: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
+		},
+		{
+			[]interface{}{types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}}, &types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}}},
+			`test`,
+			false,
+			nil,
+			nil,
 		},
 		{
 			[]interface{}{types.ContainerJSON{}, []types.ImageDeleteResponseItem{}},
 			`test`,
+			true,
 			&types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}},
 			nil,
 		},
@@ -316,7 +329,7 @@ func TestRmContainer(t *testing.T) {
 
 	for _, testCase := range cases {
 		docker = mockClient(t, testCase.dockerResponses)
-		_, err := rmContainer(testCase.containerID, testCase.container)
+		_, err := rmContainer(testCase.containerID, testCase.container, testCase.failOnImageFail)
 
 		failed = false
 
@@ -329,7 +342,7 @@ func TestRmContainer(t *testing.T) {
 		}
 
 		if failed {
-			t.Errorf(`rmContainer(%v, %v) = %v, want %v`, testCase.containerID, testCase.container, err, testCase.wantErr)
+			t.Errorf(`rmContainer(%v, %v, %v) = %v, want %v`, testCase.containerID, testCase.container, testCase.failOnImageFail, err, testCase.wantErr)
 		}
 	}
 }
@@ -343,7 +356,7 @@ func TestRmImages(t *testing.T) {
 		{
 			nil,
 			`test`,
-			errors.New(`Error while removing images: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
+			errors.New(`Error while removing image: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
 		},
 		{
 			[]types.ImageDeleteResponseItem{},
@@ -397,7 +410,7 @@ func TestDoAction(t *testing.T) {
 		},
 		{
 			deleteAction,
-			rmContainer,
+			rmContainerAndImages,
 		},
 		{
 			`unknown`,

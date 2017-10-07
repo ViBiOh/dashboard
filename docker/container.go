@@ -2,6 +2,7 @@ package docker
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/ViBiOh/dashboard/auth"
@@ -61,7 +62,11 @@ func restartContainer(containerID string, _ *types.ContainerJSON) (interface{}, 
 	return nil, docker.ContainerRestart(ctx, containerID, nil)
 }
 
-func rmContainer(containerID string, container *types.ContainerJSON) (interface{}, error) {
+func rmContainerAndImages(containerID string, container *types.ContainerJSON) (interface{}, error) {
+	return rmContainer(containerID, container, true)
+}
+
+func rmContainer(containerID string, container *types.ContainerJSON, failOnImageFail bool) (interface{}, error) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
@@ -77,7 +82,14 @@ func rmContainer(containerID string, container *types.ContainerJSON) (interface{
 		return nil, fmt.Errorf(`Error while removing container: %v`, err)
 	}
 
-	return nil, rmImages(container.Image)
+	if err = rmImages(container.Image); err != nil {
+		if failOnImageFail {
+			return nil, err
+		}
+		log.Print(err)
+	}
+
+	return nil, nil
 }
 
 func rmImages(imageID string) error {
@@ -85,7 +97,7 @@ func rmImages(imageID string) error {
 	defer cancel()
 
 	if _, err := docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{}); err != nil {
-		return fmt.Errorf(`Error while removing images: %v`, err)
+		return fmt.Errorf(`Error while removing image: %v`, err)
 	}
 
 	return nil
@@ -106,7 +118,7 @@ func doAction(action string) func(string, *types.ContainerJSON) (interface{}, er
 	case restartAction:
 		return restartContainer
 	case deleteAction:
-		return rmContainer
+		return rmContainerAndImages
 	default:
 		return invalidAction
 	}
