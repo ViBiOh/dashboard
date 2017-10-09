@@ -10,7 +10,7 @@
     "lint": "npm run eslint && npm run stylelint",
     "doc": "./node_modules/.bin/esdoc",
     "prestart": "mkdir -p ./dist && cp ./app/index.html ./dist/",
-    "start": "API_URL=http://localhost:1080 WS_URL=ws://localhost:1080/ws AUTH_URL=http://localhost:1081 BASIC_AUTH_ENABLED=true ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
+    "start": "API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://auth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_OAUTH_CLIENT_ID=8c451219bd1bb8760af6 GITHUB_OAUTH_STATE=RandomStringForViBiOhInfrastructure GITHUB_REDIRECT_URI=https://dashboard.vibioh.fr/auth/github ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test": "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
     "test:e2e": "./node_modules/.bin/codeceptjs run-multiple --all",
     "copy:web": "cp ./web/*.txt ./dist/ && cp ./web/favicon/* ./dist/",
