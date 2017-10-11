@@ -173,9 +173,7 @@
     "rules": {
       "react/jsx-filename-extension": 1,
       "react/jsx-closing-tag-location": 1,
-      "react/jsx-indent": 1,
-      "no-buffer-constructor": 1,
-      "no-restricted-globals": 1
+      "react/jsx-indent": 1
     }
   },
   "stylelint": {

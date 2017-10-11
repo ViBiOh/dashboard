@@ -24,13 +24,13 @@ const stat = {
   },
 };
 
-test('humanSizeScale with undefined value', t => t.true(isNaN(humanSizeScale(undefined))));
+test('humanSizeScale with undefined value', t => t.true(Number.isNaN(humanSizeScale(undefined))));
 
 test('humanSizeScale with no value', t => t.is(humanSizeScale(0), 0));
 
 test('humanSizeScale with 4kb', t => t.is(humanSizeScale(1024 * 1024 * 4), 2));
 
-test('scaleSize with undefined values', t => t.true(isNaN(scaleSize())));
+test('scaleSize with undefined values', t => t.true(Number.isNaN(scaleSize())));
 
 test('scaleSize with with no value', t => t.is(scaleSize(0), 0));
 

@@ -5,4 +5,4 @@
  */
 export default (typeof btoa !== 'undefined'
   ? btoa
-  : str => Buffer(str, 'binary').toString('base64'));
+  : str => Buffer.from(str, 'binary').toString('base64'));
