@@ -23,8 +23,14 @@
   "multiple": {
     "basic": {
       "browsers": [
-        { "browser": "chrome", "windowSize": "maximize" },
-        { "browser": "chrome", "windowSize": "375x667" }
+        {
+          "browser": "chrome",
+          "windowSize": "maximize"
+        },
+        {
+          "browser": "chrome",
+          "windowSize": "375x667"
+        }
       ]
     }
   },
