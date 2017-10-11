@@ -13,7 +13,7 @@ services:
     - -authUrl
     - https://auth:1080
     - -users
-    - vibioh:admin|lili1725:multi
+    - vibioh:admin|eponae:multi
     - -corsHeaders
     - Content-Type,Authorization
     - -corsMethods
