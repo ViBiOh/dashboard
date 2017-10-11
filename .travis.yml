@@ -13,8 +13,7 @@ install:
 - npm run build
 script: |
   docker build -t ${DOCKER_USER}/dashboard-front -f Dockerfile_front . &&
-  docker build -t ${DOCKER_USER}/dashboard-api -f Dockerfile_api . &&
-  ./e2e_ci.sh
+  docker build -t ${DOCKER_USER}/dashboard-api -f Dockerfile_api .
 after_success: |
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
     bash <(curl -s https://codecov.io/bash) &&
