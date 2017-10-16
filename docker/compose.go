@@ -413,6 +413,6 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName string, comp
 		cancel()
 		composeFailed(w, user, appName, err)
 	} else {
-		httputils.ResponseArrayJSON(w, newServices)
+		httputils.ResponseArrayJSON(w, http.StatusOK, newServices)
 	}
 }

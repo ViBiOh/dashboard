@@ -132,7 +132,7 @@ func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID stri
 	} else if result, err := doAction(action)(containerID, container); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		httputils.ResponseJSON(w, result)
+		httputils.ResponseJSON(w, http.StatusOK, result)
 	}
 }
 
@@ -140,6 +140,6 @@ func listContainersHandler(w http.ResponseWriter, user *auth.User) {
 	if containers, err := listContainers(user, ``); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		httputils.ResponseArrayJSON(w, containers)
+		httputils.ResponseArrayJSON(w, http.StatusOK, containers)
 	}
 }

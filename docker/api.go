@@ -59,7 +59,7 @@ func infoHandler(w http.ResponseWriter) {
 	if info, err := docker.Info(ctx); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		httputils.ResponseJSON(w, info)
+		httputils.ResponseJSON(w, http.StatusOK, info)
 	}
 }
 
