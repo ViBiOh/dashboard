@@ -8,13 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NYTimes/gziphandler"
 	"github.com/ViBiOh/alcotest/alcotest"
 	"github.com/ViBiOh/dashboard/auth"
 	"github.com/ViBiOh/dashboard/docker"
 	"github.com/ViBiOh/httputils"
 	"github.com/ViBiOh/httputils/cert"
 	"github.com/ViBiOh/httputils/cors"
-	"github.com/ViBiOh/httputils/gzip"
 	"github.com/ViBiOh/httputils/owasp"
 	"github.com/ViBiOh/httputils/prometheus"
 	"github.com/ViBiOh/httputils/rate"
@@ -22,7 +22,7 @@ import (
 
 const websocketPrefix = `/ws`
 
-var restHandler = prometheus.NewPrometheusHandler(`http`, gzip.Handler{Handler: owasp.Handler{Handler: cors.Handler{Handler: rate.Handler{Handler: docker.Handler{}}}}})
+var restHandler = prometheus.NewPrometheusHandler(`http`, gziphandler.GzipHandler(owasp.Handler{Handler: cors.Handler{Handler: rate.Handler{Handler: docker.Handler{}}}}))
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func handleGracefulClose() error {

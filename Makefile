@@ -10,12 +10,14 @@ deps:
 	go get -u github.com/docker/docker/client
 	go get -u github.com/golang/lint/golint
 	go get -u github.com/gorilla/websocket
+	go get -u github.com/NYTimes/gziphandler
 	go get -u github.com/ViBiOh/alcotest/alcotest
 	go get -u github.com/ViBiOh/httputils
 	go get -u github.com/ViBiOh/httputils/cert
 	go get -u github.com/ViBiOh/httputils/cors
 	go get -u github.com/ViBiOh/httputils/owasp
 	go get -u github.com/ViBiOh/httputils/prometheus
+	go get -u github.com/ViBiOh/httputils/rate
 	go get -u golang.org/x/tools/cmd/goimports
 	go get -u gopkg.in/yaml.v2
 
