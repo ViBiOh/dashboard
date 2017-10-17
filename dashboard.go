@@ -22,7 +22,7 @@ import (
 
 const websocketPrefix = `/ws`
 
-var restHandler = prometheus.NewPrometheusHandler(`http`, gziphandler.GzipHandler(owasp.Handler{Handler: cors.Handler{Handler: rate.Handler{Handler: docker.Handler{}}}}))
+var restHandler = prometheus.Handler(`http`, rate.Handler(gziphandler.GzipHandler(owasp.Handler(cors.Handler(docker.Handler())))))
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
 
 func handleGracefulClose() error {

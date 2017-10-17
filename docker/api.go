@@ -91,31 +91,30 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 }
 
 // Handler for Docker request. Should be use with net/http
-type Handler struct {
-}
+func Handler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			w.Write(nil)
+			return
+		}
 
-func (handler Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		w.Write(nil)
-		return
-	}
+		if strings.HasPrefix(r.URL.Path, healthPrefix) && r.Method == http.MethodGet {
+			healthHandler(w, r)
+			return
+		}
 
-	if strings.HasPrefix(r.URL.Path, healthPrefix) && r.Method == http.MethodGet {
-		healthHandler(w, r)
-		return
-	}
+		user, err := auth.IsAuthenticated(r)
+		if err != nil {
+			httputils.Unauthorized(w, err)
+			return
+		}
 
-	user, err := auth.IsAuthenticated(r)
-	if err != nil {
-		httputils.Unauthorized(w, err)
-		return
-	}
-
-	if strings.HasPrefix(r.URL.Path, infoPrefix) && r.Method == http.MethodGet {
-		infoHandler(w)
-	} else if strings.HasPrefix(r.URL.Path, containersPrefix) {
-		containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
-	} else if strings.HasPrefix(r.URL.Path, servicesPrefix) {
-		servicesHandler(w, r, strings.TrimPrefix(r.URL.Path, servicesPrefix), user)
-	}
+		if strings.HasPrefix(r.URL.Path, infoPrefix) && r.Method == http.MethodGet {
+			infoHandler(w)
+		} else if strings.HasPrefix(r.URL.Path, containersPrefix) {
+			containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
+		} else if strings.HasPrefix(r.URL.Path, servicesPrefix) {
+			servicesHandler(w, r, strings.TrimPrefix(r.URL.Path, servicesPrefix), user)
+		}
+	})
 }
