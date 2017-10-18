@@ -19,16 +19,11 @@ services:
     - -corsMethods
     - GET,POST,DELETE
     labels:
-      traefik.web.frontend.passHostHeader: 'true'
-      traefik.web.frontend.rule: 'Host: dashboard-api.vibioh.fr'
-      traefik.web.frontend.entryPoints: 'https'
-      traefik.web.protocol: 'https'
-      traefik.web.port: '1080'
-      traefik.wss.frontend.passHostHeader: 'true'
-      traefik.wss.frontend.rule: 'Host: dashboard-api.vibioh.fr'
-      traefik.wss.frontend.entryPoints: 'wss'
-      traefik.wss.protocol: 'wss'
-      traefik.wss.port: '1080'
+      traefik.frontend.passHostHeader: 'true'
+      traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
+      traefik.frontend.entryPoints: 'https,wss'
+      traefik.protocol: 'https'
+      traefik.port: '1080'
     external_links:
     - auth_auth:auth
     networks:
