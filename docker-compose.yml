@@ -21,7 +21,6 @@ services:
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
-      traefik.frontend.entryPoints: 'https,wss'
       traefik.protocol: 'https'
       traefik.port: '1080'
     external_links:
