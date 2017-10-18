@@ -23,7 +23,7 @@ import (
 const websocketPrefix = `/ws`
 
 var restHandler = prometheus.Handler(`http`, rate.Handler(gziphandler.GzipHandler(owasp.Handler(cors.Handler(docker.Handler())))))
-var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler{})
+var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler())
 
 func handleGracefulClose() error {
 	if docker.CanBeGracefullyClosed() {

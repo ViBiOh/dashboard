@@ -44,7 +44,8 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		return hostCheck.MatchString(r.Host)
+		// return hostCheck.MatchString(r.Host)
+		return true
 	},
 }
 
@@ -57,8 +58,11 @@ func InitWebsocket() error {
 
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
+	if ws != nil {
 		defer ws.Close()
+	}
+
+	if err != nil {
 		return nil, nil, fmt.Errorf(`Error while upgrading connection: %v`, err)
 	}
 
@@ -253,11 +257,10 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // WebsocketHandler for Docker Websocket request. Should be use with net/http
-type WebsocketHandler struct {
-}
-
-func (handler WebsocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if strings.HasPrefix(r.URL.Path, busPrefix) {
-		busWebsocketHandler(w, r)
-	}
+func WebsocketHandler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, busPrefix) {
+			busWebsocketHandler(w, r)
+		}
+	})
 }
