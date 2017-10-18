@@ -13,3 +13,4 @@ e2e/output
 bin/
 coverage.txt
 debug.test
+cacert.pem
