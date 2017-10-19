@@ -22,7 +22,7 @@ services:
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
-      traefik.protocol: 'https'
+      traefik.protocol: 'http'
       traefik.port: '1080'
     healthcheck:
       test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
