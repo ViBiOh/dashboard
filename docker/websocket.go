@@ -57,11 +57,12 @@ func InitWebsocket() error {
 
 func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
-	if ws != nil {
-		defer ws.Close()
-	}
 
 	if err != nil {
+		if ws != nil {
+			defer ws.Close()
+		}
+
 		return nil, nil, fmt.Errorf(`Error while upgrading connection: %v`, err)
 	}
 
