@@ -18,6 +18,7 @@ services:
     - Content-Type,Authorization
     - -corsMethods
     - GET,POST,DELETE
+    - -tls=no
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
