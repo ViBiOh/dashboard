@@ -456,7 +456,7 @@ func TestBasicActionHandler(t *testing.T) {
 			types.ContainerJSON{},
 			auth.NewUser(`admin`, `admin`),
 			`test`,
-			`unknwon`,
+			`unknown`,
 			`Unknown action test
 `,
 			http.StatusInternalServerError,
