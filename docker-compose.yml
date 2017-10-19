@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
   api:
@@ -24,6 +24,8 @@ services:
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
       traefik.protocol: 'https'
       traefik.port: '1080'
+    healthcheck:
+      test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
     external_links:
     - auth_auth:auth
     networks:
