@@ -49,6 +49,10 @@ Authentification has been externalized into its own services in [vibioh/auth](ht
 
 Create your OAuth app on [GitHub interface](https://github.com/settings/developers). The authorization callback URL must be in the form of `https://[URL_OF_DASHBOARD]/auth/github`.
 
+## Deploy
+
+When deploying, images are pulled and all services are started. After successful deploy, old images are removed, if possible, from docker host in order to free up disk space.
+
 ## HotDeploy
 
 At deploy time, if the new containers have [`HEALTHCHECK`](https://docs.docker.com/engine/reference/builder/#healthcheck), `dashboard` will wait during at most 5 minutes for an `healthy` status. When all containers with `healthcheck` are healthy, old containers are stopped and removed. Load-balancer with Docker's healthcheck (e.g. [traefik](https://traefik.io)) will handle route change without downtime based on that healthcheck.
@@ -73,7 +77,7 @@ And, maybe, I want to have fun with `golang` and `ReactJS` 🙄 😏
 
 ## Why without volumes ?
 
-First goal of this tool was to be available for students to deploy containers on my own server. Trust doesn't mean no control and if a student mounts a too critical volumes (e.g. `/`) with a `root` user, he can potentially become `root` on the server, which I don't want ! So volumes are not allowed, and some security options are setted by default.
+First goal of this tool was to be available for students to deploy containers on my own server. Trust doesn't mean no control and if a student mounts a too critical volumes (e.g. `/`) with a `root` user, he can potentially become `root` on the server, which for some obvious reasons I don't want ! So volumes are not allowed, and some security options are setted by default.
 
 ## Build
 
