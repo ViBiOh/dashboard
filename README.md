@@ -23,7 +23,7 @@ Docker's images are available, `vibioh/dashboard-front` and `vibioh/dashboard-ap
 
 ## Websocket
 
-By default, your origin domain name has to start with `dashboard` (e.g. dashboard.vibioh.fr) in order to allow websockets to work. You can override it by setting `-ws` option to the API server.
+By default, your origin domain name has to start with `dashboard` (e.g. dashboard-api.vibioh.fr) in order to allow websockets to work. You can override it by setting `-ws` option to the API server.
 
 ## Roles
 
