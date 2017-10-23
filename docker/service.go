@@ -23,7 +23,7 @@ func listServices(user *auth.User, appName string) ([]swarm.Service, error) {
 	return docker.ServiceList(ctx, options)
 }
 
-func listServicesHandler(w http.ResponseWriter, user *auth.User) {
+func listServicesHandler(w http.ResponseWriter, r *http.Request, user *auth.User) {
 	if user == nil {
 		httputils.BadRequest(w, fmt.Errorf(`A user is required`))
 		return
@@ -32,13 +32,13 @@ func listServicesHandler(w http.ResponseWriter, user *auth.User) {
 	if services, err := listServices(user, ``); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		httputils.ResponseArrayJSON(w, http.StatusOK, services)
+		httputils.ResponseArrayJSON(w, http.StatusOK, services, httputils.IsPretty(r.URL.RawQuery))
 	}
 }
 
 func servicesHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
 	if (urlPath == `/` || urlPath == ``) && r.Method == http.MethodGet {
-		listServicesHandler(w, user)
+		listServicesHandler(w, r, user)
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 	}

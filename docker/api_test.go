@@ -86,7 +86,7 @@ func TestInfoHandler(t *testing.T) {
 		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 
 		w := httptest.NewRecorder()
-		infoHandler(w)
+		infoHandler(w, httptest.NewRequest(http.MethodGet, `/`, nil))
 
 		if result := w.Result().StatusCode; result != testCase.want {
 			t.Errorf(`infoHandler() = %v, want %v`, result, testCase.want)

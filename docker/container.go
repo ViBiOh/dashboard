@@ -124,7 +124,7 @@ func doAction(action string) func(string, *types.ContainerJSON) (interface{}, er
 	}
 }
 
-func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID string, action string) {
+func basicActionHandler(w http.ResponseWriter, r *http.Request, user *auth.User, containerID string, action string) {
 	if allowed, container, err := isAllowed(user, containerID); err != nil {
 		httputils.InternalServer(w, err)
 	} else if !allowed {
@@ -132,14 +132,14 @@ func basicActionHandler(w http.ResponseWriter, user *auth.User, containerID stri
 	} else if result, err := doAction(action)(containerID, container); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		httputils.ResponseJSON(w, http.StatusOK, result)
+		httputils.ResponseJSON(w, http.StatusOK, result, httputils.IsPretty(r.URL.RawQuery))
 	}
 }
 
-func listContainersHandler(w http.ResponseWriter, user *auth.User) {
+func listContainersHandler(w http.ResponseWriter, r *http.Request, user *auth.User) {
 	if containers, err := listContainers(user, ``); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		httputils.ResponseArrayJSON(w, http.StatusOK, containers)
+		httputils.ResponseArrayJSON(w, http.StatusOK, containers, httputils.IsPretty(r.URL.RawQuery))
 	}
 }

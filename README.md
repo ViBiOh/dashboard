@@ -97,6 +97,10 @@ Usage of dashboard:
         URL of auth service
   -c string
         URL to healthcheck (check and exit)
+  -corsCredentials
+        Access-Control-Allow-Credentials
+  -corsExpose string
+        Access-Control-Expose-Headers
   -corsHeaders string
         Access-Control-Allow-Headers (default "Content-Type")
   -corsMethods string
@@ -111,14 +115,16 @@ Usage of dashboard:
         Docker API Version
   -hsts
         Indicate Strict Transport Security (default true)
+  -port string
+        Listen port (default "1080")
   -prometheusMetricsHost string
         Prometheus - Allowed hostname to call metrics endpoint (default "localhost")
   -prometheusMetricsPath string
         Prometheus - Metrics endpoint path (default "/metrics")
   -rateCount int
-        Rate IP count (default 60)
-  -rateDelay duration
-        Rate IP delay (default 1m0s)
+        Rate IP limit (default 5000)
+  -tls
+        Serve TLS content (default true)
   -tlscert string
         TLS PEM Certificate file
   -tlshosts string

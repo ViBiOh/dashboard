@@ -52,39 +52,39 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func infoHandler(w http.ResponseWriter) {
+func infoHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
 	if info, err := docker.Info(ctx); err != nil {
 		httputils.InternalServer(w, err)
 	} else {
-		httputils.ResponseJSON(w, http.StatusOK, info)
+		httputils.ResponseJSON(w, http.StatusOK, info, httputils.IsPretty(r.URL.RawQuery))
 	}
 }
 
 func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
 	if (urlPath == `/` || urlPath == ``) && r.Method == http.MethodGet {
-		listContainersHandler(w, user)
+		listContainersHandler(w, r, user)
 	} else if containerRequest.MatchString(urlPath) {
 		containerID := containerRequest.FindStringSubmatch(urlPath)[1]
 
 		if r.Method == http.MethodGet {
-			basicActionHandler(w, user, containerID, getAction)
+			basicActionHandler(w, r, user, containerID, getAction)
 		} else if r.Method == http.MethodDelete {
-			basicActionHandler(w, user, containerID, deleteAction)
+			basicActionHandler(w, r, user, containerID, deleteAction)
 		} else if r.Method == http.MethodPost {
 			if composeBody, err := httputils.ReadBody(r.Body); err != nil {
 				httputils.InternalServer(w, err)
 			} else {
-				composeHandler(w, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
+				composeHandler(w, r, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
 			}
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	} else if containerActionRequest.MatchString(urlPath) && r.Method == http.MethodPost {
 		matches := containerActionRequest.FindStringSubmatch(urlPath)
-		basicActionHandler(w, user, matches[1], matches[2])
+		basicActionHandler(w, r, user, matches[1], matches[2])
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 	}
@@ -110,7 +110,7 @@ func Handler() http.Handler {
 		}
 
 		if strings.HasPrefix(r.URL.Path, infoPrefix) && r.Method == http.MethodGet {
-			infoHandler(w)
+			infoHandler(w, r)
 		} else if strings.HasPrefix(r.URL.Path, containersPrefix) {
 			containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
 		} else if strings.HasPrefix(r.URL.Path, servicesPrefix) {

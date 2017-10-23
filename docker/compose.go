@@ -356,7 +356,7 @@ func composeFailed(w http.ResponseWriter, user *auth.User, appName string, err e
 	httputils.InternalServer(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
 }
 
-func composeHandler(w http.ResponseWriter, user *auth.User, appName string, composeFile []byte) {
+func composeHandler(w http.ResponseWriter, r *http.Request, user *auth.User, appName string, composeFile []byte) {
 	if user == nil {
 		httputils.BadRequest(w, fmt.Errorf(`A user is required`))
 		return
@@ -413,6 +413,6 @@ func composeHandler(w http.ResponseWriter, user *auth.User, appName string, comp
 		cancel()
 		composeFailed(w, user, appName, err)
 	} else {
-		httputils.ResponseArrayJSON(w, http.StatusOK, newServices)
+		httputils.ResponseArrayJSON(w, http.StatusOK, newServices, httputils.IsPretty(r.URL.RawQuery))
 	}
 }

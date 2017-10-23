@@ -474,7 +474,7 @@ func TestBasicActionHandler(t *testing.T) {
 	for _, testCase := range cases {
 		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		writer := httptest.NewRecorder()
-		basicActionHandler(writer, testCase.user, testCase.containerID, testCase.action)
+		basicActionHandler(writer, httptest.NewRequest(http.MethodGet, `/`, nil), testCase.user, testCase.containerID, testCase.action)
 
 		if result := writer.Code; result != testCase.wantStatus {
 			t.Errorf(`basicActionHandler(%v, %v, %v) = %v, want %v`, testCase.user, testCase.containerID, testCase.action, result, testCase.wantStatus)
@@ -514,7 +514,7 @@ func TestListContainersHandler(t *testing.T) {
 		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		writer := httptest.NewRecorder()
 
-		listContainersHandler(writer, testCase.user)
+		listContainersHandler(writer, httptest.NewRequest(http.MethodGet, `/`, nil), testCase.user)
 
 		if result := writer.Code; result != testCase.wantStatus {
 			t.Errorf(`listContainersHandler(%v) = %v, want %v`, testCase.user, result, testCase.wantStatus)

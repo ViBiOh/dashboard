@@ -92,7 +92,7 @@ func TestListServicesHandler(t *testing.T) {
 	for _, testCase := range cases {
 		docker = mockClient(t, []interface{}{testCase.dockerResponse})
 		writer := httptest.NewRecorder()
-		listServicesHandler(writer, testCase.user)
+		listServicesHandler(writer, httptest.NewRequest(http.MethodGet, `/`, nil), testCase.user)
 
 		if result := writer.Code; result != testCase.wantStatus {
 			t.Errorf(`listServicesHandler(%v) = %v, want %v`, testCase.user, result, testCase.wantStatus)
