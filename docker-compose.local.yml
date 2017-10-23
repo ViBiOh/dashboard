@@ -8,7 +8,8 @@ services:
     - -basicUsers
     - admin:${ADMIN_PASSWORD}
     - -corsHeaders
-    - Content-Type,Authorization
+    - Authorization
+    - -corsCredentials
     ports:
     - 1082:1080/tcp
     logging:
@@ -38,6 +39,7 @@ services:
     - Content-Type,Authorization
     - -corsMethods
     - GET,POST,DELETE
+    - -corsCredentials
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     links:

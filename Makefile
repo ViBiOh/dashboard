@@ -44,10 +44,10 @@ deps-start:
 	go get -u github.com/ViBiOh/viws
 
 start-auth:
-	auth -tls=false -basicUsers "admin:`bcrypt admin`" -corsHeaders Content-Type,Authorization -port 1081
+	auth -tls=false -basicUsers "admin:`bcrypt admin`" -corsHeaders Content-Type,Authorization -port 1081 -corsCredentials
 
 start-api:
-	go run dashboard.go -tls=false -ws ".*" -dockerVersion '1.24' -authUrl http://localhost:1081 -users admin:admin -corsHeaders Content-Type,Authorization -corsMethods GET,POST,DELETE -port 1082
+	go run dashboard.go -tls=false -ws ".*" -dockerVersion '1.24' -authUrl http://localhost:1081 -users admin:admin -corsHeaders Content-Type,Authorization -corsMethods GET,POST,DELETE -corsCredentials -port 1082
 
 start-front:
 	API_URL=http://localhost:1082 WS_URL=ws://localhost:1082/ws AUTH_URL=http://localhost:1081 BASIC_AUTH_ENABLED=true viws -spa -env API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED -csp "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' wss: localhost:1081 localhost:1082;" -directory `pwd`/dist

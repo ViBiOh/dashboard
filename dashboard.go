@@ -22,7 +22,7 @@ import (
 
 const websocketPrefix = `/ws`
 
-var restHandler = prometheus.Handler(`http`, rate.Handler(gziphandler.GzipHandler(owasp.Handler(cors.Handler(cors.Flags(``), docker.Handler())))))
+var restHandler http.Handler
 var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler())
 
 func handleGracefulClose() error {
@@ -57,6 +57,7 @@ func main() {
 	url := flag.String(`c`, ``, `URL to healthcheck (check and exit)`)
 	port := flag.String(`port`, `1080`, `Listen port`)
 	tls := flag.Bool(`tls`, true, `Serve TLS content`)
+	corsConfig := cors.Flags(``)
 	flag.Parse()
 
 	if *url != `` {
@@ -72,6 +73,8 @@ func main() {
 	}
 
 	log.Print(`Starting server on port ` + *port)
+
+	restHandler = prometheus.Handler(`http`, rate.Handler(gziphandler.GzipHandler(owasp.Handler(cors.Handler(corsConfig, docker.Handler())))))
 
 	server := &http.Server{
 		Addr:    `:` + *port,
