@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
@@ -7,7 +6,7 @@ const config = {
   entry: ['babel-polyfill', './index.jsx', './index.css'],
 
   resolve: {
-    modules: ['node_modules', 'src'],
+    modules: ['node_modules', 'app'],
     extensions: ['.js', '.jsx'],
   },
 
@@ -45,10 +44,6 @@ const config = {
     new ExtractTextPlugin({
       filename: 'app.css',
       allChunks: true,
-    }),
-    new webpack.DefinePlugin({
-      'process.env.API_HOST': JSON.stringify(process.env.API_HOST),
-      'process.env.API_SECURE': process.env.API_SECURE,
     }),
   ],
 
