@@ -1,4 +1,4 @@
-version: '2.1'
+version: '2'
 
 services:
   api:
@@ -19,14 +19,11 @@ services:
     - -corsMethods
     - GET,POST,DELETE
     - -corsCredentials
-    - -tls=false
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
-      traefik.protocol: 'http'
+      traefik.protocol: 'https'
       traefik.port: '1080'
-    healthcheck:
-      test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
     external_links:
     - auth_auth:auth
     networks:
