@@ -82,7 +82,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 	return ws, user, nil
 }
 
-func readContent(user *auth.User, ws *websocket.Conn, name string, done chan<- int, content chan<- []byte) {
+func readContent(user *auth.User, ws *websocket.Conn, name string, done chan<- struct{}, content chan<- []byte) {
 	for {
 		messageType, message, err := ws.ReadMessage()
 
@@ -206,7 +206,7 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 
-	done := make(chan int)
+	done := make(chan struct{})
 
 	output := make(chan []byte)
 	defer close(output)
