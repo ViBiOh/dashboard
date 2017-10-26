@@ -113,7 +113,7 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) (
 func getHostConfig(service *dockerComposeService) *container.HostConfig {
 	hostConfig := container.HostConfig{
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-			`max-size`: `50m`,
+			`max-size`: `10m`,
 		}},
 		NetworkMode:   networkMode,
 		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
