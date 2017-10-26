@@ -120,7 +120,7 @@ func TestGetHostConfig(t *testing.T) {
 			&dockerComposeService{},
 			&container.HostConfig{
 				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-					`max-size`: `50m`,
+					`max-size`: `10m`,
 				}},
 				NetworkMode:   networkMode,
 				RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
@@ -139,7 +139,7 @@ func TestGetHostConfig(t *testing.T) {
 			},
 			&container.HostConfig{
 				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-					`max-size`: `50m`,
+					`max-size`: `10m`,
 				}},
 				NetworkMode:    networkMode,
 				RestartPolicy:  container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
@@ -159,7 +159,7 @@ func TestGetHostConfig(t *testing.T) {
 			},
 			&container.HostConfig{
 				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-					`max-size`: `50m`,
+					`max-size`: `10m`,
 				}},
 				NetworkMode:    networkMode,
 				RestartPolicy:  container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
