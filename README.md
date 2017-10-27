@@ -94,47 +94,49 @@ It will compile API server.
 ```
 Usage of dashboard:
   -authUrl string
-        URL of auth service
+    	URL of auth service
   -c string
-        URL to healthcheck (check and exit)
+    	URL to healthcheck (check and exit)
   -corsCredentials
-        Access-Control-Allow-Credentials
+    	Access-Control-Allow-Credentials
   -corsExpose string
-        Access-Control-Expose-Headers
+    	Access-Control-Expose-Headers
   -corsHeaders string
-        Access-Control-Allow-Headers (default "Content-Type")
+    	Access-Control-Allow-Headers (default "Content-Type")
   -corsMethods string
-        Access-Control-Allow-Methods (default "GET")
+    	Access-Control-Allow-Methods (default "GET")
   -corsOrigin string
-        Access-Control-Allow-Origin (default "*")
+    	Access-Control-Allow-Origin (default "*")
   -csp string
-        Content-Security-Policy (default "default-src 'self'")
+    	Content-Security-Policy (default "default-src 'self'")
   -dockerHost string
-        Docker Host (default "unix:///var/run/docker.sock")
+    	Docker Host (default "unix:///var/run/docker.sock")
   -dockerVersion string
-        Docker API Version
+    	Docker API Version
   -hsts
-        Indicate Strict Transport Security (default true)
+    	Indicate Strict Transport Security (default true)
   -port string
-        Listen port (default "1080")
+    	Listen port (default "1080")
   -prometheusMetricsHost string
-        Prometheus - Allowed hostname to call metrics endpoint (default "localhost")
+    	Prometheus allowed hostname to call metrics endpoint (default "localhost")
   -prometheusMetricsPath string
-        Prometheus - Metrics endpoint path (default "/metrics")
+    	Prometheus metrics endpoint path (default "/metrics")
+  -prometheusPrefix string
+    	Prometheus prefix (default "http")
   -rateCount int
-        Rate IP limit (default 5000)
+    	Rate IP limit (default 5000)
   -tls
-        Serve TLS content (default true)
+    	Serve TLS content (default true)
   -tlscert string
-        TLS PEM Certificate file
+    	TLS PEM Certificate file
   -tlshosts string
-        TLS Self-signed certificate hosts, comma separated (default "localhost")
+    	TLS Self-signed certificate hosts, comma separated (default "localhost")
   -tlskey string
-        TLS PEM Key file
+    	TLS PEM Key file
   -users string
-        List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3
+    	List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3
   -ws string
-        Allowed WebSocket Origin pattern (default "^dashboard")
+    	Allowed WebSocket Origin pattern (default "^dashboard")
 ```
 
 ### Front

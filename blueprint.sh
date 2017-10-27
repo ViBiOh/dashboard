@@ -2,12 +2,13 @@
 
 set -e
 
-version=v0.6.4
+version=v1.1.0
 os=`uname | tr '[:upper:]' '[:lower:]'`
 
 curl -OL https://github.com/subosito/snowboard/releases/download/${version}/snowboard-${version}.${os}-amd64.tar.gz
 tar -zxvf snowboard-${version}.${os}-amd64.tar.gz
 
-./snowboard html -i docker/docker.apib -o web/api.html
+mkdir -p doc
+./snowboard html -o doc/api.html docker/docker.apib
 
 rm snowboard-${version}.${os}-amd64.tar.gz snowboard

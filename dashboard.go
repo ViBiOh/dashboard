@@ -48,6 +48,8 @@ func handleGracefulClose() error {
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
 		websocketHandler.ServeHTTP(w, r)
+	} else if r.Method == http.MethodGet && (r.URL.Path == `/` || r.URL.Path == ``) {
+		http.ServeFile(w, r, `doc/api.html`)
 	} else {
 		restHandler.ServeHTTP(w, r)
 	}

@@ -26,6 +26,8 @@ services:
     command:
     - -tls=false
     - -ws
+    - -csp
+    - "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:"
     - .*
     - -dockerVersion
     - '1.24'
