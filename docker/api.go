@@ -103,11 +103,6 @@ func Handler() http.Handler {
 			return
 		}
 
-		if r.Method == http.MethodGet && (r.URL.Path == `/` || r.URL.Path == ``) {
-			http.ServeFile(w, r, `doc/api.html`)
-			return
-		}
-
 		user, err := auth.IsAuthenticated(r)
 		if err != nil {
 			httputils.Unauthorized(w, err)
