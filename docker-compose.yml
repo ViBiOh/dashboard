@@ -6,12 +6,10 @@ services:
     command:
     - -prometheusMetricsHost
     - dashboard-api:1080
-    - -csp
-    - "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:"
-    - -dockerVersion
-    - '1.24'
     - -ws
     - ^dashboard-api\.vibioh\.fr$$
+    - -dockerVersion
+    - '1.24'
     - -authUrl
     - https://auth:1080
     - -users
@@ -21,6 +19,8 @@ services:
     - -corsMethods
     - GET,POST,DELETE
     - -corsCredentials
+    - -csp
+    - "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:"
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'

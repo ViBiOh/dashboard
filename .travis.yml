@@ -22,7 +22,8 @@ after_success: |
     curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create &&
     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && \
     docker push ${DOCKER_USER}/dashboard-front && \
-    docker push ${DOCKER_USER}/dashboard-api
+    docker push ${DOCKER_USER}/dashboard-api && \
+    make deps-start && ./e2e_ci.sh
   fi
 notifications:
   email: false
