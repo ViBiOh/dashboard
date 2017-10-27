@@ -23,7 +23,7 @@ import (
 const websocketPrefix = `/ws`
 
 var restHandler http.Handler
-var websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler())
+var websocketHandler http.Handler
 
 func handleGracefulClose() error {
 	if docker.CanBeGracefullyClosed() {
@@ -48,8 +48,6 @@ func handleGracefulClose() error {
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, websocketPrefix) {
 		websocketHandler.ServeHTTP(w, r)
-	} else if r.Method == http.MethodGet && (r.URL.Path == `/` || r.URL.Path == ``) {
-		http.ServeFile(w, r, `doc/api.html`)
 	} else {
 		restHandler.ServeHTTP(w, r)
 	}
@@ -80,6 +78,7 @@ func main() {
 	log.Print(`Starting server on port ` + *port)
 
 	restHandler = prometheus.Handler(prometheusConfig, rate.Handler(rateConfig, gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, docker.Handler())))))
+	websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler())
 
 	server := &http.Server{
 		Addr:    `:` + *port,
