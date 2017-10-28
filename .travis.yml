@@ -23,7 +23,8 @@ after_success: |
     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && \
     docker push ${DOCKER_USER}/dashboard-front && \
     docker push ${DOCKER_USER}/dashboard-api && \
-    make deps-start && ./e2e_ci.sh
+    make deps-start && ./e2e_ci.sh &&
+    ./bin/compose > docker-compose.yml
   fi
 notifications:
   email: false
