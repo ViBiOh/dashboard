@@ -8,7 +8,7 @@ import (
 	"text/template"
 )
 
-const dockerCompose = `version: '2'
+const dockerCompose = `version: '2.1'
 
 services:
   {{- if .Auth }}
@@ -29,6 +29,10 @@ services:
       traefik.frontend.rule: 'Host: auth{{ .Domain }}'
       traefik.protocol: 'http{{ if .TLS }}s{{ end }}'
       traefik.port: '1080'
+    {{- end }}
+    {{- if not .TLS }}
+    healthcheck:
+      test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
     {{- end }}
     logging:
       driver: json-file
@@ -71,19 +75,23 @@ services:
     - -corsCredentials
     - -csp
     - "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:"
-  {{- if .Traefik }}
+    {{- if .Traefik }}
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api{{ .Domain }}'
       traefik.protocol: 'http{{ if .TLS }}s{{ end }}'
       traefik.port: '1080'
-  {{- end }}
-  {{- if .Prometheus }}
+    {{- end }}
+    {{- if not .TLS }}
+    healthcheck:
+      test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
+    {{- end }}
+    {{- if .Prometheus }}
     networks:
       default:
         aliases:
         - dashboard-api
-  {{- end }}
+    {{- end }}
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     logging:
@@ -118,6 +126,10 @@ services:
       traefik.frontend.rule: 'Host: dashboard{{ .Domain }}'
       traefik.protocol: 'http{{ if .TLS }}s{{ end }}'
       traefik.port: '1080'
+    {{- end }}
+    {{- if not .TLS }}
+    healthcheck:
+      test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
     {{- end }}
     environment:
       {{- if .Traefik }}
