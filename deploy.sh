@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -x
 
 function readVariableIfRequired() {
   if [ -z "${!1}" ]; then
@@ -21,10 +22,6 @@ function docker-clean() {
 function docker-compose-deploy() {
   PROJECT_NAME=${1}
   readVariableIfRequired "PROJECT_NAME"
-
-  DOMAIN=${2}
-  readVariableIfRequired "DOMAIN"
-  export DOMAIN=${DOMAIN}
 
   PROJECT_FULLNAME_SEPARATOR="uuu"
   PROJECT_FULLNAME=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR}`git rev-parse --short HEAD`
@@ -77,4 +74,4 @@ git clone ${PROJECT_URL} ${PROJECT_NAME}
 cd ${PROJECT_NAME}
 
 echo "Deploying ${PROJECT_NAME}"
-docker-compose-deploy ${PROJECT_NAME} ${3}
+docker-compose-deploy ${PROJECT_NAME}
