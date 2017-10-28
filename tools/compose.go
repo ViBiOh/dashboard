@@ -23,6 +23,13 @@ services:
     - -corsHeaders
     - Authorization
     - -corsCredentials
+    {{- if .Traefik }}
+    labels:
+      traefik.frontend.passHostHeader: 'true'
+      traefik.frontend.rule: 'Host: auth{{ .Domain }}'
+      traefik.protocol: 'http{{ if .TLS }}s{{ end }}'
+      traefik.port: '1080'
+    {{- end }}
     logging:
       driver: json-file
       options:

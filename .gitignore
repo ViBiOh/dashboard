@@ -16,4 +16,4 @@ debug.test
 cacert.pem
 
 # Docker
-docker-compose.*
+docker-compose.*.yml
