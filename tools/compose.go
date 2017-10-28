@@ -139,12 +139,12 @@ services:
       {{- else }}
       BASIC_AUTH_ENABLED: 'true'
       {{- end }}
-  	{{- if .Prometheus }}
+    {{- if .Prometheus }}
     networks:
       default:
         aliases:
         - dashboard
-  	{{- end }}
+    {{- end }}
     logging:
       driver: json-file
       options:
