@@ -26,7 +26,7 @@ services:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
       traefik.protocol: 'https'
-    traefik.port: '1080'
+      traefik.port: '1080'
     networks:
       default:
         aliases:

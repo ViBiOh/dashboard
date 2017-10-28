@@ -76,7 +76,7 @@ services:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api{{ .Domain }}'
       traefik.protocol: 'http{{ if .TLS }}s{{ end }}'
-    traefik.port: '1080'
+      traefik.port: '1080'
   {{- end }}
   {{- if .Prometheus }}
     networks:
