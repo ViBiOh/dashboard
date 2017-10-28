@@ -16,7 +16,7 @@ services:
     image: vibioh/auth
     command:
     {{- if not .TLS }}
-    - tls=false
+    - -tls=false
     {{- end }}
     - -basicUsers
     - admin:${ADMIN_PASSWORD}
@@ -43,7 +43,7 @@ services:
     - dashboard-api:1080
     {{- end }}
     {{- if not .TLS }}
-    - tls=false
+    - -tls=false
     {{- end }}
     - -ws
     {{- if .Traefik }}
