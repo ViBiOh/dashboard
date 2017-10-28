@@ -148,23 +148,22 @@ services:
     mem_limit: 67108864
     security_opt:
     - no-new-privileges
-
-    {{- if .Selenium }}
-    chrome:
-      image: selenium/standalone-chrome
-      ports:
-      - 4444:4444/tcp
-      volumes:
-      - /dev/shm:/dev/shm
-      logging:
-        driver: json-file
-        options:
-          max-size: '50m'
-      restart: on-failure:5
-      cpu_shares: 128
-      mem_limit: 1073741824
-    {{- end }}
-{{ if .Traefik }}
+  {{ if .Selenium }}
+  chrome:
+    image: selenium/standalone-chrome
+    ports:
+    - 4444:4444/tcp
+    volumes:
+    - /dev/shm:/dev/shm
+    logging:
+      driver: json-file
+      options:
+        max-size: '50m'
+    restart: on-failure:5
+    cpu_shares: 128
+    mem_limit: 1073741824
+  {{- end }}
+{{- if .Traefik }}
 networks:
   default:
     external:
