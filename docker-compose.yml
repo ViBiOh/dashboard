@@ -11,7 +11,7 @@ services:
     - -dockerVersion
     - '1.24'
     - -authUrl
-    - https://auth:1080
+    - https://auth.vibioh.fr
     - -users
     - vibioh:admin|eponae:multi
     - -corsHeaders
