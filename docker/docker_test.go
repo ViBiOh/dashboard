@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/auth/auth"
 	"github.com/docker/docker/api/types/filters"
 )
 

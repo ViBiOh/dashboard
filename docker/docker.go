@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/auth/auth"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 )
@@ -13,6 +13,8 @@ const ownerLabel = `owner`
 const appLabel = `app`
 
 var docker *client.Client
+var authURL string
+var authUsers map[string]*auth.User
 
 var (
 	dockerHost    = flag.String(`dockerHost`, `unix:///var/run/docker.sock`, `Docker Host`)
@@ -20,7 +22,10 @@ var (
 )
 
 // Init docker client
-func Init() error {
+func Init(url string, users map[string]*auth.User) error {
+	authURL = url
+	authUsers = users
+
 	client, err := client.NewClient(*dockerHost, *dockerVersion, nil, nil)
 	if err != nil {
 		return fmt.Errorf(`Error while creating docker client: %v`, err)

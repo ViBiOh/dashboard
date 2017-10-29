@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/auth/auth"
 	"github.com/ViBiOh/httputils"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"

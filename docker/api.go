@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/auth/auth"
 	"github.com/ViBiOh/httputils"
 )
 
@@ -108,7 +108,7 @@ func Handler() http.Handler {
 			return
 		}
 
-		user, err := auth.IsAuthenticated(r)
+		user, err := auth.IsAuthenticated(authURL, authUsers, r)
 		if err != nil {
 			httputils.Unauthorized(w, err)
 			return

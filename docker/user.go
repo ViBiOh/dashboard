@@ -3,7 +3,7 @@ package docker
 import (
 	"fmt"
 
-	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/auth/auth"
 	"github.com/docker/docker/api/types"
 )
 

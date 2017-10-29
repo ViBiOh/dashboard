@@ -10,7 +10,7 @@ import (
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/ViBiOh/alcotest/alcotest"
-	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/auth/auth"
 	"github.com/ViBiOh/dashboard/docker"
 	"github.com/ViBiOh/httputils"
 	"github.com/ViBiOh/httputils/cert"
@@ -57,6 +57,7 @@ func main() {
 	url := flag.String(`c`, ``, `URL to healthcheck (check and exit)`)
 	port := flag.String(`port`, `1080`, `Listen port`)
 	tls := flag.Bool(`tls`, true, `Serve TLS content`)
+	authConfig := auth.Flags(`auth`)
 	prometheusConfig := prometheus.Flags(`prometheus`)
 	rateConfig := rate.Flags(`rate`)
 	owaspConfig := owasp.Flags(``)
@@ -68,10 +69,7 @@ func main() {
 		return
 	}
 
-	if err := auth.Init(); err != nil {
-		log.Printf(`Error while initializing auth: %v`, err)
-	}
-	if err := docker.Init(); err != nil {
+	if err := docker.Init(*authConfig[`url`], auth.LoadUsersProfiles(*authConfig[`users`])); err != nil {
 		log.Printf(`Error while initializing docker: %v`, err)
 	}
 

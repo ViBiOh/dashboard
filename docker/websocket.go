@@ -11,7 +11,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ViBiOh/dashboard/auth"
+	"github.com/ViBiOh/auth/auth"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/gorilla/websocket"
@@ -72,7 +72,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 		return nil, nil, fmt.Errorf(`Error while reading authentification message: %v`, err)
 	}
 
-	user, err := auth.IsAuthenticatedByAuth(string(basicAuth), ws.RemoteAddr().String())
+	user, err := auth.IsAuthenticatedByAuth(authURL, authUsers, string(basicAuth), ws.RemoteAddr().String())
 	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
 		defer ws.Close()
