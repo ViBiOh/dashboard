@@ -66,7 +66,7 @@ services:
     - '1.24'
     - -authUrl
     - http{{ if .TLS }}s{{ end }}://auth{{ .Domain }}
-    - -users
+    - -authUsers
     - {{ .Users }}
     - -corsHeaders
     - Content-Type,Authorization

@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
 
@@ -13,7 +13,7 @@ services:
     - '1.24'
     - -authUrl
     - https://auth.vibioh.fr
-    - -users
+    - -authUsers
     - vibioh:admin|eponae:multi
     - -corsHeaders
     - Content-Type,Authorization
