@@ -9,6 +9,4 @@ curl -OL https://github.com/subosito/snowboard/releases/download/${version}/snow
 tar -zxvf snowboard-${version}.${os}-amd64.tar.gz
 
 mkdir -p doc
-./snowboard html -o doc/api.html docker/docker.apib
-
-rm snowboard-${version}.${os}-amd64.tar.gz snowboard
+./snowboard html -o doc/api.html api.apib

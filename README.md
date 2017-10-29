@@ -100,7 +100,9 @@ It will compile API server.
 ```
 Usage of dashboard:
   -authUrl string
-    	URL of auth service
+    	[auth] Auth URL
+  -authUsers string
+    	[auth] List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3)
   -c string
     	URL to healthcheck (check and exit)
   -corsCredentials
@@ -139,8 +141,6 @@ Usage of dashboard:
     	TLS Self-signed certificate hosts, comma separated (default "localhost")
   -tlskey string
     	TLS PEM Key file
-  -users string
-    	List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3
   -ws string
     	Allowed WebSocket Origin pattern (default "^dashboard")
 ```
