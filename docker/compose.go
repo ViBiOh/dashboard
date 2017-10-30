@@ -325,7 +325,7 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 		}
 	} else {
 		deleteServices(appName, services, user)
-		log.Printf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, fmt.Errorf(`[Health check failed`))
+		log.Printf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, fmt.Errorf(`Health check failed`))
 	}
 }
 
