@@ -243,7 +243,7 @@ func deleteServices(appName string, services map[string]*deployedService, user *
 			log.Printf(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service, err)
 		}
 
-		if _, err := rmContainer(container.ID, infos, false); err != nil {
+		if _, err := rmContainer(container.ID, infos, true); err != nil {
 			log.Printf(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service, err)
 		}
 	}
