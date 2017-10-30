@@ -30,7 +30,7 @@ func TestGetConfig(t *testing.T) {
 					Interval: `abcd`,
 				},
 			},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			nil,
 			fmt.Errorf(`Error while parsing healthcheck interval: time: invalid duration abcd`),
@@ -42,14 +42,14 @@ func TestGetConfig(t *testing.T) {
 					Timeout:  `abcd`,
 				},
 			},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			nil,
 			fmt.Errorf(`Error while parsing healthcheck timeout: time: invalid duration abcd`),
 		},
 		{
 			&dockerComposeService{},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			&container.Config{
 				Labels: map[string]string{`owner`: `admin`, `app`: `test`},
@@ -70,7 +70,7 @@ func TestGetConfig(t *testing.T) {
 					Timeout:  `10s`,
 				},
 			},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			&container.Config{
 				Image:  `vibioh/dashboard`,
@@ -488,14 +488,14 @@ func TestInspectServices(t *testing.T) {
 		{
 			nil,
 			map[string]*deployedService{`test`: {}},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			[]*types.ContainerJSON{},
 		},
 		{
 			types.ContainerJSON{},
 			map[string]*deployedService{`test`: {}},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			[]*types.ContainerJSON{{}},
 		},
@@ -519,7 +519,7 @@ func TestComposeFailed(t *testing.T) {
 		wantStatus int
 	}{
 		{
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			errors.New(`test unit error`),
 			`[admin] [test] Failed to deploy: test unit error

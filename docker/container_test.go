@@ -26,7 +26,7 @@ func TestListContainers(t *testing.T) {
 			[]types.Container{
 				{ID: `test`},
 			},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			``,
 			[]types.Container{
 				{ID: `test`},
@@ -35,7 +35,7 @@ func TestListContainers(t *testing.T) {
 		},
 		{
 			nil,
-			auth.NewUser(`guest`, `guest`),
+			auth.NewUser(0, `guest`, `guest`),
 			``,
 			nil,
 			errors.New(`error during connect: Get http://localhost/containers/json?all=1&filters=%7B%22label%22%3A%7B%22owner%3Dguest%22%3Atrue%7D%7D&limit=0: internal server error`),
@@ -436,7 +436,7 @@ func TestBasicActionHandler(t *testing.T) {
 	}{
 		{
 			nil,
-			auth.NewUser(`guest`, `guest`),
+			auth.NewUser(0, `guest`, `guest`),
 			`test`,
 			getAction,
 			`Error while inspecting container: error during connect: Get http://localhost/containers/test/json: internal server error
@@ -445,7 +445,7 @@ func TestBasicActionHandler(t *testing.T) {
 		},
 		{
 			types.ContainerJSON{Config: &container.Config{}},
-			auth.NewUser(`guest`, `guest`),
+			auth.NewUser(0, `guest`, `guest`),
 			`test`,
 			getAction,
 			`
@@ -454,7 +454,7 @@ func TestBasicActionHandler(t *testing.T) {
 		},
 		{
 			types.ContainerJSON{},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			`unknown`,
 			`Unknown action test
@@ -463,7 +463,7 @@ func TestBasicActionHandler(t *testing.T) {
 		},
 		{
 			types.ContainerJSON{},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			getAction,
 			`{"Mounts":null,"Config":null,"NetworkSettings":null}`,
@@ -495,7 +495,7 @@ func TestListContainersHandler(t *testing.T) {
 	}{
 		{
 			nil,
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`error during connect: Get http://localhost/containers/json?all=1&limit=0: internal server error
 `,
 			http.StatusInternalServerError,
@@ -504,7 +504,7 @@ func TestListContainersHandler(t *testing.T) {
 			[]types.Container{
 				{ID: `test`},
 			},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`{"results":[{"Id":"test","Names":null,"Image":"","ImageID":"","Command":"","Created":0,"Ports":null,"Labels":null,"State":"","Status":"","HostConfig":{},"NetworkSettings":null,"Mounts":null}]}`,
 			http.StatusOK,
 		},

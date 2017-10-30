@@ -22,14 +22,14 @@ func TestListServices(t *testing.T) {
 	}{
 		{
 			[]swarm.Service{{ID: `test`}},
-			auth.NewUser(`test`, `test`),
+			auth.NewUser(0, `test`, `test`),
 			`test`,
 			[]swarm.Service{{ID: `test`}},
 			nil,
 		},
 		{
 			nil,
-			auth.NewUser(`test`, `test`),
+			auth.NewUser(0, `test`, `test`),
 			`test`,
 			nil,
 			errors.New(`error during connect: Get http://localhost/services?filters=%7B%22label%22%3A%7B%22owner%3Dtest%22%3Atrue%7D%7D: internal server error`),
@@ -76,14 +76,14 @@ func TestListServicesHandler(t *testing.T) {
 		},
 		{
 			nil,
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`error during connect: Get http://localhost/services: internal server error
 `,
 			http.StatusInternalServerError,
 		},
 		{
 			[]swarm.Service{{ID: `test`}},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`{"results":[{"ID":"test","Version":{},"CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z","Spec":{"Labels":null,"TaskTemplate":{"ForceUpdate":0},"Mode":{}},"Endpoint":{"Spec":{}}}]}`,
 			http.StatusOK,
 		},
@@ -125,7 +125,7 @@ func TestServicesHandler(t *testing.T) {
 			[]swarm.Service{{ID: `test`}},
 			httptest.NewRequest(http.MethodGet, `/`, nil),
 			`/`,
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`{"results":[{"ID":"test","Version":{},"CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z","Spec":{"Labels":null,"TaskTemplate":{"ForceUpdate":0},"Mode":{}},"Endpoint":{"Spec":{}}}]}`,
 			http.StatusOK,
 		},

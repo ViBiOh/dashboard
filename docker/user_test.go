@@ -20,11 +20,11 @@ func TestIsAdmin(t *testing.T) {
 			false,
 		},
 		{
-			auth.NewUser(`guest`, `guest,multi`),
+			auth.NewUser(0, `guest`, `guest,multi`),
 			false,
 		},
 		{
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			true,
 		},
 	}
@@ -46,11 +46,11 @@ func TestIsMultiApp(t *testing.T) {
 			false,
 		},
 		{
-			auth.NewUser(`guest`, `guest,multi`),
+			auth.NewUser(0, `guest`, `guest,multi`),
 			true,
 		},
 		{
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			true,
 		},
 	}
@@ -81,7 +81,7 @@ func TestIsAllowed(t *testing.T) {
 		},
 		{
 			nil,
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			``,
 			false,
 			nil,
@@ -89,7 +89,7 @@ func TestIsAllowed(t *testing.T) {
 		},
 		{
 			types.ContainerJSON{},
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			``,
 			true,
 			&types.ContainerJSON{},
@@ -97,7 +97,7 @@ func TestIsAllowed(t *testing.T) {
 		},
 		{
 			types.ContainerJSON{Config: &container.Config{}},
-			auth.NewUser(`guest`, `guest`),
+			auth.NewUser(0, `guest`, `guest`),
 			``,
 			false,
 			nil,
@@ -105,7 +105,7 @@ func TestIsAllowed(t *testing.T) {
 		},
 		{
 			types.ContainerJSON{Config: &container.Config{Labels: map[string]string{ownerLabel: `guest`}}},
-			auth.NewUser(`guest`, `guest`),
+			auth.NewUser(0, `guest`, `guest`),
 			``,
 			true,
 			&types.ContainerJSON{Config: &container.Config{Labels: map[string]string{ownerLabel: `guest`}}},

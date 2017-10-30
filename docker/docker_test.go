@@ -15,22 +15,22 @@ func TestLabelFilters(t *testing.T) {
 		want []string
 	}{
 		{
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			``,
 			nil,
 		},
 		{
-			auth.NewUser(`guest`, `guest`),
+			auth.NewUser(0, `guest`, `guest`),
 			``,
 			[]string{`owner=guest`},
 		},
 		{
-			auth.NewUser(`admin`, `admin`),
+			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			[]string{`app=test`},
 		},
 		{
-			auth.NewUser(`guest`, `guest`),
+			auth.NewUser(0, `guest`, `guest`),
 			`test`,
 			[]string{`owner=guest`},
 		},
