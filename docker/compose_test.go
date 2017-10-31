@@ -125,7 +125,7 @@ func TestGetHostConfig(t *testing.T) {
 				NetworkMode:   networkMode,
 				RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 				Resources: container.Resources{
-					CPUShares: 128,
+					CPUShares: defaultCPUShares,
 					Memory:    minMemory,
 				},
 				SecurityOpt: []string{`no-new-privileges`},
@@ -174,7 +174,7 @@ func TestGetHostConfig(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		if result := getHostConfig(testCase.service); !reflect.DeepEqual(result, testCase.want) {
+		if result := getHostConfig(testCase.service, nil); !reflect.DeepEqual(result, testCase.want) {
 			t.Errorf(`getHostConfig(%v) = %v, want %v`, testCase.service, result, testCase.want)
 		}
 	}

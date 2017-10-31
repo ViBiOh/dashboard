@@ -20,6 +20,7 @@ import (
 	"github.com/docker/docker/api/types/network"
 )
 
+const defaultCPUShares = 128
 const minMemory = 16777216
 const maxMemory = 805306368
 const tagSeparator = `:`
@@ -42,6 +43,7 @@ type dockerComposeService struct {
 	Labels      map[string]string
 	Links       []string
 	Ports       []string
+	Volumes     []string
 	Healthcheck *dockerComposeHealthcheck
 	ReadOnly    bool  `yaml:"read_only"`
 	CPUShares   int64 `yaml:"cpu_shares"`
@@ -111,7 +113,7 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) (
 	return &config, nil
 }
 
-func getHostConfig(service *dockerComposeService) *container.HostConfig {
+func getHostConfig(service *dockerComposeService, user *auth.User) *container.HostConfig {
 	hostConfig := container.HostConfig{
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 			`max-size`: `10m`,
@@ -119,7 +121,7 @@ func getHostConfig(service *dockerComposeService) *container.HostConfig {
 		NetworkMode:   networkMode,
 		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 		Resources: container.Resources{
-			CPUShares: 128,
+			CPUShares: defaultCPUShares,
 			Memory:    minMemory,
 		},
 		SecurityOpt: []string{`no-new-privileges`},
@@ -373,7 +375,7 @@ func createContainer(user *auth.User, appName string, serviceName string, servic
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	createdContainer, err := docker.ContainerCreate(ctx, config, getHostConfig(service), getNetworkConfig(service, services), serviceFullName)
+	createdContainer, err := docker.ContainerCreate(ctx, config, getHostConfig(service, user), getNetworkConfig(service, services), serviceFullName)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while creating service %s: %v`, serviceName, err)
 	}
