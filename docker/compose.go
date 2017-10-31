@@ -265,6 +265,7 @@ func logServiceOutput(user *auth.User, appName string, service *deployedService)
 		logLine := scanner.Bytes()
 		if len(logLine) > ignoredByteLogSize {
 			logsContent = append(logsContent, string(logLine[ignoredByteLogSize:]))
+			logsContent = append(logsContent, "\n")
 		}
 	}
 
