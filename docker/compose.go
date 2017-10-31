@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -233,8 +234,8 @@ func logServiceOutput(user *auth.User, appName string, service *deployedService)
 		log.Printf(`[%s] [%s] Error while reading logs for service %s: %v`, user.Username, appName, service.Name, err)
 		return
 	}
-	
-	logsContent, err := httputils.ReadBody(logs.Body)
+
+	logsContent, err := ioutil.ReadAll(logs)
 	if err != nil {
 		log.Printf(`[%s] [%s] Error while reading logs content for service %s: %v`, user.Username, appName, service.Name, err)
 		return
