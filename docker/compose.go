@@ -223,28 +223,50 @@ func getFinalName(serviceFullName string) string {
 	return strings.TrimSuffix(serviceFullName, deploySuffix)
 }
 
+func logServiceOutput(user *auth.User, appName string, service *deployedService) {
+	ctx, _ := getCtx()
+	logs, err := docker.ContainerLogs(ctx, service.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
+	if logs != nil {
+		defer logs.Close()
+	}
+	if err != nil {
+		log.Printf(`[%s] [%s] Error while reading logs for service %s: %v`, user.Username, appName, service.Name, err)
+		return
+	}
+
+	log.Printf(`[%s] [%s] Logs output for %s: %s`, user.Username, appName, service.Name, logs)
+}
+
+func logServiceHealth(user *auth.User, appName string, service *deployedService, infos *types.ContainerJSON) {
+	if infos.State.Health != nil {
+		inspectOutput := make([]string, 0)
+
+		inspectOutput = append(inspectOutput, "\n")
+		for _, log := range infos.State.Health.Log {
+			inspectOutput = append(inspectOutput, log.Output)
+		}
+
+		log.Printf(`[%s] [%s] Healthcheck output for %s: %s`, user.Username, appName, service.Name, inspectOutput)
+	}
+}
+
 func deleteServices(appName string, services map[string]*deployedService, user *auth.User) {
 	for service, container := range services {
+		logServiceOutput(user, appName, container)
+
 		infos, err := inspectContainer(container.ID)
 		if err != nil {
 			log.Printf(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service, err)
-		} else if infos.State.Health != nil {
-			logs := make([]string, 0)
+		} else {
+			logServiceHealth(user, appName, container, infos)
 
-			logs = append(logs, "\n")
-			for _, log := range infos.State.Health.Log {
-				logs = append(logs, log.Output)
+			if _, err := stopContainer(container.ID, infos); err != nil {
+				log.Printf(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service, err)
 			}
 
-			log.Printf(`[%s] [%s] Healthcheck output for %s: %s`, user.Username, appName, service, logs)
-		}
-
-		if _, err := stopContainer(container.ID, infos); err != nil {
-			log.Printf(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service, err)
-		}
-
-		if _, err := rmContainer(container.ID, infos, true); err != nil {
-			log.Printf(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service, err)
+			if _, err := rmContainer(container.ID, infos, true); err != nil {
+				log.Printf(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service, err)
+			}
 		}
 	}
 }
