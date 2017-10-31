@@ -124,6 +124,7 @@ func getVolumesConfig(hostConfig *container.HostConfig, volumes []string) {
 			}
 
 			hostConfig.Mounts = append(hostConfig.Mounts, volume)
+			hostConfig.Binds = append(hostConfig.Binds, rawVolume)
 		}
 	}
 }
