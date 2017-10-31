@@ -233,8 +233,14 @@ func logServiceOutput(user *auth.User, appName string, service *deployedService)
 		log.Printf(`[%s] [%s] Error while reading logs for service %s: %v`, user.Username, appName, service.Name, err)
 		return
 	}
+	
+	logsContent, err := httputils.ReadBody(logs.Body)
+	if err != nil {
+		log.Printf(`[%s] [%s] Error while reading logs content for service %s: %v`, user.Username, appName, service.Name, err)
+		return
+	}
 
-	log.Printf(`[%s] [%s] Logs output for %s: %s`, user.Username, appName, service.Name, logs)
+	log.Printf(`[%s] [%s] Logs output for %s: %s`, user.Username, appName, service.Name, logsContent)
 }
 
 func logServiceHealth(user *auth.User, appName string, service *deployedService, infos *types.ContainerJSON) {
