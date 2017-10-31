@@ -1,10 +1,10 @@
 package docker
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -256,10 +256,13 @@ func logServiceOutput(user *auth.User, appName string, service *deployedService)
 		return
 	}
 
-	logsContent, err := ioutil.ReadAll(logs)
-	if err != nil {
-		log.Printf(`[%s] [%s] Error while reading logs content for service %s: %v`, user.Username, appName, service.Name, err)
-		return
+	logsContent := make([]byte, 0)
+	scanner := bufio.NewScanner(logs)
+	for scanner.Scan() {
+		logLine := scanner.Bytes()
+		if len(logLine) > ignoredByteLogSize {
+			logsContent = append(logsContent, logLine[ignoredByteLogSize:]...)
+		}
 	}
 
 	log.Printf(`[%s] [%s] Logs output for %s: %s`, user.Username, appName, service.Name, logsContent)
