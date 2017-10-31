@@ -166,8 +166,10 @@ func getHostConfig(service *dockerComposeService, user *auth.User) *container.Ho
 	return &hostConfig
 }
 
-func getNetworkConfig(service *dockerComposeService, deployedServices map[string]*deployedService) *network.NetworkingConfig {
+func getNetworkConfig(serviceName string, service *dockerComposeService, deployedServices map[string]*deployedService) *network.NetworkingConfig {
 	traefikConfig := network.EndpointSettings{}
+
+	traefikConfig.Aliases = append(traefikConfig.Aliases, serviceName)
 
 	for _, link := range service.Links {
 		linkParts := strings.Split(link, colonSeparator)
@@ -401,7 +403,7 @@ func createContainer(user *auth.User, appName string, serviceName string, servic
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	createdContainer, err := docker.ContainerCreate(ctx, config, getHostConfig(service, user), getNetworkConfig(service, services), serviceFullName)
+	createdContainer, err := docker.ContainerCreate(ctx, config, getHostConfig(service, user), getNetworkConfig(serviceName, service, services), serviceFullName)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while creating service %s: %v`, serviceName, err)
 	}

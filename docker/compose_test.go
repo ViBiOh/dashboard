@@ -191,7 +191,9 @@ func TestGetNetworkConfig(t *testing.T) {
 			nil,
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
-					networkMode: {},
+					networkMode: {
+						Aliases: []string{`service`},
+					},
 				},
 			},
 		},
@@ -203,7 +205,8 @@ func TestGetNetworkConfig(t *testing.T) {
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
 					networkMode: {
-						Links: []string{`db:db`},
+						Aliases: []string{`service`},
+						Links:   []string{`db:db`},
 					},
 				},
 			},
@@ -216,7 +219,8 @@ func TestGetNetworkConfig(t *testing.T) {
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
 					networkMode: {
-						Links: []string{`test_postgres:db`},
+						Aliases: []string{`service`},
+						Links:   []string{`test_postgres:db`},
 					},
 				},
 			},
@@ -229,7 +233,8 @@ func TestGetNetworkConfig(t *testing.T) {
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
 					networkMode: {
-						Links: []string{`db:postgres`},
+						Aliases: []string{`service`},
+						Links:   []string{`db:postgres`},
 					},
 				},
 			},
@@ -237,7 +242,7 @@ func TestGetNetworkConfig(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		if result := getNetworkConfig(testCase.service, testCase.deployedServices); !reflect.DeepEqual(result, testCase.want) {
+		if result := getNetworkConfig(`service`, testCase.service, testCase.deployedServices); !reflect.DeepEqual(result, testCase.want) {
 			t.Errorf(`getNetworkConfig(%v, %v) = %v, want %v`, testCase.service, testCase.deployedServices, result, testCase.want)
 		}
 	}
