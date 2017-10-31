@@ -17,17 +17,17 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/network"
 )
 
 const defaultCPUShares = 128
 const minMemory = 16777216
 const maxMemory = 805306368
-const tagSeparator = `:`
+const colonSeparator = `:`
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
 const networkMode = `traefik`
-const linkSeparator = `:`
 
 type dockerComposeHealthcheck struct {
 	Test     []string
@@ -113,6 +113,21 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) (
 	return &config, nil
 }
 
+func getVolumesConfig(hostConfig *container.HostConfig, volumes []string) {
+	for _, rawVolume := range volumes {
+		parts := strings.Split(rawVolume, colonSeparator)
+
+		if len(parts) > 1 && parts[0] != `/` {
+			volume := mount.Mount{Source: parts[0], Target: parts[1]}
+			if len(parts) > 2 && parts[2] == `ro` {
+				volume.ReadOnly = true
+			}
+
+			hostConfig.Mounts = append(hostConfig.Mounts, volume)
+		}
+	}
+}
+
 func getHostConfig(service *dockerComposeService, user *auth.User) *container.HostConfig {
 	hostConfig := container.HostConfig{
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
@@ -143,6 +158,10 @@ func getHostConfig(service *dockerComposeService, user *auth.User) *container.Ho
 		}
 	}
 
+	if isAdmin(user) && len(service.Volumes) > 0 {
+		getVolumesConfig(&hostConfig, service.Volumes)
+	}
+
 	return &hostConfig
 }
 
@@ -150,7 +169,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices map[string
 	traefikConfig := network.EndpointSettings{}
 
 	for _, link := range service.Links {
-		linkParts := strings.Split(link, linkSeparator)
+		linkParts := strings.Split(link, colonSeparator)
 
 		target := linkParts[0]
 		if linkedService, ok := deployedServices[target]; ok {
@@ -162,7 +181,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices map[string
 			alias = linkParts[1]
 		}
 
-		traefikConfig.Links = append(traefikConfig.Links, target+linkSeparator+alias)
+		traefikConfig.Links = append(traefikConfig.Links, target+colonSeparator+alias)
 	}
 
 	return &network.NetworkingConfig{
@@ -173,7 +192,7 @@ func getNetworkConfig(service *dockerComposeService, deployedServices map[string
 }
 
 func pullImage(image string) error {
-	if !strings.Contains(image, tagSeparator) {
+	if !strings.Contains(image, colonSeparator) {
 		image = image + defaultTag
 	}
 
