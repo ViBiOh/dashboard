@@ -257,12 +257,14 @@ func logServiceOutput(user *auth.User, appName string, service *deployedService)
 		return
 	}
 
-	logsContent := make([]byte, 0)
+	logsContent := make([]string, 0)
+	logsContent = append(logsContent, "\n")
+
 	scanner := bufio.NewScanner(logs)
 	for scanner.Scan() {
 		logLine := scanner.Bytes()
 		if len(logLine) > ignoredByteLogSize {
-			logsContent = append(logsContent, logLine[ignoredByteLogSize:]...)
+			logsContent = append(logsContent, string(logLine[ignoredByteLogSize:]))
 		}
 	}
 
@@ -272,8 +274,8 @@ func logServiceOutput(user *auth.User, appName string, service *deployedService)
 func logServiceHealth(user *auth.User, appName string, service *deployedService, infos *types.ContainerJSON) {
 	if infos.State.Health != nil {
 		inspectOutput := make([]string, 0)
-
 		inspectOutput = append(inspectOutput, "\n")
+
 		for _, log := range infos.State.Health.Log {
 			inspectOutput = append(inspectOutput, log.Output)
 		}
