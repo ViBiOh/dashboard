@@ -46,10 +46,16 @@ func CanBeGracefullyClosed() (canBe bool) {
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	if docker != nil {
-		w.WriteHeader(http.StatusOK)
-	} else {
-		w.WriteHeader(http.StatusServiceUnavailable)
+		ctx, cancel := getCtx()
+		defer cancel()
+
+		if _, err := docker.Ping(ctx); err == nil {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 	}
+
+	w.WriteHeader(http.StatusServiceUnavailable)
 }
 
 func infoHandler(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +70,7 @@ func infoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
-	if (urlPath == `/` || urlPath == ``) && r.Method == http.MethodGet {
+	if r.Method == http.MethodGet && (urlPath == `/` || urlPath == ``) {
 		listContainersHandler(w, r, user)
 	} else if containerRequest.MatchString(urlPath) {
 		containerID := containerRequest.FindStringSubmatch(urlPath)[1]

@@ -12,16 +12,19 @@ import (
 	"github.com/docker/docker/client"
 )
 
-func TestCanBeGracefullyClosed(t *testing.T) {
+func Test_CanBeGracefullyClosed(t *testing.T) {
 	var cases = []struct {
+		intention       string
 		backgroundTasks map[string]bool
 		want            bool
 	}{
 		{
+			`should allow graceful if no current deployment`,
 			map[string]bool{`dashboard`: false},
 			true,
 		},
 		{
+			`should disallow if deployment running`,
 			map[string]bool{`dashboard`: false, `test`: true},
 			false,
 		},
@@ -34,49 +37,65 @@ func TestCanBeGracefullyClosed(t *testing.T) {
 		}
 
 		if result := CanBeGracefullyClosed(); result != testCase.want {
-			t.Errorf(`CanBeGracefullyClosed() = %v, want %v, for %v`, result, testCase.want, testCase.backgroundTasks)
+			t.Errorf("%s\nCanBeGracefullyClosed() = %+v, want %+v, with %+v", testCase.intention, result, testCase.want, testCase.backgroundTasks)
 		}
 	}
 }
 
-func TestHealthHandler(t *testing.T) {
+func Test_HealthHandler(t *testing.T) {
 	testDocker, _ := client.NewEnvClient()
 
 	var cases = []struct {
-		docker *client.Client
-		want   int
+		intention      string
+		dockerResponse interface{}
+		docker         *client.Client
+		want           int
 	}{
 		{
+			`should return unavailable if no docker client`,
+			nil,
 			nil,
 			http.StatusServiceUnavailable,
 		},
 		{
+			`should return unavailable if ping failed`,
+			nil,
 			testDocker,
-			http.StatusOK,
+			http.StatusServiceUnavailable,
+		},
+		{
+			`should return ok if ping succeed`,
+			&types.Ping{},
+			testDocker,
+			http.StatusServiceUnavailable,
 		},
 	}
 
 	for _, testCase := range cases {
 		docker = testCase.docker
 		w := httptest.NewRecorder()
+
 		healthHandler(w, nil)
 
 		if result := w.Result().StatusCode; result != testCase.want {
-			t.Errorf(`healthHandler() = %v, want %v, with docker=%v`, result, testCase.want, testCase.docker)
+			t.Errorf("%s\nhealthHandler() = %+v, want %+v, with docker=%+v", testCase.intention, result, testCase.want, testCase.docker)
 		}
 	}
 }
 
-func TestInfoHandler(t *testing.T) {
+func Test_InfoHandler(t *testing.T) {
 	var cases = []struct {
+		intention      string
 		dockerResponse interface{}
 		want           int
 	}{
 		{
+			`should fail if no response from daemon`,
 			nil,
 			500,
 		},
 		{
+			`should return JSON informations`,
 			&types.Info{ID: "test ID", Containers: 3},
 			200,
 		},
@@ -89,14 +108,14 @@ func TestInfoHandler(t *testing.T) {
 		infoHandler(w, httptest.NewRequest(http.MethodGet, `/`, nil))
 
 		if result := w.Result().StatusCode; result != testCase.want {
-			t.Errorf(`infoHandler() = %v, want %v`, result, testCase.want)
+			t.Errorf("%s\ninfoHandler() = %+v, want %+v", testCase.intention, result, testCase.want)
 		}
 	}
 }
 
-func TestContainersHandler(t *testing.T) {
+func Test_ContainersHandler(t *testing.T) {
 	var cases = []struct {
-		caseName        string
+		intention       string
 		dockerResponses []interface{}
 		response        *http.Request
 		urlPath         string
@@ -105,7 +124,7 @@ func TestContainersHandler(t *testing.T) {
 		wantStatus      int
 	}{
 		{
-			`Not found method and path`,
+			`should handle not found path`,
 			nil,
 			httptest.NewRequest(http.MethodHead, `/`, nil),
 			`/`,
@@ -114,7 +133,7 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusNotFound,
 		},
 		{
-			`List containers with empty path`,
+			`should list containers from empty path`,
 			[]interface{}{[]types.Container{
 				{ID: `test`},
 			}},
@@ -125,7 +144,7 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusOK,
 		},
 		{
-			`List containers with slash path`,
+			`should list containers from root path`,
 			[]interface{}{[]types.Container{
 				{ID: `test`},
 			}},
@@ -136,40 +155,40 @@ func TestContainersHandler(t *testing.T) {
 			http.StatusOK,
 		},
 		{
-			`Inspect container`,
+			`should inspect container from id path`,
 			[]interface{}{types.ContainerJSON{}},
-			httptest.NewRequest(http.MethodGet, `/`, nil),
+			httptest.NewRequest(http.MethodGet, `/containerID`, nil),
 			`/containerID`,
 			auth.NewUser(0, `admin`, `admin`),
 			`{"Mounts":null,"Config":null,"NetworkSettings":null}`,
 			http.StatusOK,
 		},
 		{
-			`State action on container`,
+			`should do action on container from id path and action`,
 			[]interface{}{types.ContainerJSON{}, types.ContainerJSON{}},
-			httptest.NewRequest(http.MethodPost, `/`, nil),
+			httptest.NewRequest(http.MethodPost, `/containerID/start`, nil),
 			`/containerID/start`,
 			auth.NewUser(0, `admin`, `admin`),
 			`null`,
 			http.StatusOK,
 		},
 		{
-			`Method not allowed`,
-			[]interface{}{types.ContainerJSON{}, types.ContainerJSON{}},
-			httptest.NewRequest(http.MethodHead, `/`, nil),
-			`/containerID`,
-			auth.NewUser(0, `admin`, `admin`),
-			``,
-			http.StatusMethodNotAllowed,
-		},
-		{
-			`Delete container`,
+			`should delete container from id path`,
 			[]interface{}{types.ContainerJSONBase{ID: `test`, Image: `test`}, types.ContainerJSONBase{}, []types.ImageDeleteResponseItem{}},
-			httptest.NewRequest(http.MethodDelete, `/`, nil),
+			httptest.NewRequest(http.MethodDelete, `/containerID`, nil),
 			`/containerID`,
 			auth.NewUser(0, `admin`, `admin`),
 			`null`,
 			http.StatusOK,
+		},
+		{
+			`should handle not expected method`,
+			[]interface{}{types.ContainerJSON{}, types.ContainerJSON{}},
+			httptest.NewRequest(http.MethodHead, `/containerID`, nil),
+			`/containerID`,
+			auth.NewUser(0, `admin`, `admin`),
+			``,
+			http.StatusMethodNotAllowed,
 		},
 	}
 
@@ -179,11 +198,11 @@ func TestContainersHandler(t *testing.T) {
 		containersHandler(writer, testCase.response, testCase.urlPath, testCase.user)
 
 		if result := writer.Code; result != testCase.wantStatus {
-			t.Errorf(`containersHandler(%v, %v, %v) = %v, want %v`, testCase.response, testCase.urlPath, testCase.user, result, testCase.wantStatus)
+			t.Errorf("%s\ncontainersHandler(%+v, %+v, %+v) = %+v, want %+v", testCase.intention, testCase.response, testCase.urlPath, testCase.user, result, testCase.wantStatus)
 		}
 
 		if result, _ := httputils.ReadBody(writer.Result().Body); string(result) != testCase.want {
-			t.Errorf(`containersHandler(%v, %v, %v) = %v, want %v`, testCase.response, testCase.urlPath, testCase.user, string(result), testCase.want)
+			t.Errorf("%s\ncontainersHandler(%+v, %+v, %+v) = %+v, want %+v", testCase.intention, testCase.response, testCase.urlPath, testCase.user, string(result), testCase.want)
 		}
 	}
 }
