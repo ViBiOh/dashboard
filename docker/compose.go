@@ -62,6 +62,33 @@ type deployedService struct {
 	Name string
 }
 
+func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.HealthConfig, error) {
+	healthconfig := container.HealthConfig{
+		Test:    healthcheck.Test,
+		Retries: healthcheck.Retries,
+	}
+
+	if healthcheck.Interval != `` {
+		interval, err := time.ParseDuration(healthcheck.Interval)
+		if err != nil {
+			return nil, fmt.Errorf(`Error while parsing healthcheck interval: %v`, err)
+		}
+
+		healthconfig.Interval = interval
+	}
+
+	if healthcheck.Timeout != `` {
+		timeout, err := time.ParseDuration(healthcheck.Timeout)
+		if err != nil {
+			return nil, fmt.Errorf(`Error while parsing healthcheck timeout: %v`, err)
+		}
+
+		healthconfig.Timeout = timeout
+	}
+
+	return &healthconfig, nil
+}
+
 func getConfig(service *dockerComposeService, user *auth.User, appName string) (*container.Config, error) {
 	environments := make([]string, 0, len(service.Environment))
 	for key, value := range service.Environment {
@@ -76,13 +103,10 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) (
 	service.Labels[appLabel] = appName
 
 	config := container.Config{
-		Image:  service.Image,
-		Labels: service.Labels,
-		Env:    environments,
-	}
-
-	if service.Hostname != `` {
-		config.Hostname = service.Hostname
+		Hostname: service.Hostname,
+		Image:    service.Image,
+		Labels:   service.Labels,
+		Env:      environments,
 	}
 
 	if len(service.Command) != 0 {
@@ -90,30 +114,12 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) (
 	}
 
 	if service.Healthcheck != nil {
-		healthconfig := container.HealthConfig{
-			Test:    service.Healthcheck.Test,
-			Retries: service.Healthcheck.Retries,
+		healthcheck, err := getHealthcheckConfig(service.Healthcheck)
+		if err != nil {
+			return nil, err
 		}
 
-		if service.Healthcheck.Interval != `` {
-			interval, err := time.ParseDuration(service.Healthcheck.Interval)
-			if err != nil {
-				return nil, fmt.Errorf(`Error while parsing healthcheck interval: %v`, err)
-			}
-
-			healthconfig.Interval = interval
-		}
-
-		if service.Healthcheck.Timeout != `` {
-			timeout, err := time.ParseDuration(service.Healthcheck.Timeout)
-			if err != nil {
-				return nil, fmt.Errorf(`Error while parsing healthcheck timeout: %v`, err)
-			}
-
-			healthconfig.Timeout = timeout
-		}
-
-		config.Healthcheck = &healthconfig
+		config.Healthcheck = healthcheck
 	}
 
 	return &config, nil
