@@ -63,7 +63,7 @@ func infoHandler(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	if info, err := docker.Info(ctx); err != nil {
-		httputils.InternalServer(w, err)
+		httputils.InternalServerError(w, err)
 	} else {
 		httputils.ResponseJSON(w, http.StatusOK, info, httputils.IsPretty(r.URL.RawQuery))
 	}
@@ -81,7 +81,7 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 			basicActionHandler(w, r, user, containerID, deleteAction)
 		} else if r.Method == http.MethodPost {
 			if composeBody, err := httputils.ReadBody(r.Body); err != nil {
-				httputils.InternalServer(w, err)
+				httputils.InternalServerError(w, err)
 			} else {
 				composeHandler(w, r, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
 			}

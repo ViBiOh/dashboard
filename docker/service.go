@@ -30,7 +30,7 @@ func listServicesHandler(w http.ResponseWriter, r *http.Request, user *auth.User
 	}
 
 	if services, err := listServices(user, ``); err != nil {
-		httputils.InternalServer(w, err)
+		httputils.InternalServerError(w, err)
 	} else {
 		httputils.ResponseArrayJSON(w, http.StatusOK, services, httputils.IsPretty(r.URL.RawQuery))
 	}

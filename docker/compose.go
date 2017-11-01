@@ -424,7 +424,7 @@ func createContainer(user *auth.User, appName string, serviceName string, servic
 }
 
 func composeFailed(w http.ResponseWriter, user *auth.User, appName string, err error) {
-	httputils.InternalServer(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
+	httputils.InternalServerError(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
 }
 
 func composeHandler(w http.ResponseWriter, r *http.Request, user *auth.User, appName string, composeFile []byte) {
