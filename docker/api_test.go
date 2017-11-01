@@ -9,7 +9,6 @@ import (
 	"github.com/ViBiOh/auth/auth"
 	"github.com/ViBiOh/httputils"
 	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
 )
 
 func Test_CanBeGracefullyClosed(t *testing.T) {
@@ -43,36 +42,38 @@ func Test_CanBeGracefullyClosed(t *testing.T) {
 }
 
 func Test_HealthHandler(t *testing.T) {
-	testDocker, _ := client.NewEnvClient()
-
 	var cases = []struct {
 		intention      string
 		dockerResponse interface{}
-		docker         *client.Client
+		docker         bool
 		want           int
 	}{
 		{
 			`should return unavailable if no docker client`,
 			nil,
-			nil,
+			false,
 			http.StatusServiceUnavailable,
 		},
 		{
 			`should return unavailable if ping failed`,
 			nil,
-			testDocker,
+			true,
 			http.StatusServiceUnavailable,
 		},
 		{
 			`should return ok if ping succeed`,
 			&types.Ping{},
-			testDocker,
-			http.StatusServiceUnavailable,
+			true,
+			http.StatusOK,
 		},
 	}
 
 	for _, testCase := range cases {
-		docker = testCase.docker
+		if testCase.docker {
+			docker = mockClient(t, []interface{}{testCase.dockerResponse})
+		} else {
+			docker = nil
+		}
 		w := httptest.NewRecorder()
 
 		healthHandler(w, nil)
