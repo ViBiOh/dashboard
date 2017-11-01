@@ -394,7 +394,7 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	}
 }
 
-func createContainer(user *auth.User, appName string, serviceName string, services map[string]*deployedService, service *dockerComposeService) (*deployedService, error) {
+func createContainer(user *auth.User, appName string, serviceName string, service *dockerComposeService) (*deployedService, error) {
 	if err := pullImage(service.Image); err != nil {
 		return nil, err
 	}
@@ -460,7 +460,7 @@ func composeHandler(w http.ResponseWriter, r *http.Request, user *auth.User, app
 	newServices := make(map[string]*deployedService)
 	var deployedService *deployedService
 	for serviceName, service := range compose.Services {
-		if deployedService, err = createContainer(user, appName, serviceName, newServices, &service); err != nil {
+		if deployedService, err = createContainer(user, appName, serviceName, &service); err != nil {
 			break
 		} else {
 			newServices[serviceName] = deployedService
