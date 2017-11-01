@@ -182,13 +182,11 @@ func TestGetHostConfig(t *testing.T) {
 
 func TestGetNetworkConfig(t *testing.T) {
 	var cases = []struct {
-		service          *dockerComposeService
-		deployedServices map[string]*deployedService
-		want             *network.NetworkingConfig
+		service *dockerComposeService
+		want    *network.NetworkingConfig
 	}{
 		{
 			&dockerComposeService{},
-			nil,
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
 					networkMode: {
@@ -201,7 +199,6 @@ func TestGetNetworkConfig(t *testing.T) {
 			&dockerComposeService{
 				Links: []string{`db`},
 			},
-			nil,
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
 					networkMode: {
@@ -213,14 +210,13 @@ func TestGetNetworkConfig(t *testing.T) {
 		},
 		{
 			&dockerComposeService{
-				Links: []string{`db`},
+				Links: []string{`postgres:db`},
 			},
-			map[string]*deployedService{`db`: {Name: `test_postgres_deploy`}},
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
 					networkMode: {
 						Aliases: []string{`service`},
-						Links:   []string{`test_postgres:db`},
+						Links:   []string{`postgres:db`},
 					},
 				},
 			},
@@ -229,7 +225,6 @@ func TestGetNetworkConfig(t *testing.T) {
 			&dockerComposeService{
 				Links: []string{`db:postgres`},
 			},
-			nil,
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
 					networkMode: {
@@ -242,8 +237,8 @@ func TestGetNetworkConfig(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		if result := getNetworkConfig(`service`, testCase.service, testCase.deployedServices); !reflect.DeepEqual(result, testCase.want) {
-			t.Errorf(`getNetworkConfig(%v, %v) = %v, want %v`, testCase.service, testCase.deployedServices, result, testCase.want)
+		if result := getNetworkConfig(`service`, testCase.service); !reflect.DeepEqual(result, testCase.want) {
+			t.Errorf(`getNetworkConfig(%+v) = %+v, want %+v`, testCase.service, result.EndpointsConfig[`traefik`], testCase.want.EndpointsConfig[`traefik`])
 		}
 	}
 }

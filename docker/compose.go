@@ -37,17 +37,19 @@ type dockerComposeHealthcheck struct {
 }
 
 type dockerComposeService struct {
-	Image       string
-	Command     []string
-	Environment map[string]string
-	Labels      map[string]string
-	Links       []string
-	Ports       []string
-	Volumes     []string
-	Healthcheck *dockerComposeHealthcheck
-	ReadOnly    bool  `yaml:"read_only"`
-	CPUShares   int64 `yaml:"cpu_shares"`
-	MemoryLimit int64 `yaml:"mem_limit"`
+	Image         string
+	Command       []string
+	Environment   map[string]string
+	Labels        map[string]string
+	Ports         []string
+	Links         []string
+	ExternalLinks []string `yaml:"external_links"`
+	Volumes       []string
+	Hostname      string
+	Healthcheck   *dockerComposeHealthcheck
+	ReadOnly      bool  `yaml:"read_only"`
+	CPUShares     int64 `yaml:"cpu_shares"`
+	MemoryLimit   int64 `yaml:"mem_limit"`
 }
 
 type dockerCompose struct {
@@ -77,6 +79,10 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) (
 		Image:  service.Image,
 		Labels: service.Labels,
 		Env:    environments,
+	}
+
+	if service.Hostname != `` {
+		config.Hostname = service.Hostname
 	}
 
 	if len(service.Command) != 0 {
@@ -166,26 +172,26 @@ func getHostConfig(service *dockerComposeService, user *auth.User) *container.Ho
 	return &hostConfig
 }
 
-func getNetworkConfig(serviceName string, service *dockerComposeService, deployedServices map[string]*deployedService) *network.NetworkingConfig {
-	traefikConfig := network.EndpointSettings{}
-
-	traefikConfig.Aliases = append(traefikConfig.Aliases, serviceName)
-
-	for _, link := range service.Links {
+func addLinks(settings *network.EndpointSettings, links []string) {
+	for _, link := range links {
 		linkParts := strings.Split(link, colonSeparator)
-
 		target := linkParts[0]
-		if linkedService, ok := deployedServices[target]; ok {
-			target = getFinalName(linkedService.Name)
-		}
-
 		alias := linkParts[0]
+
 		if len(linkParts) > 1 {
 			alias = linkParts[1]
 		}
 
-		traefikConfig.Links = append(traefikConfig.Links, target+colonSeparator+alias)
+		settings.Links = append(settings.Links, target+colonSeparator+alias)
 	}
+}
+
+func getNetworkConfig(serviceName string, service *dockerComposeService) *network.NetworkingConfig {
+	traefikConfig := network.EndpointSettings{}
+	traefikConfig.Aliases = append(traefikConfig.Aliases, serviceName)
+
+	addLinks(&traefikConfig, service.Links)
+	addLinks(&traefikConfig, service.ExternalLinks)
 
 	return &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
@@ -403,7 +409,7 @@ func createContainer(user *auth.User, appName string, serviceName string, servic
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	createdContainer, err := docker.ContainerCreate(ctx, config, getHostConfig(service, user), getNetworkConfig(serviceName, service, services), serviceFullName)
+	createdContainer, err := docker.ContainerCreate(ctx, config, getHostConfig(service, user), getNetworkConfig(serviceName, service), serviceFullName)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while creating service %s: %v`, serviceName, err)
 	}
