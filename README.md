@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/ViBiOh/dashboard/branch/master/graph/badge.svg)](https://codecov.io/gh/ViBiOh/dashboard)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ViBiOh/dashboard)](https://goreportcard.com/report/github.com/ViBiOh/dashboard)
 
-Docker infrastructure management with security and simplicity as goals. It allows to list all containers on a `daemon`, start / stop / restart / monitor each one and deploy `docker-compose` app [**without volumes**](#why-without-volumes-). Mobile-ready UI.
+Docker infrastructure management with security and simplicity as goals. It allows to list all containers on a `daemon`, start / stop / restart / monitor each one and deploy `docker-compose` app [**with limited volumes**](#why-with-limited-volumes-). Every action is available from Mobile-ready UI or API.
 
 List all your containers
 
@@ -24,7 +24,7 @@ Docker's images are available, `vibioh/dashboard-front` and `vibioh/dashboard-ap
 For generating `docker-compose`, use `tools/compose.go` tools provided :
 
 ```bash
-./bin/compose --help
+go run tools/compose.go --help
 ```
 
 ## Websocket
@@ -49,7 +49,7 @@ Role can be `admin`, `multi` or anything else.
 
 ## Authentification
 
-Authentification has been externalized into its own services in [vibioh/auth](https://github.com/vibioh/auth). Check out this project for configuring authentification for Dashboard.
+Authentification has been externalized into its own services in [vibioh/auth](https://github.com/vibioh/auth). Check out documentation of this project for configuring authentification for Dashboard.
 
 ### GitHub OAuth Provider
 
@@ -81,9 +81,9 @@ Because :
 
 And, maybe, I want to have fun with `golang` and `ReactJS` 🙄 😏
 
-## Why without volumes ?
+## Why with limited volumes ?
 
-First goal of this tool was to be available for students to deploy containers on my own server. Trust doesn't mean no control and if a student mounts a too critical volumes (e.g. `/`) with a `root` user, he can potentially become `root` on the server, which for some obvious reasons I don't want ! So volumes are not allowed, and some security options are setted by default.
+First goal of this tool was to be available for students to deploy containers on my own server. Trust doesn't mean no control and if a student mounts a too critical volumes (e.g. `/`) with a `root` user, he can potentially become `root` on the server, which for some obvious reasons I don't want ! So volumes are not allowed if you're not an admin, and some security options are setted by default.
 
 ## Build
 
