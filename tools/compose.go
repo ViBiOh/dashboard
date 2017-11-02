@@ -224,8 +224,8 @@ type arguments struct {
 
 func main() {
 	tls := flag.Bool(`tls`, true, `TLS for all containers`)
-	auth := flag.Bool(`auth`, false, `Auth service`)
-	authBasic := flag.Bool(`authBasic`, true, `Basic auth`)
+	auth := flag.Bool(`auth`, true, `Auth service`)
+	authBasic := flag.Bool(`authBasic`, false, `Basic auth`)
 	traefik := flag.Bool(`traefik`, true, `Traefik load-balancer`)
 	prometheus := flag.Bool(`prometheus`, true, `Prometheus monitoring`)
 	github := flag.Bool(`github`, true, `Github logging`)

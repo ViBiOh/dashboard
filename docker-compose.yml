@@ -1,6 +1,39 @@
 version: '2.1'
 
 services:
+  auth:
+    image: vibioh/auth
+    command:
+    - -prometheusMetricsHost
+    - dashboard-auth:1080
+    - -corsHeaders
+    - Authorization
+    - -corsCredentials
+    - -githubState
+    - ${GITHUB_OAUTH_STATE}
+    - -githubClientId
+    - ${GITHUB_OAUTH_CLIENT_ID}
+    - -githubClientSecret
+    - ${GITHUB_OAUTH_CLIENT_SECRET}
+    labels:
+      traefik.frontend.passHostHeader: 'true'
+      traefik.frontend.rule: 'Host: auth.vibioh.fr'
+      traefik.protocol: 'https'
+      traefik.port: '1080'
+    networks:
+      default:
+        aliases:
+        - dashboard-auth
+    logging:
+      driver: json-file
+      options:
+        max-size: '50m'
+    restart: on-failure:5
+    read_only: true
+    cpu_shares: 128
+    mem_limit: 67108864
+    security_opt:
+    - no-new-privileges
 
   api:
     image: vibioh/dashboard-api

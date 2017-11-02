@@ -8,7 +8,6 @@ before_install:
 install:
 - make
 - nvm install 8
-- nvm use 8
 - npm i -g npm
 - npm i
 - npm run build
@@ -19,8 +18,8 @@ script: |
   docker build -t ${DOCKER_USER}/dashboard-api -f Dockerfile_api .
 after_success: |
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
-    bash <(curl -s https://codecov.io/bash) &&
-    curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create &&
+    bash <(curl -s https://codecov.io/bash) && \
+    curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create && \
     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && \
     docker push ${DOCKER_USER}/dashboard-front && \
     docker push ${DOCKER_USER}/dashboard-api && \
@@ -35,6 +34,6 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_STATE=${GITHUB_OAUTH_STATE} bash -s" 2>/dev/null -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
+  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} GITHUB_OAUTH_STATE=${GITHUB_OAUTH_STATE} bash -s" 2>/dev/null -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
   on:
     branch: master
