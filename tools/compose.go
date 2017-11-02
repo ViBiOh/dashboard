@@ -15,14 +15,28 @@ services:
   auth:
     image: vibioh/auth
     command:
+    {{- if .Prometheus }}
+    - -prometheusMetricsHost
+    - dashboard-auth:1080
+    {{- end }}
     {{- if not .TLS }}
     - -tls=false
     {{- end }}
+    {{- if .AuthBasic }}
     - -basicUsers
     - admin:${ADMIN_PASSWORD}
+    {{- end }}
     - -corsHeaders
     - Authorization
     - -corsCredentials
+    {{- if .Github }}
+    - -githubState
+    - ${GITHUB_OAUTH_STATE}
+    - -githubClientId
+    - ${GITHUB_OAUTH_CLIENT_ID}
+    - -githubClientSecret
+    - ${GITHUB_OAUTH_CLIENT_SECRET}
+    {{- end }}
     {{- if .Traefik }}
     labels:
       traefik.frontend.passHostHeader: 'true'
@@ -33,6 +47,12 @@ services:
     {{- if not .TLS }}
     healthcheck:
       test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
+    {{- end }}
+    {{- if .Prometheus }}
+    networks:
+      default:
+        aliases:
+        - dashboard-auth
     {{- end }}
     logging:
       driver: json-file
@@ -193,6 +213,7 @@ networks:
 type arguments struct {
 	TLS        bool
 	Auth       bool
+	AuthBasic  bool
 	Traefik    bool
 	Prometheus bool
 	Github     bool
@@ -204,6 +225,7 @@ type arguments struct {
 func main() {
 	tls := flag.Bool(`tls`, true, `TLS for all containers`)
 	auth := flag.Bool(`auth`, false, `Auth service`)
+	authBasic := flag.Bool(`authBasic`, true, `Basic auth`)
 	traefik := flag.Bool(`traefik`, true, `Traefik load-balancer`)
 	prometheus := flag.Bool(`prometheus`, true, `Prometheus monitoring`)
 	github := flag.Bool(`github`, true, `Github logging`)
@@ -221,7 +243,7 @@ func main() {
 			prefixedDomain = *domain
 		}
 
-		if err := tmpl.Execute(os.Stdout, arguments{*tls, *auth, *traefik, *prometheus, *github, *selenium, prefixedDomain, *users}); err != nil {
+		if err := tmpl.Execute(os.Stdout, arguments{*tls, *auth, *authBasic, *traefik, *prometheus, *github, *selenium, prefixedDomain, *users}); err != nil {
 			log.Printf(`Error while rendering template: %v`, err)
 		}
 	}
