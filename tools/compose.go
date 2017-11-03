@@ -24,7 +24,7 @@ services:
     {{- end }}
     {{- if .AuthBasic }}
     - -basicUsers
-    - admin:${ADMIN_PASSWORD}
+    - 0:admin:${ADMIN_PASSWORD}
     {{- end }}
     - -corsHeaders
     - Authorization
