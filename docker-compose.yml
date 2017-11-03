@@ -47,7 +47,7 @@ services:
     - -authUrl
     - https://auth.vibioh.fr
     - -authUsers
-    - vibioh:admin|eponae:multi
+    - vibioh:admin,eponae:multi
     - -corsHeaders
     - Content-Type,Authorization
     - -corsMethods

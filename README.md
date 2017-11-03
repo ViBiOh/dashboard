@@ -36,7 +36,7 @@ By default, your origin domain name has to start with `dashboard` (e.g. dashboar
 You have to configure roles by setting `-users` on the API server with the following format:
 
 ```
-[user1]:[role1],[role2]|[user2]:[role1]
+[user1]:[role1]|[role2],[user2]:[role1]
 ```
 
 Username must match with the authentification providers (see next section).

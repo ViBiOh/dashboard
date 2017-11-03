@@ -231,7 +231,7 @@ func main() {
 	github := flag.Bool(`github`, true, `Github logging`)
 	selenium := flag.Bool(`selenium`, false, `Selenium container`)
 	domain := flag.String(`domain`, `vibioh.fr`, `Domain name`)
-	users := flag.String(`users`, `vibioh:admin|eponae:multi`, `Allowed users list`)
+	users := flag.String(`users`, `admin:admin`, `Allowed users list`)
 	flag.Parse()
 
 	tmpl, err := template.New(`docker-compose`).Parse(dockerCompose)
