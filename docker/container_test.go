@@ -448,7 +448,7 @@ func TestBasicActionHandler(t *testing.T) {
 			auth.NewUser(0, `guest`, `guest`),
 			`test`,
 			getAction,
-			`
+			`⛔️
 `,
 			http.StatusForbidden,
 		},
