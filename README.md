@@ -176,7 +176,7 @@ npm run build
 
 ```
 make deps-start
-./bin/compose -tls=false -auth -prometheus=false -github=false -domain=localhost -users=admin:admin > docker-compose.local.yml
+./bin/compose -authBasic -domain=:1080 -expose -github=false -prometheus=false -tls=false -traefik=false > docker-compose.local.yml
 export ADMIN_PASSWORD=`bcrypt password`
 docker-compose -p dashboard -f docker-compose.local.yml up -d
 ```

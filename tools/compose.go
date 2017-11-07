@@ -24,7 +24,7 @@ services:
     {{- end }}
     {{- if .AuthBasic }}
     - -basicUsers
-    - 0:admin:${ADMIN_PASSWORD}
+    - 1:admin:${ADMIN_PASSWORD}
     {{- end }}
     - -corsHeaders
     - Authorization
@@ -47,6 +47,10 @@ services:
     {{- if not .TLS }}
     healthcheck:
       test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
+    {{- end }}
+    {{- if .Expose }}
+    ports:
+    - 1081:1080/tcp
     {{- end }}
     {{- if .Prometheus }}
     networks:
@@ -106,6 +110,10 @@ services:
     healthcheck:
       test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
     {{- end }}
+    {{- if .Expose }}
+    ports:
+    - 1082:1080/tcp
+    {{- end }}
     {{- if .Prometheus }}
     networks:
       default:
@@ -139,7 +147,7 @@ services:
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED{{ if .Github }},GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE,GITHUB_REDIRECT_URI{{ end }}
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} auth{{ .Domain }}{{ else }}api:1080 {{ if .Auth }}auth:1080{{ end }}{{ end }};"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} auth{{ .Domain }}{{ else }}{{ if .Expose }}{{ if .Auth }}localhost:1081{{ end }} localhost:1082{{ else }}api:1080 {{ if .Auth }}auth:1080{{ end }}{{ end }}{{ end }};"
     {{- if .Traefik }}
     labels:
       traefik.frontend.passHostHeader: 'true'
@@ -151,17 +159,29 @@ services:
     healthcheck:
       test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
     {{- end }}
+    {{- if .Expose }}
+    ports:
+    - 1080:1080/tcp
+    {{- end }}
     environment:
       {{- if .Traefik }}
       API_URL: 'http{{ if .TLS }}s{{ end }}://dashboard-api{{ .Domain }}'
       WS_URL: 'ws{{ if .TLS }}s{{ end }}://dashboard-api{{ .Domain }}/ws'
       AUTH_URL: 'http{{ if .TLS }}s{{ end }}://auth{{ .Domain }}'
       {{- else }}
+      {{- if .Expose }}
+      API_URL: 'http{{ if .TLS }}s{{ end }}://localhost:1082'
+      WS_URL: 'ws{{ if .TLS }}s{{ end }}://localhost:1082/ws'
+      {{- if .Auth }}
+      AUTH_URL: 'http{{ if .TLS }}s{{ end }}://localhost:1081'
+      {{- end }}
+      {{- else }}
       API_URL: 'http{{ if .TLS }}s{{ end }}://api:1080'
       WS_URL: 'ws{{ if .TLS }}s{{ end }}://api:1080/ws'
       {{- if .Auth }}
       AUTH_URL: 'http{{ if .TLS }}s{{ end }}://auth:1080'
-      {{- end}}
+      {{- end }}
+      {{- end }}
       {{- end }}
       {{- if .Github }}
       BASIC_AUTH_ENABLED: 'false'
@@ -218,6 +238,7 @@ type arguments struct {
 	Prometheus bool
 	Github     bool
 	Selenium   bool
+	Expose     bool
 	Domain     string
 	Users      string
 }
@@ -232,6 +253,7 @@ func main() {
 	selenium := flag.Bool(`selenium`, false, `Selenium container`)
 	domain := flag.String(`domain`, `vibioh.fr`, `Domain name`)
 	users := flag.String(`users`, `admin:admin`, `Allowed users list`)
+	expose := flag.Bool(`expose`, false, `Expose opened ports`)
 	flag.Parse()
 
 	tmpl, err := template.New(`docker-compose`).Parse(dockerCompose)
@@ -243,7 +265,7 @@ func main() {
 			prefixedDomain = *domain
 		}
 
-		if err := tmpl.Execute(os.Stdout, arguments{*tls, *auth, *authBasic, *traefik, *prometheus, *github, *selenium, prefixedDomain, *users}); err != nil {
+		if err := tmpl.Execute(os.Stdout, arguments{*tls, *auth, *authBasic, *traefik, *prometheus, *github, *selenium, *expose, prefixedDomain, *users}); err != nil {
 			log.Printf(`Error while rendering template: %v`, err)
 		}
 	}
