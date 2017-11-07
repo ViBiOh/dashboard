@@ -130,7 +130,7 @@ func getVolumesConfig(hostConfig *container.HostConfig, volumes []string) {
 		parts := strings.Split(rawVolume, colonSeparator)
 
 		if len(parts) > 1 && parts[0] != `/` {
-			volume := mount.Mount{Source: parts[0], Target: parts[1]}
+			volume := mount.Mount{Type: mount.TypeBind, Source: parts[0], Target: parts[1]}
 			if len(parts) > 2 && parts[2] == `ro` {
 				volume.ReadOnly = true
 			}
