@@ -122,7 +122,7 @@ func TestGetHostConfig(t *testing.T) {
 				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 					`max-size`: `10m`,
 				}},
-				NetworkMode:   networkMode,
+				NetworkMode:   container.NetworkMode(*dockerNetwork),
 				RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 				Resources: container.Resources{
 					CPUShares: defaultCPUShares,
@@ -141,7 +141,7 @@ func TestGetHostConfig(t *testing.T) {
 				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 					`max-size`: `10m`,
 				}},
-				NetworkMode:    networkMode,
+				NetworkMode:    container.NetworkMode(*dockerNetwork),
 				RestartPolicy:  container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 				ReadonlyRootfs: true,
 				Resources: container.Resources{
@@ -161,7 +161,7 @@ func TestGetHostConfig(t *testing.T) {
 				LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 					`max-size`: `10m`,
 				}},
-				NetworkMode:    networkMode,
+				NetworkMode:    container.NetworkMode(*dockerNetwork),
 				RestartPolicy:  container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 				ReadonlyRootfs: true,
 				Resources: container.Resources{
@@ -189,7 +189,7 @@ func TestGetNetworkConfig(t *testing.T) {
 			&dockerComposeService{},
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
-					networkMode: {
+					*dockerNetwork: {
 						Aliases: []string{`service`},
 					},
 				},
@@ -201,7 +201,7 @@ func TestGetNetworkConfig(t *testing.T) {
 			},
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
-					networkMode: {
+					*dockerNetwork: {
 						Aliases: []string{`service`},
 						Links:   []string{`db:db`},
 					},
@@ -214,7 +214,7 @@ func TestGetNetworkConfig(t *testing.T) {
 			},
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
-					networkMode: {
+					*dockerNetwork: {
 						Aliases: []string{`service`},
 						Links:   []string{`postgres:db`},
 					},
@@ -227,7 +227,7 @@ func TestGetNetworkConfig(t *testing.T) {
 			},
 			&network.NetworkingConfig{
 				EndpointsConfig: map[string]*network.EndpointSettings{
-					networkMode: {
+					*dockerNetwork: {
 						Aliases: []string{`service`},
 						Links:   []string{`db:postgres`},
 					},
