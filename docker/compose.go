@@ -27,7 +27,6 @@ const maxMemory = 805306368
 const colonSeparator = `:`
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
-const networkMode = `traefik`
 
 type dockerComposeHealthcheck struct {
 	Test     []string
@@ -136,7 +135,6 @@ func getVolumesConfig(hostConfig *container.HostConfig, volumes []string) {
 			}
 
 			hostConfig.Mounts = append(hostConfig.Mounts, volume)
-			hostConfig.Binds = append(hostConfig.Binds, rawVolume)
 		}
 	}
 }
@@ -146,7 +144,7 @@ func getHostConfig(service *dockerComposeService, user *auth.User) *container.Ho
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 			`max-size`: `10m`,
 		}},
-		NetworkMode:   networkMode,
+		NetworkMode:   container.NetworkMode(*dockerNetwork),
 		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
 		Resources: container.Resources{
 			CPUShares: defaultCPUShares,
@@ -193,15 +191,15 @@ func addLinks(settings *network.EndpointSettings, links []string) {
 }
 
 func getNetworkConfig(serviceName string, service *dockerComposeService) *network.NetworkingConfig {
-	traefikConfig := network.EndpointSettings{}
-	traefikConfig.Aliases = append(traefikConfig.Aliases, serviceName)
+	endpointConfig := network.EndpointSettings{}
+	endpointConfig.Aliases = append(endpointConfig.Aliases, serviceName)
 
-	addLinks(&traefikConfig, service.Links)
-	addLinks(&traefikConfig, service.ExternalLinks)
+	addLinks(&endpointConfig, service.Links)
+	addLinks(&endpointConfig, service.ExternalLinks)
 
 	return &network.NetworkingConfig{
 		EndpointsConfig: map[string]*network.EndpointSettings{
-			networkMode: &traefikConfig,
+			*dockerNetwork: &endpointConfig,
 		},
 	}
 }

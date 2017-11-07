@@ -19,6 +19,7 @@ var authUsers map[string]*auth.User
 var (
 	dockerHost    = flag.String(`dockerHost`, `unix:///var/run/docker.sock`, `Docker Host`)
 	dockerVersion = flag.String(`dockerVersion`, ``, `Docker API Version`)
+	dockerNetwork = flag.String(`dockerNetwork`, `traefik`, `Network for deploying containers`)
 )
 
 // Init docker client
