@@ -24,7 +24,25 @@ Docker's images are available, `vibioh/dashboard-front` and `vibioh/dashboard-ap
 For generating `docker-compose`, use `tools/compose.go` tools provided :
 
 ```bash
-go run tools/compose.go --help
+Usage of tools/compose.go:
+  -auth
+    Auth service (default true)
+  -authBasic
+    Basic auth
+  -domain string
+    Domain name (default "vibioh.fr")
+  -github
+    Github logging (default true)
+  -prometheus
+    Prometheus monitoring (default true)
+  -selenium
+    Selenium container
+  -tls
+    TLS for all containers (default true)
+  -traefik
+    Traefik load-balancer (default true)
+  -users string
+    Allowed users list (default "admin:admin")
 ```
 
 ## Websocket
@@ -100,49 +118,49 @@ It will compile API server.
 ```
 Usage of dashboard:
   -authUrl string
-    	[auth] Auth URL
+    [auth] Auth URL
   -authUsers string
-    	[auth] List of allowed users and profiles (e.g. user:profile1,profile2|user2:profile3)
+    [auth] List of allowed users and profiles (e.g. user:profile1|profile2,user2:profile3)
   -c string
-    	URL to healthcheck (check and exit)
+    URL to healthcheck (check and exit)
   -corsCredentials
-    	Access-Control-Allow-Credentials
+    [cors] Access-Control-Allow-Credentials
   -corsExpose string
-    	Access-Control-Expose-Headers
+    [cors] Access-Control-Expose-Headers
   -corsHeaders string
-    	Access-Control-Allow-Headers (default "Content-Type")
+    [cors] Access-Control-Allow-Headers (default "Content-Type")
   -corsMethods string
-    	Access-Control-Allow-Methods (default "GET")
+    [cors] Access-Control-Allow-Methods (default "GET")
   -corsOrigin string
-    	Access-Control-Allow-Origin (default "*")
+    [cors] Access-Control-Allow-Origin (default "*")
   -csp string
-    	Content-Security-Policy (default "default-src 'self'")
+    [owasp] Content-Security-Policy (default "default-src 'self'")
   -dockerHost string
-    	Docker Host (default "unix:///var/run/docker.sock")
+    Docker Host (default "unix:///var/run/docker.sock")
   -dockerVersion string
-    	Docker API Version
+    Docker API Version
   -hsts
-    	Indicate Strict Transport Security (default true)
+    [owasp] Indicate Strict Transport Security (default true)
   -port string
-    	Listen port (default "1080")
+    Listen port (default "1080")
   -prometheusMetricsHost string
-    	Prometheus allowed hostname to call metrics endpoint (default "localhost")
+    [prometheus] Allowed hostname to call metrics endpoint (default "localhost")
   -prometheusMetricsPath string
-    	Prometheus metrics endpoint path (default "/metrics")
+    [prometheus] Metrics endpoint path (default "/metrics")
   -prometheusPrefix string
-    	Prometheus prefix (default "http")
-  -rateCount int
-    	Rate IP limit (default 5000)
+    [prometheus] Prefix (default "http")
+  -rateCount uint
+    [rate] IP limit (default 5000)
   -tls
-    	Serve TLS content (default true)
+    Serve TLS content (default true)
   -tlscert string
-    	TLS PEM Certificate file
+    TLS PEM Certificate file
   -tlshosts string
-    	TLS Self-signed certificate hosts, comma separated (default "localhost")
+    TLS Self-signed certificate hosts, comma separated (default "localhost")
   -tlskey string
-    	TLS PEM Key file
+    TLS PEM Key file
   -ws string
-    	Allowed WebSocket Origin pattern (default "^dashboard")
+    Allowed WebSocket Origin pattern (default "^dashboard")
 ```
 
 ### Front
@@ -150,7 +168,7 @@ Usage of dashboard:
 In order to build the front stuff, run the following command:
 
 ```
-npm install
+npm i
 npm run build
 ```
 
