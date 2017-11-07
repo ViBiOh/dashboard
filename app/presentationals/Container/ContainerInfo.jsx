@@ -35,8 +35,7 @@ const ContainerInfo = ({ container }) => {
     envContent = [
       <h3 key="envsHeader">Environment</h3>,
       <span key="envs" className={style.labels}>
-        {container.Config.Env
-          .filter(e => !!e)
+        {container.Config.Env.filter(e => !!e)
           .map(env => ENV_PARSER.exec(env))
           .filter(parts => parts !== null && parts.length > 2)
           .map(parts => (

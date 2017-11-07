@@ -28,7 +28,8 @@ const mapDispatchToProps = dispatch => ({
   component: (
     <Github
       getAccessToken={(state, code, redirect) =>
-        dispatch(actions.getGithubAccessToken(state, code, redirect))}
+        dispatch(actions.getGithubAccessToken(state, code, redirect))
+      }
     />
   ),
 });

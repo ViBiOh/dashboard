@@ -27,7 +27,8 @@ const mapDispatchToProps = dispatch => ({
   component: (
     <Basic
       onLogin={(username, password, redirect) =>
-        dispatch(actions.login(username, password, redirect))}
+        dispatch(actions.login(username, password, redirect))
+      }
     />
   ),
 });
