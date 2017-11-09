@@ -45,6 +45,7 @@ type dockerComposeService struct {
 	ExternalLinks []string `yaml:"external_links"`
 	Volumes       []string
 	Hostname      string
+	User          string
 	Healthcheck   *dockerComposeHealthcheck
 	ReadOnly      bool  `yaml:"read_only"`
 	CPUShares     int64 `yaml:"cpu_shares"`
@@ -106,6 +107,7 @@ func getConfig(service *dockerComposeService, user *auth.User, appName string) (
 		Image:    service.Image,
 		Labels:   service.Labels,
 		Env:      environments,
+		User:     service.User,
 	}
 
 	if len(service.Command) != 0 {
