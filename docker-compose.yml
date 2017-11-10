@@ -17,7 +17,7 @@ services:
     - ${GITHUB_OAUTH_CLIENT_SECRET}
     labels:
       traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: dasboard-auth.vibioh.fr'
+      traefik.frontend.rule: 'Host: dashboard-auth.vibioh.fr'
       traefik.protocol: 'https'
       traefik.port: '1080'
     networks:
@@ -45,7 +45,7 @@ services:
     - -dockerVersion
     - '1.24'
     - -authUrl
-    - https://dasboard-auth.vibioh.fr
+    - https://dashboard-auth.vibioh.fr
     - -authUsers
     - vibioh:admin,eponae:multi
     - -corsHeaders
@@ -87,7 +87,7 @@ services:
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE,GITHUB_REDIRECT_URI
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' wss: dashboard-api.vibioh.fr dasboard-auth.vibioh.fr;"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-auth.vibioh.fr;"
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr'
@@ -96,7 +96,7 @@ services:
     environment:
       API_URL: 'https://dashboard-api.vibioh.fr'
       WS_URL: 'wss://dashboard-api.vibioh.fr/ws'
-      AUTH_URL: 'https://dasboard-auth.vibioh.fr'
+      AUTH_URL: 'https://dashboard-auth.vibioh.fr'
       BASIC_AUTH_ENABLED: 'false'
       GITHUB_OAUTH_STATE: '${GITHUB_OAUTH_STATE}'
       GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
