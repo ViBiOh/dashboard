@@ -40,7 +40,7 @@ function docker-compose-deploy() {
     echo "Containers didn't start, reverting..."
 
     docker-compose -p ${PROJECT_FULLNAME} logs || true
-    docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{range .State.Health.Log}}{{.Output}}{{end}}' || true
+    docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{ .Name }}{{ "\n" }}{{range .State.Health.Log }}{{ .Output }}{{ end }}' || true
     docker-compose -p ${PROJECT_FULLNAME} rm --force --stop -v || true
     return 1
   fi
