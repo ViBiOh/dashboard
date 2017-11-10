@@ -22,10 +22,9 @@ function docker-compose-deploy() {
   PROJECT_NAME=${1}
   readVariableIfRequired "PROJECT_NAME"
 
-  PROJECT_FULLNAME_SEPARATOR="uuu"
-  PROJECT_FULLNAME=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR}`git rev-parse --short HEAD`
+  oldServices=`docker ps -f name=${PROJECT_NAME}_* -q`
 
-  oldServices=`docker ps -f name=${PROJECT_NAME}${PROJECT_FULLNAME_SEPARATOR}* -q`
+  PROJECT_FULLNAME=${PROJECT_NAME}_deploy
 
   docker-compose -p ${PROJECT_FULLNAME} config -q
   docker-compose -p ${PROJECT_FULLNAME} pull
@@ -54,6 +53,9 @@ function docker-compose-deploy() {
     echo Removing old containers
     docker rm -f -v ${oldServices} || true
   fi
+
+  echo Renaming containers
+  docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{ .Name }}' | sed "s|^/||" | awk '{o=$1; gsub("dashboarduuuefa2f00", "dashboard", o); print $0 " " o}' | xargs -n 2 docker rename
 
   echo Deploy succeed!
   
