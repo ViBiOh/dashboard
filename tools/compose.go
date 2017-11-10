@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"log"
 	"os"
@@ -34,7 +35,22 @@ func main() {
 	expose := flag.Bool(`expose`, false, `Expose opened ports`)
 	flag.Parse()
 
-	tmpl := template.Must(template.New(`docker-compose.yml`).ParseFiles(`tools/docker-compose.yml`))
+	funcs := template.FuncMap{
+		`merge`: func(o interface{}, newKey string) map[string]interface{} {
+			var output map[string]interface{}
+			oStr, _ := json.Marshal(o)
+			json.Unmarshal(oStr, &output)
+
+			if newKey != `` {
+				parts := strings.Split(newKey, `:`)
+				output[parts[0]] = parts[1]
+			}
+
+			return output
+		},
+	}
+
+	tmpl := template.Must(template.New(`docker-compose.yml`).Funcs(funcs).ParseFiles(`tools/docker-compose.yml`))
 
 	prefixedDomain := `.` + *domain
 	if strings.HasPrefix(*domain, `:`) {
