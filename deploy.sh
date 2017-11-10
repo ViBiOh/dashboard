@@ -24,7 +24,7 @@ function docker-compose-deploy() {
 
   oldServices=`docker ps -f name=${PROJECT_NAME}_* -q`
 
-  PROJECT_FULLNAME=${PROJECT_NAME}_deploy
+  PROJECT_FULLNAME=${PROJECT_NAME}deploy
 
   docker-compose -p ${PROJECT_FULLNAME} config -q
   docker-compose -p ${PROJECT_FULLNAME} pull
@@ -55,7 +55,7 @@ function docker-compose-deploy() {
   fi
 
   echo Renaming containers
-  docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{ .Name }}' | sed "s|^/||" | awk '{o=$1; gsub("dashboard_deploy", "dashboard", o); print $0 " " o}' | xargs -n 2 docker rename
+  docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{ .Name }}' | sed "s|^/||" | awk "{o=$1; gsub(\"${PROJECT_FULLNAME}\", \"${PROJECT_NAME}\", o); print $0 \" \" o}" | xargs -n 2 docker rename
 
   echo Deploy succeed!
   
