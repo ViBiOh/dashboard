@@ -40,7 +40,7 @@ services:
     {{- if .Traefik }}
     labels:
       traefik.frontend.passHostHeader: 'true'
-      traefik.frontend.rule: 'Host: auth{{ .Domain }}'
+      traefik.frontend.rule: 'Host: dasboard-auth{{ .Domain }}'
       traefik.protocol: 'http{{ if .TLS }}s{{ end }}'
       traefik.port: '1080'
     {{- end }}
@@ -89,7 +89,7 @@ services:
     - -dockerVersion
     - '1.24'
     - -authUrl
-    - http{{ if .TLS }}s{{ end }}://auth{{ .Domain }}
+    - http{{ if .TLS }}s{{ end }}://dasboard-auth{{ .Domain }}
     - -authUsers
     - {{ .Users }}
     - -corsHeaders
@@ -147,7 +147,7 @@ services:
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED{{ if .Github }},GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE,GITHUB_REDIRECT_URI{{ end }}
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} auth{{ .Domain }}{{ else }}{{ if .Expose }}{{ if .Auth }}localhost:1081{{ end }} localhost:1082{{ else }}api:1080 {{ if .Auth }}auth:1080{{ end }}{{ end }}{{ end }};"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dasboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}{{ if .Auth }}localhost:1081{{ end }} localhost:1082{{ else }}api:1080 {{ if .Auth }}auth:1080{{ end }}{{ end }}{{ end }};"
     {{- if .Traefik }}
     labels:
       traefik.frontend.passHostHeader: 'true'
@@ -167,7 +167,7 @@ services:
       {{- if .Traefik }}
       API_URL: 'http{{ if .TLS }}s{{ end }}://dashboard-api{{ .Domain }}'
       WS_URL: 'ws{{ if .TLS }}s{{ end }}://dashboard-api{{ .Domain }}/ws'
-      AUTH_URL: 'http{{ if .TLS }}s{{ end }}://auth{{ .Domain }}'
+      AUTH_URL: 'http{{ if .TLS }}s{{ end }}://dasboard-auth{{ .Domain }}'
       {{- else }}
       {{- if .Expose }}
       API_URL: 'http{{ if .TLS }}s{{ end }}://localhost:1082'
