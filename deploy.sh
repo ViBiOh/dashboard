@@ -14,7 +14,7 @@ function docker-clean() {
   imagesToClean=`docker images --filter dangling=true -q 2>/dev/null`
 
   if [ ! -z "${imagesToClean}" ]; then
-    docker rmi ${imagesToClean} 
+    docker rmi ${imagesToClean} || true
   fi
 }
 

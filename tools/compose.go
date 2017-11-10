@@ -89,7 +89,11 @@ services:
     - -dockerVersion
     - '1.24'
     - -authUrl
+    {{- if .Traefik }}
     - http{{ if .TLS }}s{{ end }}://dasboard-auth{{ .Domain }}
+    {{- else }}
+    - http{{ if .TLS }}s{{ end }}://auth{{ .Domain }}
+    {{- end }}
     - -authUsers
     - {{ .Users }}
     - -corsHeaders
