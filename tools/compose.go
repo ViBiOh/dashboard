@@ -34,7 +34,7 @@ func main() {
 	expose := flag.Bool(`expose`, false, `Expose opened ports`)
 	flag.Parse()
 
-	tmpl := template.Must(template.ParseFiles(`tools/docker-compose.yml`))
+	tmpl := template.Must(template.New(`docker-compose.yml`).ParseFiles(`tools/docker-compose.yml`))
 
 	prefixedDomain := `.` + *domain
 	if strings.HasPrefix(*domain, `:`) {
