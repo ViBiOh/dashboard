@@ -26,23 +26,25 @@ For generating `docker-compose`, use `tools/compose.go` tools provided :
 ```bash
 Usage of tools/compose.go:
   -auth
-    Auth service (default true)
+    	Auth service (default true)
   -authBasic
-    Basic auth
+    	Basic auth
   -domain string
-    Domain name (default "vibioh.fr")
+    	Domain name (default "vibioh.fr")
+  -expose
+    	Expose opened ports
   -github
-    Github logging (default true)
+    	Github logging (default true)
   -prometheus
-    Prometheus monitoring (default true)
+    	Prometheus monitoring (default true)
   -selenium
-    Selenium container
+    	Selenium container
   -tls
-    TLS for all containers (default true)
+    	TLS for all containers (default true)
   -traefik
-    Traefik load-balancer (default true)
+    	Traefik load-balancer (default true)
   -users string
-    Allowed users list (default "admin:admin")
+    	Allowed users list (default "admin:admin")
 ```
 
 ## Websocket
@@ -122,7 +124,7 @@ Usage of dashboard:
   -authUsers string
     	[auth] List of allowed users and profiles (e.g. user:profile1|profile2,user2:profile3)
   -c string
-    	URL to healthcheck (check and exit)
+    	[health] URL to check
   -corsCredentials
     	[cors] Access-Control-Allow-Credentials
   -corsExpose string

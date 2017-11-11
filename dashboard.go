@@ -54,9 +54,9 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	url := flag.String(`c`, ``, `URL to healthcheck (check and exit)`)
 	port := flag.String(`port`, `1080`, `Listen port`)
 	tls := flag.Bool(`tls`, true, `Serve TLS content`)
+	alcotestConfig := alcotest.Flags(``)
 	tlsConfig := cert.Flags(`tls`)
 	authConfig := auth.Flags(`auth`)
 	prometheusConfig := prometheus.Flags(`prometheus`)
@@ -65,10 +65,7 @@ func main() {
 	corsConfig := cors.Flags(`cors`)
 	flag.Parse()
 
-	if *url != `` {
-		alcotest.Do(url)
-		return
-	}
+	alcotest.DoAndExit(alcotestConfig)
 
 	if err := docker.Init(*authConfig[`url`], auth.LoadUsersProfiles(*authConfig[`users`])); err != nil {
 		log.Printf(`Error while initializing docker: %v`, err)
