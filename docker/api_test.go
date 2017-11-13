@@ -130,7 +130,8 @@ func Test_ContainersHandler(t *testing.T) {
 			httptest.NewRequest(http.MethodHead, `/`, nil),
 			`/`,
 			auth.NewUser(0, `admin`, `admin`),
-			``,
+			`¯\_(ツ)_/¯
+`,
 			http.StatusNotFound,
 		},
 		{

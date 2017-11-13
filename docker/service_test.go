@@ -118,7 +118,8 @@ func TestServicesHandler(t *testing.T) {
 			httptest.NewRequest(http.MethodHead, `/`, nil),
 			``,
 			nil,
-			``,
+			`¯\_(ツ)_/¯
+`,
 			http.StatusNotFound,
 		},
 		{

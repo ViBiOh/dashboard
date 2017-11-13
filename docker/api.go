@@ -92,7 +92,7 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 		matches := containerActionRequest.FindStringSubmatch(urlPath)
 		basicActionHandler(w, r, user, matches[1], matches[2])
 	} else {
-		w.WriteHeader(http.StatusNotFound)
+		httputils.NotFound(w)
 	}
 }
 
