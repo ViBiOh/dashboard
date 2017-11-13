@@ -24,7 +24,7 @@ function docker-compose-deploy() {
 
   oldServices=`docker ps -f name=${PROJECT_NAME}_* -q`
 
-  PROJECT_FULLNAME=${PROJECT_NAME}deploy
+  PROJECT_FULLNAME=${PROJECT_NAME}`git rev-parse --short HEAD`
 
   docker-compose -p ${PROJECT_FULLNAME} config -q
   docker-compose -p ${PROJECT_FULLNAME} pull
