@@ -98,6 +98,16 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 
 // Handler for Docker request. Should be use with net/http
 func Handler() http.Handler {
+	authHandler := auth.Handler(authURL, authUsers, func(w http.ResponseWriter, r *http.Request, user *auth.User) {
+		if strings.HasPrefix(r.URL.Path, infoPrefix) && r.Method == http.MethodGet {
+			infoHandler(w, r)
+		} else if strings.HasPrefix(r.URL.Path, containersPrefix) {
+			containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
+		} else if strings.HasPrefix(r.URL.Path, servicesPrefix) {
+			servicesHandler(w, r, strings.TrimPrefix(r.URL.Path, servicesPrefix), user)
+		}
+	})
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
 			w.Write(nil)
@@ -114,18 +124,6 @@ func Handler() http.Handler {
 			return
 		}
 
-		user, err := auth.IsAuthenticated(authURL, authUsers, r)
-		if err != nil {
-			httputils.Unauthorized(w, err)
-			return
-		}
-
-		if strings.HasPrefix(r.URL.Path, infoPrefix) && r.Method == http.MethodGet {
-			infoHandler(w, r)
-		} else if strings.HasPrefix(r.URL.Path, containersPrefix) {
-			containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
-		} else if strings.HasPrefix(r.URL.Path, servicesPrefix) {
-			servicesHandler(w, r, strings.TrimPrefix(r.URL.Path, servicesPrefix), user)
-		}
+		authHandler.ServeHTTP(w, r)
 	})
 }
