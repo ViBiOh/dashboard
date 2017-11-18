@@ -6,16 +6,11 @@ go: 1.9
 before_install:
 - openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv -in deploy_rsa.enc -out deploy_rsa -d
 install:
-- make
 - nvm install 8
 - npm i -g npm
 - npm i
-- npm run build
 script: |
-  curl -o cacert.pem https://curl.haxx.se/ca/cacert.pem &&
-  ./blueprint.sh &&
-  docker build -t ${DOCKER_USER}/dashboard-front -f Dockerfile_front . &&
-  docker build -t ${DOCKER_USER}/dashboard-api -f Dockerfile_api .
+  make && npm run build
 after_success: |
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
     bash <(curl -s https://codecov.io/bash) && \
@@ -23,7 +18,7 @@ after_success: |
     docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} && \
     docker push ${DOCKER_USER}/dashboard-front && \
     docker push ${DOCKER_USER}/dashboard-api && \
-    make deps-start && ./e2e_ci.sh
+    make start-deps && ./e2e_ci.sh
   fi
 notifications:
   email: false
