@@ -10,7 +10,7 @@ install:
 - npm i -g npm
 - npm i
 script: |
-  make && npm run build && \
+  npm run build && make && \
   make start-deps && ./e2e_ci.sh
 after_success: |
   bash <(curl -s https://codecov.io/bash)
