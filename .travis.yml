@@ -17,6 +17,7 @@ after_success: |
 
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
     make docker-push
+    curl -s -X POST https://goreportcard.com/checks?repo=github.com/ViBiOh/dashboard
 
     curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create
   fi
