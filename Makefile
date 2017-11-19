@@ -1,6 +1,10 @@
-default: deps dev docker
+default: go docker
+
+go: deps dev
 
 dev: format lint tst bench build
+
+docker: docker-deps docker-build
 
 deps:
 	go get -u github.com/docker/docker/api/types
@@ -52,6 +56,11 @@ docker-deps:
 docker-build:
 	docker build -t ${DOCKER_USER}/dashboard-front -f app/Dockerfile .
 	docker build -t ${DOCKER_USER}/dashboard-api .
+
+docker-push:
+	docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+	docker push ${DOCKER_USER}/dashboard-api
+	docker push ${DOCKER_USER}/dashboard-front
 
 start-deps:
 	go get -u github.com/ViBiOh/auth
