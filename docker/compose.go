@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -27,6 +28,8 @@ const maxMemory = 805306368
 const colonSeparator = `:`
 const defaultTag = `:latest`
 const deploySuffix = `_deploy`
+
+var errHealthCheckFailed = errors.New(`Health check failed`)
 
 type dockerComposeHealthcheck struct {
 	Test     []string
@@ -397,7 +400,7 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 		}
 	} else {
 		deleteServices(appName, services, user)
-		log.Printf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, fmt.Errorf(`Health check failed`))
+		log.Printf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, errHealthCheckFailed)
 	}
 }
 
@@ -430,7 +433,7 @@ func composeFailed(w http.ResponseWriter, user *auth.User, appName string, err e
 
 func composeHandler(w http.ResponseWriter, r *http.Request, user *auth.User, appName string, composeFile []byte) {
 	if user == nil {
-		httputils.BadRequest(w, fmt.Errorf(`A user is required`))
+		httputils.BadRequest(w, errUserRequired)
 		return
 	}
 

@@ -1,7 +1,6 @@
 package docker
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/ViBiOh/auth/auth"
@@ -25,7 +24,7 @@ func listServices(user *auth.User, appName string) ([]swarm.Service, error) {
 
 func listServicesHandler(w http.ResponseWriter, r *http.Request, user *auth.User) {
 	if user == nil {
-		httputils.BadRequest(w, fmt.Errorf(`A user is required`))
+		httputils.BadRequest(w, errUserRequired)
 		return
 	}
 

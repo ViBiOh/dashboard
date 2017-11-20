@@ -2,7 +2,6 @@ package docker
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -33,7 +32,7 @@ func TestGetConfig(t *testing.T) {
 			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			nil,
-			fmt.Errorf(`Error while parsing healthcheck interval: time: invalid duration abcd`),
+			errors.New(`Error while parsing healthcheck interval: time: invalid duration abcd`),
 		},
 		{
 			&dockerComposeService{
@@ -45,7 +44,7 @@ func TestGetConfig(t *testing.T) {
 			auth.NewUser(0, `admin`, `admin`),
 			`test`,
 			nil,
-			fmt.Errorf(`Error while parsing healthcheck timeout: time: invalid duration abcd`),
+			errors.New(`Error while parsing healthcheck timeout: time: invalid duration abcd`),
 		},
 		{
 			&dockerComposeService{},

@@ -19,6 +19,8 @@ services:
     - -corsHeaders
     - Authorization
     - -corsCredentials
+    - -rateCount
+    - '60'
   {{- if .Github }}
     - -githubState
     - ${GITHUB_OAUTH_STATE}

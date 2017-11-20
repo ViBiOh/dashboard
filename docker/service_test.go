@@ -70,7 +70,7 @@ func TestListServicesHandler(t *testing.T) {
 		{
 			nil,
 			nil,
-			`A user is required
+			`An user is required
 `,
 			http.StatusBadRequest,
 		},

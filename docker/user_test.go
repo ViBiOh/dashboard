@@ -1,7 +1,7 @@
 package docker
 
 import (
-	"fmt"
+	"errors"
 	"reflect"
 	"testing"
 
@@ -77,7 +77,7 @@ func TestIsAllowed(t *testing.T) {
 			``,
 			false,
 			nil,
-			fmt.Errorf(`User is required for checking rights`),
+			errors.New(`An user is required`),
 		},
 		{
 			nil,
@@ -85,7 +85,7 @@ func TestIsAllowed(t *testing.T) {
 			``,
 			false,
 			nil,
-			fmt.Errorf(`Error while inspecting container: error during connect: Get http://localhost/containers/json: internal server error`),
+			errors.New(`Error while inspecting container: error during connect: Get http://localhost/containers/json: internal server error`),
 		},
 		{
 			types.ContainerJSON{},

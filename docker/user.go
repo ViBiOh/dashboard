@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/ViBiOh/auth/auth"
@@ -9,6 +10,8 @@ import (
 
 const adminUser = `admin`
 const multiAppUser = `multi`
+
+var errUserRequired = errors.New(`An user is required`)
 
 func isAdmin(user *auth.User) bool {
 	if user == nil {
@@ -28,7 +31,7 @@ func isMultiApp(user *auth.User) bool {
 
 func isAllowed(user *auth.User, containerID string) (bool, *types.ContainerJSON, error) {
 	if user == nil {
-		return false, nil, fmt.Errorf(`User is required for checking rights`)
+		return false, nil, errUserRequired
 	}
 
 	container, err := inspectContainer(containerID)

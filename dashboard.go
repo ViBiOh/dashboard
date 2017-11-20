@@ -1,8 +1,8 @@
 package main
 
 import (
+	"errors"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -40,7 +40,7 @@ func handleGracefulClose() error {
 				return nil
 			}
 		case <-timeout:
-			return fmt.Errorf(`Timeout exceeded for graceful close`)
+			return errors.New(`Timeout exceeded for graceful close`)
 		}
 	}
 }

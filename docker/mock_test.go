@@ -3,7 +3,7 @@ package docker
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -44,7 +44,7 @@ func mockClient(t *testing.T, messages []interface{}) *client.Client {
 			current++
 
 			if message == nil {
-				return nil, fmt.Errorf(`internal server error`)
+				return nil, errors.New(`internal server error`)
 			}
 			return marshalContent(t, message)
 		}),
