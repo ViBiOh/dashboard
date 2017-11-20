@@ -7,10 +7,10 @@ services:
     - -prometheusMetricsHost
     - dashboard-auth:1080
     - -corsHeaders
-    - -rateCount
-    - '60'
     - Authorization
     - -corsCredentials
+    - -rateCount
+    - '60'
     - -githubState
     - ${GITHUB_OAUTH_STATE}
     - -githubClientId
