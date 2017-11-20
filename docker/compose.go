@@ -296,7 +296,7 @@ func logServiceHealth(user *auth.User, appName string, service *deployedService,
 		inspectOutput = append(inspectOutput, "\n")
 
 		for _, log := range infos.State.Health.Log {
-			inspectOutput = append(inspectOutput, log.Output)
+			inspectOutput = append(inspectOutput, fmt.Sprintf(`code=%d, log=%s`, log.ExitCode, log.Output))
 		}
 
 		log.Printf(`[%s] [%s] Healthcheck output for %s: %s`, user.Username, appName, service.Name, inspectOutput)
