@@ -75,6 +75,6 @@ export function getAuthApiUrl() {
  * Return Github Oauth API endpoint URL
  * @return {String} WebSocket endpoint URL
  */
-export function getGithubOauthUrl(redirect) {
-  return `http://github.com/login/oauth/authorize?client_id=${encodeURIComponent(getFromContext('GITHUB_OAUTH_CLIENT_ID'))}&state=${encodeURIComponent(getFromContext('GITHUB_OAUTH_STATE'))}&redirect_uri=${encodeURIComponent(getFromContext('GITHUB_REDIRECT_URI') || `${document.location.origin}/auth/github`)}${computeRedirectSearch(redirect)}`;
+export function getGithubOauthUrl(state, redirect) {
+  return `${getAuthApiUrl()}/authorize/github${computeRedirectSearch(redirect)}`;
 }

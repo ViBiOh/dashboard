@@ -29,7 +29,7 @@ const Login = ({ location }) => {
             <FaUnlockAlt />
           </a>
         )}
-        {getFromContext('GITHUB_OAUTH_CLIENT_ID') && (
+        {getFromContext('GITHUB_AUTH_ENABLED') === 'true' && (
           <a
             href={getGithubOauthUrl(redirect)}
             className={style.icons}
