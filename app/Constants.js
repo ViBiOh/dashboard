@@ -75,6 +75,6 @@ export function getAuthApiUrl() {
  * Return Github Oauth API endpoint URL
  * @return {String} WebSocket endpoint URL
  */
-export function getGithubOauthUrl(state, redirect) {
+export function getGithubOauthUrl(redirect) {
   return `${getAuthApiUrl()}/authorize/github${computeRedirectSearch(redirect)}`;
 }
