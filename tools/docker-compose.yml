@@ -1,7 +1,6 @@
 version: '2.1'
 
 services:
-{{- if .Auth }}
   auth:
     image: vibioh/auth
     command:
@@ -22,8 +21,6 @@ services:
     - -rateCount
     - '60'
   {{- if .Github }}
-    - -githubState
-    - ${GITHUB_OAUTH_STATE}
     - -githubClientId
     - ${GITHUB_OAUTH_CLIENT_ID}
     - -githubClientSecret
@@ -41,7 +38,6 @@ services:
     {{- template "prometheusAlias" merge . "Prefix:dashboard-auth" }}
   {{- end }}
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
-{{- end }}
 
   api:
     image: vibioh/dashboard-api
@@ -103,9 +99,9 @@ services:
   {{- end }}
     - -spa
     - -env
-    - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED{{ if .Github }},GITHUB_OAUTH_CLIENT_ID,GITHUB_OAUTH_STATE,GITHUB_REDIRECT_URI{{ end }}
+    - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dashboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}{{ if .Auth }}localhost:1081{{ end }} localhost:1082{{ else }}api:1080 {{ if .Auth }}auth:1080{{ end }}{{ end }}{{ end }};"
+    - "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dashboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1081 localhost:1082{{ else }}api:1080 auth:1080{{ end }}{{ end }};"
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard" }}
   {{- end }}
@@ -123,24 +119,22 @@ services:
     {{- if .Expose }}
       API_URL: 'http{{ if .TLS }}s{{ end }}://localhost:1082'
       WS_URL: 'ws{{ if .TLS }}s{{ end }}://localhost:1082/ws'
-    {{- if .Auth }}
       AUTH_URL: 'http{{ if .TLS }}s{{ end }}://localhost:1081'
-    {{- end }}
     {{- else }}
       API_URL: 'http{{ if .TLS }}s{{ end }}://api:1080'
       WS_URL: 'ws{{ if .TLS }}s{{ end }}://api:1080/ws'
-    {{- if .Auth }}
       AUTH_URL: 'http{{ if .TLS }}s{{ end }}://auth:1080'
     {{- end }}
     {{- end }}
+    {{- if .AuthBasic }}
+      BASIC_AUTH_ENABLED: 'true'
+    {{- else }}
+      BASIC_AUTH_ENABLED: 'false'
     {{- end }}
     {{- if .Github }}
-      BASIC_AUTH_ENABLED: 'false'
-      GITHUB_OAUTH_STATE: '${GITHUB_OAUTH_STATE}'
-      GITHUB_OAUTH_CLIENT_ID: '${GITHUB_OAUTH_CLIENT_ID}'
-      GITHUB_REDIRECT_URI: 'http{{ if .TLS }}s{{ end }}://dashboard{{ .Domain }}/auth/github'
+      GITHUB_AUTH_ENABLED: 'true'
     {{- else }}
-      BASIC_AUTH_ENABLED: 'true'
+      GITHUB_AUTH_ENABLED: 'false'
     {{- end }}
   {{- if .Prometheus }}
     {{- template "prometheusAlias" merge . "Prefix:dashboard" }}

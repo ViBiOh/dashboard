@@ -11,7 +11,6 @@ import (
 
 type arguments struct {
 	TLS        bool
-	Auth       bool
 	AuthBasic  bool
 	Traefik    bool
 	Prometheus bool
@@ -24,7 +23,6 @@ type arguments struct {
 
 func main() {
 	tls := flag.Bool(`tls`, true, `TLS for all containers`)
-	auth := flag.Bool(`auth`, true, `Auth service`)
 	authBasic := flag.Bool(`authBasic`, false, `Basic auth`)
 	traefik := flag.Bool(`traefik`, true, `Traefik load-balancer`)
 	prometheus := flag.Bool(`prometheus`, true, `Prometheus monitoring`)
@@ -57,7 +55,7 @@ func main() {
 		prefixedDomain = *domain
 	}
 
-	if err := tmpl.Execute(os.Stdout, arguments{*tls, *auth, *authBasic, *traefik, *prometheus, *github, *selenium, *expose, prefixedDomain, *users}); err != nil {
+	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *prometheus, *github, *selenium, *expose, prefixedDomain, *users}); err != nil {
 		log.Printf(`Error while rendering template: %v`, err)
 	}
 }

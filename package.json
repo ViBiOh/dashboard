@@ -10,20 +10,15 @@
     "lint": "npm run eslint && npm run stylelint",
     "doc": "./node_modules/.bin/esdoc",
     "prestart": "mkdir -p ./dist && cp ./app/index.html ./dist/",
-    "start":
-      "API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://auth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_OAUTH_CLIENT_ID=8c451219bd1bb8760af6 GITHUB_OAUTH_STATE=RandomStringForViBiOhInfrastructure GITHUB_REDIRECT_URI=https://dashboard.vibioh.fr/auth/github ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
-    "test":
-      "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
+    "start": "API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://dashboard-auth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_AUTH_ENABLED=true ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
+    "test": "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
     "test:e2e": "./node_modules/.bin/codeceptjs run-multiple --all",
     "copy:web": "cp ./web/*.txt ./dist/ && cp ./web/favicon/* ./dist/",
-    "mustache":
-      "./node_modules/js-index-builder/index.js --template \"./app/*.html\" --partials \"./web/partials/*.html\" --bust `git log --pretty=format:'%h' -n 1` --output ./tmp/",
-    "html-minify":
-      "./node_modules/.bin/html-minifier --config-file ./html-minifier.json --input-dir ./tmp --output-dir ./dist",
+    "mustache": "./node_modules/js-index-builder/index.js --template \"./app/*.html\" --partials \"./web/partials/*.html\" --bust `git log --pretty=format:'%h' -n 1` --output ./tmp/",
+    "html-minify": "./node_modules/.bin/html-minifier --config-file ./html-minifier.json --input-dir ./tmp --output-dir ./dist",
     "web": "npm run copy:web && npm run mustache && npm run html-minify",
     "prebuild": "mkdir -p ./dist",
-    "build":
-      "npm run format && npm run lint && npm test && npm run doc && npm run web && ./node_modules/.bin/webpack -p"
+    "build": "npm run format && npm run lint && npm test && npm run doc && npm run web && ./node_modules/.bin/webpack -p"
   },
   "repository": {
     "type": "git",
@@ -111,8 +106,13 @@
     "redux-saga": "latest"
   },
   "ava": {
-    "files": ["app/**/*.test.js"],
-    "require": ["ignore-styles", "./app/utils/Test.js"],
+    "files": [
+      "app/**/*.test.js"
+    ],
+    "require": [
+      "ignore-styles",
+      "./app/utils/Test.js"
+    ],
     "concurrency": 4,
     "babel": "inherit"
   },
@@ -122,18 +122,26 @@
         "env",
         {
           "targets": {
-            "browsers": ["> 1%"]
+            "browsers": [
+              "> 1%"
+            ]
           }
         }
       ],
       "react"
     ],
-    "plugins": ["transform-object-rest-spread"]
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
   },
   "esdoc": {
     "source": "./app",
-    "includes": [".(js|jsx)$"],
-    "excludes": [".test\\.(js|jsx)$"],
+    "includes": [
+      ".(js|jsx)$"
+    ],
+    "excludes": [
+      ".test\\.(js|jsx)$"
+    ],
     "destination": "./doc",
     "plugins": [
       {
