@@ -19,3 +19,13 @@ test('should redirect to login if 401', (t) => {
     push('/login?redirect=about%3Ablank'),
   );
 });
+
+test('should redirect to login if no auth', (t) => {
+  t.deepEqual(
+    onErrorAction('logoutFailed', {
+      toString: () => 'Test failed',
+      noAuth: true,
+    }),
+    push('/login?redirect=about%3Ablank'),
+  );
+});
