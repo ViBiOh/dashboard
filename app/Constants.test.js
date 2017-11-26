@@ -39,5 +39,5 @@ test.serial('should return AUTH_URL from context', (t) => {
 
 test.serial('should return GitHub login URL with variables from env', (t) => {
   init();
-  t.is(getGithubOauthUrl(), 'localhost/oauth/authorize/github');
+  t.is(getGithubOauthUrl(), 'localhost/oauth/redirect/github');
 });
