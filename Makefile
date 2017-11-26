@@ -52,7 +52,7 @@ start-deps:
 start-auth:
 	auth \
 	  -tls=false \
-	  -basicUsers "admin:`bcrypt admin`" \
+	  -basicUsers "1:admin:`bcrypt admin`" \
 	  -corsHeaders Content-Type,Authorization \
 	  -port 1081 \
 	  -corsCredentials
