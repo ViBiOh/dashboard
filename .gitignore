@@ -9,11 +9,11 @@ doc/
 package-lock.json
 e2e/output
 
-# Go binary
+# Golang
 bin/
-coverage.txt
-debug.test
-cacert.pem
+vendor/
+coverage.*
 
 # Docker
+cacert.pem
 docker-compose.*.yml
