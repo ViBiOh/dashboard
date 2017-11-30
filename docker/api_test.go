@@ -176,7 +176,7 @@ func Test_ContainersHandler(t *testing.T) {
 		},
 		{
 			`should delete container from id path`,
-			[]interface{}{types.ContainerJSONBase{ID: `test`, Image: `test`}, types.ContainerJSONBase{}, []types.ImageDeleteResponseItem{}},
+			[]interface{}{types.ContainerJSONBase{ID: `test`, Image: `test`}, types.ContainerJSONBase{}, []types.ImageDelete{}},
 			httptest.NewRequest(http.MethodDelete, `/containerID`, nil),
 			`/containerID`,
 			auth.NewUser(0, `admin`, `admin`),

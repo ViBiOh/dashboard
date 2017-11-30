@@ -317,7 +317,7 @@ func TestRmContainer(t *testing.T) {
 			nil,
 		},
 		{
-			[]interface{}{types.ContainerJSON{}, []types.ImageDeleteResponseItem{}},
+			[]interface{}{types.ContainerJSON{}, []types.ImageDelete{}},
 			`test`,
 			true,
 			&types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}},
@@ -359,7 +359,7 @@ func TestRmImages(t *testing.T) {
 			errors.New(`Error while removing image: error during connect: Delete http://localhost/images/test?noprune=1: internal server error`),
 		},
 		{
-			[]types.ImageDeleteResponseItem{},
+			[]types.ImageDelete{},
 			`test`,
 			nil,
 		},

@@ -309,7 +309,7 @@ func TestCleanContainers(t *testing.T) {
 			errors.New(`Error while deleting container [test]: Error while inspecting container: error during connect: Get http://localhost/containers/json: internal server error`),
 		},
 		{
-			[]interface{}{types.ContainerJSON{}, types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}}, types.ContainerJSON{}, []types.ImageDeleteResponseItem{}},
+			[]interface{}{types.ContainerJSON{}, types.ContainerJSON{ContainerJSONBase: &types.ContainerJSONBase{ID: `test`, Image: `test`}}, types.ContainerJSON{}, []types.ImageDelete{}},
 			[]types.Container{{Names: []string{`test`}}},
 			nil,
 		},

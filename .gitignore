@@ -13,6 +13,7 @@ e2e/output
 bin/
 vendor/
 coverage.*
+debug.test
 
 # Docker
 cacert.pem
