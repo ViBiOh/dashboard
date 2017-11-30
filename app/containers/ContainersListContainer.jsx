@@ -23,7 +23,7 @@ const mapStateToProps = state => ({
  * @param {Function} dispatch Redux dispatch function
  */
 const mapDispatchToProps = dispatch => ({
-  onRefresh: () => dispatch(actions.info()),
+  onRefresh: () => dispatch(actions.refresh()),
   onAdd: () => dispatch(push('/containers/New')),
   onSelect: id => dispatch(push(`/containers/${id}`)),
   onLogout: () => dispatch(actions.logout()),
