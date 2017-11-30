@@ -3,10 +3,6 @@ sudo: required
 services:
 - docker
 go: 1.9
- cache:
-    directories:
-     - ./vendor
-     - ./node_modules
 before_install:
 - openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv -in deploy_rsa.enc -out deploy_rsa -d
 install:
