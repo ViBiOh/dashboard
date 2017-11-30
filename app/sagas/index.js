@@ -61,7 +61,7 @@ export function* loginSaga(action) {
     yield [
       call([localStorage, localStorage.setItem], STORAGE_KEY_AUTH, hash),
       put(actions.loginSucceeded()),
-      put(actions.info()),
+      put(actions.refresh()),
       put(actions.goHome(action.redirect)),
     ];
   } catch (e) {
@@ -81,7 +81,7 @@ export function* getGithubAccesTokenSaga(action) {
     yield [
       call([localStorage, localStorage.setItem], STORAGE_KEY_AUTH, `GitHub ${token}`),
       put(actions.getGithubAccessTokenSucceeded()),
-      put(actions.info()),
+      put(actions.refresh()),
       put(actions.goHome(action.redirect)),
     ];
   } catch (e) {
@@ -111,37 +111,14 @@ export function* logoutSaga() {
 }
 
 /**
- * Saga of Info action
+ * Saga of Refresh action
  * @yield {Function} Saga effects to sequence flow of work
  */
-export function* infoSaga() {
+export function* refreshSaga() {
   try {
-    const infos = yield call(Docker.info);
-
-    const nextActions = [actions.infoSucceeded(infos)];
-    nextActions.push(actions.openBus());
-    nextActions.push(actions.fetchContainers());
-    if (infos.Swarm && infos.Swarm.NodeID) {
-      nextActions.push(actions.fetchServices());
-    }
-
-    yield nextActions.map(a => put(a));
+    yield [put(actions.openBus()), put(actions.fetchContainers())];
   } catch (e) {
-    yield put(onErrorAction('infoFailed', e));
-  }
-}
-
-/**
- * Saga of Fetch services action :
- * - Fetch containers
- * @yield {Function} Saga effects to sequence flow of work
- */
-export function* fetchServicesSaga() {
-  try {
-    const services = yield call(Docker.services);
-    yield put(actions.fetchServicesSucceeded(services));
-  } catch (e) {
-    yield put(onErrorAction('fetchServicesFailed', e));
+    yield put(onErrorAction('setError', e));
   }
 }
 
@@ -325,8 +302,7 @@ export default function* appSaga() {
   yield takeLatest(actions.GET_GITHUB_ACCESS_TOKEN_REQUEST, getGithubAccesTokenSaga);
   yield takeLatest(actions.LOGIN_REQUEST, loginSaga);
   yield takeLatest(actions.LOGOUT_REQUEST, logoutSaga);
-  yield takeLatest(actions.INFO_REQUEST, infoSaga);
-  yield takeLatest(actions.FETCH_SERVICES_REQUEST, fetchServicesSaga);
+  yield takeLatest(actions.REFRESH, refreshSaga);
   yield takeLatest(actions.FETCH_CONTAINERS_REQUEST, fetchContainersSaga);
   yield takeLatest(actions.FETCH_CONTAINER_REQUEST, fetchContainerSaga);
   yield takeLatest(actions.ACTION_CONTAINER_REQUEST, actionContainerSaga);

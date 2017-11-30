@@ -7,14 +7,6 @@ import { auth } from '../Commons';
  */
 export default class Docker {
   /**
-   * Docker's daemon information.
-   * @return {Promise} Information of daemon
-   */
-  static info() {
-    return auth(`${getApiUrl()}/info`).get();
-  }
-
-  /**
    * List Docker's containers.
    * @return {Promise} Array of informations wrapped in a Promise
    */
@@ -91,15 +83,5 @@ export default class Docker {
     socket.onopen = () => socket.send(localStorage.getItem(STORAGE_KEY_AUTH));
 
     return socket;
-  }
-
-  /**
-   * List Docker's Swarm services.
-   * @return {Promise} Array of informations wrapped in a Promise
-   */
-  static services() {
-    return auth(`${getApiUrl()}/services`)
-      .get()
-      .then(({ results }) => results);
   }
 }

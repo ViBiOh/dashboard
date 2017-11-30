@@ -75,23 +75,6 @@ test.serial('should return results when listing containers', (t) => {
   return Docker.containers().then(value => t.deepEqual(value, [{ id: 1 }]));
 });
 
-test.serial('should list services with auth', t =>
-  Docker.services().then(() => {
-    t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
-  }));
-
-test.serial('should return results when listing services', (t) => {
-  data = {
-    results: [
-      {
-        id: 1,
-      },
-    ],
-  };
-
-  return Docker.services().then(value => t.deepEqual(value, [{ id: 1 }]));
-});
-
 test.serial('should create container with given args', t =>
   Docker.containerCreate('test', 'composeFileContent').then((result) => {
     t.true(/containers\/test\/$/.test(result.url));
@@ -99,12 +82,6 @@ test.serial('should create container with given args', t =>
   }));
 
 [
-  {
-    method: 'info',
-    args: [],
-    httpMethod: 'get',
-    url: /info$/,
-  },
   {
     method: 'containerInfos',
     args: ['test'],

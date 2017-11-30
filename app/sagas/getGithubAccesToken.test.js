@@ -22,7 +22,7 @@ test('should store token, put success, fetching info and go home after API call'
   t.deepEqual(iterator.next('githubToken').value, [
     call([localStorage, localStorage.setItem], STORAGE_KEY_AUTH, 'GitHub githubToken'),
     put(actions.getGithubAccessTokenSucceeded()),
-    put(actions.info()),
+    put(actions.refresh()),
     put(actions.goHome()),
   ]);
 });

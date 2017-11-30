@@ -8,7 +8,7 @@ import App from './App';
 
 init().then(() => {
   if (!/auth/.test(document.location.pathname)) {
-    appStore.dispatch(actions.info());
+    appStore.dispatch(actions.refresh());
   }
 
   ReactDOM.render(

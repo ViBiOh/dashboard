@@ -15,9 +15,7 @@ import (
 // DeployTimeout indicates delay for application to deploy before rollback
 const DeployTimeout = 3 * time.Minute
 const healthPrefix = `/health`
-const infoPrefix = `/info`
 const containersPrefix = `/containers`
-const servicesPrefix = `/services`
 
 var backgroundTasks = sync.Map{}
 
@@ -58,17 +56,6 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusServiceUnavailable)
 }
 
-func infoHandler(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := getCtx()
-	defer cancel()
-
-	if info, err := docker.Info(ctx); err != nil {
-		httputils.InternalServerError(w, err)
-	} else {
-		httputils.ResponseJSON(w, http.StatusOK, info, httputils.IsPretty(r.URL.RawQuery))
-	}
-}
-
 func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
 	if r.Method == http.MethodGet && (urlPath == `/` || urlPath == ``) {
 		listContainersHandler(w, r, user)
@@ -99,12 +86,8 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 // Handler for Docker request. Should be use with net/http
 func Handler() http.Handler {
 	authHandler := auth.Handler(authURL, authUsers, func(w http.ResponseWriter, r *http.Request, user *auth.User) {
-		if strings.HasPrefix(r.URL.Path, infoPrefix) && r.Method == http.MethodGet {
-			infoHandler(w, r)
-		} else if strings.HasPrefix(r.URL.Path, containersPrefix) {
+		if strings.HasPrefix(r.URL.Path, containersPrefix) {
 			containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
-		} else if strings.HasPrefix(r.URL.Path, servicesPrefix) {
-			servicesHandler(w, r, strings.TrimPrefix(r.URL.Path, servicesPrefix), user)
 		}
 	})
 
