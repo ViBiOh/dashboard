@@ -22,7 +22,7 @@ test('should put success, info, open event stream and go home after API call', (
   t.deepEqual(iterator.next('Basic hash').value, [
     call([localStorage, localStorage.setItem], STORAGE_KEY_AUTH, 'Basic hash'),
     put(actions.loginSucceeded()),
-    put(actions.info()),
+    put(actions.refresh()),
     put(actions.goHome()),
   ]);
 });

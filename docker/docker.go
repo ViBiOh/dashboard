@@ -12,7 +12,7 @@ import (
 const ownerLabel = `owner`
 const appLabel = `app`
 
-var docker *client.Client
+var docker client.APIClient
 var authURL string
 var authUsers map[string]*auth.User
 
