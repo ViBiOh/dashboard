@@ -12,15 +12,19 @@ import (
 	"github.com/ViBiOh/httputils"
 )
 
-// DeployTimeout indicates delay for application to deploy before rollback
-const DeployTimeout = 3 * time.Minute
-const healthPrefix = `/health`
-const containersPrefix = `/containers`
+const (
+	// DeployTimeout indicates delay for application to deploy before rollback
+	DeployTimeout    = 3 * time.Minute
+	healthPrefix     = `/health`
+	containersPrefix = `/containers`
+)
+
+var (
+	containerRequest       = regexp.MustCompile(`^/([^/]+)/?$`)
+	containerActionRequest = regexp.MustCompile(`^/([^/]+)/([^/]+)`)
+)
 
 var backgroundTasks = sync.Map{}
-
-var containerRequest = regexp.MustCompile(`^/([^/]+)/?$`)
-var containerActionRequest = regexp.MustCompile(`^/([^/]+)/([^/]+)`)
 
 func getCtx() (context.Context, context.CancelFunc) {
 	return context.WithTimeout(context.Background(), 30*time.Second)
@@ -84,8 +88,8 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 }
 
 // Handler for Docker request. Should be use with net/http
-func Handler() http.Handler {
-	authHandler := auth.Handler(authURL, authUsers, func(w http.ResponseWriter, r *http.Request, user *auth.User) {
+func Handler(authConfig map[string]*string) http.Handler {
+	authHandler := auth.Handler(authConfig, func(w http.ResponseWriter, r *http.Request, user *auth.User) {
 		if strings.HasPrefix(r.URL.Path, containersPrefix) {
 			containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
 		}

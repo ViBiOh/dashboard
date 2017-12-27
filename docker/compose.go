@@ -22,12 +22,14 @@ import (
 	"github.com/docker/docker/api/types/network"
 )
 
-const defaultCPUShares = 128
-const minMemory = 16777216
-const maxMemory = 805306368
-const colonSeparator = `:`
-const defaultTag = `:latest`
-const deploySuffix = `_deploy`
+const (
+	defaultCPUShares = 128
+	minMemory        = 16777216
+	maxMemory        = 805306368
+	colonSeparator   = `:`
+	defaultTag       = `:latest`
+	deploySuffix     = `_deploy`
+)
 
 var errHealthCheckFailed = errors.New(`Health check failed`)
 

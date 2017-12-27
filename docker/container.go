@@ -11,11 +11,13 @@ import (
 	"github.com/docker/docker/api/types/filters"
 )
 
-const getAction = `get`
-const startAction = `start`
-const stopAction = `stop`
-const restartAction = `restart`
-const deleteAction = `delete`
+const (
+	getAction     = `get`
+	startAction   = `start`
+	stopAction    = `stop`
+	restartAction = `restart`
+	deleteAction  = `delete`
+)
 
 func listContainers(user *auth.User, appName string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}

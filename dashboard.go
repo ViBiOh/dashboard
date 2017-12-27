@@ -22,8 +22,10 @@ import (
 
 const websocketPrefix = `/ws`
 
-var restHandler http.Handler
-var websocketHandler http.Handler
+var (
+	restHandler      http.Handler
+	websocketHandler http.Handler
+)
 
 func handleGracefulClose() error {
 	if docker.CanBeGracefullyClosed() {
@@ -67,14 +69,14 @@ func main() {
 
 	alcotest.DoAndExit(alcotestConfig)
 
-	if err := docker.Init(*authConfig[`url`], auth.LoadUsersProfiles(*authConfig[`users`])); err != nil {
+	if err := docker.Init(); err != nil {
 		log.Printf(`Error while initializing docker: %v`, err)
 	}
 
 	log.Print(`Starting server on port ` + *port)
 
-	restHandler = prometheus.Handler(prometheusConfig, rate.Handler(rateConfig, gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, docker.Handler())))))
-	websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler())
+	restHandler = prometheus.Handler(prometheusConfig, rate.Handler(rateConfig, gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, docker.Handler(authConfig))))))
+	websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler(authConfig))
 
 	server := &http.Server{
 		Addr:    `:` + *port,

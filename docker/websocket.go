@@ -17,11 +17,13 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-const ignoredByteLogSize = 8
-const tailSize = `100`
-const start = `start`
-const stop = `stop`
-const busPrefix = `/bus`
+const (
+	ignoredByteLogSize = 8
+	tailSize           = `100`
+	start              = `start`
+	stop               = `stop`
+	busPrefix          = `/bus`
+)
 
 var (
 	eventsDemand = regexp.MustCompile(`^events (\S+)`)
@@ -55,7 +57,7 @@ func InitWebsocket() error {
 	return nil
 }
 
-func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
+func upgradeAndAuth(w http.ResponseWriter, r *http.Request, authURL string, authUsers map[string]*auth.User) (*websocket.Conn, *auth.User, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 
 	if err != nil {
@@ -198,8 +200,8 @@ func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.
 	return nil
 }
 
-func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
-	ws, user, err := upgradeAndAuth(w, r)
+func busWebsocketHandler(w http.ResponseWriter, r *http.Request, authURL string, authUsers map[string]*auth.User) {
+	ws, user, err := upgradeAndAuth(w, r, authURL, authUsers)
 	if err != nil {
 		log.Printf(`Error while upgrading connection to websocket: %v`, err)
 		return
@@ -257,10 +259,13 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // WebsocketHandler for Docker Websocket request. Should be use with net/http
-func WebsocketHandler() http.Handler {
+func WebsocketHandler(authConfig map[string]*string) http.Handler {
+	authURL := *authConfig[`url`]
+	authUsers := auth.LoadUsersProfiles(*authConfig[`users`])
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, busPrefix) {
-			busWebsocketHandler(w, r)
+			busWebsocketHandler(w, r, authURL, authUsers)
 		}
 	})
 }

@@ -9,12 +9,10 @@ import (
 	"github.com/docker/docker/client"
 )
 
-const ownerLabel = `owner`
-const appLabel = `app`
-
-var docker client.APIClient
-var authURL string
-var authUsers map[string]*auth.User
+const (
+	ownerLabel = `owner`
+	appLabel   = `app`
+)
 
 var (
 	dockerHost    = flag.String(`dockerHost`, `unix:///var/run/docker.sock`, `Docker Host`)
@@ -22,11 +20,10 @@ var (
 	dockerNetwork = flag.String(`dockerNetwork`, `traefik`, `Network for deploying containers`)
 )
 
-// Init docker client
-func Init(url string, users map[string]*auth.User) error {
-	authURL = url
-	authUsers = users
+var docker client.APIClient
 
+// Init docker client
+func Init() error {
 	client, err := client.NewClient(*dockerHost, *dockerVersion, nil, nil)
 	if err != nil {
 		return fmt.Errorf(`Error while creating docker client: %v`, err)

@@ -8,8 +8,10 @@ import (
 	"github.com/docker/docker/api/types"
 )
 
-const adminUser = `admin`
-const multiAppUser = `multi`
+const (
+	adminUser    = `admin`
+	multiAppUser = `multi`
+)
 
 var errUserRequired = errors.New(`An user is required`)
 
