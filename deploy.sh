@@ -10,14 +10,6 @@ function readVariableIfRequired() {
   fi
 }
 
-function docker-clean() {
-  imagesToClean=`docker images --filter dangling=true -q 2>/dev/null`
-
-  if [ ! -z "${imagesToClean}" ]; then
-    docker rmi ${imagesToClean} || true
-  fi
-}
-
 function docker-compose-deploy() {
   PROJECT_NAME=${1}
   readVariableIfRequired "PROJECT_NAME"
@@ -59,7 +51,7 @@ function docker-compose-deploy() {
 
   echo Deploy succeed!
   
-  docker-clean
+  docker system prune -f
 }
 
 export PATH=${PATH}:/opt/bin
