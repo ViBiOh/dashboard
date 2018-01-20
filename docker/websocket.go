@@ -57,7 +57,7 @@ func InitWebsocket() error {
 	return nil
 }
 
-func upgradeAndAuth(w http.ResponseWriter, r *http.Request, authURL string, authUsers map[string]*auth.User) (*websocket.Conn, *auth.User, error) {
+func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 
 	if err != nil {
@@ -74,7 +74,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request, authURL string, auth
 		return nil, nil, fmt.Errorf(`Error while reading authentification message: %v`, err)
 	}
 
-	user, err := auth.IsAuthenticatedByAuth(authURL, authUsers, string(basicAuth), ws.RemoteAddr().String())
+	user, err := authApp.IsAuthenticatedByAuth(string(basicAuth), ws.RemoteAddr().String())
 	if err != nil {
 		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
 		defer ws.Close()
@@ -200,8 +200,8 @@ func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.
 	return nil
 }
 
-func busWebsocketHandler(w http.ResponseWriter, r *http.Request, authURL string, authUsers map[string]*auth.User) {
-	ws, user, err := upgradeAndAuth(w, r, authURL, authUsers)
+func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
+	ws, user, err := upgradeAndAuth(w, r)
 	if err != nil {
 		log.Printf(`Error while upgrading connection to websocket: %v`, err)
 		return
@@ -259,13 +259,10 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request, authURL string,
 }
 
 // WebsocketHandler for Docker Websocket request. Should be use with net/http
-func WebsocketHandler(authConfig map[string]*string) http.Handler {
-	authURL := *authConfig[`url`]
-	authUsers := auth.LoadUsersProfiles(*authConfig[`users`])
-
+func WebsocketHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, busPrefix) {
-			busWebsocketHandler(w, r, authURL, authUsers)
+			busWebsocketHandler(w, r)
 		}
 	})
 }

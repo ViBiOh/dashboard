@@ -69,14 +69,16 @@ func main() {
 
 	alcotest.DoAndExit(alcotestConfig)
 
-	if err := docker.Init(); err != nil {
+	log.Print(`Starting server on port ` + *port)
+
+	authApp := auth.NewApp(authConfig)
+
+	if err := docker.Init(authApp); err != nil {
 		log.Printf(`Error while initializing docker: %v`, err)
 	}
 
-	log.Print(`Starting server on port ` + *port)
-
-	restHandler = prometheus.Handler(prometheusConfig, rate.Handler(rateConfig, gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, docker.Handler(authConfig))))))
-	websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler(authConfig))
+	restHandler = prometheus.Handler(prometheusConfig, rate.Handler(rateConfig, gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, docker.Handler())))))
+	websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler())
 
 	server := &http.Server{
 		Addr:    `:` + *port,

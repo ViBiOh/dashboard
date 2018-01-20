@@ -20,10 +20,13 @@ var (
 	dockerNetwork = flag.String(`dockerNetwork`, `traefik`, `Network for deploying containers`)
 )
 
-var docker client.APIClient
+var (
+	docker  client.APIClient
+	authApp *auth.App
+)
 
 // Init docker client
-func Init() error {
+func Init(authAppDep *auth.App) error {
 	client, err := client.NewClient(*dockerHost, *dockerVersion, nil, nil)
 	if err != nil {
 		return fmt.Errorf(`Error while creating docker client: %v`, err)
@@ -33,6 +36,8 @@ func Init() error {
 	if err := InitWebsocket(); err != nil {
 		return fmt.Errorf(`Error while initializing websocket: %v`, err)
 	}
+
+	authApp = authAppDep
 
 	return nil
 }

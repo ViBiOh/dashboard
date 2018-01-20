@@ -88,8 +88,8 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 }
 
 // Handler for Docker request. Should be use with net/http
-func Handler(authConfig map[string]*string) http.Handler {
-	authHandler := auth.Handler(authConfig, func(w http.ResponseWriter, r *http.Request, user *auth.User) {
+func Handler() http.Handler {
+	authHandler := authApp.Handler(func(w http.ResponseWriter, r *http.Request, user *auth.User) {
 		if strings.HasPrefix(r.URL.Path, containersPrefix) {
 			containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
 		}
