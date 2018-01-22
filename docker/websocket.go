@@ -11,7 +11,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ViBiOh/auth/auth"
+	authProvider "github.com/ViBiOh/auth/provider"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/gorilla/websocket"
@@ -57,7 +57,7 @@ func InitWebsocket() error {
 	return nil
 }
 
-func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *auth.User, error) {
+func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *authProvider.User, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 
 	if err != nil {
@@ -84,7 +84,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *a
 	return ws, user, nil
 }
 
-func readContent(user *auth.User, ws *websocket.Conn, name string, done chan<- struct{}, content chan<- []byte) {
+func readContent(user *authProvider.User, ws *websocket.Conn, name string, done chan<- struct{}, content chan<- []byte) {
 	for {
 		messageType, message, err := ws.ReadMessage()
 
@@ -106,7 +106,7 @@ func readContent(user *auth.User, ws *websocket.Conn, name string, done chan<- s
 	}
 }
 
-func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.User, _ string, output chan<- []byte) {
+func streamEvents(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, _ string, output chan<- []byte) {
 	defer cancel()
 
 	filtersArgs := filters.NewArgs()
@@ -136,7 +136,7 @@ func streamEvents(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	}
 }
 
-func streamLogs(ctx context.Context, cancel context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
+func streamLogs(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, containerID string, output chan<- []byte) {
 	logs, err := docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	defer cancel()
 
@@ -155,7 +155,7 @@ func streamLogs(ctx context.Context, cancel context.CancelFunc, user *auth.User,
 	}
 }
 
-func streamStats(ctx context.Context, cancel context.CancelFunc, user *auth.User, containerID string, output chan<- []byte) {
+func streamStats(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, containerID string, output chan<- []byte) {
 	stats, err := docker.ContainerStats(ctx, containerID, true)
 	defer cancel()
 
@@ -171,7 +171,7 @@ func streamStats(ctx context.Context, cancel context.CancelFunc, user *auth.User
 	}
 }
 
-func handleBusDemand(user *auth.User, name string, input []byte, demand *regexp.Regexp, cancel context.CancelFunc, output chan<- []byte, streamFn func(context.Context, context.CancelFunc, *auth.User, string, chan<- []byte)) context.CancelFunc {
+func handleBusDemand(user *authProvider.User, name string, input []byte, demand *regexp.Regexp, cancel context.CancelFunc, output chan<- []byte, streamFn func(context.Context, context.CancelFunc, *authProvider.User, string, chan<- []byte)) context.CancelFunc {
 	demandGroups := demand.FindSubmatch(input)
 	if len(demandGroups) < 2 {
 		log.Printf(`[%s] Unable to parse bus demand %s for %s`, user.Username, input, name)

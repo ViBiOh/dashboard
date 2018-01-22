@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ViBiOh/auth/auth"
+	authProvider "github.com/ViBiOh/auth/provider"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 )
@@ -42,7 +43,7 @@ func Init(authAppDep *auth.App) error {
 	return nil
 }
 
-func labelFilters(user *auth.User, filtersArgs *filters.Args, appName string) {
+func labelFilters(user *authProvider.User, filtersArgs *filters.Args, appName string) {
 	if appName != `` && isMultiApp(user) {
 		filtersArgs.Add(`label`, appLabel+`=`+appName)
 	} else if !isAdmin(user) {

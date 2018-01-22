@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ViBiOh/auth/auth"
+	authProvider "github.com/ViBiOh/auth/provider"
 	"github.com/ViBiOh/httputils"
 )
 
@@ -60,7 +60,7 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusServiceUnavailable)
 }
 
-func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *auth.User) {
+func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *authProvider.User) {
 	if r.Method == http.MethodGet && (urlPath == `/` || urlPath == ``) {
 		listContainersHandler(w, r, user)
 	} else if containerRequest.MatchString(urlPath) {
@@ -89,7 +89,7 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 
 // Handler for Docker request. Should be use with net/http
 func Handler() http.Handler {
-	authHandler := authApp.Handler(func(w http.ResponseWriter, r *http.Request, user *auth.User) {
+	authHandler := authApp.Handler(func(w http.ResponseWriter, r *http.Request, user *authProvider.User) {
 		if strings.HasPrefix(r.URL.Path, containersPrefix) {
 			containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
 		}

@@ -27,9 +27,10 @@
   name = "github.com/ViBiOh/auth"
   packages = [
     "auth",
-    "cookie"
+    "cookie",
+    "provider"
   ]
-  revision = "d90bc7c3ec68f5a0186f00f307cdf57547484e09"
+  revision = "444a0422bb9092ab12a3694d966ca074b4276e85"
 
 [[projects]]
   branch = "master"
@@ -197,7 +198,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "2c42eef0765b9837fbdab12011af7830f55f88f0"
+  revision = "af50095a40f9041b3b38960738837185c26e9419"
 
 [[projects]]
   branch = "v2"

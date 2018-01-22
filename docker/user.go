@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ViBiOh/auth/auth"
+	authProvider "github.com/ViBiOh/auth/provider"
 	"github.com/docker/docker/api/types"
 )
 
@@ -15,7 +15,7 @@ const (
 
 var errUserRequired = errors.New(`An user is required`)
 
-func isAdmin(user *auth.User) bool {
+func isAdmin(user *authProvider.User) bool {
 	if user == nil {
 		return false
 	}
@@ -23,7 +23,7 @@ func isAdmin(user *auth.User) bool {
 	return user.HasProfile(adminUser)
 }
 
-func isMultiApp(user *auth.User) bool {
+func isMultiApp(user *authProvider.User) bool {
 	if user == nil {
 		return false
 	}
@@ -31,7 +31,7 @@ func isMultiApp(user *auth.User) bool {
 	return user.HasProfile(adminUser) || user.HasProfile(multiAppUser)
 }
 
-func isAllowed(user *auth.User, containerID string) (bool, *types.ContainerJSON, error) {
+func isAllowed(user *authProvider.User, containerID string) (bool, *types.ContainerJSON, error) {
 	if user == nil {
 		return false, nil, errUserRequired
 	}

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ViBiOh/auth/auth"
+	authProvider "github.com/ViBiOh/auth/provider"
 	"github.com/ViBiOh/httputils"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
@@ -17,7 +17,7 @@ import (
 func TestGetConfig(t *testing.T) {
 	var cases = []struct {
 		service *dockerComposeService
-		user    *auth.User
+		user    *authProvider.User
 		appName string
 		want    *container.Config
 		wantErr error
@@ -28,7 +28,7 @@ func TestGetConfig(t *testing.T) {
 					Interval: `abcd`,
 				},
 			},
-			auth.NewUser(0, `admin`, `admin`),
+			authProvider.NewUser(0, `admin`, `admin`),
 			`test`,
 			nil,
 			errors.New(`Error while parsing healthcheck interval: time: invalid duration abcd`),
@@ -40,14 +40,14 @@ func TestGetConfig(t *testing.T) {
 					Timeout:  `abcd`,
 				},
 			},
-			auth.NewUser(0, `admin`, `admin`),
+			authProvider.NewUser(0, `admin`, `admin`),
 			`test`,
 			nil,
 			errors.New(`Error while parsing healthcheck timeout: time: invalid duration abcd`),
 		},
 		{
 			&dockerComposeService{},
-			auth.NewUser(0, `admin`, `admin`),
+			authProvider.NewUser(0, `admin`, `admin`),
 			`test`,
 			&container.Config{
 				Labels: map[string]string{`owner`: `admin`, `app`: `test`},
@@ -68,7 +68,7 @@ func TestGetConfig(t *testing.T) {
 					Timeout:  `10s`,
 				},
 			},
-			auth.NewUser(0, `admin`, `admin`),
+			authProvider.NewUser(0, `admin`, `admin`),
 			`test`,
 			&container.Config{
 				Image:  `vibioh/dashboard`,
@@ -285,14 +285,14 @@ func TestGetFinalName(t *testing.T) {
 
 func TestComposeFailed(t *testing.T) {
 	var cases = []struct {
-		user       *auth.User
+		user       *authProvider.User
 		appName    string
 		err        error
 		want       string
 		wantStatus int
 	}{
 		{
-			auth.NewUser(0, `admin`, `admin`),
+			authProvider.NewUser(0, `admin`, `admin`),
 			`test`,
 			errors.New(`test unit error`),
 			`[admin] [test] Failed to deploy: test unit error

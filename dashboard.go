@@ -71,7 +71,7 @@ func main() {
 
 	log.Print(`Starting server on port ` + *port)
 
-	authApp := auth.NewApp(authConfig)
+	authApp := auth.NewApp(authConfig, nil)
 
 	if err := docker.Init(authApp); err != nil {
 		log.Printf(`Error while initializing docker: %v`, err)

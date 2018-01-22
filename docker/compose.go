@@ -13,7 +13,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/ViBiOh/auth/auth"
+	authProvider "github.com/ViBiOh/auth/provider"
 	"github.com/ViBiOh/httputils"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -94,7 +94,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 	return &healthconfig, nil
 }
 
-func getConfig(service *dockerComposeService, user *auth.User, appName string) (*container.Config, error) {
+func getConfig(service *dockerComposeService, user *authProvider.User, appName string) (*container.Config, error) {
 	environments := make([]string, 0, len(service.Environment))
 	for key, value := range service.Environment {
 		environments = append(environments, key+`=`+value)
@@ -146,7 +146,7 @@ func getVolumesConfig(hostConfig *container.HostConfig, volumes []string) {
 	}
 }
 
-func getHostConfig(service *dockerComposeService, user *auth.User) *container.HostConfig {
+func getHostConfig(service *dockerComposeService, user *authProvider.User) *container.HostConfig {
 	hostConfig := container.HostConfig{
 		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
 			`max-size`: `10m`,
@@ -265,7 +265,7 @@ func getFinalName(serviceFullName string) string {
 	return strings.TrimSuffix(serviceFullName, deploySuffix)
 }
 
-func logServiceOutput(user *auth.User, appName string, service *deployedService) {
+func logServiceOutput(user *authProvider.User, appName string, service *deployedService) {
 	ctx, _ := getCtx()
 	logs, err := docker.ContainerLogs(ctx, service.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
 	if logs != nil {
@@ -291,7 +291,7 @@ func logServiceOutput(user *auth.User, appName string, service *deployedService)
 	log.Printf(`[%s] [%s] Logs output for %s: %s`, user.Username, appName, service.Name, logsContent)
 }
 
-func logServiceHealth(user *auth.User, appName string, service *deployedService, infos *types.ContainerJSON) {
+func logServiceHealth(user *authProvider.User, appName string, service *deployedService, infos *types.ContainerJSON) {
 	if infos.State.Health != nil {
 		inspectOutput := make([]string, 0)
 		inspectOutput = append(inspectOutput, "\n")
@@ -304,7 +304,7 @@ func logServiceHealth(user *auth.User, appName string, service *deployedService,
 	}
 }
 
-func deleteServices(appName string, services map[string]*deployedService, user *auth.User) {
+func deleteServices(appName string, services map[string]*deployedService, user *authProvider.User) {
 	for service, container := range services {
 		logServiceOutput(user, appName, container)
 
@@ -335,7 +335,7 @@ func startServices(services map[string]*deployedService) error {
 	return nil
 }
 
-func inspectServices(services map[string]*deployedService, user *auth.User, appName string) []*types.ContainerJSON {
+func inspectServices(services map[string]*deployedService, user *authProvider.User, appName string) []*types.ContainerJSON {
 	containers := make([]*types.ContainerJSON, 0, len(services))
 
 	for service, container := range services {
@@ -350,7 +350,7 @@ func inspectServices(services map[string]*deployedService, user *auth.User, appN
 	return containers
 }
 
-func areContainersHealthy(ctx context.Context, user *auth.User, appName string, containers []*types.ContainerJSON) bool {
+func areContainersHealthy(ctx context.Context, user *authProvider.User, appName string, containers []*types.ContainerJSON) bool {
 	containersIdsWithHealthcheck := make([]string, 0, len(containers))
 	for _, container := range containers {
 		if container.Config.Healthcheck != nil && len(container.Config.Healthcheck.Test) != 0 {
@@ -387,7 +387,7 @@ func areContainersHealthy(ctx context.Context, user *auth.User, appName string, 
 	}
 }
 
-func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.User, appName string, services map[string]*deployedService, oldContainers []types.Container) {
+func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, appName string, services map[string]*deployedService, oldContainers []types.Container) {
 	defer cancel()
 	defer backgroundTasks.Delete(appName)
 
@@ -405,7 +405,7 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *auth.Use
 	}
 }
 
-func createContainer(user *auth.User, appName string, serviceName string, service *dockerComposeService) (*deployedService, error) {
+func createContainer(user *authProvider.User, appName string, serviceName string, service *dockerComposeService) (*deployedService, error) {
 	if err := pullImage(service.Image); err != nil {
 		return nil, err
 	}
@@ -428,11 +428,11 @@ func createContainer(user *auth.User, appName string, serviceName string, servic
 	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
 }
 
-func composeFailed(w http.ResponseWriter, user *auth.User, appName string, err error) {
+func composeFailed(w http.ResponseWriter, user *authProvider.User, appName string, err error) {
 	httputils.InternalServerError(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
 }
 
-func composeHandler(w http.ResponseWriter, r *http.Request, user *auth.User, appName string, composeFile []byte) {
+func composeHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User, appName string, composeFile []byte) {
 	if user == nil {
 		httputils.BadRequest(w, errUserRequired)
 		return
