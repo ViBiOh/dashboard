@@ -11,7 +11,7 @@
   branch = "master"
   name = "github.com/NYTimes/gziphandler"
   packages = ["."]
-  revision = "47ca22a0aeea4c9ceddfb935d818d636d934c312"
+  revision = "289a3b81f5aedc99f8d6eb0f67827c142f1310d8"
 
 [[projects]]
   branch = "master"
@@ -30,7 +30,7 @@
     "cookie",
     "provider"
   ]
-  revision = "444a0422bb9092ab12a3694d966ca074b4276e85"
+  revision = "0e8ef8b2a9ef9f823836f455152aebba8350a5d8"
 
 [[projects]]
   branch = "master"
@@ -44,7 +44,7 @@
     "rate",
     "tools"
   ]
-  revision = "d9e777753ee5ba376805fcc97fe07d1d76d22dad"
+  revision = "d4377b875d3d705711b30964e5015a2e3e325c09"
 
 [[projects]]
   branch = "master"
@@ -104,7 +104,7 @@
   branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "1e59b77b52bf8e4b449a57e6f79f21226d571845"
+  revision = "c65a0412e71e8b9b3bfd22925720d23c0f054237"
 
 [[projects]]
   name = "github.com/gorilla/websocket"
@@ -154,9 +154,11 @@
   name = "github.com/prometheus/procfs"
   packages = [
     ".",
+    "internal/util",
+    "nfs",
     "xfs"
   ]
-  revision = "b15cd069a83443be3154b719d0cc9fe8117f09fb"
+  revision = "cb4147076ac75738c9a7d279075a253c0cc5acbd"
 
 [[projects]]
   name = "github.com/tdewolff/minify"
@@ -192,13 +194,13 @@
     "context/ctxhttp",
     "proxy"
   ]
-  revision = "5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec"
+  revision = "0ed95abb35c445290478a5348a7b38bb154135fd"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "af50095a40f9041b3b38960738837185c26e9419"
+  revision = "03467258950d845cd1877eab69461b98e8c09219"
 
 [[projects]]
   branch = "v2"
@@ -209,6 +211,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b36589ed4f45bedc82c3387ea6789e3ebded7597bbc63659de324d8b5c801c4a"
+  inputs-digest = "762cf2d73dd8db6aefe5e7377f13aa87fc85083a91a2deb9ccecef83cd8aa0c7"
   solver-name = "gps-cdcl"
   solver-version = 1

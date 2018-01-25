@@ -224,8 +224,8 @@ func pullImage(image string) error {
 		return fmt.Errorf(`Error while pulling image: %v`, err)
 	}
 
-	httputils.ReadBody(pull)
-	return nil
+	_, err = httputils.ReadBody(pull)
+	return err
 }
 
 func cleanContainers(containers []types.Container) error {
@@ -269,7 +269,11 @@ func logServiceOutput(user *authProvider.User, appName string, service *deployed
 	ctx, _ := getCtx()
 	logs, err := docker.ContainerLogs(ctx, service.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
 	if logs != nil {
-		defer logs.Close()
+		defer func() {
+			if err := logs.Close(); err != nil {
+				log.Printf(`[%s] [%s] Error while closing logs for service: %v`, user.Username, appName, err)
+			}
+		}()
 	}
 	if err != nil {
 		log.Printf(`[%s] [%s] Error while reading logs for service %s: %v`, user.Username, appName, service.Name, err)
@@ -488,7 +492,7 @@ func composeHandler(w http.ResponseWriter, r *http.Request, user *authProvider.U
 	if err != nil {
 		cancel()
 		composeFailed(w, user, appName, err)
-	} else {
-		httputils.ResponseArrayJSON(w, http.StatusOK, newServices, httputils.IsPretty(r.URL.RawQuery))
+	} else if err := httputils.ResponseArrayJSON(w, http.StatusOK, newServices, httputils.IsPretty(r.URL.RawQuery)); err != nil {
+		httputils.InternalServerError(w, err)
 	}
 }

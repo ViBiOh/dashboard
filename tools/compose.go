@@ -37,7 +37,9 @@ func main() {
 		`merge`: func(o interface{}, newKey string) map[string]interface{} {
 			var output map[string]interface{}
 			oStr, _ := json.Marshal(o)
-			json.Unmarshal(oStr, &output)
+			if err := json.Unmarshal(oStr, &output); err != nil {
+				log.Printf(`Error while unmarshalling content: %v`, err)
+			}
 
 			if newKey != `` {
 				parts := strings.Split(newKey, `:`)

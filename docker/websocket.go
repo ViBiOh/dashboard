@@ -57,31 +57,38 @@ func InitWebsocket() error {
 	return nil
 }
 
-func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (*websocket.Conn, *authProvider.User, error) {
-	ws, err := upgrader.Upgrade(w, r, nil)
+func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websocket.Conn, user *authProvider.User, err error) {
+	ws, err = upgrader.Upgrade(w, r, nil)
+
+	defer func() {
+		if err != nil && ws != nil {
+			if closeErr := ws.Close(); closeErr != nil {
+				err = fmt.Errorf(`%v, and also error while closing connection: %v`, err, closeErr)
+			}
+		}
+	}()
 
 	if err != nil {
-		if ws != nil {
-			defer ws.Close()
-		}
-
-		return nil, nil, fmt.Errorf(`Error while upgrading connection: %v`, err)
+		err = fmt.Errorf(`Error while upgrading connection: %v`, err)
+		return
 	}
 
 	_, basicAuth, err := ws.ReadMessage()
 	if err != nil {
-		defer ws.Close()
-		return nil, nil, fmt.Errorf(`Error while reading authentification message: %v`, err)
+		err = fmt.Errorf(`Error while reading authentification message: %v`, err)
+		return
 	}
 
-	user, err := authApp.IsAuthenticatedByAuth(string(basicAuth), ws.RemoteAddr().String())
+	user, err = authApp.IsAuthenticatedByAuth(string(basicAuth), ws.RemoteAddr().String())
 	if err != nil {
-		ws.WriteMessage(websocket.TextMessage, []byte(err.Error()))
-		defer ws.Close()
-		return nil, nil, fmt.Errorf(`Error while checking authentification: %v`, err)
+		err = fmt.Errorf(`Error while checking authentification: %v`, err)
+		if writeErr := ws.WriteMessage(websocket.TextMessage, []byte(err.Error())); writeErr != nil {
+			err = fmt.Errorf(`%v, and also error while writing error message: %v`, err, writeErr)
+		}
+		return
 	}
 
-	return ws, user, nil
+	return
 }
 
 func readContent(user *authProvider.User, ws *websocket.Conn, name string, done chan<- struct{}, content chan<- []byte) {
@@ -140,11 +147,17 @@ func streamLogs(ctx context.Context, cancel context.CancelFunc, user *authProvid
 	logs, err := docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	defer cancel()
 
+	if logs != nil {
+		defer func() {
+			if err := logs.Close(); err != nil {
+				log.Printf(`[%s] Error while closing logs for %s: %v`, user.Username, containerID, err)
+			}
+		}()
+	}
 	if err != nil {
-		log.Printf(`[%s] Logs opening in error: %v`, user.Username, err)
+		log.Printf(`[%s] Error while opening logs for %s: %v`, user.Username, containerID, err)
 		return
 	}
-	defer logs.Close()
 
 	scanner := bufio.NewScanner(logs)
 	for scanner.Scan() {
@@ -160,10 +173,14 @@ func streamStats(ctx context.Context, cancel context.CancelFunc, user *authProvi
 	defer cancel()
 
 	if err != nil {
-		log.Printf(`[%s] Stats opening in error for %s: %v`, user.Username, containerID, err)
+		log.Printf(`[%s] Error while opening stats for %s: %v`, user.Username, containerID, err)
 		return
 	}
-	defer stats.Body.Close()
+	defer func() {
+		if err := stats.Body.Close(); err != nil {
+			log.Printf(`[%s] Error while closing stats for %s: %v`, user.Username, containerID, err)
+		}
+	}()
 
 	scanner := bufio.NewScanner(stats.Body)
 	for scanner.Scan() {
@@ -206,7 +223,11 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf(`Error while upgrading connection to websocket: %v`, err)
 		return
 	}
-	defer ws.Close()
+	defer func() {
+		if err := ws.Close(); err != nil {
+			log.Printf(`Error while closing connection to websocket: %v`, err)
+		}
+	}()
 
 	done := make(chan struct{})
 

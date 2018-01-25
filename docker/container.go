@@ -133,15 +133,15 @@ func basicActionHandler(w http.ResponseWriter, r *http.Request, user *authProvid
 		httputils.Forbidden(w)
 	} else if result, err := doAction(action)(containerID, container); err != nil {
 		httputils.InternalServerError(w, err)
-	} else {
-		httputils.ResponseJSON(w, http.StatusOK, result, httputils.IsPretty(r.URL.RawQuery))
+	} else if err := httputils.ResponseJSON(w, http.StatusOK, result, httputils.IsPretty(r.URL.RawQuery)); err != nil {
+		httputils.InternalServerError(w, err)
 	}
 }
 
 func listContainersHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User) {
 	if containers, err := listContainers(user, ``); err != nil {
 		httputils.InternalServerError(w, err)
-	} else {
-		httputils.ResponseArrayJSON(w, http.StatusOK, containers, httputils.IsPretty(r.URL.RawQuery))
+	} else if err := httputils.ResponseArrayJSON(w, http.StatusOK, containers, httputils.IsPretty(r.URL.RawQuery)); err != nil {
+		httputils.InternalServerError(w, err)
 	}
 }
