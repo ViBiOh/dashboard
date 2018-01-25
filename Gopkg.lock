@@ -30,7 +30,7 @@
     "cookie",
     "provider"
   ]
-  revision = "0e8ef8b2a9ef9f823836f455152aebba8350a5d8"
+  revision = "7ad7dd70f1d4585e5a570b60a769d13870dfae80"
 
 [[projects]]
   branch = "master"
@@ -44,7 +44,7 @@
     "rate",
     "tools"
   ]
-  revision = "d4377b875d3d705711b30964e5015a2e3e325c09"
+  revision = "481900a491a7bcf17a366e01f47b39c0828a0daf"
 
 [[projects]]
   branch = "master"
