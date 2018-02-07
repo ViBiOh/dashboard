@@ -16,6 +16,10 @@ services:
       traefik.frontend.rule: 'Host: dashboard-auth.vibioh.fr'
       traefik.protocol: 'https'
       traefik.port: '1080'
+      traefik.frontend.rateLimit.extractorFunc: 'client.ip'
+      traefik.frontend.rateLimit.rateSet.first.period: 60
+      traefik.frontend.rateLimit.rateSet.first.average: 100
+      traefik.frontend.rateLimit.rateSet.first.burst: 200
     networks:
       default:
         aliases:
@@ -54,6 +58,10 @@ services:
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
       traefik.protocol: 'https'
       traefik.port: '1080'
+      traefik.frontend.rateLimit.extractorFunc: 'client.ip'
+      traefik.frontend.rateLimit.rateSet.first.period: 60
+      traefik.frontend.rateLimit.rateSet.first.average: 100
+      traefik.frontend.rateLimit.rateSet.first.burst: 200
     networks:
       default:
         aliases:
@@ -85,6 +93,10 @@ services:
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr'
       traefik.protocol: 'https'
       traefik.port: '1080'
+      traefik.frontend.rateLimit.extractorFunc: 'client.ip'
+      traefik.frontend.rateLimit.rateSet.first.period: 60
+      traefik.frontend.rateLimit.rateSet.first.average: 100
+      traefik.frontend.rateLimit.rateSet.first.burst: 200
     environment:
       API_URL: 'https://dashboard-api.vibioh.fr'
       WS_URL: 'wss://dashboard-api.vibioh.fr/ws'

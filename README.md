@@ -35,8 +35,6 @@ Usage of tools/compose.go:
     	Expose opened ports
   -github
     	Github logging (default true)
-  -prometheus
-    	Prometheus monitoring (default true)
   -selenium
     	Selenium container
   -tls
@@ -147,14 +145,6 @@ Usage of dashboard:
     	[owasp] Indicate Strict Transport Security (default true)
   -port string
     	Listen port (default "1080")
-  -prometheusMetricsHost string
-    	[prometheus] Allowed hostname to call metrics endpoint (default "localhost")
-  -prometheusMetricsPath string
-    	[prometheus] Metrics endpoint path (default "/metrics")
-  -prometheusPrefix string
-    	[prometheus] Prefix (default "http")
-  -rateCount uint
-    	[rate] IP limit (default 5000)
   -tls
     	Serve TLS content (default true)
   -tlsCert string
@@ -180,7 +170,7 @@ npm run build
 
 ```
 make deps-start
-./bin/compose -authBasic -domain=:1080 -expose -github=false -prometheus=false -tls=false -traefik=false > docker-compose.local.yml
+./bin/compose -authBasic -domain=:1080 -expose -github=false -tls=false -traefik=false > docker-compose.local.yml
 export ADMIN_PASSWORD=`bcrypt password`
 docker-compose -p dashboard -f docker-compose.local.yml up -d
 ```
