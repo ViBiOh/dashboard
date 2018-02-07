@@ -28,9 +28,6 @@ services:
     ports:
     - 1081:1080/tcp
   {{- end }}
-  {{- if .Prometheus }}
-    {{- template "prometheusAlias" merge . "Prefix:dashboard-auth" }}
-  {{- end }}
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 
   api:
@@ -69,9 +66,6 @@ services:
   {{- if .Expose }}
     ports:
     - 1082:1080/tcp
-  {{- end }}
-  {{- if .Prometheus }}
-    {{- template "prometheusAlias" merge . "Prefix:dashboard-api" }}
   {{- end }}
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -122,9 +116,6 @@ services:
     {{- else }}
       GITHUB_AUTH_ENABLED: 'false'
     {{- end }}
-  {{- if .Prometheus }}
-    {{- template "prometheusAlias" merge . "Prefix:dashboard" }}
-  {{- end }}
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 {{ if .Selenium }}
   chrome:
