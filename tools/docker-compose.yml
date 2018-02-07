@@ -4,10 +4,6 @@ services:
   auth:
     image: vibioh/auth
     command:
-  {{- if .Prometheus }}
-    - -prometheusMetricsHost
-    - dashboard-auth:1080
-  {{- end }}
   {{- if not .TLS }}
     - -tls=false
   {{- end }}
@@ -18,8 +14,6 @@ services:
     - -corsHeaders
     - Authorization
     - -corsCredentials
-    - -rateCount
-    - '60'
   {{- if .Github }}
     - -githubClientId
     - ${GITHUB_OAUTH_CLIENT_ID}
@@ -42,10 +36,6 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
-  {{- if .Prometheus }}
-    - -prometheusMetricsHost
-    - dashboard-api:1080
-  {{- end }}
   {{- if not .TLS }}
     - -tls=false
   {{- end }}
@@ -90,10 +80,6 @@ services:
   front:
     image: vibioh/dashboard-front
     command:
-  {{- if .Prometheus }}
-    - -prometheusMetricsHost
-    - dashboard:1080
-  {{- end }}
   {{- if .TLS }}
     - -tls
   {{- end }}

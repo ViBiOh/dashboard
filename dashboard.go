@@ -16,8 +16,6 @@ import (
 	"github.com/ViBiOh/httputils/cert"
 	"github.com/ViBiOh/httputils/cors"
 	"github.com/ViBiOh/httputils/owasp"
-	"github.com/ViBiOh/httputils/prometheus"
-	"github.com/ViBiOh/httputils/rate"
 )
 
 const websocketPrefix = `/ws`
@@ -61,8 +59,6 @@ func main() {
 	alcotestConfig := alcotest.Flags(``)
 	tlsConfig := cert.Flags(`tls`)
 	authConfig := auth.Flags(`auth`)
-	prometheusConfig := prometheus.Flags(`prometheus`)
-	rateConfig := rate.Flags(`rate`)
 	owaspConfig := owasp.Flags(``)
 	corsConfig := cors.Flags(`cors`)
 	flag.Parse()
@@ -77,7 +73,7 @@ func main() {
 		log.Printf(`Error while initializing docker: %v`, err)
 	}
 
-	restHandler = prometheus.Handler(prometheusConfig, rate.Handler(rateConfig, gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, docker.Handler())))))
+	restHandler = gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, docker.Handler())))
 	websocketHandler = http.StripPrefix(websocketPrefix, docker.WebsocketHandler())
 
 	server := &http.Server{

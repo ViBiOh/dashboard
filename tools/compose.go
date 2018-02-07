@@ -10,22 +10,20 @@ import (
 )
 
 type arguments struct {
-	TLS        bool
-	AuthBasic  bool
-	Traefik    bool
-	Prometheus bool
-	Github     bool
-	Selenium   bool
-	Expose     bool
-	Domain     string
-	Users      string
+	TLS       bool
+	AuthBasic bool
+	Traefik   bool
+	Github    bool
+	Selenium  bool
+	Expose    bool
+	Domain    string
+	Users     string
 }
 
 func main() {
 	tls := flag.Bool(`tls`, true, `TLS for all containers`)
 	authBasic := flag.Bool(`authBasic`, false, `Basic auth`)
 	traefik := flag.Bool(`traefik`, true, `Traefik load-balancer`)
-	prometheus := flag.Bool(`prometheus`, true, `Prometheus monitoring`)
 	github := flag.Bool(`github`, true, `Github logging`)
 	selenium := flag.Bool(`selenium`, false, `Selenium container`)
 	domain := flag.String(`domain`, `vibioh.fr`, `Domain name`)
@@ -57,7 +55,7 @@ func main() {
 		prefixedDomain = *domain
 	}
 
-	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *prometheus, *github, *selenium, *expose, prefixedDomain, *users}); err != nil {
+	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *github, *selenium, *expose, prefixedDomain, *users}); err != nil {
 		log.Printf(`Error while rendering template: %v`, err)
 	}
 }

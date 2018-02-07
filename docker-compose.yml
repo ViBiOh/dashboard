@@ -4,13 +4,9 @@ services:
   auth:
     image: vibioh/auth
     command:
-    - -prometheusMetricsHost
-    - dashboard-auth:1080
     - -corsHeaders
     - Authorization
     - -corsCredentials
-    - -rateCount
-    - '60'
     - -githubClientId
     - ${GITHUB_OAUTH_CLIENT_ID}
     - -githubClientSecret
@@ -38,8 +34,6 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
-    - -prometheusMetricsHost
-    - dashboard-api:1080
     - -ws
     - ^dashboard-api.vibioh.fr$$
     - -dockerVersion
@@ -80,8 +74,6 @@ services:
   front:
     image: vibioh/dashboard-front
     command:
-    - -prometheusMetricsHost
-    - dashboard:1080
     - -tls
     - -spa
     - -env
