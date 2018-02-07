@@ -3,7 +3,7 @@
 set -e
 
 echo Starting Dashboard with local configuration
-./bin/compose -tls=false -authBasic -traefik=false -prometheus=false -github=false -selenium=true -domain=:1080 > docker-compose.e2e.yml
+./bin/compose -tls=false -authBasic -traefik=false -github=false -selenium=true -domain=:1080 > docker-compose.e2e.yml
 export ADMIN_PASSWORD=`bcrypt admin`
 docker-compose -p dashboard -f docker-compose.e2e.yml up -d
 
