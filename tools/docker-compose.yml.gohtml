@@ -138,8 +138,10 @@ networks:
       traefik.frontend.rule: 'Host: {{ .Prefix }}{{ .Domain }}'
       traefik.protocol: 'http{{ if .TLS }}s{{ end }}'
       traefik.port: '1080'
+      traefik.backend.maxconn.amount: '16'
+      traefik.backend.maxconn.extractorfunc: 'client.ip'
       traefik.frontend.rateLimit.extractorFunc: 'client.ip'
-      traefik.frontend.rateLimit.rateSet.first.period: '60'
+      traefik.frontend.rateLimit.rateSet.first.period: '60s'
       traefik.frontend.rateLimit.rateSet.first.average: '100'
       traefik.frontend.rateLimit.rateSet.first.burst: '200'
 {{- end }}
