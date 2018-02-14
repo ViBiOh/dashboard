@@ -30,7 +30,7 @@
     "cookie",
     "provider"
   ]
-  revision = "a8637ce2e6c6d97370be8996ca3cd156dc4be64f"
+  revision = "bef1bb0f07824fe81ff943536d93d57f2d151948"
 
 [[projects]]
   branch = "master"
@@ -42,7 +42,7 @@
     "owasp",
     "tools"
   ]
-  revision = "25bff7e5ea008fefc07a5467745b73ade0eba52c"
+  revision = "e9aa2ab22a9232ec862b0a40201db24ab63804fe"
 
 [[projects]]
   name = "github.com/docker/distribution"
@@ -138,7 +138,7 @@
     "context/ctxhttp",
     "proxy"
   ]
-  revision = "2fb46b16b8dda405028c50f7c7f0f9dd1fa6bfb1"
+  revision = "f5dfe339be1d06f81b22525fe34671ee7d2c8904"
 
 [[projects]]
   branch = "master"
