@@ -30,7 +30,7 @@
     "cookie",
     "provider"
   ]
-  revision = "bef1bb0f07824fe81ff943536d93d57f2d151948"
+  revision = "717a6cf0e4772948926c5c93806a0cf7fedffab2"
 
 [[projects]]
   branch = "master"
@@ -42,7 +42,7 @@
     "owasp",
     "tools"
   ]
-  revision = "e9aa2ab22a9232ec862b0a40201db24ab63804fe"
+  revision = "288533be2fefec40812d7805b6b5abf603ac283b"
 
 [[projects]]
   name = "github.com/docker/distribution"
