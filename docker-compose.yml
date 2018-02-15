@@ -4,6 +4,7 @@ services:
   auth:
     image: vibioh/auth
     command:
+    - -tls
     - -corsHeaders
     - Authorization
     - -corsCredentials
@@ -38,6 +39,7 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
+    - -tls
     - -ws
     - ^dashboard-api.vibioh.fr$$
     - -dockerVersion
