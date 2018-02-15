@@ -83,7 +83,7 @@ At deploy time, if the new containers have [`HEALTHCHECK`](https://docs.docker.c
 
 If no healthcheck is provided, `dashboard` doesn't know if your container is ready for business, so it's a simple launch new containers then destroy old containers, without waiting time.
 
-If you don't have an healthcheck on your container, check [vibioh/alcotest](https://github.com/ViBiOh/alcotest) for having a simple HTTP Client that request the defined endpoint.
+If you don't have an healthcheck on your container, check [vibioh/httputils](https://github.com/ViBiOh/httputils) for having a simple HTTP Client that request the defined endpoint with `alcotest`.
 
 ## Another Docker Infrastructure Manager ?
 

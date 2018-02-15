@@ -21,7 +21,7 @@
     "cookie",
     "provider"
   ]
-  revision = "6e75a71d032f79aa95a9242a170b8c82e25404b3"
+  revision = "ba41dcb1308508c35884f42ad0cc27373ca75fc3"
 
 [[projects]]
   branch = "master"
