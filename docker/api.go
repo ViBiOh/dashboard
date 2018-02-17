@@ -9,7 +9,8 @@ import (
 	"time"
 
 	authProvider "github.com/ViBiOh/auth/provider"
-	"github.com/ViBiOh/httputils"
+	"github.com/ViBiOh/httputils/httperror"
+	"github.com/ViBiOh/httputils/request"
 )
 
 const (
@@ -71,8 +72,8 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 		} else if r.Method == http.MethodDelete {
 			basicActionHandler(w, r, user, containerID, deleteAction)
 		} else if r.Method == http.MethodPost {
-			if composeBody, err := httputils.ReadBody(r.Body); err != nil {
-				httputils.InternalServerError(w, err)
+			if composeBody, err := request.ReadBody(r.Body); err != nil {
+				httperror.InternalServerError(w, err)
 			} else {
 				composeHandler(w, r, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
 			}
@@ -83,7 +84,7 @@ func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, u
 		matches := containerActionRequest.FindStringSubmatch(urlPath)
 		basicActionHandler(w, r, user, matches[1], matches[2])
 	} else {
-		httputils.NotFound(w)
+		httperror.NotFound(w)
 	}
 }
 
@@ -98,7 +99,7 @@ func Handler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
 			if _, err := w.Write(nil); err != nil {
-				httputils.InternalServerError(w, err)
+				httperror.InternalServerError(w, err)
 			}
 			return
 		}

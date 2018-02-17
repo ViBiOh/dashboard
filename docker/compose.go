@@ -14,7 +14,9 @@ import (
 	yaml "gopkg.in/yaml.v2"
 
 	authProvider "github.com/ViBiOh/auth/provider"
-	"github.com/ViBiOh/httputils"
+	"github.com/ViBiOh/httputils/httperror"
+	"github.com/ViBiOh/httputils/json"
+	"github.com/ViBiOh/httputils/request"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
@@ -224,7 +226,7 @@ func pullImage(image string) error {
 		return fmt.Errorf(`Error while pulling image: %v`, err)
 	}
 
-	_, err = httputils.ReadBody(pull)
+	_, err = request.ReadBody(pull)
 	return err
 }
 
@@ -433,17 +435,17 @@ func createContainer(user *authProvider.User, appName string, serviceName string
 }
 
 func composeFailed(w http.ResponseWriter, user *authProvider.User, appName string, err error) {
-	httputils.InternalServerError(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
+	httperror.InternalServerError(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
 }
 
 func composeHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User, appName string, composeFile []byte) {
 	if user == nil {
-		httputils.BadRequest(w, errUserRequired)
+		httperror.BadRequest(w, errUserRequired)
 		return
 	}
 
 	if len(appName) == 0 || len(composeFile) == 0 {
-		httputils.BadRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
+		httperror.BadRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
 		return
 	}
 
@@ -451,7 +453,7 @@ func composeHandler(w http.ResponseWriter, r *http.Request, user *authProvider.U
 
 	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		httputils.BadRequest(w, fmt.Errorf(`[%s] [%s] Error while unmarshalling compose file: %v`, user.Username, appName, err))
+		httperror.BadRequest(w, fmt.Errorf(`[%s] [%s] Error while unmarshalling compose file: %v`, user.Username, appName, err))
 		return
 	}
 
@@ -469,7 +471,7 @@ func composeHandler(w http.ResponseWriter, r *http.Request, user *authProvider.U
 
 	if len(oldContainers) > 0 && oldContainers[0].Labels[ownerLabel] != user.Username {
 		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application not owned`, user.Username, appName))
-		httputils.Forbidden(w)
+		httperror.Forbidden(w)
 	}
 
 	newServices := make(map[string]*deployedService)
@@ -492,7 +494,7 @@ func composeHandler(w http.ResponseWriter, r *http.Request, user *authProvider.U
 	if err != nil {
 		cancel()
 		composeFailed(w, user, appName, err)
-	} else if err := httputils.ResponseArrayJSON(w, http.StatusOK, newServices, httputils.IsPretty(r.URL.RawQuery)); err != nil {
-		httputils.InternalServerError(w, err)
+	} else if err := json.ResponseArrayJSON(w, http.StatusOK, newServices, json.IsPretty(r.URL.RawQuery)); err != nil {
+		httperror.InternalServerError(w, err)
 	}
 }

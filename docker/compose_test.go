@@ -9,7 +9,7 @@ import (
 	"time"
 
 	authProvider "github.com/ViBiOh/auth/provider"
-	"github.com/ViBiOh/httputils"
+	"github.com/ViBiOh/httputils/request"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 )
@@ -310,7 +310,7 @@ func TestComposeFailed(t *testing.T) {
 			t.Errorf(`composeFailed(%v, %v, %v) = %v, want %v`, testCase.user, testCase.appName, testCase.err, result, testCase.wantStatus)
 		}
 
-		if result, _ := httputils.ReadBody(writer.Result().Body); string(result) != testCase.want {
+		if result, _ := request.ReadBody(writer.Result().Body); string(result) != testCase.want {
 			t.Errorf(`composeFailed(%v, %v, %v) = %v, want %v`, testCase.user, testCase.appName, testCase.err, string(result), testCase.want)
 		}
 	}
