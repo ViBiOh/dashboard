@@ -10,7 +10,7 @@ test('should always render as a button', (t) => {
 test('should not wrap child', (t) => {
   const wrapper = shallow(<Button>
     <span>First</span>
-                          </Button>);
+  </Button>);
 
   t.is(wrapper.find('span').length, 1);
 });

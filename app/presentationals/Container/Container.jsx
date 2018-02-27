@@ -63,7 +63,7 @@ const Container = (props) => {
         title="Restart container"
       >
         <FaRetweet />
-      </ThrobberButton>);
+                   </ThrobberButton>);
       buttons.push(<ThrobberButton
         key="stop"
         type="danger"
@@ -74,7 +74,7 @@ const Container = (props) => {
         title="Stop container"
       >
         <FaStopCircle />
-                   </ThrobberButton>);
+      </ThrobberButton>);
     } else {
       buttons.push(<ThrobberButton
         key="start"
@@ -85,7 +85,7 @@ const Container = (props) => {
         title="Start container"
       >
         <FaPlay />
-                   </ThrobberButton>);
+      </ThrobberButton>);
       buttons.push(<ThrobberButton
         key="delete"
         type="danger"
