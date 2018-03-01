@@ -44,7 +44,7 @@ test('should render a div list with ContainerCard if not pending', (t) => {
   };
   const wrapper = shallow(<ContainersList {...props} />);
 
-  t.is(wrapper.find('div').length, 1);
+  t.is(wrapper.find('div').length, 2);
   t.is(wrapper.find('ContainerCard').length, 1);
   t.is(wrapper.find('span').length, 3);
   t.is(
