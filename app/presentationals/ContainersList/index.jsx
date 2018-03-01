@@ -46,9 +46,11 @@ const ContainersList = ({
         <FaCubes />
         <FilterBar value={filter} onChange={onFilterChange} />
       </span>,
-      containers.map(container => (
-        <ContainerCard key={container.Id} container={container} onClick={onSelect} />
-      )),
+      <div key="containers" className={style.list}>
+        {containers.map(container => (
+          <ContainerCard key={container.Id} container={container} onClick={onSelect} />
+        ))}
+      </div>,
     ];
   }
 

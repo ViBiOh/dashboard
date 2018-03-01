@@ -55,7 +55,7 @@ const config = {
   },
 
   devServer: {
-    setup: (app) => {
+    before: (app) => {
       app.get('/env', (req, res) => {
         res.json({
           API_URL: process.env.API_URL,
