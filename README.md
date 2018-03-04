@@ -171,7 +171,7 @@ npm run build
 ## Local run
 
 ```
-make deps-start
+make start-deps
 ./bin/compose -authBasic -domain=:1080 -expose -github=false -tls=false -traefik=false > docker-compose.local.yml
 export ADMIN_PASSWORD=`bcrypt password`
 docker-compose -p dashboard -f docker-compose.local.yml up -d

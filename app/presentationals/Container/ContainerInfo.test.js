@@ -202,3 +202,22 @@ test('should render Security Opt if present', (t) => {
     2,
   );
 });
+
+test('should not render Health Status if Health empty', (t) => {
+  const wrapper = shallow(<ContainerInfo container={container} />);
+  t.is(wrapper.find('h2 span').length, 1);
+});
+
+test('should render FaEllipsisH Icon if Health Status is starting', (t) => {
+  const wrapper = shallow(<ContainerInfo
+    container={{
+        ...container,
+        State: {
+          Health: {
+            Status: 'starting',
+          },
+        },
+      }}
+  />);
+  t.is(wrapper.find('FaEllipsisH').length, 1);
+});
