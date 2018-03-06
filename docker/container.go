@@ -7,7 +7,7 @@ import (
 
 	authProvider "github.com/ViBiOh/auth/provider"
 	"github.com/ViBiOh/httputils/httperror"
-	"github.com/ViBiOh/httputils/json"
+	"github.com/ViBiOh/httputils/httpjson"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 )
@@ -134,7 +134,7 @@ func basicActionHandler(w http.ResponseWriter, r *http.Request, user *authProvid
 		httperror.Forbidden(w)
 	} else if result, err := doAction(action)(containerID, container); err != nil {
 		httperror.InternalServerError(w, err)
-	} else if err := json.ResponseJSON(w, http.StatusOK, result, json.IsPretty(r.URL.RawQuery)); err != nil {
+	} else if err := httpjson.ResponseJSON(w, http.StatusOK, result, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
 	}
 }
@@ -142,7 +142,7 @@ func basicActionHandler(w http.ResponseWriter, r *http.Request, user *authProvid
 func listContainersHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User) {
 	if containers, err := listContainers(user, ``); err != nil {
 		httperror.InternalServerError(w, err)
-	} else if err := json.ResponseArrayJSON(w, http.StatusOK, containers, json.IsPretty(r.URL.RawQuery)); err != nil {
+	} else if err := httpjson.ResponseArrayJSON(w, http.StatusOK, containers, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
 	}
 }

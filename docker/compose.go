@@ -15,7 +15,7 @@ import (
 
 	authProvider "github.com/ViBiOh/auth/provider"
 	"github.com/ViBiOh/httputils/httperror"
-	"github.com/ViBiOh/httputils/json"
+	"github.com/ViBiOh/httputils/httpjson"
 	"github.com/ViBiOh/httputils/request"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -494,7 +494,7 @@ func composeHandler(w http.ResponseWriter, r *http.Request, user *authProvider.U
 	if err != nil {
 		cancel()
 		composeFailed(w, user, appName, err)
-	} else if err := json.ResponseArrayJSON(w, http.StatusOK, newServices, json.IsPretty(r.URL.RawQuery)); err != nil {
+	} else if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
 	}
 }

@@ -21,7 +21,7 @@
     "cookie",
     "provider"
   ]
-  revision = "8ae37b8a43d51d92eec3008ad5117da229558ffc"
+  revision = "18f009b19151d6f7b5504534a4d23a847615ee1a"
 
 [[projects]]
   branch = "master"
@@ -32,13 +32,13 @@
     "cert",
     "cors",
     "httperror",
-    "json",
+    "httpjson",
     "owasp",
     "request",
     "server",
     "tools"
   ]
-  revision = "ffedff675f711425bed74940efee7021ba098536"
+  revision = "203b8898ad2677a44cfc79ef8df214e93e7d4899"
 
 [[projects]]
   name = "github.com/docker/distribution"
@@ -108,23 +108,23 @@
     "context/ctxhttp",
     "proxy"
   ]
-  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+  revision = "d25186b37f34ebdbbea8f488ef055638dfab272d"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
+  revision = "dd2ff4accc098aceecb86b36eaa7829b2a17b1c9"
 
 [[projects]]
-  branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
+  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
+  version = "v2.1.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c0b13a0b3fc470c7ed3bf8fdaaa5750250282630e3f754181b65bedab132c7ae"
+  inputs-digest = "88ea6308b81fdf72f2c092ab234436c9eaccf5c2d41eda7ab5fb5ac989ff780f"
   solver-name = "gps-cdcl"
   solver-version = 1
