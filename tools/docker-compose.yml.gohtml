@@ -4,8 +4,8 @@ services:
   auth:
     image: vibioh/auth
     command:
-  {{- if not .TLS }}
-    - -tls=false
+  {{- if .TLS }}
+    - -tls
   {{- end }}
   {{- if .AuthBasic }}
     - -basicUsers
@@ -33,8 +33,8 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
-  {{- if not .TLS }}
-    - -tls=false
+  {{- if .TLS }}
+    - -tls
   {{- end }}
     - -ws
   {{- if .Traefik }}
@@ -44,6 +44,10 @@ services:
   {{- end }}
     - -dockerVersion
     - '1.24'
+  {{- if ne .Tag "" }}
+    - -dockerTag
+    - {{ .Tag -}}
+  {{- end }}
     - -authUrl
   {{- if .Traefik }}
     - http{{ if .TLS }}s{{ end }}://dashboard-auth{{ .Domain }}
@@ -81,7 +85,9 @@ services:
     - -env
     - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED
     - -csp
-    - "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dashboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1081 localhost:1082{{ else }}api:1080 auth:1080{{ end }}{{ end }};"
+    - "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dashboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1081 localhost:1082{{ else }}api:1080 auth:1080{{ end }}{{ end }}"
+    - -headers
+    - X-UA-Compatible:IE=edge,chrome=1
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard" }}
   {{- end }}

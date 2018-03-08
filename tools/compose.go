@@ -18,6 +18,7 @@ type arguments struct {
 	Expose    bool
 	Domain    string
 	Users     string
+	Tag       string
 }
 
 func main() {
@@ -28,6 +29,7 @@ func main() {
 	selenium := flag.Bool(`selenium`, false, `Selenium container`)
 	domain := flag.String(`domain`, `vibioh.fr`, `Domain name`)
 	users := flag.String(`users`, `admin:admin`, `Allowed users list`)
+	tag := flag.String(`tag`, ``, `Docker tag used`)
 	expose := flag.Bool(`expose`, false, `Expose opened ports`)
 	flag.Parse()
 
@@ -55,7 +57,7 @@ func main() {
 		prefixedDomain = *domain
 	}
 
-	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *github, *selenium, *expose, prefixedDomain, *users}); err != nil {
+	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *github, *selenium, *expose, prefixedDomain, *users, *tag}); err != nil {
 		log.Printf(`Error while rendering template: %v`, err)
 	}
 }

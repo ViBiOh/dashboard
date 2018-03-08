@@ -21,10 +21,6 @@ services:
       traefik.frontend.rateLimit.rateSet.first.period: '60s'
       traefik.frontend.rateLimit.rateSet.first.average: '100'
       traefik.frontend.rateLimit.rateSet.first.burst: '200'
-    networks:
-      default:
-        aliases:
-        - dashboard-auth
     logging:
       driver: json-file
       options:
@@ -64,10 +60,6 @@ services:
       traefik.frontend.rateLimit.rateSet.first.period: '60s'
       traefik.frontend.rateLimit.rateSet.first.average: '100'
       traefik.frontend.rateLimit.rateSet.first.burst: '200'
-    networks:
-      default:
-        aliases:
-        - dashboard-api
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     logging:
@@ -107,10 +99,6 @@ services:
       AUTH_URL: 'https://dashboard-auth.vibioh.fr'
       BASIC_AUTH_ENABLED: 'false'
       GITHUB_AUTH_ENABLED: 'true'
-    networks:
-      default:
-        aliases:
-        - dashboard
     logging:
       driver: json-file
       options:
@@ -126,3 +114,4 @@ networks:
   default:
     external:
       name: traefik
+

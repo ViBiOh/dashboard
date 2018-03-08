@@ -25,24 +25,24 @@ For generating `docker-compose`, use `tools/compose.go` tools provided :
 
 ```bash
 Usage of tools/compose.go:
-  -auth
-    	Auth service (default true)
   -authBasic
-    	Basic auth
+      Basic auth
   -domain string
-    	Domain name (default "vibioh.fr")
+      Domain name (default "vibioh.fr")
   -expose
-    	Expose opened ports
+      Expose opened ports
   -github
-    	Github logging (default true)
+      Github logging (default true)
   -selenium
-    	Selenium container
+      Selenium container
+  -tag string
+      Docker tag used
   -tls
-    	TLS for all containers (default true)
+      TLS for all containers (default true)
   -traefik
-    	Traefik load-balancer (default true)
+      Traefik load-balancer (default true)
   -users string
-    	Allowed users list (default "admin:admin")
+      Allowed users list (default "admin:admin")
 ```
 
 ## Websocket
@@ -137,6 +137,8 @@ Usage of dashboard:
       Docker Host (default "unix:///var/run/docker.sock")
   -dockerNetwork string
       Network for deploying containers (default "traefik")
+  -dockerTag string
+      Tag to append to image when not provided (e.g. arm, arm64, latest, etc)
   -dockerVersion string
       Docker API Version
   -frameOptions string

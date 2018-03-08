@@ -29,7 +29,7 @@ const (
 	minMemory        = 16777216
 	maxMemory        = 805306368
 	colonSeparator   = `:`
-	defaultTag       = `:latest`
+	defaultTag       = `latest`
 	deploySuffix     = `_deploy`
 )
 
@@ -412,8 +412,20 @@ func finishDeploy(ctx context.Context, cancel context.CancelFunc, user *authProv
 }
 
 func createContainer(user *authProvider.User, appName string, serviceName string, service *dockerComposeService) (*deployedService, error) {
-	if err := pullImage(service.Image); err != nil {
-		return nil, err
+	imagePulled := false
+
+	if *dockerTag != `` {
+		imageOverride := fmt.Sprintf(`%s%s%s`, service.Image, colonSeparator, *dockerTag)
+		if err := pullImage(imageOverride); err == nil {
+			service.Image = imageOverride
+			imagePulled = true
+		}
+	}
+
+	if !imagePulled {
+		if err := pullImage(service.Image); err != nil {
+			return nil, err
+		}
 	}
 
 	serviceFullName := getServiceFullName(appName, serviceName)
