@@ -30,6 +30,8 @@ bench:
 
 build:
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard dashboard.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard-arm dashboard.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard-arm64 dashboard.go
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/compose tools/compose.go
 
 docker: docker-deps docker-build
@@ -40,12 +42,20 @@ docker-deps:
 
 docker-build:
 	docker build -t ${DOCKER_USER}/dashboard-front -f app/Dockerfile .
+	docker build -t ${DOCKER_USER}/dashboard-front:arm -f app/Dockerfile_arm .
+	docker build -t ${DOCKER_USER}/dashboard-front:arm64 -f app/Dockerfile_arm64 .
 	docker build -t ${DOCKER_USER}/dashboard-api .
+	docker build -t ${DOCKER_USER}/dashboard-api:arm -f Dockerfile_arm .
+	docker build -t ${DOCKER_USER}/dashboard-api:arm64 -f Dockerfile_arm64 .
 
 docker-push:
 	docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
 	docker push ${DOCKER_USER}/dashboard-api
+	docker push ${DOCKER_USER}/dashboard-api:arm
+	docker push ${DOCKER_USER}/dashboard-api:arm64
 	docker push ${DOCKER_USER}/dashboard-front
+	docker push ${DOCKER_USER}/dashboard-front:arm
+	docker push ${DOCKER_USER}/dashboard-front:arm64
 
 start-deps:
 	go get -u github.com/ViBiOh/auth
