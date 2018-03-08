@@ -215,7 +215,7 @@ func getNetworkConfig(serviceName string, service *dockerComposeService) *networ
 
 func pullImage(image string) error {
 	if !strings.Contains(image, colonSeparator) {
-		image = image + defaultTag
+		image = fmt.Sprintf(`%s%s%s`, image, colonSeparator, defaultTag)
 	}
 
 	ctx, cancel := getGracefulCtx()
