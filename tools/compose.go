@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -52,7 +53,7 @@ func main() {
 
 	tmpl := template.Must(template.New(`docker-compose.yml.gohtml`).Funcs(funcs).ParseFiles(`tools/docker-compose.yml.gohtml`))
 
-	prefixedDomain := `.` + *domain
+	prefixedDomain := fmt.Sprintf(`.%s`, *domain)
 	if strings.HasPrefix(*domain, `:`) {
 		prefixedDomain = *domain
 	}

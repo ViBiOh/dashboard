@@ -46,9 +46,9 @@ func Init(authAppDep *auth.App) error {
 
 func labelFilters(user *authProvider.User, filtersArgs *filters.Args, appName string) {
 	if appName != `` && isMultiApp(user) {
-		filtersArgs.Add(`label`, appLabel+`=`+appName)
+		filtersArgs.Add(`label`, fmt.Sprintf(`%s=%s`, appLabel, appName))
 	} else if !isAdmin(user) {
-		filtersArgs.Add(`label`, ownerLabel+`=`+user.Username)
+		filtersArgs.Add(`label`, fmt.Sprintf(`%s=%s`, ownerLabel, user.Username))
 	}
 }
 

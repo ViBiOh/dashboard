@@ -99,7 +99,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 func getConfig(service *dockerComposeService, user *authProvider.User, appName string) (*container.Config, error) {
 	environments := make([]string, 0, len(service.Environment))
 	for key, value := range service.Environment {
-		environments = append(environments, key+`=`+value)
+		environments = append(environments, fmt.Sprintf(`%s=%s`, key, value))
 	}
 
 	if service.Labels == nil {
@@ -195,7 +195,7 @@ func addLinks(settings *network.EndpointSettings, links []string) {
 			alias = linkParts[1]
 		}
 
-		settings.Links = append(settings.Links, target+colonSeparator+alias)
+		settings.Links = append(settings.Links, fmt.Sprintf(`%s%s%s`, target, colonSeparator, alias))
 	}
 }
 
@@ -260,7 +260,7 @@ func renameDeployedContainers(containers map[string]*deployedService) error {
 }
 
 func getServiceFullName(app string, service string) string {
-	return app + `_` + service + deploySuffix
+	return fmt.Sprintf(`%s_%s%s`, app, service, deploySuffix)
 }
 
 func getFinalName(serviceFullName string) string {
