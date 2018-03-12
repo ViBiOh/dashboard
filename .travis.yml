@@ -9,8 +9,6 @@ cache:
 before_install:
 - openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv
   -in deploy_key.enc -out deploy_key -d
-- openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv
-  -in deploy_rsa.enc -out deploy_rsa -d
 install:
 - nvm install 8
 - npm i -g npm
@@ -31,8 +29,8 @@ notifications:
   email: false
 before_deploy:
 - eval "$(ssh-agent -s)"
-- chmod 600 $TRAVIS_BUILD_DIR/deploy_rsa
-- ssh-add $TRAVIS_BUILD_DIR/deploy_rsa
+- chmod 600 ${TRAVIS_BUILD_DIR}/deploy_key
+- ssh-add ${TRAVIS_BUILD_DIR}/deploy_key
 deploy:
   provider: script
   skip_cleanup: true
