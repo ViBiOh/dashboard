@@ -5,9 +5,12 @@ services:
 go: 1.9
 cache:
   directories:
-    - ${TRAVIS_BUILD_DIR}/vendor
+  - "${TRAVIS_BUILD_DIR}/vendor"
 before_install:
-- openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv -in deploy_rsa.enc -out deploy_rsa -d
+- openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv
+  -in deploy_key.enc -out deploy_key -d
+- openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv
+  -in deploy_rsa.enc -out deploy_rsa -d
 install:
 - nvm install 8
 - npm i -g npm
@@ -33,6 +36,8 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} bash -s" 2>/dev/null -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
+  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
+    GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} bash -s" 2>/dev/null
+    -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
   on:
     branch: master
