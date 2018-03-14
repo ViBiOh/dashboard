@@ -39,7 +39,9 @@ services:
     - -ws
     - ^dashboard-api.vibioh.fr$$
     - -dockerVersion
-    - '1.24'
+    - '1.36'
+    - -dockerNetwork
+    - traefik_ipv6
     - -authUrl
     - https://dashboard-auth.vibioh.fr
     - -authUsers
