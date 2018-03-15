@@ -27,15 +27,15 @@ function docker-compose-deploy() {
   timeout=`date --date="45 seconds" +%s`
   healthyCount=$(docker events --until ${timeout} -f event="health_status: healthy" -f name=${PROJECT_FULLNAME} | wc -l)
 
-  if [ "${servicesCount}" != "${healthyCount}" ]; then
-    echo "Containers didn't start, reverting..."
-
-    docker-compose -p ${PROJECT_FULLNAME} logs || true
-    docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{ .Name }}{{ "\n" }}{{range .State.Health.Log }}code={{ .ExitCode }}, log={{ .Output }}{{ end }}' || true
-    docker-compose -p ${PROJECT_FULLNAME} stop -t 180 || true
-    docker-compose -p ${PROJECT_FULLNAME} rm -f -v || true
-    return 1
-  fi
+#  if [ "${servicesCount}" != "${healthyCount}" ]; then
+#    echo "Containers didn't start, reverting..."
+#
+#    docker-compose -p ${PROJECT_FULLNAME} logs || true
+#    docker-compose -p ${PROJECT_FULLNAME} ps -q | xargs docker inspect --format='{{ .Name }}{{ "\n" }}{{range .State.Health.Log }}code={{ .ExitCode }}, log={{ .Output }}{{ end }}' || true
+#    docker-compose -p ${PROJECT_FULLNAME} stop -t 180 || true
+#    docker-compose -p ${PROJECT_FULLNAME} rm -f -v || true
+#    return 1
+#  fi
 
   if [ ! -z "${oldServices}" ]; then
     echo Stopping old containers
