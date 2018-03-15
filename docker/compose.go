@@ -117,6 +117,10 @@ func getConfig(service *dockerComposeService, user *authProvider.User, appName s
 		User:     service.User,
 	}
 
+	if config.User == `` {
+		config.User = *dockerContainerUser
+	}
+
 	if len(service.Command) != 0 {
 		config.Cmd = service.Command
 	}

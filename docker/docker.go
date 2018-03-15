@@ -16,10 +16,11 @@ const (
 )
 
 var (
-	dockerHost    = flag.String(`dockerHost`, `unix:///var/run/docker.sock`, `Docker Host`)
-	dockerVersion = flag.String(`dockerVersion`, ``, `Docker API Version`)
-	dockerNetwork = flag.String(`dockerNetwork`, `traefik`, `Network for deploying containers`)
-	dockerTag     = flag.String(`dockerTag`, ``, `Tag to append to image when not provided (e.g. arm, arm64, latest, etc)`)
+	dockerHost          = flag.String(`dockerHost`, `unix:///var/run/docker.sock`, `Docker Host`)
+	dockerVersion       = flag.String(`dockerVersion`, ``, `Docker API Version`)
+	dockerNetwork       = flag.String(`dockerNetwork`, `traefik`, `Network for deploying containers`)
+	dockerTag           = flag.String(`dockerTag`, ``, `Tag to append to image when not provided (e.g. arm, arm64, latest, etc)`)
+	dockerContainerUser = flag.String(`dockerContainerUser`, `1000`, `Docker default container user`)
 )
 
 var (
