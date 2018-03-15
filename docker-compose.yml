@@ -39,7 +39,7 @@ services:
     - -ws
     - ^dashboard-api.vibioh.fr$$
     - -dockerVersion
-    - '1.36'
+    - '1.32'
     - -authUrl
     - https://dashboard-auth.vibioh.fr
     - -authUsers
