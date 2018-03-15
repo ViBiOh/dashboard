@@ -9,8 +9,6 @@ cache:
 before_install:
 - openssl aes-256-cbc -K $encrypted_f5ecd030baf5_key -iv $encrypted_f5ecd030baf5_iv
   -in deploy_key.enc -out deploy_key -d
-- openssl aes-256-cbc -K $encrypted_afb3f4a0fd37_key -iv $encrypted_afb3f4a0fd37_iv
-  -in deploy_key.enc -out deploy_key -d
 install:
 - nvm install 8
 - npm i -g npm
