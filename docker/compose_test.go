@@ -52,6 +52,7 @@ func TestGetConfig(t *testing.T) {
 			&container.Config{
 				Labels: map[string]string{`owner`: `admin`, `app`: `test`},
 				Env:    []string{},
+				User:   `1000`,
 			},
 			nil,
 		},
@@ -61,6 +62,7 @@ func TestGetConfig(t *testing.T) {
 				Environment: map[string]string{`PATH`: `/usr/bin`},
 				Labels:      map[string]string{`CUSTOM_LABEL`: `testing`},
 				Command:     []string{`entrypoint.sh`, `start`},
+				User:        `1000`,
 				Healthcheck: &dockerComposeHealthcheck{
 					Test:     []string{`CMD`, `alcotest`},
 					Retries:  10,
@@ -75,6 +77,7 @@ func TestGetConfig(t *testing.T) {
 				Labels: map[string]string{`CUSTOM_LABEL`: `testing`, `owner`: `admin`, `app`: `test`},
 				Env:    []string{`PATH=/usr/bin`},
 				Cmd:    []string{`entrypoint.sh`, `start`},
+				User:   `1000`,
 				Healthcheck: &container.HealthConfig{
 					Test:     []string{`CMD`, `alcotest`},
 					Retries:  10,
@@ -104,7 +107,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		if failed {
-			t.Errorf(`getConfig(%v, %v, %v) = (%v, %v), want (%v, %v)`, testCase.service, testCase.user, testCase.appName, result, err, testCase.want, testCase.wantErr)
+			t.Errorf(`getConfig(%+v, %+v, %+v) = (%+v, %+v), want (%+v, %+v)`, testCase.service, testCase.user, testCase.appName, result, err, testCase.want, testCase.wantErr)
 		}
 	}
 }
@@ -173,7 +176,7 @@ func TestGetHostConfig(t *testing.T) {
 
 	for _, testCase := range cases {
 		if result := getHostConfig(testCase.service, nil); !reflect.DeepEqual(result, testCase.want) {
-			t.Errorf(`getHostConfig(%v) = %v, want %v`, testCase.service, result, testCase.want)
+			t.Errorf(`getHostConfig(%+v) = %+v, want %+v`, testCase.service, result, testCase.want)
 		}
 	}
 }
@@ -256,7 +259,7 @@ func TestGetServiceFullName(t *testing.T) {
 
 	for _, testCase := range cases {
 		if result := getServiceFullName(testCase.app, testCase.service); result != testCase.want {
-			t.Errorf(`getServiceFullName(%v, %v) = %v, want %v`, testCase.app, testCase.service, result, testCase.want)
+			t.Errorf(`getServiceFullName(%+v, %+v) = %+v, want %+v`, testCase.app, testCase.service, result, testCase.want)
 		}
 	}
 }
@@ -278,7 +281,7 @@ func TestGetFinalName(t *testing.T) {
 
 	for _, testCase := range cases {
 		if result := getFinalName(testCase.serviceFullName); result != testCase.want {
-			t.Errorf(`getFinalName(%v) = %v, want %v`, testCase.serviceFullName, result, testCase.want)
+			t.Errorf(`getFinalName(%+v) = %+v, want %+v`, testCase.serviceFullName, result, testCase.want)
 		}
 	}
 }
@@ -307,11 +310,11 @@ func TestComposeFailed(t *testing.T) {
 		composeFailed(writer, testCase.user, testCase.appName, testCase.err)
 
 		if result := writer.Code; result != testCase.wantStatus {
-			t.Errorf(`composeFailed(%v, %v, %v) = %v, want %v`, testCase.user, testCase.appName, testCase.err, result, testCase.wantStatus)
+			t.Errorf(`composeFailed(%+v, %+v, %+v) = %+v, want %+v`, testCase.user, testCase.appName, testCase.err, result, testCase.wantStatus)
 		}
 
 		if result, _ := request.ReadBody(writer.Result().Body); string(result) != testCase.want {
-			t.Errorf(`composeFailed(%v, %v, %v) = %v, want %v`, testCase.user, testCase.appName, testCase.err, string(result), testCase.want)
+			t.Errorf(`composeFailed(%+v, %+v, %+v) = %+v, want %+v`, testCase.user, testCase.appName, testCase.err, string(result), testCase.want)
 		}
 	}
 }
