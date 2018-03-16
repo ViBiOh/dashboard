@@ -25,6 +25,7 @@ services:
       driver: json-file
       options:
         max-size: '10m'
+    user: '1000'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
@@ -66,6 +67,7 @@ services:
       driver: json-file
       options:
         max-size: '10m'
+    user: '1000'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
@@ -103,6 +105,7 @@ services:
       driver: json-file
       options:
         max-size: '10m'
+    user: '1000'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
