@@ -25,7 +25,7 @@ services:
       driver: json-file
       options:
         max-size: '10m'
-    user: '1000'
+    user: '${CONTAINER_USER}'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
@@ -41,6 +41,8 @@ services:
     - ^dashboard-api.vibioh.fr$$
     - -dockerVersion
     - '1.32'
+    - -dockerContainerUser
+    - ${CONTAINER_USER}
     - -authUrl
     - https://dashboard-auth.vibioh.fr
     - -authUsers
@@ -67,7 +69,7 @@ services:
       driver: json-file
       options:
         max-size: '10m'
-    user: '1000'
+    user: '${CONTAINER_USER}'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
@@ -105,7 +107,7 @@ services:
       driver: json-file
       options:
         max-size: '10m'
-    user: '1000'
+    user: '${CONTAINER_USER}'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128

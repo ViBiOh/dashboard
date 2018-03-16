@@ -7,8 +7,7 @@ cache:
   directories:
   - "${TRAVIS_BUILD_DIR}/vendor"
 before_install:
-- openssl aes-256-cbc -K $encrypted_f5ecd030baf5_key -iv $encrypted_f5ecd030baf5_iv
-  -in deploy_key.enc -out deploy_key -d
+- openssl aes-256-cbc -K $encrypted_f5ecd030baf5_key -iv $encrypted_f5ecd030baf5_iv -in deploy_key.enc -out deploy_key -d
 install:
 - nvm install 8
 - npm i -g npm
@@ -34,8 +33,6 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
-    GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} bash -s" 2>/dev/null
-    -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
+  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} CONTAINER_USER=${CONTAINER_USER} bash -s" 2>/dev/null -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
   on:
     branch: master
