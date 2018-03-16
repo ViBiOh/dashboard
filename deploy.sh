@@ -52,7 +52,7 @@ function docker-compose-deploy() {
 
   echo Deploy succeed!
 
-  docker system prune -f
+  docker system prune -f || true
 }
 
 export PATH=${PATH}:/opt/bin
