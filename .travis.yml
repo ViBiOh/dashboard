@@ -33,6 +33,6 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} CONTAINER_USER=${CONTAINER_USER} bash -s" 2>/dev/null -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
+  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} CONTAINER_USER=${CONTAINER_USER} DOCKER_GROUP=${DOCKER_GROUP} bash -s" 2>/dev/null -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
   on:
     branch: master
