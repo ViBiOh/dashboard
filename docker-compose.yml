@@ -26,6 +26,8 @@ services:
       options:
         max-size: '10m'
     user: '${CONTAINER_USER}'
+    group_add:
+    - '${DOCKER_GROUP}'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
@@ -70,6 +72,8 @@ services:
       options:
         max-size: '10m'
     user: '${CONTAINER_USER}'
+    group_add:
+    - '${DOCKER_GROUP}'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
@@ -108,6 +112,8 @@ services:
       options:
         max-size: '10m'
     user: '${CONTAINER_USER}'
+    group_add:
+    - '${DOCKER_GROUP}'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
