@@ -44,8 +44,10 @@ services:
   {{- end }}
     - -dockerVersion
     - '1.32'
+  {{- if .DockerUser }}
     - -dockerContainerUser
     - ${CONTAINER_USER}
+  {{- end }}
   {{- if ne .Tag "" }}
     - -dockerTag
     - {{ .Tag -}}
@@ -171,7 +173,9 @@ networks:
       driver: json-file
       options:
         max-size: '10m'
+    {{- if .DockerUser }}
     user: '${CONTAINER_USER}'
+    {{- end }}
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
