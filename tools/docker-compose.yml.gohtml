@@ -4,8 +4,8 @@ services:
   auth:
     image: vibioh/auth
     command:
-  {{- if .TLS }}
-    - -tls
+  {{- if ! .TLS }}
+    - -tls=false
   {{- end }}
   {{- if .AuthBasic }}
     - -basicUsers
@@ -33,8 +33,8 @@ services:
   api:
     image: vibioh/dashboard-api
     command:
-  {{- if .TLS }}
-    - -tls
+  {{- if ! .TLS }}
+    - -tls=false
   {{- end }}
     - -dockerWs
   {{- if .Traefik }}
@@ -86,8 +86,8 @@ services:
   front:
     image: vibioh/dashboard-front
     command:
-  {{- if .TLS }}
-    - -tls
+  {{- if ! .TLS }}
+    - -tls=false
   {{- end }}
     - -spa
     - -env
