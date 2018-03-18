@@ -43,7 +43,7 @@ func main() {
 	corsConfig := cors.Flags(`cors`)
 	dockerConfig := docker.Flags(`docker`)
 
-	httputils.StartMainServer(func() http.Handler {
+	httputils.NewApp(httputils.Flags(``), func() http.Handler {
 		dockerApp, err := docker.NewApp(dockerConfig, auth.NewApp(authConfig, nil))
 		if err != nil {
 			log.Fatalf(`Error while creating docker: %v`, err)
@@ -59,5 +59,5 @@ func main() {
 				restHandler.ServeHTTP(w, r)
 			}
 		})
-	}, handleGracefulClose)
+	}, handleGracefulClose).ListenAndServe()
 }
