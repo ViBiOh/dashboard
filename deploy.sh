@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -x
 
 function readVariableIfRequired() {
   if [ -z "${!1}" ]; then
@@ -36,12 +37,12 @@ function docker-compose-deploy() {
   fi
 
   if [ ! -z "${oldServices}" ]; then
-    echo Stopping old containers
+    echo Stopping old containers ${oldServices}
     docker stop --time=180 "${oldServices}" || true
   fi
 
   if [ ! -z "${oldServices}" ]; then
-    echo Removing old containers
+    echo Removing old containers ${oldServices}
     docker rm -f -v "${oldServices}" || true
   fi
 
