@@ -32,22 +32,22 @@ function docker-compose-deploy() {
 
     docker-compose -p "${PROJECT_FULLNAME}" logs || true
     docker-compose -p "${PROJECT_FULLNAME}" ps -q | xargs docker inspect --format='{{ .Name }}{{ "\n" }}{{range .State.Health.Log }}code={{ .ExitCode }}, log={{ .Output }}{{ end }}' || true
-    docker-compose -p "${PROJECT_FULLNAME}" rm --force --stop -v || true
+    docker-compose -p "${PROJECT_FULLNAME}" rm --force --stop -v
     return 1
   fi
 
   if [ ! -z "${oldServices}" ]; then
     echo Stopping old containers ${oldServices}
-    docker stop --time=180 "${oldServices}" || true
+    docker stop --time=180 "${oldServices}"
   fi
 
   if [ ! -z "${oldServices}" ]; then
     echo Removing old containers ${oldServices}
-    docker rm -f -v "${oldServices}" || true
+    docker rm -f -v "${oldServices}"
   fi
 
   echo Renaming containers
-  for service in `docker-compose -p "${PROJECT_FULLNAME}" ps --services 2>/dev/null || true`; do
+  for service in `docker-compose -p "${PROJECT_FULLNAME}" ps --services`; do
     docker rename "${PROJECT_FULLNAME}_${service}_1" "${PROJECT_NAME}_${service}"
   done
 
