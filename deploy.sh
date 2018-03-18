@@ -37,13 +37,13 @@ function docker-compose-deploy() {
   fi
 
   if [ ! -z "${oldServices}" ]; then
-    echo Stopping old containers ${oldServices}
-    docker stop --time=180 "${oldServices}"
+    echo "Stopping old containers ${oldServices}"
+    docker stop --time=180 ${oldServices}
   fi
 
   if [ ! -z "${oldServices}" ]; then
-    echo Removing old containers ${oldServices}
-    docker rm -f -v "${oldServices}"
+    echo "Removing old containers ${oldServices}"
+    docker rm -f -v ${oldServices}
   fi
 
   echo Renaming containers
@@ -64,9 +64,12 @@ readVariableIfRequired "PROJECT_NAME"
 PROJECT_URL=${2}
 readVariableIfRequired "PROJECT_URL"
 
-rm -rf ${PROJECT_NAME}
-git clone ${PROJECT_URL} ${PROJECT_NAME}
+if [ ! -d "${PROJECT_NAME}" ]; then
+  git clone ${PROJECT_URL} ${PROJECT_NAME}
+fi
+
 cd ${PROJECT_NAME}
+git pull
 
 echo "Deploying ${PROJECT_NAME}"
 docker-compose-deploy ${PROJECT_NAME}
