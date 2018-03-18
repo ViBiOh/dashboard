@@ -36,7 +36,7 @@ services:
   {{- if .TLS }}
     - -tls
   {{- end }}
-    - -ws
+    - -dockerWs
   {{- if .Traefik }}
     - ^dashboard-api{{ .Domain }}$$
   {{- else }}
@@ -77,6 +77,10 @@ services:
   {{- end }}
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
+  {{- if .DockerUser }}
+    group_add:
+    - '${DOCKER_GROUP}'
+  {{- end -}}
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 
   front:

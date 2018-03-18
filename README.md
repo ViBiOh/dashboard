@@ -133,14 +133,18 @@ Usage of dashboard:
       [cors] Access-Control-Allow-Origin (default "*")
   -csp string
       [owasp] Content-Security-Policy (default "default-src 'self'")
+  -dockerContainerUser string
+      [docker] Default container user (default "1000")
   -dockerHost string
-      Docker Host (default "unix:///var/run/docker.sock")
+      [docker] Host (default "unix:///var/run/docker.sock")
   -dockerNetwork string
-      Network for deploying containers (default "traefik")
+      [docker] Network for deploying containers (default "traefik")
   -dockerTag string
-      Tag to append to image when not provided (e.g. arm, arm64, latest, etc)
+      [docker] Tag to append to image when not provided (e.g. arm, arm64, latest, etc)
   -dockerVersion string
-      Docker API Version
+      [docker] API Version
+  -dockerWs string
+      [docker] Allowed WebSocket Origin pattern (default "^dashboard")
   -frameOptions string
       [owasp] X-Frame-Options (default "deny")
   -hsts
@@ -157,8 +161,6 @@ Usage of dashboard:
       [tls] PEM Key file
   -url string
       [health] URL to check
-  -ws string
-      Allowed WebSocket Origin pattern (default "^dashboard")
 ```
 
 ### Front
