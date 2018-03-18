@@ -15,7 +15,8 @@ import (
 
 const (
 	// DeployTimeout indicates delay for application to deploy before rollback
-	DeployTimeout    = 3 * time.Minute
+	DeployTimeout = 3 * time.Minute
+
 	healthPrefix     = `/health`
 	containersPrefix = `/containers`
 )
@@ -47,12 +48,12 @@ func CanBeGracefullyClosed() (canBe bool) {
 	return
 }
 
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	if docker != nil {
+func (a *App) healthHandler(w http.ResponseWriter, r *http.Request) {
+	if a.docker != nil {
 		ctx, cancel := getCtx()
 		defer cancel()
 
-		if _, err := docker.Ping(ctx); err == nil {
+		if _, err := a.docker.Ping(ctx); err == nil {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
@@ -61,38 +62,38 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusServiceUnavailable)
 }
 
-func containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *authProvider.User) {
+func (a *App) containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *authProvider.User) {
 	if r.Method == http.MethodGet && (urlPath == `/` || urlPath == ``) {
-		listContainersHandler(w, r, user)
+		a.listContainersHandler(w, r, user)
 	} else if containerRequest.MatchString(urlPath) {
 		containerID := containerRequest.FindStringSubmatch(urlPath)[1]
 
 		if r.Method == http.MethodGet {
-			basicActionHandler(w, r, user, containerID, getAction)
+			a.basicActionHandler(w, r, user, containerID, getAction)
 		} else if r.Method == http.MethodDelete {
-			basicActionHandler(w, r, user, containerID, deleteAction)
+			a.basicActionHandler(w, r, user, containerID, deleteAction)
 		} else if r.Method == http.MethodPost {
 			if composeBody, err := request.ReadBody(r.Body); err != nil {
 				httperror.InternalServerError(w, err)
 			} else {
-				composeHandler(w, r, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
+				a.composeHandler(w, r, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
 			}
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	} else if containerActionRequest.MatchString(urlPath) && r.Method == http.MethodPost {
 		matches := containerActionRequest.FindStringSubmatch(urlPath)
-		basicActionHandler(w, r, user, matches[1], matches[2])
+		a.basicActionHandler(w, r, user, matches[1], matches[2])
 	} else {
 		httperror.NotFound(w)
 	}
 }
 
 // Handler for Docker request. Should be use with net/http
-func Handler() http.Handler {
-	authHandler := authApp.Handler(func(w http.ResponseWriter, r *http.Request, user *authProvider.User) {
+func (a *App) Handler() http.Handler {
+	authHandler := a.authApp.Handler(func(w http.ResponseWriter, r *http.Request, user *authProvider.User) {
 		if strings.HasPrefix(r.URL.Path, containersPrefix) {
-			containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
+			a.containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
 		}
 	})
 
@@ -105,7 +106,7 @@ func Handler() http.Handler {
 		}
 
 		if strings.HasPrefix(r.URL.Path, healthPrefix) && r.Method == http.MethodGet {
-			healthHandler(w, r)
+			a.healthHandler(w, r)
 			return
 		}
 

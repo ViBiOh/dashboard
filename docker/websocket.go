@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -37,28 +36,8 @@ var (
 	statsPrefix  = []byte(`stats `)
 )
 
-var (
-	hostCheck       *regexp.Regexp
-	websocketOrigin = flag.String(`ws`, `^dashboard`, `Allowed WebSocket Origin pattern`)
-)
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		return hostCheck.MatchString(r.Host)
-	},
-}
-
-// InitWebsocket configure websocket handler
-func InitWebsocket() error {
-	hostCheck = regexp.MustCompile(*websocketOrigin)
-
-	return nil
-}
-
-func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websocket.Conn, user *authProvider.User, err error) {
-	ws, err = upgrader.Upgrade(w, r, nil)
+func (a *App) upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websocket.Conn, user *authProvider.User, err error) {
+	ws, err = a.wsUpgrader.Upgrade(w, r, nil)
 
 	defer func() {
 		if err != nil && ws != nil {
@@ -79,7 +58,7 @@ func upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websocket.Conn,
 		return
 	}
 
-	user, err = authApp.IsAuthenticatedByAuth(string(basicAuth))
+	user, err = a.authApp.IsAuthenticatedByAuth(string(basicAuth))
 	if err != nil {
 		err = fmt.Errorf(`Error while checking authentification: %v`, err)
 		if writeErr := ws.WriteMessage(websocket.TextMessage, []byte(err.Error())); writeErr != nil {
@@ -113,14 +92,14 @@ func readContent(user *authProvider.User, ws *websocket.Conn, name string, done 
 	}
 }
 
-func streamEvents(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, _ string, output chan<- []byte) {
+func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, _ string, output chan<- []byte) {
 	defer cancel()
 
 	filtersArgs := filters.NewArgs()
 	labelFilters(user, &filtersArgs, ``)
 	eventFilters(&filtersArgs)
 
-	messages, errors := docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
+	messages, errors := a.docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
 
 	for {
 		select {
@@ -143,8 +122,8 @@ func streamEvents(ctx context.Context, cancel context.CancelFunc, user *authProv
 	}
 }
 
-func streamLogs(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, containerID string, output chan<- []byte) {
-	logs, err := docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
+func (a *App) streamLogs(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, containerID string, output chan<- []byte) {
+	logs, err := a.docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	defer cancel()
 
 	if logs != nil {
@@ -168,8 +147,8 @@ func streamLogs(ctx context.Context, cancel context.CancelFunc, user *authProvid
 	}
 }
 
-func streamStats(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, containerID string, output chan<- []byte) {
-	stats, err := docker.ContainerStats(ctx, containerID, true)
+func (a *App) streamStats(ctx context.Context, cancel context.CancelFunc, user *authProvider.User, containerID string, output chan<- []byte) {
+	stats, err := a.docker.ContainerStats(ctx, containerID, true)
 	defer cancel()
 
 	if err != nil {
@@ -217,8 +196,8 @@ func handleBusDemand(user *authProvider.User, name string, input []byte, demand 
 	return nil
 }
 
-func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
-	ws, user, err := upgradeAndAuth(w, r)
+func (a *App) busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
+	ws, user, err := a.upgradeAndAuth(w, r)
 	if err != nil {
 		log.Printf(`Error while upgrading connection to websocket: %v`, err)
 		return
@@ -254,17 +233,17 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 		case inputBytes := <-input:
 			if eventsDemand.Match(inputBytes) {
-				eventsCancelFunc = handleBusDemand(user, `events`, inputBytes, eventsDemand, eventsCancelFunc, output, streamEvents)
+				eventsCancelFunc = handleBusDemand(user, `events`, inputBytes, eventsDemand, eventsCancelFunc, output, a.streamEvents)
 				if eventsCancelFunc != nil {
 					defer eventsCancelFunc()
 				}
 			} else if logsDemand.Match(inputBytes) {
-				logsCancelFunc = handleBusDemand(user, `logs`, inputBytes, logsDemand, logsCancelFunc, output, streamLogs)
+				logsCancelFunc = handleBusDemand(user, `logs`, inputBytes, logsDemand, logsCancelFunc, output, a.streamLogs)
 				if logsCancelFunc != nil {
 					defer logsCancelFunc()
 				}
 			} else if statsDemand.Match(inputBytes) {
-				statsCancelFunc = handleBusDemand(user, `stats`, inputBytes, statsDemand, statsCancelFunc, output, streamStats)
+				statsCancelFunc = handleBusDemand(user, `stats`, inputBytes, statsDemand, statsCancelFunc, output, a.streamStats)
 				if statsCancelFunc != nil {
 					defer statsCancelFunc()
 				}
@@ -280,10 +259,10 @@ func busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // WebsocketHandler for Docker Websocket request. Should be use with net/http
-func WebsocketHandler() http.Handler {
+func (a *App) WebsocketHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, busPrefix) {
-			busWebsocketHandler(w, r)
+			a.busWebsocketHandler(w, r)
 		}
 	})
 }

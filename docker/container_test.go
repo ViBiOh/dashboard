@@ -1,7 +1,6 @@
 package docker
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -42,44 +41,6 @@ func TestGetContainer(t *testing.T) {
 
 		if failed {
 			t.Errorf(`getContainer(%v, %v) = (%v, %v), want (%v, %v)`, testCase.containerID, testCase.container, result, err, testCase.want, testCase.wantErr)
-		}
-	}
-}
-
-func TestDoAction(t *testing.T) {
-	var cases = []struct {
-		action string
-		want   func(string, *types.ContainerJSON) (interface{}, error)
-	}{
-		{
-			getAction,
-			getContainer,
-		},
-		{
-			startAction,
-			startContainer,
-		},
-		{
-			stopAction,
-			stopContainer,
-		},
-		{
-			restartAction,
-			restartContainer,
-		},
-		{
-			deleteAction,
-			rmContainerAndImages,
-		},
-		{
-			`unknown`,
-			invalidAction,
-		},
-	}
-
-	for _, testCase := range cases {
-		if result := doAction(testCase.action); fmt.Sprintf(`%p`, result) != fmt.Sprintf(`%p`, testCase.want) {
-			t.Errorf(`doAction(%v) = %p, want %p`, testCase.action, result, testCase.want)
 		}
 	}
 }

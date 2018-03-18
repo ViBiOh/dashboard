@@ -20,7 +20,7 @@ const (
 	deleteAction  = `delete`
 )
 
-func listContainers(user *authProvider.User, appName string) ([]types.Container, error) {
+func (a *App) listContainers(user *authProvider.User, appName string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
 	options.Filters = filters.NewArgs()
@@ -29,14 +29,14 @@ func listContainers(user *authProvider.User, appName string) ([]types.Container,
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	return docker.ContainerList(ctx, options)
+	return a.docker.ContainerList(ctx, options)
 }
 
-func inspectContainer(containerID string) (*types.ContainerJSON, error) {
+func (a *App) inspectContainer(containerID string) (*types.ContainerJSON, error) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	container, err := docker.ContainerInspect(ctx, containerID)
+	container, err := a.docker.ContainerInspect(ctx, containerID)
 	return &container, err
 }
 
@@ -44,48 +44,48 @@ func getContainer(containerID string, container *types.ContainerJSON) (interface
 	return container, nil
 }
 
-func startContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
+func (a *App) startContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	return nil, docker.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
+	return nil, a.docker.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
 }
 
-func stopContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
+func (a *App) stopContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
 	ctx, cancel := getGracefulCtx()
 	defer cancel()
 
-	return nil, docker.ContainerStop(ctx, containerID, nil)
+	return nil, a.docker.ContainerStop(ctx, containerID, nil)
 }
 
-func restartContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
+func (a *App) restartContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	return nil, docker.ContainerRestart(ctx, containerID, nil)
+	return nil, a.docker.ContainerRestart(ctx, containerID, nil)
 }
 
-func rmContainerAndImages(containerID string, container *types.ContainerJSON) (interface{}, error) {
-	return rmContainer(containerID, container, true)
+func (a *App) rmContainerAndImages(containerID string, container *types.ContainerJSON) (interface{}, error) {
+	return a.rmContainer(containerID, container, true)
 }
 
-func rmContainer(containerID string, container *types.ContainerJSON, failOnImageFail bool) (interface{}, error) {
+func (a *App) rmContainer(containerID string, container *types.ContainerJSON, failOnImageFail bool) (interface{}, error) {
 	ctx, cancel := getCtx()
 	defer cancel()
 
 	var err error
 
 	if container == nil {
-		if container, err = inspectContainer(containerID); err != nil {
+		if container, err = a.inspectContainer(containerID); err != nil {
 			return nil, fmt.Errorf(`Error while inspecting container: %v`, err)
 		}
 	}
 
-	if err = docker.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
+	if err = a.docker.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
 		return nil, fmt.Errorf(`Error while removing container: %v`, err)
 	}
 
-	if err = rmImages(container.Image); err != nil {
+	if err = a.rmImages(container.Image); err != nil {
 		if failOnImageFail {
 			return nil, err
 		}
@@ -95,11 +95,11 @@ func rmContainer(containerID string, container *types.ContainerJSON, failOnImage
 	return nil, nil
 }
 
-func rmImages(imageID string) error {
+func (a *App) rmImages(imageID string) error {
 	ctx, cancel := getCtx()
 	defer cancel()
 
-	if _, err := docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{}); err != nil {
+	if _, err := a.docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{}); err != nil {
 		return fmt.Errorf(`Error while removing image: %v`, err)
 	}
 
@@ -110,37 +110,37 @@ func invalidAction(action string, _ *types.ContainerJSON) (interface{}, error) {
 	return nil, fmt.Errorf(`Unknown action %s`, action)
 }
 
-func doAction(action string) func(string, *types.ContainerJSON) (interface{}, error) {
+func (a *App) doAction(action string) func(string, *types.ContainerJSON) (interface{}, error) {
 	switch action {
 	case getAction:
 		return getContainer
 	case startAction:
-		return startContainer
+		return a.startContainer
 	case stopAction:
-		return stopContainer
+		return a.stopContainer
 	case restartAction:
-		return restartContainer
+		return a.restartContainer
 	case deleteAction:
-		return rmContainerAndImages
+		return a.rmContainerAndImages
 	default:
 		return invalidAction
 	}
 }
 
-func basicActionHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User, containerID string, action string) {
-	if allowed, container, err := isAllowed(user, containerID); err != nil {
+func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User, containerID string, action string) {
+	if allowed, container, err := a.isAllowed(user, containerID); err != nil {
 		httperror.InternalServerError(w, err)
 	} else if !allowed {
 		httperror.Forbidden(w)
-	} else if result, err := doAction(action)(containerID, container); err != nil {
+	} else if result, err := a.doAction(action)(containerID, container); err != nil {
 		httperror.InternalServerError(w, err)
 	} else if err := httpjson.ResponseJSON(w, http.StatusOK, result, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
 	}
 }
 
-func listContainersHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User) {
-	if containers, err := listContainers(user, ``); err != nil {
+func (a *App) listContainersHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User) {
+	if containers, err := a.listContainers(user, ``); err != nil {
 		httperror.InternalServerError(w, err)
 	} else if err := httpjson.ResponseArrayJSON(w, http.StatusOK, containers, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)

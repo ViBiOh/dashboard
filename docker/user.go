@@ -31,12 +31,12 @@ func isMultiApp(user *authProvider.User) bool {
 	return user.HasProfile(adminUser) || user.HasProfile(multiAppUser)
 }
 
-func isAllowed(user *authProvider.User, containerID string) (bool, *types.ContainerJSON, error) {
+func (a *App) isAllowed(user *authProvider.User, containerID string) (bool, *types.ContainerJSON, error) {
 	if user == nil {
 		return false, nil, errUserRequired
 	}
 
-	container, err := inspectContainer(containerID)
+	container, err := a.inspectContainer(containerID)
 	if err != nil {
 		return false, nil, fmt.Errorf(`Error while inspecting container: %v`, err)
 	}

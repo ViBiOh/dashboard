@@ -41,16 +41,16 @@ func main() {
 	authConfig := auth.Flags(`auth`)
 	owaspConfig := owasp.Flags(``)
 	corsConfig := cors.Flags(`cors`)
+	dockerConfig := docker.Flags(`docker`)
 
 	httputils.StartMainServer(func() http.Handler {
-		authApp := auth.NewApp(authConfig, nil)
-
-		if err := docker.Init(authApp); err != nil {
-			log.Fatalf(`Error while initializing docker: %v`, err)
+		dockerApp, err := docker.NewApp(dockerConfig, auth.NewApp(authConfig, nil))
+		if err != nil {
+			log.Fatalf(`Error while creating docker: %v`, err)
 		}
 
-		restHandler := gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, docker.Handler())))
-		websocketHandler := http.StripPrefix(websocketPrefix, docker.WebsocketHandler())
+		restHandler := gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, dockerApp.Handler())))
+		websocketHandler := http.StripPrefix(websocketPrefix, dockerApp.WebsocketHandler())
 
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, websocketPrefix) {

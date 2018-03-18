@@ -3,11 +3,15 @@ package docker
 import (
 	"flag"
 	"fmt"
+	"net/http"
+	"regexp"
 
 	"github.com/ViBiOh/auth/auth"
 	authProvider "github.com/ViBiOh/auth/provider"
+	"github.com/ViBiOh/httputils/tools"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
+	"github.com/gorilla/websocket"
 )
 
 const (
@@ -15,34 +19,54 @@ const (
 	appLabel   = `app`
 )
 
-var (
-	dockerHost          = flag.String(`dockerHost`, `unix:///var/run/docker.sock`, `Docker Host`)
-	dockerVersion       = flag.String(`dockerVersion`, ``, `Docker API Version`)
-	dockerNetwork       = flag.String(`dockerNetwork`, `traefik`, `Network for deploying containers`)
-	dockerTag           = flag.String(`dockerTag`, ``, `Tag to append to image when not provided (e.g. arm, arm64, latest, etc)`)
-	dockerContainerUser = flag.String(`dockerContainerUser`, `1000`, `Docker default container user`)
-)
+// App stores informations
+type App struct {
+	docker        client.APIClient
+	authApp       *auth.App
+	wsUpgrader    websocket.Upgrader
+	network       string
+	tag           string
+	containerUser string
+}
 
-var (
-	docker  client.APIClient
-	authApp *auth.App
-)
-
-// Init docker client
-func Init(authAppDep *auth.App) error {
-	client, err := client.NewClient(*dockerHost, *dockerVersion, nil, nil)
+// NewApp creates new App from Flags' config
+func NewApp(config map[string]*string, authAppDep *auth.App) (*App, error) {
+	client, err := client.NewClient(*config[`host`], *config[`version`], nil, nil)
 	if err != nil {
-		return fmt.Errorf(`Error while creating docker client: %v`, err)
-	}
-	docker = client
-
-	if err := InitWebsocket(); err != nil {
-		return fmt.Errorf(`Error while initializing websocket: %v`, err)
+		return nil, fmt.Errorf(`Error while creating docker client: %v`, err)
 	}
 
-	authApp = authAppDep
+	hostCheck, err := regexp.Compile(*config[`websocketOrigin`])
+	if err != nil {
+		return nil, fmt.Errorf(`Error while compiling websocket regexp: %v`, err)
+	}
 
-	return nil
+	return &App{
+		docker:  client,
+		authApp: authAppDep,
+		wsUpgrader: websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+			CheckOrigin: func(r *http.Request) bool {
+				return hostCheck.MatchString(r.Host)
+			},
+		},
+		network:       *config[`network`],
+		tag:           *config[`tag`],
+		containerUser: *config[`containerUser`],
+	}, nil
+}
+
+// Flags adds flags for given prefix
+func Flags(prefix string) map[string]*string {
+	return map[string]*string{
+		`host`:            flag.String(tools.ToCamel(fmt.Sprintf(`%sHost`, prefix)), `unix:///var/run/docker.sock`, `[docker] Host`),
+		`version`:         flag.String(tools.ToCamel(fmt.Sprintf(`%sVersion`, prefix)), ``, `[docker] API Version`),
+		`network`:         flag.String(tools.ToCamel(fmt.Sprintf(`%sNetwork`, prefix)), `traefik`, `[docker] Network for deploying containers`),
+		`tag`:             flag.String(tools.ToCamel(fmt.Sprintf(`%sTag`, prefix)), ``, `[docker] Tag to append to image when not provided (e.g. arm, arm64, latest, etc)`),
+		`containerUser`:   flag.String(tools.ToCamel(fmt.Sprintf(`%sContainerUser`, prefix)), `1000`, `[docker] Default container user`),
+		`websocketOrigin`: flag.String(tools.ToCamel(fmt.Sprintf(`%sWs`, prefix)), `^dashboard`, `[docker] Allowed WebSocket Origin pattern`),
+	}
 }
 
 func labelFilters(user *authProvider.User, filtersArgs *filters.Args, appName string) {
