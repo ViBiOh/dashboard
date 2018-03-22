@@ -46,7 +46,7 @@ services:
     - -authUrl
     - https://dashboard-auth.vibioh.fr
     - -authUsers
-    - vibioh:admin,eponae:multi
+    - vibioh:admin,eponae:multi,simrobin:multi
     - -corsHeaders
     - Content-Type,Authorization
     - -corsMethods
