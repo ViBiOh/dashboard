@@ -11,7 +11,7 @@
     "doc": "./node_modules/.bin/esdoc",
     "prestart": "mkdir -p ./dist && cp ./app/index.html ./dist/",
     "start":
-      "API_URL=http://localhost:1082 WS_URL=ws://localhost:1082/ws AUTH_URL=http://localhost:1081 BASIC_AUTH_ENABLED=true ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
+      "API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://dashboard-auth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_AUTH_ENABLED=true ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test":
       "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
     "test:e2e": "./node_modules/.bin/codeceptjs run-multiple --all",
