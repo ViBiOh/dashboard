@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import FaThumbsODown from 'react-icons/lib/fa/thumbs-o-down';
+import FaThumbsOUp from 'react-icons/lib/fa/thumbs-o-up';
+import FaEllipsisH from 'react-icons/lib/fa/ellipsis-h';
 import { humanSize } from '../../utils/statHelper';
 import style from './ContainerInfo.less';
 
@@ -9,6 +12,17 @@ import style from './ContainerInfo.less';
  * @type {RegExp}
  */
 const ENV_PARSER = /(.*?)=(.*)/;
+
+/**
+ * Health Status Map
+ * @type {Map<String, React.Component>}
+ */
+const healthIndicators = {
+  starting: <FaEllipsisH />,
+  healthy: <FaThumbsOUp />,
+  unhealthy: <FaThumbsODown />,
+  none: '',
+};
 
 /**
  * Container's basic informations.
@@ -47,9 +61,14 @@ const ContainerInfo = ({ container }) => {
     ];
   }
 
+  let healthContent = null;
+  if (container.State.Health) {
+    healthContent = healthIndicators[container.State.Health.Status];
+  }
+
   return (
     <span className={style.container}>
-      <h2>
+      <h2 className={style.title}>
         <span
           key="status"
           className={container.State.Running ? style.green : style.red}
@@ -57,6 +76,11 @@ const ContainerInfo = ({ container }) => {
         >
           {String(container.Name).replace(/^\//, '')}
         </span>
+        {healthContent && (
+          <span className={style.icon} title={container.State.Health.Status}>
+            {healthContent}
+          </span>
+        )}
       </h2>
       <h3 key="config">Config</h3>
       <span key="id" className={style.info}>
