@@ -31,7 +31,7 @@ services:
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 
   api:
-    image: vibioh/dashboard-api
+    image: vibioh/dashboard-api{{- if ne .Version "" -}}:{{- .Version -}}{{- end }}
     command:
   {{- if not .TLS }}
     - -tls=false
@@ -84,7 +84,7 @@ services:
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 
   front:
-    image: vibioh/dashboard-front
+    image: vibioh/dashboard-front{{- if ne .Version "" -}}:{{- .Version -}}{{- end }}
     command:
   {{- if not .TLS }}
     - -tls=false

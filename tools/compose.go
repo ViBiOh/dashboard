@@ -20,6 +20,7 @@ type arguments struct {
 	Domain     string
 	Users      string
 	Tag        string
+	Version    string
 	DockerUser bool
 }
 
@@ -32,6 +33,7 @@ func main() {
 	domain := flag.String(`domain`, `vibioh.fr`, `Domain name`)
 	users := flag.String(`users`, `admin:admin`, `Allowed users list`)
 	tag := flag.String(`tag`, ``, `Docker tag used`)
+	version := flag.String(`version`, ``, `Docker image version`)
 	expose := flag.Bool(`expose`, false, `Expose opened ports`)
 	dockerUser := flag.Bool(`user`, false, `Enable docker user default`)
 	flag.Parse()
@@ -60,7 +62,7 @@ func main() {
 		prefixedDomain = *domain
 	}
 
-	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *github, *selenium, *expose, prefixedDomain, *users, *tag, *dockerUser}); err != nil {
+	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *github, *selenium, *expose, prefixedDomain, *users, *tag, *version, *dockerUser}); err != nil {
 		log.Printf(`Error while rendering template: %v`, err)
 	}
 }

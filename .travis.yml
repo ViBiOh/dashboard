@@ -13,19 +13,19 @@ install:
 - npm i -g npm
 - npm i
 script: |
-  npm run build && make && \
-  make start-deps && ./e2e_ci.sh
+  npm run build \
+  && make \
+  && make start-deps && ./e2e_ci.sh
 after_success: |
-  bash <(curl -s https://codecov.io/bash)
-
   if [ "${TRAVIS_BRANCH}" == "master" ]; then
-    make docker-push
+    bash <(curl -s https://codecov.io/bash)
     curl -s -X POST https://goreportcard.com/checks?repo=github.com/ViBiOh/dashboard
-
     curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create
+
+    make docker-promote
+    DOCKER_VERSION=latest make docker-push
   fi
-notifications:
-  email: false
+
 before_deploy:
 - eval "$(ssh-agent -s)"
 - chmod 600 ${TRAVIS_BUILD_DIR}/deploy_key
@@ -36,3 +36,6 @@ deploy:
   script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} CONTAINER_USER=${CONTAINER_USER} DOCKER_GROUP=${DOCKER_GROUP} bash -s" -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
   on:
     branch: master
+
+notifications:
+  email: false
