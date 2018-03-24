@@ -14,7 +14,6 @@
       "API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://dashboard-auth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_AUTH_ENABLED=true ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test":
       "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
-    "test:e2e": "./node_modules/.bin/codeceptjs run-multiple --all",
     "copy:web": "cp ./web/*.txt ./dist/ && cp ./web/favicon/* ./dist/",
     "mustache":
       "./node_modules/js-index-builder/index.js --template \"./app/*.html\" --partials \"./web/partials/*.html\" --bust `git log --pretty=format:'%h' -n 1` --output ./tmp/",
@@ -56,7 +55,6 @@
     "babel-plugin-transform-object-rest-spread": "latest",
     "babel-preset-env": "latest",
     "babel-preset-react": "latest",
-    "codeceptjs-webdriverio": "latest",
     "css-loader": "latest",
     "enzyme": "latest",
     "enzyme-adapter-react-16": "latest",

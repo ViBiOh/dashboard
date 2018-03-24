@@ -41,10 +41,12 @@ jobs:
     go: '1.10'
     script: |
       make start-deps && \
-      ./e2e_ci.sh
+      cd e2e && ./ci.sh
     after_success: |
+      if [ "${TRAVIS_BRANCH}" == "master" ]; then
         make docker-promote
         DOCKER_VERSION=latest make docker-push
+      fi
 
   - stage: Deploy
 

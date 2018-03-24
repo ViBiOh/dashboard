@@ -1,5 +1,5 @@
 {
-  "output": "./e2e/output",
+  "output": "./output",
   "helpers": {
     "WebDriverIO": {
       "protocol": "http",
@@ -15,9 +15,9 @@
     }
   },
   "include": {
-    "loginPage": "./e2e/pages/Login.js",
-    "listPage": "./e2e/pages/List.js",
-    "containerPage": "./e2e/pages/Container.js"
+    "loginPage": "./pages/Login.js",
+    "listPage": "./pages/List.js",
+    "containerPage": "./pages/Container.js"
   },
   "mocha": {},
   "multiple": {
@@ -37,7 +37,7 @@
   "bootstrap": false,
   "teardown": null,
   "hooks": [],
-  "tests": "./e2e/*.test.js",
+  "tests": "./*.test.js",
   "timeout": 10000,
   "name": "dashboard"
 }
