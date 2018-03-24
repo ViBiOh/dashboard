@@ -4,7 +4,7 @@ set -e
 
 echo Starting Dashboard with local configuration
 
-go run tools/compose.go \
+go run ../tools/compose.go \
   -tls=false \
   -authBasic \
   -traefik=false \
@@ -21,8 +21,7 @@ set +e
 
 echo Running e2e tests
 
-npm install
-npm run test:e2e
+docker run -it --rm -v `pwd`:/tests codeception/codeceptjs codeceptjs run-multiple --all
 result=$?
 
 set -e
@@ -34,5 +33,6 @@ fi
 
 echo Stopping started containers
 docker-compose -p dashboard -f docker-compose.yml stop
+docker-compose -p dashboard -f docker-compose.yml rm -f -v
 
 exit $result
