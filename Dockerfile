@@ -7,6 +7,6 @@ VOLUME /var/run/docker.sock
 EXPOSE 1080
 ENTRYPOINT [ "/dashboard" ]
 
-COPY api.html /doc/api.html
+COPY doc/api.html /doc/api.html
 COPY cacert.pem /etc/ssl/certs/ca-certificates.crt
 COPY bin/dashboard /dashboard

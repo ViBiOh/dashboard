@@ -5,7 +5,7 @@ coverage/
 tmp/
 dist/
 .nyc_output
-doc/
+esdoc/
 package-lock.json
 e2e/output
 
