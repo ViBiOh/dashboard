@@ -40,7 +40,6 @@ node:
 
 docker-deps:
 	curl -s -o cacert.pem https://curl.haxx.se/ca/cacert.pem
-	./blueprint.sh
 
 docker-login:
 	docker login -u $(DOCKER_USER) -p ${DOCKER_PASS}
@@ -48,6 +47,7 @@ docker-login:
 docker-promote: docker-promote-api docker-promote-ui
 
 docker-build-api: docker-deps
+	docker run -it --rm -v `pwd`:/doc bukalapak/snowboard html -o api.html api.apib
 	docker build -t $(DOCKER_USER)/dashboard-api:$(DOCKER_VERSION) .
 
 docker-push-api: docker-login
