@@ -7,9 +7,6 @@ jobs:
     services:
     - docker
     go: '1.10'
-    cache:
-      directories:
-      - "${TRAVIS_BUILD_DIR}/vendor"
     after_success: |
       if [ "${TRAVIS_BRANCH}" == "master" ]; then
         curl -s -X POST https://goreportcard.com/checks?repo=github.com/ViBiOh/dashboard
@@ -22,10 +19,8 @@ jobs:
     services:
     - docker
     node_js: 8
-    cache:
-      directories:
-      - "${TRAVIS_BUILD_DIR}/node_modules"
-    script: make ui
+    script: |
+      make ui
     after_success: |
       if [ "${TRAVIS_BRANCH}" == "master" ]; then
         bash <(curl -s https://codecov.io/bash)
@@ -40,7 +35,6 @@ jobs:
     - docker
     go: '1.10'
     script: |
-      make start-deps && \
       cd e2e && ./ci.sh
     after_success: |
       if [ "${TRAVIS_BRANCH}" == "master" ]; then

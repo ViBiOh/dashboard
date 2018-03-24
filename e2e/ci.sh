@@ -13,6 +13,7 @@ go run tools/compose.go \
   -domain=:1080 \
   -version=`git log --pretty=format:'%h' -n 1` > docker-compose.yml
 
+go get -u github.com/ViBiOh/auth/bcrypt
 export ADMIN_PASSWORD=`bcrypt admin`
 docker-compose -p dashboard -f docker-compose.yml up -d
 

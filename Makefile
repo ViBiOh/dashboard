@@ -42,7 +42,7 @@ docker-deps:
 	curl -s -o cacert.pem https://curl.haxx.se/ca/cacert.pem
 
 docker-login:
-	docker login -u $(DOCKER_USER) -p $(DOCKER_PASS)
+	echo $(DOCKER_PASS) | docker login -u $(DOCKER_USER) --password-stdin
 
 docker-promote: docker-promote-api docker-promote-ui
 
