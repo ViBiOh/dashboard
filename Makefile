@@ -1,13 +1,13 @@
 SHELL := /bin/bash
 DOCKER_VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
 
-default: go docker
+default: go
 
-go: deps dev
-
-docker: docker-build docker-push
+go: deps dev docker-build-api docker-push-api
 
 dev: format lint tst bench build
+
+ui: node docker-build-ui docker-push-ui
 
 deps:
 	go get -u github.com/golang/dep/cmd/dep
@@ -35,20 +35,19 @@ build:
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard dashboard.go
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/compose tools/compose.go
 
+node:
+	npm run build
+
 docker-deps:
 	curl -s -o cacert.pem https://curl.haxx.se/ca/cacert.pem
 	./blueprint.sh
 
-docker-build: docker-deps docker-build-api docker-build-ui
-
 docker-login:
 	docker login -u $(DOCKER_USER) -p ${DOCKER_PASS}
 
-docker-push: docker-push-api docker-push-ui
-
 docker-promote: docker-promote-api docker-promote-ui
 
-docker-build-api:
+docker-build-api: docker-deps
 	docker build -t $(DOCKER_USER)/dashboard-api:$(DOCKER_VERSION) .
 
 docker-push-api: docker-login
@@ -57,7 +56,7 @@ docker-push-api: docker-login
 docker-promote-api:
 	docker tag $(DOCKER_USER)/dashboard-api:$(DOCKER_VERSION) $(DOCKER_USER)/dashboard-api:latest
 
-docker-build-ui:
+docker-build-ui: docker-deps
 	docker build -t $(DOCKER_USER)/dashboard-front:$(DOCKER_VERSION) -f app/Dockerfile .
 
 docker-push-ui: docker-login

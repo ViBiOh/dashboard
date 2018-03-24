@@ -1,41 +1,65 @@
-language: go
-sudo: required
-services:
-- docker
-go : '1.10'
-cache:
-  directories:
-  - "${TRAVIS_BUILD_DIR}/vendor"
-before_install:
-- openssl aes-256-cbc -K $encrypted_f5ecd030baf5_key -iv $encrypted_f5ecd030baf5_iv -in deploy_key.enc -out deploy_key -d
-install:
-- nvm install 8
-- npm i -g npm
-- npm i
-script: |
-  npm run build \
-  && make \
-  && make start-deps && ./e2e_ci.sh
-after_success: |
-  if [ "${TRAVIS_BRANCH}" == "master" ]; then
-    bash <(curl -s https://codecov.io/bash)
-    curl -s -X POST https://goreportcard.com/checks?repo=github.com/ViBiOh/dashboard
-    curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create
+jobs:
+  include:
+  - stage: Build
 
-    make docker-promote
-    DOCKER_VERSION=latest make docker-push
-  fi
+    language: go
+    sudo: required
+    services:
+    - docker
+    go: '1.10'
+    cache:
+      directories:
+      - "${TRAVIS_BUILD_DIR}/vendor"
+    after_success: |
+      if [ "${TRAVIS_BRANCH}" == "master" ]; then
+        curl -s -X POST https://goreportcard.com/checks?repo=github.com/ViBiOh/dashboard
+      fi
 
-before_deploy:
-- eval "$(ssh-agent -s)"
-- chmod 600 ${TRAVIS_BUILD_DIR}/deploy_key
-- ssh-add ${TRAVIS_BUILD_DIR}/deploy_key
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} CONTAINER_USER=${CONTAINER_USER} DOCKER_GROUP=${DOCKER_GROUP} bash -s" -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
-  on:
-    branch: master
+  - stage: Build
+
+    language: node_js
+    sudo: required
+    services:
+    - docker
+    node_js: 8
+    cache:
+      directories:
+      - "${TRAVIS_BUILD_DIR}/node_modules"
+    script: make ui
+    after_success: |
+      if [ "${TRAVIS_BRANCH}" == "master" ]; then
+        bash <(curl -s https://codecov.io/bash)
+        curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create
+      fi
+
+  - stage: Test
+
+    script: |
+      make start-deps && \
+      ./e2e_ci.sh
+    after_success: |
+        make docker-promote
+        DOCKER_VERSION=latest make docker-push
+
+  - stage: Deploy
+
+    script: skip
+    before_install:
+    - openssl aes-256-cbc -K $encrypted_f5ecd030baf5_key -iv $encrypted_f5ecd030baf5_iv -in deploy_key.enc -out deploy_key -d
+    before_deploy:
+    - eval "$(ssh-agent -s)"
+    - chmod 600 ${TRAVIS_BUILD_DIR}/deploy_key
+    - ssh-add ${TRAVIS_BUILD_DIR}/deploy_key
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} CONTAINER_USER=${CONTAINER_USER} DOCKER_GROUP=${DOCKER_GROUP} bash -s" -- < ./deploy.sh dashboard https://github.com/ViBiOh/dashboard.git
+
+stages:
+  - Build
+  - Test
+  - name: Deploy
+    if: branch = master
 
 notifications:
   email: false
