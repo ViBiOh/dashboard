@@ -46,6 +46,8 @@ docker-login:
 
 docker-promote: docker-promote-api docker-promote-ui
 
+docker-push: docker-push-api docker-push-ui
+
 docker-build-api: docker-deps
 	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
 	docker build -t $(DOCKER_USER)/dashboard-api:$(DOCKER_VERSION) .
