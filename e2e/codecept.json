@@ -3,7 +3,7 @@
   "helpers": {
     "WebDriverIO": {
       "protocol": "http",
-      "host": "localhost",
+      "host": "selenium",
       "port": "4444",
       "url": "http://front:1080",
       "browser": "chrome",

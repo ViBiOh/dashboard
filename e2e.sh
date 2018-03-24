@@ -21,7 +21,12 @@ set +e
 
 echo Running e2e tests
 
-docker run -it --rm -v `pwd`/e2e:/tests codeception/codeceptjs codeceptjs run-multiple --all
+docker run \
+  -it \
+  --rm \
+  --link dashboard_selenium_1:selenium \
+  -v `pwd`/e2e:/tests codeception/codeceptjs \
+  codeceptjs run-multiple --all
 result=$?
 
 set -e
