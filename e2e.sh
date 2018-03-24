@@ -24,6 +24,7 @@ echo Running e2e tests
 docker run \
   -it \
   --rm \
+  --network dashboard_default \
   --link dashboard_selenium_1:selenium \
   -v `pwd`/e2e:/tests codeception/codeceptjs \
   codeceptjs run-multiple --all
