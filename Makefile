@@ -59,13 +59,13 @@ docker-promote-api:
 	docker tag $(DOCKER_USER)/dashboard-api:$(DOCKER_VERSION) $(DOCKER_USER)/dashboard-api:latest
 
 docker-build-ui: docker-deps
-	docker build -t $(DOCKER_USER)/dashboard-front:$(DOCKER_VERSION) -f app/Dockerfile .
+	docker build -t $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION) -f app/Dockerfile .
 
 docker-push-ui: docker-login
-	docker push $(DOCKER_USER)/dashboard-front:$(DOCKER_VERSION)
+	docker push $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION)
 
 docker-promote-ui:
-	docker tag $(DOCKER_USER)/dashboard-front:$(DOCKER_VERSION) $(DOCKER_USER)/dashboard-front:latest
+	docker tag $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION) $(DOCKER_USER)/dashboard-ui:latest
 
 start-deps:
 	go get -u github.com/ViBiOh/auth

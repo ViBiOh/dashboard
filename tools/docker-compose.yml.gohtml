@@ -84,7 +84,7 @@ services:
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 
   front:
-    image: vibioh/dashboard-front{{- if ne .Version "" -}}:{{- .Version -}}{{- end }}
+    image: vibioh/dashboard-ui{{- if ne .Version "" -}}:{{- .Version -}}{{- end }}
     command:
   {{- if not .TLS }}
     - -tls=false

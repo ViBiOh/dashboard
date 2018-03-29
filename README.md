@@ -19,7 +19,7 @@ View detailed informations about containers, start / stop / restart them.
 
 ## Docker
 
-Docker's images are available, `vibioh/dashboard-front` and `vibioh/dashboard-api`, and a `docker-compose.yml` generator. Everything is almost configured, you only have to tweak domain's name, mainly configured for being used with [traefik](https://traefik.io), and adjust some secrets.
+Docker's images are available, `vibioh/dashboard-ui` and `vibioh/dashboard-api`, and a `docker-compose.yml` generator. Everything is almost configured, you only have to tweak domain's name, mainly configured for being used with [traefik](https://traefik.io), and adjust some secrets.
 
 For generating `docker-compose`, use `tools/compose.go` tools provided :
 

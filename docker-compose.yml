@@ -80,7 +80,7 @@ services:
     - no-new-privileges
 
   front:
-    image: vibioh/dashboard-front
+    image: vibioh/dashboard-ui
     command:
     - -spa
     - -env
