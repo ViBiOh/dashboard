@@ -17,8 +17,8 @@ deps:
 	dep ensure
 
 format:
-	goimports -w **/*.go *.go
-	gofmt -s -w **/*.go *.go
+	goimports -w */*/*.go
+	gofmt -s -w */*/*.go
 
 lint:
 	golint `go list ./... | grep -v vendor`
@@ -32,8 +32,8 @@ bench:
 	go test ./... -bench . -benchmem -run Benchmark.*
 
 build:
-	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard dashboard.go
-	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/compose tools/compose.go
+	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard cmd/dashboard/dashboard.go
+	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/compose cmd/compose/compose.go
 
 node:
 	npm run build
@@ -59,7 +59,7 @@ docker-promote-api:
 	docker tag $(DOCKER_USER)/dashboard-api:$(DOCKER_VERSION) $(DOCKER_USER)/dashboard-api:latest
 
 docker-build-ui: docker-deps
-	docker build -t $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION) -f app/Dockerfile .
+	docker build -t $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION) -f ui/Dockerfile ./ui/
 
 docker-push-ui: docker-login
 	docker push $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION)
@@ -68,9 +68,9 @@ docker-promote-ui:
 	docker tag $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION) $(DOCKER_USER)/dashboard-ui:latest
 
 start-deps:
-	go get -u github.com/ViBiOh/auth
-	go get -u github.com/ViBiOh/auth/bcrypt
-	go get -u github.com/ViBiOh/viws
+	go get -u github.com/ViBiOh/auth/cmd/auth
+	go get -u github.com/ViBiOh/auth/cmd/bcrypt
+	go get -u github.com/ViBiOh/viws/cmd
 
 start-auth:
 	auth \
@@ -81,7 +81,7 @@ start-auth:
 		-corsCredentials
 
 start-api:
-	go run dashboard.go \
+	go run cmd/dashboard/dashboard.go \
 		-tls=false \
 		-ws ".*" \
 		-dockerVersion '1.32' \

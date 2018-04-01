@@ -4,19 +4,19 @@
   "description": "Docker management",
   "main": "index.js",
   "scripts": {
-    "format": "./node_modules/.bin/prettier --write \"./app/**/*.{js,jsx,less}\"",
-    "stylelint": "./node_modules/.bin/stylelint \"app/**/*.{css,less}\"",
-    "eslint": "./node_modules/.bin/eslint --fix --ext .jsx \"./app/**/*.{js,jsx}\"",
+    "format": "./node_modules/.bin/prettier --write \"./ui/**/*.{js,jsx,less}\"",
+    "stylelint": "./node_modules/.bin/stylelint \"ui/**/*.{css,less}\"",
+    "eslint": "./node_modules/.bin/eslint --fix --ext .jsx \"./ui/**/*.{js,jsx}\"",
     "lint": "npm run eslint && npm run stylelint",
     "doc": "./node_modules/.bin/esdoc",
-    "prestart": "mkdir -p ./dist && cp ./app/index.html ./dist/",
+    "prestart": "mkdir -p ./ui/dist && cp ./ui/index.html ./ui/dist/",
     "start": "API_URL=https://dashboard-api.vibioh.fr WS_URL=wss://dashboard-api.vibioh.fr/ws AUTH_URL=https://dashboard-auth.vibioh.fr BASIC_AUTH_ENABLED=false GITHUB_AUTH_ENABLED=true ./node_modules/.bin/webpack-dev-server --hot --inline --content-base dist --history-api-fallback --output-public-path static",
     "test": "./node_modules/.bin/nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ./node_modules/.bin/ava",
-    "copy:web": "cp ./web/*.txt ./dist/ && cp ./web/favicon/* ./dist/",
-    "mustache": "./node_modules/js-index-builder/index.js --template \"./app/*.html\" --partials \"./web/partials/*.html\" --bust `git log --pretty=format:'%h' -n 1` --output ./tmp/",
-    "html-minify": "./node_modules/.bin/html-minifier --config-file ./html-minifier.json --input-dir ./tmp --output-dir ./dist",
+    "copy:web": "cp ./ui/web/*.txt ./ui/dist/ && cp ./ui/web/favicon/* ./ui/dist/",
+    "mustache": "./node_modules/js-index-builder/index.js --template \"./ui/*.html\" --partials \"./ui/web/partials/*.html\" --bust `git log --pretty=format:'%h' -n 1` --output ./tmp/",
+    "html-minify": "./node_modules/.bin/html-minifier --config-file ./html-minifier.json --input-dir ./tmp --output-dir ./ui/dist",
     "web": "npm run copy:web && npm run mustache && npm run html-minify",
-    "prebuild": "mkdir -p ./dist",
+    "prebuild": "mkdir -p ./ui/dist",
     "build": "npm run format && npm run lint && npm test && npm run web && ./node_modules/.bin/webpack -p"
   },
   "repository": {
@@ -106,11 +106,11 @@
   },
   "ava": {
     "files": [
-      "app/**/*.test.js"
+      "ui/**/*.test.js"
     ],
     "require": [
       "ignore-styles",
-      "./app/utils/Test.js"
+      "./ui/utils/Test.js"
     ],
     "babel": "inherit"
   },
@@ -133,7 +133,7 @@
     ]
   },
   "esdoc": {
-    "source": "./app",
+    "source": "./ui",
     "includes": [
       ".(js|jsx)$"
     ],

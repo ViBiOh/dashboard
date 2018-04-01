@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/ViBiOh/auth/auth"
-	authProvider "github.com/ViBiOh/auth/provider"
-	"github.com/ViBiOh/httputils/tools"
+	"github.com/ViBiOh/auth/pkg/auth"
+	authProvider "github.com/ViBiOh/auth/pkg/provider"
+	"github.com/ViBiOh/httputils/pkg/tools"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/gorilla/websocket"

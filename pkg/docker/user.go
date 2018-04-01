@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	authProvider "github.com/ViBiOh/auth/provider"
+	authProvider "github.com/ViBiOh/auth/pkg/provider"
 	"github.com/docker/docker/api/types"
 )
 

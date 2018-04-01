@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	authProvider "github.com/ViBiOh/auth/provider"
-	"github.com/ViBiOh/httputils/httperror"
-	"github.com/ViBiOh/httputils/httpjson"
+	authProvider "github.com/ViBiOh/auth/pkg/provider"
+	"github.com/ViBiOh/httputils/pkg/httperror"
+	"github.com/ViBiOh/httputils/pkg/httpjson"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 )

@@ -3,7 +3,7 @@ package docker
 import (
 	"testing"
 
-	authProvider "github.com/ViBiOh/auth/provider"
+	authProvider "github.com/ViBiOh/auth/pkg/provider"
 )
 
 func TestIsAdmin(t *testing.T) {

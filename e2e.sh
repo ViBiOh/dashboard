@@ -4,7 +4,7 @@ set -e
 
 echo Starting Dashboard with local configuration
 
-go run tools/compose.go \
+go run cmd/compose.go \
   -tls=false \
   -authBasic \
   -traefik=false \

@@ -3,11 +3,11 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
-  context: path.join(__dirname, 'app'),
+  context: path.join(__dirname, 'ui'),
   entry: ['babel-polyfill', './index.jsx', './index.css'],
 
   resolve: {
-    modules: ['node_modules', 'app'],
+    modules: ['node_modules', 'ui'],
     extensions: ['.js', '.jsx'],
   },
 
@@ -44,14 +44,14 @@ const config = {
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new ExtractTextPlugin({
-      filename: 'app.css',
+      filename: 'main.css',
       allChunks: true,
     }),
   ],
 
   output: {
-    filename: 'app.js',
-    path: path.join(__dirname, 'dist/static'),
+    filename: 'index.js',
+    path: path.join(__dirname, 'ui/dist/static'),
   },
 
   devServer: {

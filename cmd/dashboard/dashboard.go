@@ -8,11 +8,11 @@ import (
 	"time"
 
 	"github.com/NYTimes/gziphandler"
-	"github.com/ViBiOh/auth/auth"
-	"github.com/ViBiOh/dashboard/docker"
-	"github.com/ViBiOh/httputils"
-	"github.com/ViBiOh/httputils/cors"
-	"github.com/ViBiOh/httputils/owasp"
+	"github.com/ViBiOh/auth/pkg/auth"
+	"github.com/ViBiOh/dashboard/pkg/docker"
+	"github.com/ViBiOh/httputils/pkg"
+	"github.com/ViBiOh/httputils/pkg/cors"
+	"github.com/ViBiOh/httputils/pkg/owasp"
 )
 
 const websocketPrefix = `/ws`

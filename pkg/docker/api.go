@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	authProvider "github.com/ViBiOh/auth/provider"
-	"github.com/ViBiOh/httputils/httperror"
-	"github.com/ViBiOh/httputils/request"
+	authProvider "github.com/ViBiOh/auth/pkg/provider"
+	"github.com/ViBiOh/httputils/pkg/httperror"
+	"github.com/ViBiOh/httputils/pkg/request"
 )
 
 const (
