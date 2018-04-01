@@ -19,8 +19,7 @@ jobs:
     services:
     - docker
     node_js: 8
-    script: |
-      make ui
+    script: make ui
     after_success: |
       if [ "${TRAVIS_BRANCH}" == "master" ]; then
         bash <(curl -s https://codecov.io/bash)
