@@ -141,7 +141,7 @@ func getVolumesConfig(hostConfig *container.HostConfig, volumes []string) {
 	for _, rawVolume := range volumes {
 		parts := strings.Split(rawVolume, colonSeparator)
 
-		if len(parts) > 1 && parts[0] != `/` {
+		if len(parts) > 1 && parts[0] != `/` && parts[0] != `/var/run/docker.sock` {
 			volume := mount.Mount{Type: mount.TypeBind, BindOptions: &mount.BindOptions{Propagation: mount.PropagationRPrivate}, Source: parts[0], Target: parts[1]}
 			if len(parts) > 2 && parts[2] == `ro` {
 				volume.ReadOnly = true
