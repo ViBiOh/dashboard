@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { STATS_COUNT } from '../../Constants';
 import Throbber from '../Throbber';
 import Graph from './Graph';
-import style from './ContainerStats.less';
+import style from './ContainerStats.css';
 
 /**
  * CPU line color.

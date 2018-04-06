@@ -1,14 +1,11 @@
 :root {
   --primary: #337ab7;
   --success: #5cb85c;
-  --info: #5bc0de;
-  --warning: #f0ad4e;
   --danger: #d9534f;
   --white: #fff;
   --dark: #3a3a3a;
   --grey: #e1e1e8;
   --card-border: #ddd;
-  --shadow: rgba(0, 0, 0, 0.5);
   --small: 669px;
   --large: 1023px;
   --statsWidth: 60rem;

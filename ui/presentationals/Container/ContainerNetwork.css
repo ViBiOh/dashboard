@@ -1,11 +1,6 @@
-.flex-wrap {
+.container {
   display: inline-flex;
   flex-wrap: wrap;
-}
-
-.container {
-  .flex-wrap;
-
   width: 100%;
 }
 
@@ -13,10 +8,6 @@
   margin-bottom: 0;
   padding-left: 0.4rem;
   width: 100%;
-}
-
-.labels {
-  .flex-wrap;
 }
 
 .item {
@@ -27,4 +18,9 @@
   white-space: pre-wrap;
   width: auto;
   word-break: break-all;
+}
+
+.labels {
+  display: inline-flex;
+  flex-wrap: wrap;
 }

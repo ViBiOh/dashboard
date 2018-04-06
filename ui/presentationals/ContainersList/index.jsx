@@ -11,7 +11,7 @@ import Throbber from '../Throbber';
 import ErrorBanner from '../ErrorBanner';
 import FilterBar from '../Filter';
 import ContainerCard from '../ContainerCard';
-import style from './index.less';
+import style from './index.css';
 
 /**
  * Container's list.

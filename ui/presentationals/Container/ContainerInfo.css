@@ -1,38 +1,17 @@
-@import '../../style.less';
-
-.small-padding {
-  padding: 0.4rem;
-}
-
-.flex-wrap {
-  display: inline-flex;
-  flex-wrap: wrap;
-}
-
-.ellipsis {
+.pastille {
+  border-radius: 0.2rem;
+  color: var(--white);
+  display: inline-block;
+  max-width: calc(100vw - 1rem);
   overflow: hidden;
+  padding: 0.8rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.pastille {
-  .ellipsis;
-
-  border-radius: 0.2rem;
-  color: @white;
-  display: inline-block;
-  max-width: calc(100vw - 1rem);
-  padding: 0.8rem;
-}
-
-.break-word {
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-
 .container {
-  .flex-wrap;
-
+  display: inline-flex;
+  flex-wrap: wrap;
   width: 100%;
 }
 
@@ -51,27 +30,24 @@
 }
 
 .green {
-  .pastille;
-
-  background-color: @success;
+  background-color: var(--success);
 }
 
 .red {
-  .pastille;
-
-  background-color: @danger;
+  background-color: var(--danger);
 }
 
 .info {
-  .small-padding;
-  .break-word;
-
   display: inline-flex;
+  padding: 0.4rem;
+  white-space: pre-wrap;
   width: 100%;
+  word-break: break-all;
 }
 
 .labels {
-  .flex-wrap;
+  display: inline-flex;
+  flex-wrap: wrap;
 }
 
 .label {
@@ -80,19 +56,19 @@
 }
 
 .item {
-  .break-word;
-  .small-padding;
-
-  border: 0.1rem solid;
   border-radius: 0.2rem;
+  border: 0.1rem solid;
   margin: 0.2rem;
+  padding: 0.4rem;
+  white-space: pre-wrap;
   width: auto;
+  word-break: break-all;
 }
 
 .code {
-  background: @dark;
+  background: var(--dark);
   border-radius: 0.2rem;
-  color: @grey;
+  color: var(--grey);
   flex: 1 1;
   font-size: 1.2rem;
   margin: 0;
@@ -102,17 +78,17 @@
 }
 
 .title {
-  .flex-wrap;
-
-  justify-content: center;
   align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .icon {
   padding: 1rem;
 }
 
-@media screen and (max-width: @small) {
+@media screen and (max-width: var(--small)) {
   .info {
     flex-wrap: wrap;
   }

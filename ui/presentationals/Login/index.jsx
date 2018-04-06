@@ -4,7 +4,7 @@ import FaUnlockAlt from 'react-icons/lib/fa/unlock-alt';
 import FaGithub from 'react-icons/lib/fa/github';
 import { getFromContext, getGithubOauthUrl } from '../../Constants';
 import SearchParams, { computeRedirectSearch } from '../../utils/SearchParams';
-import style from './index.less';
+import style from './index.css';
 
 /**
  * Login form.

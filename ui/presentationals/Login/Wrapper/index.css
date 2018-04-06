@@ -1,4 +1,4 @@
-@import '../../../style.less';
+@import '../../../style.css';
 
 .container {
   display: inline-flex;
@@ -11,7 +11,7 @@
   text-align: center;
 }
 
-@media screen and (max-width: @small) {
+@media screen and (max-width: var(--small)) {
   .container {
     flex-wrap: wrap;
   }

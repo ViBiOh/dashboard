@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Chart from 'chart.js';
 import setRef from '../../utils/ref';
-import style from './Graph.less';
+import style from './Graph.css';
 
 /**
  * Rendering Chart.js Graph.

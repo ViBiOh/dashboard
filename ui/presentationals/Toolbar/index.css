@@ -1,5 +1,3 @@
-@import '../../style.less';
-
 .flex {
   display: inline-flex;
   flex-direction: column;
@@ -10,7 +8,7 @@
   margin: 0.1rem;
 }
 
-@media screen and (max-width: @small) {
+@media screen and (max-width: var(--small)) {
   .flex {
     flex-direction: row;
     width: 100%;

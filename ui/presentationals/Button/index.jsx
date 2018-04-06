@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import style from './index.less';
+import style from './index.css';
 
 /**
  * Button.

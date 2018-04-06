@@ -1,25 +1,19 @@
-@import '../../style.less';
-
-.flex-wrap {
-  align-items: center;
-  display: inline-flex;
-  flex-wrap: nowrap;
-}
-
 .button {
-  .flex-wrap;
-
+  align-items: center;
   background-color: transparent;
-  border: 0;
   border-radius: 0.2rem;
+  border: 0;
   color: white;
   cursor: pointer;
+  display: inline-flex;
+  flex-wrap: nowrap;
   padding: 0.8rem;
 }
 
 .wrapper {
-  .flex-wrap;
-
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: nowrap;
   justify-content: center;
   width: 100%;
 }
@@ -37,7 +31,7 @@
 }
 
 .active {
-  box-shadow: inset 0 0 0.8rem @shadow;
+  box-shadow: inset 0 0 0.8rem var(--shadow);
 }
 
 .transparent,
@@ -52,21 +46,21 @@
 }
 
 .primary {
-  background-color: @primary;
+  background-color: var(--primary);
 }
 
 .success {
-  background-color: @success;
+  background-color: var(--success);
 }
 
 .info {
-  background-color: @info;
+  background-color: var(--info);
 }
 
 .warning {
-  background-color: @warning;
+  background-color: var(--warning);
 }
 
 .danger {
-  background-color: @danger;
+  background-color: var(--danger);
 }

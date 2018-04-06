@@ -1,7 +1,5 @@
-@import '../../style.less';
-
 .container {
-  flex: 1 1 @statsWidth;
+  flex: 1 1 var(--statsWidth);
 }
 
 .container h3 {
@@ -11,14 +9,14 @@
 }
 
 .container pre {
-  height: @statsHeight + 0.5rem;
+  height: var(--statsHeight) + 0.5rem;
   margin: 0.5rem 0;
   overflow-y: auto;
 }
 
 .code {
-  background: @dark;
-  color: @grey;
+  background: var(--dark);
+  color: var(--grey);
   font-size: 1.2rem;
   padding: 0.4rem;
   white-space: pre-wrap;

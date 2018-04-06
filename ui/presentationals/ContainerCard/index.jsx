@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import FaCloud from 'react-icons/lib/fa/cloud';
 import Button from '../Button/';
-import style from './index.less';
+import style from './index.css';
 
 /**
  * Green status regex.
@@ -22,7 +22,7 @@ const ContainerCard = ({ container, onClick }) => {
   return (
     <Button type="none" className={style.card} onClick={() => onClick(name)} data-container-card>
       <div
-        className={`${GREEN_STATUS.test(container.Status) ? style.green : style.red}`}
+        className={`${style.pastille} ${GREEN_STATUS.test(container.Status) ? style.green : style.red}`}
         title={container.Status}
       />
       <span className={style.column}>

@@ -1,0 +1,54 @@
+.pastille {
+  border-radius: 50%;
+  height: 2rem;
+  margin: 0.4rem;
+  width: 2rem;
+}
+
+.card {
+  background-color: transparent;
+  border: 0.1rem solid var(--card-border);
+  padding: 0.4rem;
+}
+
+.green {
+  background-color: var(--success);
+}
+
+.red {
+  background-color: var(--danger);
+}
+
+.column {
+  display: inline-flex;
+  flex: 1;
+  flex-flow: column nowrap;
+  min-width: 0;
+  width: 10rem;
+}
+
+.column > * {
+  padding: 0.4rem;
+}
+
+.image {
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.owner {
+  font-style: italic;
+  padding: 0.4rem;
+  text-align: right;
+}
+
+.external {
+  padding: 0.4rem;
+  text-align: right;
+
+  svg {
+    color: var(--dark);
+  }
+}

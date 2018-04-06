@@ -1,7 +1,5 @@
-@import '../../style.less';
-
 .container {
-  width: @statsWidth;
+  width: var(--statsWidth);
 }
 
 .container h3 {
@@ -11,7 +9,7 @@
 
 .content {
   padding: 0 1rem;
-  height: @statsHeight;
+  height: var(--statsHeight);
 }
 
 .label {
@@ -20,7 +18,7 @@
   width: 17.6rem;
 }
 
-@media screen and (max-width: @small) {
+@media screen and (max-width: var(--small)) {
   .container {
     width: 100%;
   }

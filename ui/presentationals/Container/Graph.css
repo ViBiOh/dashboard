@@ -1,0 +1,4 @@
+.canvas {
+  max-height: 30rem;
+  max-width: var(--statsWidth);
+}
