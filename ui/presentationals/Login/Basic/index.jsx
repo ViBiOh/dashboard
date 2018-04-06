@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import onKeyDown from '../../../utils/input';
 import setRef from '../../../utils/ref';
 import ThrobberButton from '../../Throbber/ThrobberButton';
-import style from './index.less';
+import style from './index.css';
 
 /**
  * Basic auth form.

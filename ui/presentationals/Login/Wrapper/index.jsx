@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ErrorBanner from '../../ErrorBanner';
-import style from './index.less';
+import style from './index.css';
 
 const Wrapper = ({ component, error, ...rest }) => (
   <span className={style.container}>

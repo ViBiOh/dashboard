@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './ContainerLogs.less';
+import style from './ContainerLogs.css';
 
 /**
  * Container's logs.

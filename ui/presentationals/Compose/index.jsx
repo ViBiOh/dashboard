@@ -7,7 +7,7 @@ import ErrorBanner from '../ErrorBanner';
 import Toolbar from '../Toolbar';
 import Button from '../Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
-import style from './index.less';
+import style from './index.css';
 
 /**
  * Compose form.

@@ -1,5 +1,3 @@
-@import '../../style.less';
-
 .flex {
   align-items: center;
   display: inline-flex;
@@ -15,7 +13,7 @@
 
 .flex input[type='text'],
 .flex input[type='password'] {
-  border: 0.1rem solid @grey;
+  border: 0.1rem solid var(--grey);
   border-radius: 0.2rem;
   margin: 0.4rem;
   padding: 2rem;
@@ -23,7 +21,7 @@
   width: 50%;
 }
 
-@media screen and (max-width: 1023px) {
+@media screen and (max-width: var(--large)) {
   .flex input[type='text'],
   .flex input[type='password'] {
     width: 90%;
@@ -38,5 +36,5 @@
 .icons svg {
   height: 8rem;
   width: 8rem;
-  fill: @dark;
+  fill: var(--dark);
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './index.less';
+import style from './index.css';
 
 /**
  * Toolbar for buttons.

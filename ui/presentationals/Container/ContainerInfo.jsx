@@ -5,7 +5,7 @@ import FaThumbsODown from 'react-icons/lib/fa/thumbs-o-down';
 import FaThumbsOUp from 'react-icons/lib/fa/thumbs-o-up';
 import FaEllipsisH from 'react-icons/lib/fa/ellipsis-h';
 import { humanSize } from '../../utils/statHelper';
-import style from './ContainerInfo.less';
+import style from './ContainerInfo.css';
 
 /**
  * Regex for parsing environment variables.
@@ -71,7 +71,7 @@ const ContainerInfo = ({ container }) => {
       <h2 className={style.title}>
         <span
           key="status"
-          className={container.State.Running ? style.green : style.red}
+          className={`${style.pastille} ${container.State.Running ? style.green : style.red}`}
           data-container-name
         >
           {String(container.Name).replace(/^\//, '')}

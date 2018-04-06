@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DEBOUNCE_TIMEOUT } from '../../Constants';
-import style from './index.less';
+import style from './index.css';
 
 /**
  * Input for setting filter value.
