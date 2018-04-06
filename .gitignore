@@ -2,9 +2,9 @@
 node_modules/
 **/npm-debug.log
 coverage/
-tmp/
 ui/dist/
 .nyc_output
+.cache
 esdoc/
 package-lock.json
 e2e/output

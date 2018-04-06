@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-@import '~normalize.css/normalize.css';
+@import '../node_modules/normalize.css/normalize.css';
 
 * {
   box-sizing: border-box;
