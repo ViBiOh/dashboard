@@ -9,7 +9,7 @@
 }
 
 .container pre {
-  height: var(--statsHeight) + 0.5rem;
+  height: calc(var(--statsHeight) + 0.5rem);
   margin: 0.5rem 0;
   overflow-y: auto;
 }

@@ -38,7 +38,7 @@ jobs:
     after_success: |
       if [ "${TRAVIS_BRANCH}" == "master" ]; then
         make docker-promote
-        DOCKER_VERSION=latest make docker-push
+        VERSION=latest make docker-push
       fi
 
   - stage: Deploy

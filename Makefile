@@ -1,5 +1,4 @@
-SHELL := /bin/bash
-DOCKER_VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
+VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
 
 default: go
 
@@ -8,6 +7,9 @@ go: deps dev docker-build-api docker-push-api
 dev: format lint tst bench build
 
 ui: node docker-build-ui docker-push-ui
+
+version:
+	@echo -n $(VERSION)
 
 deps:
 	go get -u github.com/golang/dep/cmd/dep
@@ -50,22 +52,22 @@ docker-push: docker-push-api docker-push-ui
 
 docker-build-api: docker-deps
 	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
-	docker build -t $(DOCKER_USER)/dashboard-api:$(DOCKER_VERSION) .
+	docker build -t $(DOCKER_USER)/dashboard-api:$(VERSION) .
 
 docker-push-api: docker-login
-	docker push $(DOCKER_USER)/dashboard-api:$(DOCKER_VERSION)
+	docker push $(DOCKER_USER)/dashboard-api:$(VERSION)
 
 docker-promote-api:
-	docker tag $(DOCKER_USER)/dashboard-api:$(DOCKER_VERSION) $(DOCKER_USER)/dashboard-api:latest
+	docker tag $(DOCKER_USER)/dashboard-api:$(VERSION) $(DOCKER_USER)/dashboard-api:latest
 
 docker-build-ui: docker-deps
-	docker build -t $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION) -f ui/Dockerfile ./ui/
+	docker build -t $(DOCKER_USER)/dashboard-ui:$(VERSION) -f ui/Dockerfile ./ui/
 
 docker-push-ui: docker-login
-	docker push $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION)
+	docker push $(DOCKER_USER)/dashboard-ui:$(VERSION)
 
 docker-promote-ui:
-	docker tag $(DOCKER_USER)/dashboard-ui:$(DOCKER_VERSION) $(DOCKER_USER)/dashboard-ui:latest
+	docker tag $(DOCKER_USER)/dashboard-ui:$(VERSION) $(DOCKER_USER)/dashboard-ui:latest
 
 start-deps:
 	go get -u github.com/ViBiOh/auth/cmd/auth
@@ -104,3 +106,5 @@ start-front:
 		-env API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED \
 		-csp "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: localhost:1081 localhost:1082;" \
 		-directory `pwd`/dist
+
+.PHONY: go dev ui version deps format lint tst bench build node docker-deps docker-login docker-promote docker-push docker-build-api docker-push-api docker-promote-api docker-build-ui docker-push-ui docker-promote-ui start-deps start-auth start-api start-front
