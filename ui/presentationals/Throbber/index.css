@@ -16,7 +16,7 @@
   flex-direction: column;
 }
 
-@media screen and (max-width: var(--small)) {
+@media screen and (max-width: 669px) {
   .row-responsive {
     flex-direction: row;
   }

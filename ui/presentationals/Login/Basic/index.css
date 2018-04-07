@@ -19,7 +19,7 @@
   width: 50%;
 }
 
-@media screen and (max-width: var(--large)) {
+@media screen and (max-width: 1023px) {
   .container input[type='text'],
   .container input[type='password'] {
     width: 90%;

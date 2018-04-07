@@ -8,7 +8,7 @@
   margin: 0.1rem;
 }
 
-@media screen and (max-width: var(--small)) {
+@media screen and (max-width: 669px) {
   .flex {
     flex-direction: row;
     width: 100%;

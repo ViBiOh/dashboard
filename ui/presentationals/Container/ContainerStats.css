@@ -18,7 +18,7 @@
   width: 17.6rem;
 }
 
-@media screen and (max-width: var(--small)) {
+@media screen and (max-width: 669px) {
   .container {
     width: 100%;
   }

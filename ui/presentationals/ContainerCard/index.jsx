@@ -22,7 +22,9 @@ const ContainerCard = ({ container, onClick }) => {
   return (
     <Button type="none" className={style.card} onClick={() => onClick(name)} data-container-card>
       <div
-        className={`${style.pastille} ${GREEN_STATUS.test(container.Status) ? style.green : style.red}`}
+        className={`${style.pastille} ${
+          GREEN_STATUS.test(container.Status) ? style.green : style.red
+        }`}
         title={container.Status}
       />
       <span className={style.column}>

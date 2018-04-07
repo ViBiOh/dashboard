@@ -32,7 +32,7 @@
   resize: vertical;
 }
 
-@media screen and (max-width: var(--small)) {
+@media screen and (max-width: 669px) {
   .container {
     flex-wrap: wrap;
   }
