@@ -6,8 +6,6 @@ go: deps dev docker-build-api docker-push-api
 
 dev: format lint tst bench build
 
-ui: node docker-build-ui docker-push-ui
-
 version:
 	@echo -n $(VERSION)
 
@@ -37,9 +35,6 @@ build:
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard cmd/dashboard/dashboard.go
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/compose cmd/compose/compose.go
 
-node:
-	npm run build
-
 docker-deps:
 	curl -s -o cacert.pem https://curl.haxx.se/ca/cacert.pem
 
@@ -49,6 +44,10 @@ docker-login:
 docker-promote: docker-promote-api docker-promote-ui
 
 docker-push: docker-push-api docker-push-ui
+
+docker-api: docker-build-api docker-push-api
+
+docker-ui: docker-build-ui docker-push-ui
 
 docker-build-api: docker-deps
 	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
@@ -107,4 +106,4 @@ start-front:
 		-csp "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: localhost:1081 localhost:1082;" \
 		-directory `pwd`/dist
 
-.PHONY: go dev ui version deps format lint tst bench build node docker-deps docker-login docker-promote docker-push docker-build-api docker-push-api docker-promote-api docker-build-ui docker-push-ui docker-promote-ui start-deps start-auth start-api start-front
+.PHONY: go dev version deps format lint tst bench build docker-deps docker-login docker-promote docker-push docker-api docker-ui docker-build-api docker-push-api docker-promote-api docker-build-ui docker-push-ui docker-promote-ui start-deps start-auth start-api start-front
