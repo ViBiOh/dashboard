@@ -1,10 +1,10 @@
 VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
 
-default: go
+default: api
 
-go: deps dev docker-build-api docker-push-api
+api: deps go docker-api
 
-dev: format lint tst bench build
+go: format lint tst bench build
 
 version:
 	@echo -n $(VERSION)
@@ -106,4 +106,4 @@ start-front:
 		-csp "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: localhost:1081 localhost:1082;" \
 		-directory `pwd`/dist
 
-.PHONY: go dev version deps format lint tst bench build docker-deps docker-login docker-promote docker-push docker-api docker-ui docker-build-api docker-push-api docker-promote-api docker-build-ui docker-push-ui docker-promote-ui start-deps start-auth start-api start-front
+.PHONY: api go version deps format lint tst bench build docker-deps docker-login docker-promote docker-push docker-api docker-ui docker-build-api docker-push-api docker-promote-api docker-build-ui docker-push-ui docker-promote-ui start-deps start-auth start-api start-front
