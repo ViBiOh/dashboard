@@ -1,4 +1,5 @@
 VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
+APP_NAME = dashboard
 
 default: api
 
@@ -45,6 +46,8 @@ docker-promote: docker-promote-api docker-promote-ui
 
 docker-push: docker-push-api docker-push-ui
 
+docker-delete: docker-delete-api docker-delete-ui
+
 docker-api: docker-build-api docker-push-api
 
 docker-ui: docker-build-ui docker-push-ui
@@ -54,19 +57,25 @@ docker-build-api: docker-deps
 	docker build -t $(DOCKER_USER)/dashboard-api:$(VERSION) .
 
 docker-push-api: docker-login
-	docker push $(DOCKER_USER)/dashboard-api:$(VERSION)
+	docker push $(DOCKER_USER)/$(APP_NAME)-api:$(VERSION)
 
 docker-promote-api:
-	docker tag $(DOCKER_USER)/dashboard-api:$(VERSION) $(DOCKER_USER)/dashboard-api:latest
+	docker tag $(DOCKER_USER)/$(APP_NAME)-api:$(VERSION) $(DOCKER_USER)/$(APP_NAME)-api:latest
+
+docker-delete-api:
+	curl -X DELETE -u "$(DOCKER_USER):$(DOCKER_CLOUD_TOKEN)" "https://cloud.docker.com/v2/repositories/$(DOCKER_USER)/$(APP_NAME)-api/tags/$(VERSION)/"
 
 docker-build-ui: docker-deps
-	docker build -t $(DOCKER_USER)/dashboard-ui:$(VERSION) -f ui/Dockerfile ./ui/
+	docker build -t $(DOCKER_USER)/$(APP_NAME)-ui:$(VERSION) -f ui/Dockerfile ./ui/
 
 docker-push-ui: docker-login
-	docker push $(DOCKER_USER)/dashboard-ui:$(VERSION)
+	docker push $(DOCKER_USER)/$(APP_NAME)-ui:$(VERSION)
 
 docker-promote-ui:
-	docker tag $(DOCKER_USER)/dashboard-ui:$(VERSION) $(DOCKER_USER)/dashboard-ui:latest
+	docker tag $(DOCKER_USER)/$(APP_NAME)-ui:$(VERSION) $(DOCKER_USER)/$(APP_NAME)-ui:latest
+
+docker-delete-api:
+	curl -X DELETE -u "$(DOCKER_USER):$(DOCKER_CLOUD_TOKEN)" "https://cloud.docker.com/v2/repositories/$(DOCKER_USER)/$(APP_NAME)-ui/tags/$(VERSION)/"
 
 start-deps:
 	go get -u github.com/ViBiOh/auth/cmd/auth
@@ -106,4 +115,4 @@ start-front:
 		-csp "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: localhost:1081 localhost:1082;" \
 		-directory `pwd`/dist
 
-.PHONY: api go version deps format lint tst bench build docker-deps docker-login docker-promote docker-push docker-api docker-ui docker-build-api docker-push-api docker-promote-api docker-build-ui docker-push-ui docker-promote-ui start-deps start-auth start-api start-front
+.PHONY: api go version deps format lint tst bench build docker-deps docker-login docker-promote docker-push dockere-delete docker-api docker-ui docker-build-api docker-push-api docker-promote-api dockere-delete-api docker-build-ui docker-push-ui docker-promote-ui dockere-delete-ui start-deps start-auth start-api start-front
