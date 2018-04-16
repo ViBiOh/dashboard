@@ -74,7 +74,7 @@ docker-push-ui: docker-login
 docker-promote-ui:
 	docker tag $(DOCKER_USER)/$(APP_NAME)-ui:$(VERSION) $(DOCKER_USER)/$(APP_NAME)-ui:latest
 
-docker-delete-api:
+docker-delete-ui:
 	curl -X DELETE -u "$(DOCKER_USER):$(DOCKER_CLOUD_TOKEN)" "https://cloud.docker.com/v2/repositories/$(DOCKER_USER)/$(APP_NAME)-ui/tags/$(VERSION)/"
 
 start-deps:
