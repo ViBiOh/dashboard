@@ -182,13 +182,6 @@ networks:
       traefik.frontend.rateLimit.rateSet.first.burst: '200'
 {{- end }}
 
-{{- define "prometheusAlias" }}
-    networks:
-      default:
-        aliases:
-        - {{ .Prefix }}
-{{- end }}
-
 {{- define "healthcheck" }}
   {{- if not .TLS }}
     healthcheck:
