@@ -34,7 +34,7 @@ services:
   {{- end }}
   {{- if .Datadog }}
     external_links:
-    - datadog_agent_1:dd-agent
+    - monitoring_agent:dd-agent
   {{- end }}
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 
@@ -89,7 +89,7 @@ services:
   {{- end }}
   {{- if .Datadog }}
     external_links:
-    - datadog_agent_1:dd-agent
+    - monitoring_agent:dd-agent
   {{- end }}
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -126,7 +126,7 @@ services:
   {{- end }}
   {{- if .Datadog }}
     external_links:
-    - datadog_agent_1:dd-agent
+    - monitoring_agent:dd-agent
   {{- end }}
     environment:
     {{- if .Traefik }}

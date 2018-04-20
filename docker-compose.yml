@@ -23,7 +23,7 @@ services:
       traefik.frontend.rateLimit.rateSet.first.average: '100'
       traefik.frontend.rateLimit.rateSet.first.burst: '200'
     external_links:
-    - datadog_agent_1:dd-agent
+    - monitoring_agent:dd-agent
     logging:
       driver: json-file
       options:
@@ -72,7 +72,7 @@ services:
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     external_links:
-    - datadog_agent_1:dd-agent
+    - monitoring_agent:dd-agent
     group_add:
     - '${DOCKER_GROUP}'
     logging:
@@ -115,7 +115,7 @@ services:
       BASIC_AUTH_ENABLED: 'false'
       GITHUB_AUTH_ENABLED: 'true'
     external_links:
-    - datadog_agent_1:dd-agent
+    - monitoring_agent:dd-agent
     logging:
       driver: json-file
       options:
