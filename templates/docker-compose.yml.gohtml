@@ -20,6 +20,10 @@ services:
     - -githubClientSecret
     - ${GITHUB_OAUTH_CLIENT_SECRET}
   {{- end }}
+  {{- if .Datadog }}
+    - -datadogService
+    - dashboard_auth
+  {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard-auth" }}
   {{- end }}
@@ -27,6 +31,10 @@ services:
   {{- if .Expose }}
     ports:
     - 1081:1080/tcp
+  {{- end }}
+  {{- if .Datadog }}
+    external_links:
+    - datadog_agent_1:dd-agent
   {{- end }}
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 
@@ -67,6 +75,10 @@ services:
     - -corsCredentials
     - -csp
     - "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:"
+  {{- if .Datadog }}
+    - -datadogService
+    - dashboard_api
+  {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard-api" }}
   {{- end }}
@@ -74,6 +86,10 @@ services:
   {{- if .Expose }}
     ports:
     - 1082:1080/tcp
+  {{- end }}
+  {{- if .Datadog }}
+    external_links:
+    - datadog_agent_1:dd-agent
   {{- end }}
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -96,6 +112,10 @@ services:
     - "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dashboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1081 localhost:1082{{ else }}api:1080 auth:1080{{ end }}{{ end }}"
     - -headers
     - X-UA-Compatible:IE=edge,chrome=1
+  {{- if .Datadog }}
+    - -datadogService
+    - dashboard_ui
+  {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard" }}
   {{- end }}
@@ -103,6 +123,10 @@ services:
   {{- if .Expose }}
     ports:
     - 1080:1080/tcp
+  {{- end }}
+  {{- if .Datadog }}
+    external_links:
+    - datadog_agent_1:dd-agent
   {{- end }}
     environment:
     {{- if .Traefik }}

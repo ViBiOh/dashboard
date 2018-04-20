@@ -21,7 +21,7 @@
     "pkg/cookie",
     "pkg/provider"
   ]
-  revision = "007a1d6b864f319619f34b7546711e4cbf523ff4"
+  revision = "7e948de22cf3b139afa745088f6249e1167fec8b"
 
 [[projects]]
   branch = "master"
@@ -38,7 +38,7 @@
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "6e5a7d80a67ed46f5c0be6e632ac5d0c5e20a74b"
+  revision = "7c234234484f8af3ff790763c9e8e13f926e59a8"
 
 [[projects]]
   name = "github.com/docker/distribution"
@@ -109,13 +109,13 @@
     "internal/socks",
     "proxy"
   ]
-  revision = "61147c48b25b599e5b561d2e9c4f3e1ef489ca41"
+  revision = "d41e8174641f662c5a2d1c7a5f9e828788eb8706"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
+  revision = "a2a45943ae67364d56c5d7d62dee78cff16c8dc8"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"

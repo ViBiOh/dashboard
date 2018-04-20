@@ -12,6 +12,7 @@ import (
 	"github.com/ViBiOh/dashboard/pkg/docker"
 	"github.com/ViBiOh/httputils/pkg"
 	"github.com/ViBiOh/httputils/pkg/cors"
+	"github.com/ViBiOh/httputils/pkg/datadog"
 	"github.com/ViBiOh/httputils/pkg/owasp"
 )
 
@@ -42,6 +43,7 @@ func main() {
 	owaspConfig := owasp.Flags(``)
 	corsConfig := cors.Flags(`cors`)
 	dockerConfig := docker.Flags(`docker`)
+	datadogConfig := datadog.Flags(`datadog`)
 
 	httputils.NewApp(httputils.Flags(``), func() http.Handler {
 		dockerApp, err := docker.NewApp(dockerConfig, auth.NewApp(authConfig, nil))
@@ -49,7 +51,7 @@ func main() {
 			log.Fatalf(`Error while creating docker: %v`, err)
 		}
 
-		restHandler := gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, dockerApp.Handler())))
+		restHandler := datadog.NewApp(datadogConfig).Handler(gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, dockerApp.Handler()))))
 		websocketHandler := http.StripPrefix(websocketPrefix, dockerApp.WebsocketHandler())
 
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

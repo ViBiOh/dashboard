@@ -11,6 +11,8 @@ services:
     - ${GITHUB_OAUTH_CLIENT_ID}
     - -githubClientSecret
     - ${GITHUB_OAUTH_CLIENT_SECRET}
+    - -datadogService
+    - dashboard_auth
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-auth.vibioh.fr'
@@ -54,6 +56,8 @@ services:
     - -corsCredentials
     - -csp
     - "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:"
+    - -datadogService
+    - dashboard_api
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
@@ -89,6 +93,8 @@ services:
     - "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-auth.vibioh.fr"
     - -headers
     - X-UA-Compatible:IE=edge,chrome=1
+    - -datadogService
+    - dashboard_ui
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr'
