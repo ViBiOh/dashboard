@@ -22,6 +22,8 @@ services:
       traefik.frontend.rateLimit.rateSet.first.period: '60s'
       traefik.frontend.rateLimit.rateSet.first.average: '100'
       traefik.frontend.rateLimit.rateSet.first.burst: '200'
+    external_links:
+    - datadog_agent_1:dd-agent
     logging:
       driver: json-file
       options:
@@ -69,6 +71,8 @@ services:
       traefik.frontend.rateLimit.rateSet.first.burst: '200'
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
+    external_links:
+    - datadog_agent_1:dd-agent
     group_add:
     - '${DOCKER_GROUP}'
     logging:
@@ -110,6 +114,8 @@ services:
       AUTH_URL: 'https://dashboard-auth.vibioh.fr'
       BASIC_AUTH_ENABLED: 'false'
       GITHUB_AUTH_ENABLED: 'true'
+    external_links:
+    - datadog_agent_1:dd-agent
     logging:
       driver: json-file
       options:
