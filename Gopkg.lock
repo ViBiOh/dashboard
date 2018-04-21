@@ -31,7 +31,7 @@
     "pkg/cookie",
     "pkg/provider"
   ]
-  revision = "abaa04084f5b97fb47e501870ab3ebeabf4e1504"
+  revision = "f5eeea7d38c173bb1ffbb12308f7f9e69cd83b2a"
 
 [[projects]]
   branch = "master"
@@ -49,7 +49,7 @@
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "7b71fa4509aabee14374d7898f1b09473d02e6d2"
+  revision = "da906830ec72be878b36faf08d0bc9fdbefc7814"
 
 [[projects]]
   name = "github.com/docker/distribution"
