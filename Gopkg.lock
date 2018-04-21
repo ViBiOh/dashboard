@@ -2,6 +2,16 @@
 
 
 [[projects]]
+  name = "github.com/DataDog/dd-trace-go"
+  packages = [
+    "contrib/net/http",
+    "tracer",
+    "tracer/ext"
+  ]
+  revision = "27617015d45e6cd550b9a7ac7715c37cc2f7d020"
+  version = "v0.6.1"
+
+[[projects]]
   name = "github.com/Microsoft/go-winio"
   packages = ["."]
   revision = "7da180ee92d8bd8bb8c37fc560e673e6557c392f"
@@ -21,7 +31,7 @@
     "pkg/cookie",
     "pkg/provider"
   ]
-  revision = "7e948de22cf3b139afa745088f6249e1167fec8b"
+  revision = "abaa04084f5b97fb47e501870ab3ebeabf4e1504"
 
 [[projects]]
   branch = "master"
@@ -31,6 +41,7 @@
     "pkg/alcotest",
     "pkg/cert",
     "pkg/cors",
+    "pkg/datadog",
     "pkg/httperror",
     "pkg/httpjson",
     "pkg/owasp",
@@ -38,7 +49,7 @@
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "7c234234484f8af3ff790763c9e8e13f926e59a8"
+  revision = "7b71fa4509aabee14374d7898f1b09473d02e6d2"
 
 [[projects]]
   name = "github.com/docker/distribution"
@@ -101,6 +112,11 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/ugorji/go"
+  packages = ["codec"]
+  revision = "9c7f9b7a2bc3a520f7c7b30b34b7f85f47fe27b6"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = [
@@ -109,13 +125,13 @@
     "internal/socks",
     "proxy"
   ]
-  revision = "d41e8174641f662c5a2d1c7a5f9e828788eb8706"
+  revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "a2a45943ae67364d56c5d7d62dee78cff16c8dc8"
+  revision = "79b0c6888797020a994db17c8510466c72fe75d9"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -126,6 +142,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "52cc8f7c51c37e32880318f7c6cf7b10f9c077b1873ff25ae5daa2eff01a7081"
+  inputs-digest = "b8222ab939dfdcb3f3139e52ac262299801686740a64df3a016c79dbcb36c3e6"
   solver-name = "gps-cdcl"
   solver-version = 1
