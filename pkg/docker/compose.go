@@ -465,20 +465,6 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *authP
 		return
 	}
 
-	composeFile = bytes.Replace(composeFile, []byte(`$$`), []byte(`$`), -1)
-
-	compose := dockerCompose{}
-	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		httperror.BadRequest(w, fmt.Errorf(`[%s] [%s] Error while unmarshalling compose file: %v`, user.Username, appName, err))
-		return
-	}
-
-	if _, ok := backgroundTasks.Load(appName); ok {
-		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application already in deployment`, user.Username, appName))
-		return
-	}
-	backgroundTasks.Store(appName, true)
-
 	oldContainers, err := a.listContainers(user, appName)
 	if err != nil {
 		composeFailed(w, user, appName, err)
@@ -488,6 +474,15 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *authP
 	if len(oldContainers) > 0 && oldContainers[0].Labels[ownerLabel] != user.Username {
 		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application not owned`, user.Username, appName))
 		httperror.Forbidden(w)
+		return
+	}
+
+	composeFile = bytes.Replace(composeFile, []byte(`$$`), []byte(`$`), -1)
+
+	compose := dockerCompose{}
+	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
+		httperror.BadRequest(w, fmt.Errorf(`[%s] [%s] Error while unmarshalling compose file: %v`, user.Username, appName, err))
+		return
 	}
 
 	newServices := make(map[string]*deployedService)
@@ -500,6 +495,12 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *authP
 		}
 	}
 
+	if _, ok := backgroundTasks.Load(appName); ok {
+		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application already in deployment`, user.Username, appName))
+		return
+	}
+	backgroundTasks.Store(appName, true)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	go a.finishDeploy(ctx, cancel, user, appName, newServices, oldContainers)
 
@@ -510,7 +511,10 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *authP
 	if err != nil {
 		cancel()
 		composeFailed(w, user, appName, err)
-	} else if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
+		return
+	}
+
+	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
 	}
 }
