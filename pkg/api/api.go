@@ -46,7 +46,7 @@ func (a *App) Handler() http.Handler {
 		}
 	})
 
-	deployHandler := a.deployApp.Handler()
+	deployHandler := http.StripPrefix(containersPrefix, a.deployApp.Handler())
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
@@ -61,7 +61,7 @@ func (a *App) Handler() http.Handler {
 			return
 		}
 
-		if r.Method == http.MethodPost {
+		if r.Method == http.MethodPost && strings.HasPrefix(r.URL.Path, containersPrefix) {
 			deployHandler.ServeHTTP(w, r)
 			return
 		}
