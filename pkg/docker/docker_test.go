@@ -56,33 +56,3 @@ func Test_LabelFilters(t *testing.T) {
 		}
 	}
 }
-
-func TestEventFilters(t *testing.T) {
-	var cases = []struct {
-		want []string
-	}{
-		{
-			[]string{`create`, `start`, `stop`, `restart`, `rename`, `update`, `destroy`, `die`, `kill`},
-		},
-	}
-
-	var failed bool
-
-	for _, testCase := range cases {
-		filters := filters.NewArgs()
-		EventFilters(&filters)
-		rawResult := filters.Get(`event`)
-
-		failed = false
-		result := strings.Join(rawResult, `,`)
-		for _, filter := range testCase.want {
-			if !strings.Contains(result, filter) {
-				failed = true
-			}
-		}
-
-		if len(rawResult) != len(testCase.want) || failed {
-			t.Errorf(`EventFilters() = %v, want %v`, result, testCase.want)
-		}
-	}
-}

@@ -497,11 +497,24 @@ func composeFailed(w http.ResponseWriter, user *model.User, appName string, err 
 }
 
 // ComposeHandler handler net/http request
-func (a *App) ComposeHandler(w http.ResponseWriter, r *http.Request, user *model.User, appName string, composeFile []byte) {
+func (a *App) ComposeHandler(w http.ResponseWriter, r *http.Request, user *model.User) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	if user == nil {
 		httperror.BadRequest(w, commons.ErrUserRequired)
 		return
 	}
+
+	composeFile, err := request.ReadBody(r.Body)
+	if err != nil {
+		httperror.InternalServerError(w, fmt.Errorf(`Error while reading compose file: %v`, err))
+		return
+	}
+
+	appName := strings.Trim(r.URL.Path, `/`)
 
 	if len(appName) == 0 || len(composeFile) == 0 {
 		httperror.BadRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))

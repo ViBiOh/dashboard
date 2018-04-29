@@ -46,16 +46,3 @@ func LabelFilters(user *model.User, filtersArgs *filters.Args, appName string) {
 		filtersArgs.Add(`label`, fmt.Sprintf(`%s=%s`, commons.OwnerLabel, user.Username))
 	}
 }
-
-// EventFilters add filter for wanted events
-func EventFilters(filtersArgs *filters.Args) {
-	filtersArgs.Add(`event`, `create`)
-	filtersArgs.Add(`event`, `start`)
-	filtersArgs.Add(`event`, `stop`)
-	filtersArgs.Add(`event`, `restart`)
-	filtersArgs.Add(`event`, `rename`)
-	filtersArgs.Add(`event`, `update`)
-	filtersArgs.Add(`event`, `destroy`)
-	filtersArgs.Add(`event`, `die`)
-	filtersArgs.Add(`event`, `kill`)
-}

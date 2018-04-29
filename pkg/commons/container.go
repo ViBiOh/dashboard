@@ -1,6 +1,9 @@
 package commons
 
-import "github.com/docker/docker/api/types"
+import (
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
+)
 
 // FilterContainers filters a list of containers
 func FilterContainers(containers []*types.ContainerJSON, filter func(*types.ContainerJSON) bool) []*types.ContainerJSON {
@@ -24,4 +27,17 @@ func GetContainersIDs(containers []*types.ContainerJSON) []string {
 	}
 
 	return ids
+}
+
+// EventFilters add filter for wanted events
+func EventFilters(filtersArgs *filters.Args) {
+	filtersArgs.Add(`event`, `create`)
+	filtersArgs.Add(`event`, `start`)
+	filtersArgs.Add(`event`, `stop`)
+	filtersArgs.Add(`event`, `restart`)
+	filtersArgs.Add(`event`, `rename`)
+	filtersArgs.Add(`event`, `update`)
+	filtersArgs.Add(`event`, `destroy`)
+	filtersArgs.Add(`event`, `die`)
+	filtersArgs.Add(`event`, `kill`)
 }

@@ -135,7 +135,7 @@ func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user 
 
 	filtersArgs := filters.NewArgs()
 	docker.LabelFilters(user, &filtersArgs, ``)
-	docker.EventFilters(&filtersArgs)
+	commons.EventFilters(&filtersArgs)
 
 	messages, errors := a.dockerApp.Docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
 

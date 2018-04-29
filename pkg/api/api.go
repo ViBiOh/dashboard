@@ -11,7 +11,6 @@ import (
 	"github.com/ViBiOh/dashboard/pkg/deploy"
 	"github.com/ViBiOh/dashboard/pkg/docker"
 	"github.com/ViBiOh/httputils/pkg/httperror"
-	"github.com/ViBiOh/httputils/pkg/request"
 )
 
 const (
@@ -95,11 +94,7 @@ func (a *App) containersHandler(w http.ResponseWriter, r *http.Request, urlPath 
 		} else if r.Method == http.MethodDelete {
 			a.dockerApp.BasicActionHandler(w, r, user, containerID, docker.DeleteAction)
 		} else if r.Method == http.MethodPost {
-			if composeBody, err := request.ReadBody(r.Body); err != nil {
-				httperror.InternalServerError(w, err)
-			} else {
-				a.deployApp.ComposeHandler(w, r, user, containerRequest.FindStringSubmatch(urlPath)[1], composeBody)
-			}
+			a.deployApp.ComposeHandler(w, r, user)
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
