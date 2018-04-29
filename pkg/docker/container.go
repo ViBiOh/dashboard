@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	authProvider "github.com/ViBiOh/auth/pkg/provider"
+	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/httputils/pkg/httperror"
 	"github.com/ViBiOh/httputils/pkg/httpjson"
 	"github.com/docker/docker/api/types"
@@ -20,7 +20,7 @@ const (
 	deleteAction  = `delete`
 )
 
-func (a *App) listContainers(user *authProvider.User, appName string) ([]types.Container, error) {
+func (a *App) listContainers(user *model.User, appName string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
 	options.Filters = filters.NewArgs()
@@ -127,7 +127,7 @@ func (a *App) doAction(action string) func(string, *types.ContainerJSON) (interf
 	}
 }
 
-func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User, containerID string, action string) {
+func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *model.User, containerID string, action string) {
 	if allowed, container, err := a.isAllowed(user, containerID); err != nil {
 		httperror.InternalServerError(w, err)
 	} else if !allowed {
@@ -139,7 +139,7 @@ func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *a
 	}
 }
 
-func (a *App) listContainersHandler(w http.ResponseWriter, r *http.Request, user *authProvider.User) {
+func (a *App) listContainersHandler(w http.ResponseWriter, r *http.Request, user *model.User) {
 	if containers, err := a.listContainers(user, ``); err != nil {
 		httperror.InternalServerError(w, err)
 	} else if err := httpjson.ResponseArrayJSON(w, http.StatusOK, containers, httpjson.IsPretty(r.URL.RawQuery)); err != nil {

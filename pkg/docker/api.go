@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	authProvider "github.com/ViBiOh/auth/pkg/provider"
+	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/httputils/pkg/httperror"
 	"github.com/ViBiOh/httputils/pkg/request"
 )
@@ -62,7 +62,7 @@ func (a *App) healthHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusServiceUnavailable)
 }
 
-func (a *App) containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *authProvider.User) {
+func (a *App) containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *model.User) {
 	if r.Method == http.MethodGet && (urlPath == `/` || urlPath == ``) {
 		a.listContainersHandler(w, r, user)
 	} else if containerRequest.MatchString(urlPath) {
@@ -91,7 +91,7 @@ func (a *App) containersHandler(w http.ResponseWriter, r *http.Request, urlPath 
 
 // Handler for Docker request. Should be use with net/http
 func (a *App) Handler() http.Handler {
-	authHandler := a.authApp.Handler(func(w http.ResponseWriter, r *http.Request, user *authProvider.User) {
+	authHandler := a.authApp.Handler(func(w http.ResponseWriter, r *http.Request, user *model.User) {
 		if strings.HasPrefix(r.URL.Path, containersPrefix) {
 			a.containersHandler(w, r, strings.TrimPrefix(r.URL.Path, containersPrefix), user)
 		}

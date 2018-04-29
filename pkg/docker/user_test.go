@@ -3,12 +3,12 @@ package docker
 import (
 	"testing"
 
-	authProvider "github.com/ViBiOh/auth/pkg/provider"
+	"github.com/ViBiOh/auth/pkg/model"
 )
 
 func TestIsAdmin(t *testing.T) {
 	var cases = []struct {
-		user *authProvider.User
+		user *model.User
 		want bool
 	}{
 		{
@@ -16,11 +16,11 @@ func TestIsAdmin(t *testing.T) {
 			false,
 		},
 		{
-			authProvider.NewUser(0, `guest`, `guest,multi`),
+			model.NewUser(0, `guest`, `guest,multi`),
 			false,
 		},
 		{
-			authProvider.NewUser(0, `admin`, `admin`),
+			model.NewUser(0, `admin`, `admin`),
 			true,
 		},
 	}
@@ -34,7 +34,7 @@ func TestIsAdmin(t *testing.T) {
 
 func TestIsMultiApp(t *testing.T) {
 	var cases = []struct {
-		user *authProvider.User
+		user *model.User
 		want bool
 	}{
 		{
@@ -42,11 +42,11 @@ func TestIsMultiApp(t *testing.T) {
 			false,
 		},
 		{
-			authProvider.NewUser(0, `guest`, `guest,multi`),
+			model.NewUser(0, `guest`, `guest,multi`),
 			true,
 		},
 		{
-			authProvider.NewUser(0, `admin`, `admin`),
+			model.NewUser(0, `admin`, `admin`),
 			true,
 		},
 	}

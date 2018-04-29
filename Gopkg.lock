@@ -29,9 +29,10 @@
   packages = [
     "pkg/auth",
     "pkg/cookie",
+    "pkg/model",
     "pkg/provider"
   ]
-  revision = "96a849d710c941f74519d235cecb3cf17731a22c"
+  revision = "cd621b2808334939907a1c31bab260fccd4f53ca"
 
 [[projects]]
   branch = "master"

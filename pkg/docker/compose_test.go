@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	authProvider "github.com/ViBiOh/auth/pkg/provider"
+	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/httputils/pkg/request"
 )
 
@@ -54,14 +54,14 @@ func TestGetFinalName(t *testing.T) {
 
 func TestComposeFailed(t *testing.T) {
 	var cases = []struct {
-		user       *authProvider.User
+		user       *model.User
 		appName    string
 		err        error
 		want       string
 		wantStatus int
 	}{
 		{
-			authProvider.NewUser(0, `admin`, `admin`),
+			model.NewUser(0, `admin`, `admin`),
 			`test`,
 			errors.New(`test unit error`),
 			`[admin] [test] Failed to deploy: test unit error

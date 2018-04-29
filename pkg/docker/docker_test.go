@@ -4,33 +4,33 @@ import (
 	"strings"
 	"testing"
 
-	authProvider "github.com/ViBiOh/auth/pkg/provider"
+	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/docker/docker/api/types/filters"
 )
 
 func TestLabelFilters(t *testing.T) {
 	var cases = []struct {
-		user *authProvider.User
+		user *model.User
 		app  string
 		want []string
 	}{
 		{
-			authProvider.NewUser(0, `admin`, `admin`),
+			model.NewUser(0, `admin`, `admin`),
 			``,
 			nil,
 		},
 		{
-			authProvider.NewUser(0, `guest`, `guest`),
+			model.NewUser(0, `guest`, `guest`),
 			``,
 			[]string{`owner=guest`},
 		},
 		{
-			authProvider.NewUser(0, `admin`, `admin`),
+			model.NewUser(0, `admin`, `admin`),
 			`test`,
 			[]string{`app=test`},
 		},
 		{
-			authProvider.NewUser(0, `guest`, `guest`),
+			model.NewUser(0, `guest`, `guest`),
 			`test`,
 			[]string{`owner=guest`},
 		},
