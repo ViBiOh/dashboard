@@ -15,6 +15,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
+	"github.com/ViBiOh/auth/pkg/auth"
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
 	"github.com/ViBiOh/dashboard/pkg/docker"
@@ -80,16 +81,18 @@ type deployedService struct {
 type App struct {
 	tasks         sync.Map
 	dockerApp     *docker.App
+	authApp       *auth.App
 	network       string
 	tag           string
 	containerUser string
 }
 
 // NewApp creates new App from Flags' config
-func NewApp(config map[string]*string, dockerApp *docker.App) *App {
+func NewApp(config map[string]*string, dockerApp *docker.App, authApp *auth.App) *App {
 	return &App{
 		tasks:         sync.Map{},
 		dockerApp:     dockerApp,
+		authApp:       authApp,
 		network:       *config[`network`],
 		tag:           *config[`tag`],
 		containerUser: *config[`containerUser`],
@@ -573,4 +576,9 @@ func (a *App) ComposeHandler(w http.ResponseWriter, r *http.Request, user *model
 	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
 	}
+}
+
+// Handler for request. Should be use with net/http
+func (a *App) Handler() http.Handler {
+	return a.authApp.Handler(a.ComposeHandler)
 }

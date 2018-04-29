@@ -46,6 +46,8 @@ func (a *App) Handler() http.Handler {
 		}
 	})
 
+	deployHandler := a.deployApp.Handler()
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
 			if _, err := w.Write(nil); err != nil {
@@ -59,8 +61,8 @@ func (a *App) Handler() http.Handler {
 			return
 		}
 
-		if r.Method == http.MethodGet && (r.URL.Path == `/` || r.URL.Path == ``) {
-			http.ServeFile(w, r, `doc/api.html`)
+		if r.Method == http.MethodPost {
+			deployHandler.ServeHTTP(w, r)
 			return
 		}
 
@@ -92,8 +94,6 @@ func (a *App) containersHandler(w http.ResponseWriter, r *http.Request, urlPath 
 			a.dockerApp.BasicActionHandler(w, r, user, containerID, docker.GetAction)
 		} else if r.Method == http.MethodDelete {
 			a.dockerApp.BasicActionHandler(w, r, user, containerID, docker.DeleteAction)
-		} else if r.Method == http.MethodPost {
-			a.deployApp.ComposeHandler(w, r, user)
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}

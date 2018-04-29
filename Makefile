@@ -53,7 +53,6 @@ docker-api: docker-build-api docker-push-api
 docker-ui: docker-build-ui docker-push-ui
 
 docker-build-api: docker-deps
-	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
 	docker build -t $(DOCKER_USER)/dashboard-api:$(VERSION) .
 
 docker-push-api: docker-login
@@ -66,6 +65,7 @@ docker-delete-api:
 	curl -X DELETE -u "$(DOCKER_USER):$(DOCKER_CLOUD_TOKEN)" "https://cloud.docker.com/v2/repositories/$(DOCKER_USER)/$(APP_NAME)-api/tags/$(VERSION)/"
 
 docker-build-ui: docker-deps
+	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
 	docker build -t $(DOCKER_USER)/$(APP_NAME)-ui:$(VERSION) -f ui/Dockerfile ./ui/
 
 docker-push-ui: docker-login
