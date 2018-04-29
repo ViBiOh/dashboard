@@ -38,8 +38,12 @@
   name = "github.com/ViBiOh/httputils"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/docker/docker"
-  version = "1.13.1"
+
+[[override]]
+  branch = "master"
+  name = "github.com/docker/distribution"
 
 [[constraint]]
   name = "github.com/gorilla/websocket"
