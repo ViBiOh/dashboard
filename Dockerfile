@@ -8,5 +8,6 @@ EXPOSE 1080
 
 ENTRYPOINT [ "/dashboard" ]
 
+COPY doc/api.html /api.html
 COPY cacert.pem /etc/ssl/certs/ca-certificates.crt
 COPY bin/dashboard /dashboard
