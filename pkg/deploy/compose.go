@@ -267,7 +267,7 @@ func (a *App) getNetworkConfig(serviceName string, service *dockerComposeService
 
 func (a *App) pullImage(image string) error {
 	if !strings.Contains(image, colonSeparator) {
-		image = fmt.Sprintf(`%s%s%s`, image, colonSeparator, a.tag)
+		image = fmt.Sprintf(`%s%s%s`, image, colonSeparator, `latest`)
 	}
 
 	ctx, cancel := getGracefulCtx()
@@ -409,13 +409,7 @@ func (a *App) inspectServices(services map[string]*deployedService, user *model.
 }
 
 func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appName string, containers []*types.ContainerJSON) bool {
-	containersIdsWithHealthcheck := make([]string, 0, len(containers))
-	for _, container := range containers {
-		if container.Config.Healthcheck != nil && len(container.Config.Healthcheck.Test) != 0 {
-			containersIdsWithHealthcheck = append(containersIdsWithHealthcheck, container.ID)
-		}
-	}
-
+	containersIdsWithHealthcheck := commons.GetContainersIDs(commons.FilterContainers(containers, hasHealthcheck))
 	if len(containersIdsWithHealthcheck) == 0 {
 		return true
 	}

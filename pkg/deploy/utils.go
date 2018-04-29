@@ -3,6 +3,7 @@ package deploy
 import (
 	"context"
 
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 )
 
@@ -16,4 +17,8 @@ func healthyStatusFilters(filtersArgs *filters.Args, containersIds []string) {
 	for _, container := range containersIds {
 		filtersArgs.Add(`container`, container)
 	}
+}
+
+func hasHealthcheck(container *types.ContainerJSON) bool {
+	return container != nil && container.Config != nil && container.Config.Healthcheck != nil && len(container.Config.Healthcheck.Test) != 0
 }
