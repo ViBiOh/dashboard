@@ -13,7 +13,7 @@ func Test_EventFilters(t *testing.T) {
 		want      []string
 	}{
 		{
-			`should add all event`,
+			`should add all events`,
 			[]string{`create`, `start`, `stop`, `restart`, `rename`, `update`, `destroy`, `die`, `kill`},
 		},
 	}

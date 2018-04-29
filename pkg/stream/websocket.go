@@ -226,7 +226,7 @@ func handleBusDemand(user *model.User, name string, input []byte, demand *regexp
 		}
 
 		ctx, newCancel := context.WithCancel(context.Background())
-		go streamFn(ctx, newCancel, user, string(containerID), output)
+		go streamFn(ctx, newCancel, user, containerID, output)
 
 		return newCancel
 	}

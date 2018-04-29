@@ -7,7 +7,6 @@ import (
 
 	"github.com/ViBiOh/auth/pkg/auth"
 	"github.com/ViBiOh/auth/pkg/model"
-	"github.com/ViBiOh/dashboard/pkg/commons"
 	"github.com/ViBiOh/dashboard/pkg/deploy"
 	"github.com/ViBiOh/dashboard/pkg/docker"
 	"github.com/ViBiOh/httputils/pkg/httperror"
@@ -70,17 +69,17 @@ func (a *App) Handler() http.Handler {
 }
 
 func (a *App) healthHandler(w http.ResponseWriter, r *http.Request) {
-	if a.dockerApp != nil {
-		ctx, cancel := commons.GetCtx()
-		defer cancel()
-
-		if _, err := a.dockerApp.Docker.Ping(ctx); err == nil {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
+	if a.dockerApp == nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
 	}
 
-	w.WriteHeader(http.StatusServiceUnavailable)
+	if !a.dockerApp.Healthcheck() {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func (a *App) containersHandler(w http.ResponseWriter, r *http.Request, urlPath string, user *model.User) {

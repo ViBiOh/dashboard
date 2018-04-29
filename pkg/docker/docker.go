@@ -38,6 +38,17 @@ func Flags(prefix string) map[string]*string {
 	}
 }
 
+// Healthcheck check health of app
+func (a *App) Healthcheck() bool {
+	ctx, cancel := commons.GetCtx()
+	defer cancel()
+
+	if _, err := a.Docker.Ping(ctx); err != nil {
+		return false
+	}
+	return true
+}
+
 // LabelFilters add filter for given user
 func LabelFilters(user *model.User, filtersArgs *filters.Args, appName string) {
 	if appName != `` && isMultiApp(user) {
