@@ -118,49 +118,55 @@ It will compile API server.
 ```
 Usage of dashboard:
   -authUrl string
-      [auth] Auth URL, if remote
+    	[auth] Auth URL, if remote
   -authUsers string
-      [auth] List of allowed users and profiles (e.g. user:profile1|profile2,user2:profile3)
+    	[auth] List of allowed users and profiles (e.g. user:profile1|profile2,user2:profile3)
   -corsCredentials
-      [cors] Access-Control-Allow-Credentials
+    	[cors] Access-Control-Allow-Credentials
   -corsExpose string
-      [cors] Access-Control-Expose-Headers
+    	[cors] Access-Control-Expose-Headers
   -corsHeaders string
-      [cors] Access-Control-Allow-Headers (default "Content-Type")
+    	[cors] Access-Control-Allow-Headers (default "Content-Type")
   -corsMethods string
-      [cors] Access-Control-Allow-Methods (default "GET")
+    	[cors] Access-Control-Allow-Methods (default "GET")
   -corsOrigin string
-      [cors] Access-Control-Allow-Origin (default "*")
+    	[cors] Access-Control-Allow-Origin (default "*")
   -csp string
-      [owasp] Content-Security-Policy (default "default-src 'self'; base-uri 'self'")
+    	[owasp] Content-Security-Policy (default "default-src 'self'; base-uri 'self'")
+  -datadogHostname string
+    	Datadog Agent Hostname (default "dd-agent")
+  -datadogPort string
+    	Datadog Agent Port (default "8126")
+  -datadogService string
+    	Service name
   -dockerContainerUser string
-      [docker] Default container user (default "1000")
+    	[deploy] Default container user (default "1000")
   -dockerHost string
-      [docker] Host (default "unix:///var/run/docker.sock")
+    	[docker] Host (default "unix:///var/run/docker.sock")
   -dockerNetwork string
-      [docker] Network for deploying containers (default "traefik")
+    	[deploy] Default Network (default "traefik")
   -dockerTag string
-      [docker] Tag to append to image when not provided (e.g. arm, arm64, latest, etc)
+    	[deploy] Default image tag) (default "latest")
   -dockerVersion string
-      [docker] API Version
+    	[docker] API Version
   -dockerWs string
-      [docker] Allowed WebSocket Origin pattern (default "^dashboard")
+    	[stream] Allowed WebSocket Origin pattern (default "^dashboard")
   -frameOptions string
-      [owasp] X-Frame-Options (default "deny")
+    	[owasp] X-Frame-Options (default "deny")
   -hsts
-      [owasp] Indicate Strict Transport Security (default true)
+    	[owasp] Indicate Strict Transport Security (default true)
   -port int
-      Listen port (default 1080)
+    	Listen port (default 1080)
   -tls
-      Serve TLS content (default true)
+    	Serve TLS content (default true)
   -tlsCert string
-      [tls] PEM Certificate file
+    	[tls] PEM Certificate file
   -tlsHosts string
-      [tls] Self-signed certificate hosts, comma separated (default "localhost")
+    	[tls] Self-signed certificate hosts, comma separated (default "localhost")
   -tlsKey string
-      [tls] PEM Key file
+    	[tls] PEM Key file
   -url string
-      [health] URL to check
+    	[health] URL to check
 ```
 
 ### Front
