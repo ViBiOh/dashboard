@@ -26,8 +26,8 @@ func TestIsAdmin(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		if result := isAdmin(testCase.user); result != testCase.want {
-			t.Errorf(`isAdmin(%v) = %v, want %v`, testCase.user, result, testCase.want)
+		if result := IsAdmin(testCase.user); result != testCase.want {
+			t.Errorf(`IsAdmin(%v) = %v, want %v`, testCase.user, result, testCase.want)
 		}
 	}
 }

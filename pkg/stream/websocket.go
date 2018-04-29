@@ -1,27 +1,31 @@
-package docker
+package stream
 
 import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"regexp"
 	"strings"
 
+	"github.com/ViBiOh/auth/pkg/auth"
 	"github.com/ViBiOh/auth/pkg/model"
+	"github.com/ViBiOh/dashboard/pkg/commons"
+	"github.com/ViBiOh/dashboard/pkg/docker"
+	"github.com/ViBiOh/httputils/pkg/tools"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/gorilla/websocket"
 )
 
 const (
-	ignoredByteLogSize = 8
-	tailSize           = `100`
-	start              = `start`
-	stop               = `stop`
-	busPrefix          = `/bus`
+	tailSize  = `100`
+	start     = `start`
+	stop      = `stop`
+	busPrefix = `/bus`
 )
 
 var (
@@ -35,6 +39,40 @@ var (
 	logsPrefix   = []byte(`logs `)
 	statsPrefix  = []byte(`stats `)
 )
+
+// App stores informations
+type App struct {
+	authApp    *auth.App
+	dockerApp  *docker.App
+	wsUpgrader websocket.Upgrader
+}
+
+// NewApp creates new App from Flags' config
+func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App) (*App, error) {
+	hostCheck, err := regexp.Compile(*config[`websocketOrigin`])
+	if err != nil {
+		return nil, fmt.Errorf(`Error while compiling websocket regexp: %v`, err)
+	}
+
+	return &App{
+		authApp:   authApp,
+		dockerApp: dockerApp,
+		wsUpgrader: websocket.Upgrader{
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+			CheckOrigin: func(r *http.Request) bool {
+				return hostCheck.MatchString(r.Host)
+			},
+		},
+	}, nil
+}
+
+// Flags adds flags for given prefix
+func Flags(prefix string) map[string]*string {
+	return map[string]*string{
+		`websocketOrigin`: flag.String(tools.ToCamel(fmt.Sprintf(`%sWs`, prefix)), `^dashboard`, `[stream] Allowed WebSocket Origin pattern`),
+	}
+}
 
 func (a *App) upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websocket.Conn, user *model.User, err error) {
 	ws, err = a.wsUpgrader.Upgrade(w, r, nil)
@@ -96,10 +134,10 @@ func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user 
 	defer cancel()
 
 	filtersArgs := filters.NewArgs()
-	labelFilters(user, &filtersArgs, ``)
-	eventFilters(&filtersArgs)
+	docker.LabelFilters(user, &filtersArgs, ``)
+	docker.EventFilters(&filtersArgs)
 
-	messages, errors := a.docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
+	messages, errors := a.dockerApp.Docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
 
 	for {
 		select {
@@ -123,7 +161,7 @@ func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user 
 }
 
 func (a *App) streamLogs(ctx context.Context, cancel context.CancelFunc, user *model.User, containerID string, output chan<- []byte) {
-	logs, err := a.docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
+	logs, err := a.dockerApp.Docker.ContainerLogs(ctx, containerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Tail: tailSize})
 	defer cancel()
 
 	if logs != nil {
@@ -141,14 +179,14 @@ func (a *App) streamLogs(ctx context.Context, cancel context.CancelFunc, user *m
 	scanner := bufio.NewScanner(logs)
 	for scanner.Scan() {
 		logLine := scanner.Bytes()
-		if len(logLine) > ignoredByteLogSize {
-			output <- append(logsPrefix, logLine[ignoredByteLogSize:]...)
+		if len(logLine) > commons.IgnoredByteLogSize {
+			output <- append(logsPrefix, logLine[commons.IgnoredByteLogSize:]...)
 		}
 	}
 }
 
 func (a *App) streamStats(ctx context.Context, cancel context.CancelFunc, user *model.User, containerID string, output chan<- []byte) {
-	stats, err := a.docker.ContainerStats(ctx, containerID, true)
+	stats, err := a.dockerApp.Docker.ContainerStats(ctx, containerID, true)
 	defer cancel()
 
 	if err != nil {

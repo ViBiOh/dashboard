@@ -8,7 +8,7 @@ import (
 	"github.com/docker/docker/api/types/filters"
 )
 
-func TestLabelFilters(t *testing.T) {
+func Test_LabelFilters(t *testing.T) {
 	var cases = []struct {
 		user *model.User
 		app  string
@@ -40,7 +40,7 @@ func TestLabelFilters(t *testing.T) {
 
 	for _, testCase := range cases {
 		filters := filters.NewArgs()
-		labelFilters(testCase.user, &filters, testCase.app)
+		LabelFilters(testCase.user, &filters, testCase.app)
 		rawResult := filters.Get(`label`)
 
 		failed = false
@@ -52,43 +52,7 @@ func TestLabelFilters(t *testing.T) {
 		}
 
 		if len(rawResult) != len(testCase.want) || failed {
-			t.Errorf(`labelFilters(%v, %v) = %v, want %v`, testCase.user, testCase.app, result, testCase.want)
-		}
-	}
-}
-
-func TestHealthyStatusFilters(t *testing.T) {
-	var cases = []struct {
-		containers []string
-		want       []string
-	}{
-		{
-			nil,
-			nil,
-		},
-		{
-			[]string{`abc123`, `def456`},
-			[]string{`abc123`, `def456`},
-		},
-	}
-
-	var failed bool
-
-	for _, testCase := range cases {
-		filters := filters.NewArgs()
-		healthyStatusFilters(&filters, testCase.containers)
-		resultEvent := strings.Join(filters.Get(`event`), `,`)
-		rawResult := filters.Get(`container`)
-
-		result := strings.Join(rawResult, `,`)
-		for _, filter := range testCase.want {
-			if !strings.Contains(result, filter) {
-				failed = true
-			}
-		}
-
-		if resultEvent != `health_status: healthy` || len(rawResult) != len(testCase.want) || failed {
-			t.Errorf(`healthyStatusFilters(%v) = %v, want %v`, testCase.containers, result, testCase.want)
+			t.Errorf(`LabelFilters(%v, %v) = %v, want %v`, testCase.user, testCase.app, result, testCase.want)
 		}
 	}
 }
@@ -106,7 +70,7 @@ func TestEventFilters(t *testing.T) {
 
 	for _, testCase := range cases {
 		filters := filters.NewArgs()
-		eventFilters(&filters)
+		EventFilters(&filters)
 		rawResult := filters.Get(`event`)
 
 		failed = false
@@ -118,7 +82,7 @@ func TestEventFilters(t *testing.T) {
 		}
 
 		if len(rawResult) != len(testCase.want) || failed {
-			t.Errorf(`eventFilters() = %v, want %v`, result, testCase.want)
+			t.Errorf(`EventFilters() = %v, want %v`, result, testCase.want)
 		}
 	}
 }
