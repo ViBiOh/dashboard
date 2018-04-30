@@ -55,6 +55,8 @@ func (a *App) Handler() http.Handler {
 			} else {
 				containerHandler.ServeHTTP(w, r)
 			}
+
+			return
 		}
 
 		httperror.NotFound(w)
