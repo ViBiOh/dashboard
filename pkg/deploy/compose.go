@@ -88,7 +88,7 @@ type App struct {
 }
 
 // NewApp creates new App from Flags' config
-func NewApp(config map[string]*string, dockerApp *docker.App, authApp *auth.App) *App {
+func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App) *App {
 	return &App{
 		tasks:         sync.Map{},
 		dockerApp:     dockerApp,

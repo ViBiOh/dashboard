@@ -53,19 +53,19 @@ func main() {
 	var deployApp *deploy.App
 
 	httputils.NewApp(httputils.Flags(``), func() http.Handler {
-		dockerApp, err := docker.NewApp(dockerConfig)
+		authApp := auth.NewApp(authConfig, nil)
+
+		dockerApp, err := docker.NewApp(dockerConfig, authApp)
 		if err != nil {
 			log.Fatalf(`Error while creating docker: %v`, err)
 		}
 
-		authApp := auth.NewApp(authConfig, nil)
-		deployApp = deploy.NewApp(deployConfig, dockerApp, authApp)
-
-		streamApp, err := stream.NewApp(streamConfig, dockerApp, authApp)
+		streamApp, err := stream.NewApp(streamConfig, authApp, dockerApp)
 		if err != nil {
 			log.Fatalf(`Error while creating stream: %v`, err)
 		}
 
+		deployApp = deploy.NewApp(deployConfig, authApp, dockerApp)
 		apiApp := api.NewApp(authApp, dockerApp, deployApp)
 
 		restHandler := datadog.NewApp(datadogConfig).Handler(gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, apiApp.Handler()))))

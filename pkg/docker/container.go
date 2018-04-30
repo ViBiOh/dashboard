@@ -14,14 +14,11 @@ import (
 )
 
 const (
-	// GetAction get action
-	GetAction = `get`
-	// DeleteAction get action
-	DeleteAction = `delete`
-
+	getAction     = `get`
 	startAction   = `start`
 	stopAction    = `stop`
 	restartAction = `restart`
+	deleteAction  = `delete`
 )
 
 // ListContainers list containers for user and app if provided
@@ -124,24 +121,22 @@ func invalidAction(action string, _ *types.ContainerJSON) (interface{}, error) {
 
 func (a *App) doAction(action string) func(string, *types.ContainerJSON) (interface{}, error) {
 	switch action {
-	case GetAction:
+	case getAction:
 		return getContainer
-	case DeleteAction:
-		return a.RmContainerAndImages
-
 	case startAction:
 		return a.StartContainer
 	case stopAction:
 		return a.StopContainer
 	case restartAction:
 		return a.RestartContainer
+	case deleteAction:
+		return a.RmContainerAndImages
 	default:
 		return invalidAction
 	}
 }
 
-// BasicActionHandler handler basic action
-func (a *App) BasicActionHandler(w http.ResponseWriter, r *http.Request, user *model.User, containerID string, action string) {
+func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *model.User, containerID string, action string) {
 	if allowed, container, err := a.isAllowed(user, containerID); err != nil {
 		httperror.InternalServerError(w, err)
 	} else if !allowed {
@@ -159,5 +154,14 @@ func (a *App) ListContainersHandler(w http.ResponseWriter, r *http.Request, user
 		httperror.InternalServerError(w, err)
 	} else if err := httpjson.ResponseArrayJSON(w, http.StatusOK, containers, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
+	}
+}
+
+// LabelFilters add filter for given user
+func LabelFilters(user *model.User, filtersArgs *filters.Args, appName string) {
+	if appName != `` && isMultiApp(user) {
+		filtersArgs.Add(`label`, fmt.Sprintf(`%s=%s`, commons.AppLabel, appName))
+	} else if !IsAdmin(user) {
+		filtersArgs.Add(`label`, fmt.Sprintf(`%s=%s`, commons.OwnerLabel, user.Username))
 	}
 }

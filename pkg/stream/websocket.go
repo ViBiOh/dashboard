@@ -48,7 +48,7 @@ type App struct {
 }
 
 // NewApp creates new App from Flags' config
-func NewApp(config map[string]*string, dockerApp *docker.App, authApp *auth.App) (*App, error) {
+func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App) (*App, error) {
 	hostCheck, err := regexp.Compile(*config[`websocketOrigin`])
 	if err != nil {
 		return nil, fmt.Errorf(`Error while compiling websocket regexp: %v`, err)
