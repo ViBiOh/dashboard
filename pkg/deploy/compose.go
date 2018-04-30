@@ -327,7 +327,7 @@ func (a *App) logServiceOutput(user *model.User, appName string, service *deploy
 	logs, err := a.dockerApp.Docker.ContainerLogs(ctx, service.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
 	if logs != nil {
 		defer func() {
-			if err := logs.Close(); err != nil {
+			if err = logs.Close(); err != nil {
 				log.Printf(`[%s] [%s] Error while closing logs for service: %v`, user.Username, appName, err)
 			}
 		}()
@@ -495,6 +495,26 @@ func (a *App) createContainer(user *model.User, appName string, serviceName stri
 	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
 }
 
+func (a *App) parseCompose(user *model.User, appName string, composeFile []byte) (map[string]*deployedService, error) {
+	composeFile = bytes.Replace(composeFile, []byte(`$$`), []byte(`$`), -1)
+
+	compose := dockerCompose{}
+	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
+		return nil, fmt.Errorf(`[%s] [%s] Error while unmarshalling compose file: %v`, user.Username, appName, err)
+	}
+
+	newServices := make(map[string]*deployedService)
+	for serviceName, service := range compose.Services {
+		if deployedService, err := a.createContainer(user, appName, serviceName, &service); err != nil {
+			break
+		} else {
+			newServices[serviceName] = deployedService
+		}
+	}
+
+	return newServices, nil
+}
+
 func composeFailed(w http.ResponseWriter, user *model.User, appName string, err error) {
 	httperror.InternalServerError(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
 }
@@ -517,25 +537,12 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 		return
 	}
 
-	composeFile = bytes.Replace(composeFile, []byte(`$$`), []byte(`$`), -1)
-
-	compose := dockerCompose{}
-	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		httperror.BadRequest(w, fmt.Errorf(`[%s] [%s] Error while unmarshalling compose file: %v`, user.Username, appName, err))
-		return
+	newServices, err := a.parseCompose(user, appName, composeFile)
+	if err != nil {
+		composeFailed(w, user, appName, err)
 	}
 
-	newServices := make(map[string]*deployedService)
-	var deployedService *deployedService
-	for serviceName, service := range compose.Services {
-		if deployedService, err = a.createContainer(user, appName, serviceName, &service); err != nil {
-			break
-		} else {
-			newServices[serviceName] = deployedService
-		}
-	}
-
-	if err := a.checkTasks(user, appName); err != nil {
+	if err = a.checkTasks(user, appName); err != nil {
 		composeFailed(w, user, appName, err)
 		return
 	}
