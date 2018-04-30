@@ -499,40 +499,21 @@ func composeFailed(w http.ResponseWriter, user *model.User, appName string, err 
 	httperror.InternalServerError(w, fmt.Errorf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, err))
 }
 
-// ComposeHandler handler net/http request
-func (a *App) ComposeHandler(w http.ResponseWriter, r *http.Request, user *model.User) {
+func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model.User) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
-	if user == nil {
-		httperror.BadRequest(w, commons.ErrUserRequired)
-		return
-	}
-
-	composeFile, err := request.ReadBody(r.Body)
+	appName, composeFile, err := checkParams(r, user)
 	if err != nil {
-		httperror.InternalServerError(w, fmt.Errorf(`Error while reading compose file: %v`, err))
+		httperror.BadRequest(w, err)
 		return
 	}
 
-	appName := strings.Trim(r.URL.Path, `/`)
-
-	if len(appName) == 0 || len(composeFile) == 0 {
-		httperror.BadRequest(w, fmt.Errorf(`[%s] An application name and a compose file are required`, user.Username))
-		return
-	}
-
-	oldContainers, err := a.dockerApp.ListContainers(user, appName)
+	oldContainers, err := a.checkRights(user, appName)
 	if err != nil {
-		composeFailed(w, user, appName, err)
-		return
-	}
-
-	if len(oldContainers) > 0 && oldContainers[0].Labels[commons.OwnerLabel] != user.Username {
-		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application not owned`, user.Username, appName))
-		httperror.Forbidden(w)
+		http.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
@@ -554,11 +535,10 @@ func (a *App) ComposeHandler(w http.ResponseWriter, r *http.Request, user *model
 		}
 	}
 
-	if _, ok := a.tasks.Load(appName); ok {
-		composeFailed(w, user, appName, fmt.Errorf(`[%s] [%s] Application already in deployment`, user.Username, appName))
+	if err := a.checkTasks(user, appName); err != nil {
+		composeFailed(w, user, appName, err)
 		return
 	}
-	a.tasks.Store(appName, true)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	go a.finishDeploy(ctx, cancel, user, appName, newServices, oldContainers)
@@ -580,5 +560,5 @@ func (a *App) ComposeHandler(w http.ResponseWriter, r *http.Request, user *model
 
 // Handler for request. Should be use with net/http
 func (a *App) Handler() http.Handler {
-	return a.authApp.Handler(a.ComposeHandler)
+	return a.authApp.Handler(a.composeHandler)
 }
