@@ -148,7 +148,8 @@ func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *m
 		return
 	}
 
-	if result, err := a.doAction(action)(containerID, container); err != nil {
+	result, err := a.doAction(action)(containerID, container)
+	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
@@ -161,7 +162,8 @@ func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *m
 
 // ListContainersHandler handler list of containers
 func (a *App) ListContainersHandler(w http.ResponseWriter, r *http.Request, user *model.User) {
-	if containers, err := a.ListContainers(user, ``); err != nil {
+	containers, err := a.ListContainers(user, ``)
+	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
