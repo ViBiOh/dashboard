@@ -35,7 +35,7 @@ func NewApp(authApp *auth.App, dockerApp *docker.App, deployApp *deploy.App) *Ap
 // Handler for Docker request. Should be use with net/http
 func (a *App) Handler() http.Handler {
 	containerHandler := http.StripPrefix(containersPrefix, a.dockerApp.Handler())
-	deployHandler := http.StripPrefix(containersPrefix, a.deployApp.Handler())
+	deployHandler := http.StripPrefix(deployPrefix, a.deployApp.Handler())
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
