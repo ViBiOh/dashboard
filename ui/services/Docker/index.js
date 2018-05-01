@@ -11,18 +11,9 @@ export default class Docker {
    * @return {Promise} Array of informations wrapped in a Promise
    */
   static containers() {
-    return auth(`${getApiUrl()}/containers`)
+    return auth(`${getApiUrl()}/containers/`)
       .get()
       .then(({ results }) => results);
-  }
-
-  /**
-   * Retrieve informations about a Docker's container.
-   * @param  {String} containerId Container's id
-   * @return {Promise}            Information wrapped in a Promise
-   */
-  static containerInfos(containerId) {
-    return auth(`${getApiUrl()}/containers/${containerId}/`).get();
   }
 
   /**
@@ -32,7 +23,16 @@ export default class Docker {
    * @return {Promise}            Array of created containers wrapped in a Promise
    */
   static containerCreate(name, composeFile) {
-    return auth(`${getApiUrl()}/containers/${name}/`).post(composeFile);
+    return auth(`${getApiUrl()}/deploy/${name}/`).post(composeFile);
+  }
+
+  /**
+   * Retrieve informations about a Docker's container.
+   * @param  {String} containerId Container's id
+   * @return {Promise}            Information wrapped in a Promise
+   */
+  static containerInfos(containerId) {
+    return auth(`${getApiUrl()}/containers/${containerId}/`).get();
   }
 
   /**

@@ -13,6 +13,7 @@ import (
 const (
 	healthPrefix     = `/health`
 	containersPrefix = `/containers`
+	deployPrefix     = `/deploy`
 )
 
 // App stores informations
@@ -50,12 +51,12 @@ func (a *App) Handler() http.Handler {
 		}
 
 		if strings.HasPrefix(r.URL.Path, containersPrefix) {
-			if r.Method == http.MethodPost {
-				deployHandler.ServeHTTP(w, r)
-			} else {
-				containerHandler.ServeHTTP(w, r)
-			}
+			containerHandler.ServeHTTP(w, r)
+			return
+		}
 
+		if strings.HasPrefix(r.URL.Path, deployPrefix) {
+			deployHandler.ServeHTTP(w, r)
 			return
 		}
 

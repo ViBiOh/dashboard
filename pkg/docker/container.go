@@ -137,14 +137,25 @@ func (a *App) doAction(action string) func(string, *types.ContainerJSON) (interf
 }
 
 func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *model.User, containerID string, action string) {
-	if allowed, container, err := a.isAllowed(user, containerID); err != nil {
+	allowed, container, err := a.isAllowed(user, containerID)
+	if err != nil {
 		httperror.InternalServerError(w, err)
-	} else if !allowed {
+		return
+	}
+
+	if !allowed {
 		httperror.Forbidden(w)
-	} else if result, err := a.doAction(action)(containerID, container); err != nil {
+		return
+	}
+
+	if result, err := a.doAction(action)(containerID, container); err != nil {
 		httperror.InternalServerError(w, err)
-	} else if err := httpjson.ResponseJSON(w, http.StatusOK, result, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
+		return
+	}
+
+	if err := httpjson.ResponseJSON(w, http.StatusOK, result, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
+		return
 	}
 }
 
@@ -152,8 +163,12 @@ func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *m
 func (a *App) ListContainersHandler(w http.ResponseWriter, r *http.Request, user *model.User) {
 	if containers, err := a.ListContainers(user, ``); err != nil {
 		httperror.InternalServerError(w, err)
-	} else if err := httpjson.ResponseArrayJSON(w, http.StatusOK, containers, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
+		return
+	}
+
+	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, containers, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
+		return
 	}
 }
 
