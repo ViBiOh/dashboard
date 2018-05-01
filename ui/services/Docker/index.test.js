@@ -77,7 +77,7 @@ test.serial('should return results when listing containers', (t) => {
 
 test.serial('should create container with given args', t =>
   Docker.containerCreate('test', 'composeFileContent').then((result) => {
-    t.true(/containers\/test\/$/.test(result.url));
+    t.true(/deploy\/test\/$/.test(result.url));
     t.is(result.content, 'composeFileContent');
   }));
 
@@ -92,7 +92,7 @@ test.serial('should create container with given args', t =>
     method: 'containerCreate',
     args: ['test', 'composeFileContent'],
     httpMethod: 'post',
-    url: /containers\/test\/$/,
+    url: /deploy\/test\/$/,
   },
   {
     method: 'containerStart',
