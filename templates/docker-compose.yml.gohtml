@@ -111,7 +111,7 @@ services:
     - -csp
     - "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dashboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1081 localhost:1082{{ else }}api:1080 auth:1080{{ end }}{{ end }}"
     - -headers
-    - X-UA-Compatible:IE=edge,chrome=1
+    - X-UA-Compatible:ie=edge
   {{- if .Datadog }}
     - -datadogService
     - dashboard_ui
