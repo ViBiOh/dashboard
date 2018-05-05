@@ -270,7 +270,7 @@ func (a *App) getNetworkConfig(serviceName string, service *dockerComposeService
 
 func (a *App) pullImage(image string) error {
 	if !strings.Contains(image, colonSeparator) {
-		image = fmt.Sprintf(`%s%s%s`, image, colonSeparator, `latest`)
+		image = fmt.Sprintf(`%s%slatest`, image, colonSeparator)
 	}
 
 	ctx, cancel := getGracefulCtx()
