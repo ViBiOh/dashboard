@@ -16,10 +16,12 @@ import (
 	"github.com/ViBiOh/httputils/pkg"
 	"github.com/ViBiOh/httputils/pkg/cors"
 	"github.com/ViBiOh/httputils/pkg/datadog"
+	"github.com/ViBiOh/httputils/pkg/healthcheck"
 	"github.com/ViBiOh/httputils/pkg/owasp"
 )
 
 const websocketPrefix = `/ws`
+const healthcheckPath = `/health`
 
 func handleGracefulClose(deployApp *deploy.App) error {
 	if deployApp.CanBeGracefullyClosed() {
@@ -51,6 +53,7 @@ func main() {
 	datadogConfig := datadog.Flags(`datadog`)
 
 	var deployApp *deploy.App
+	healthcheckApp := healthcheck.NewApp(nil)
 
 	httputils.NewApp(httputils.Flags(``), func() http.Handler {
 		authApp := auth.NewApp(authConfig, nil)
@@ -71,8 +74,13 @@ func main() {
 		restHandler := datadog.NewApp(datadogConfig).Handler(gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, apiApp.Handler()))))
 		websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
 
+		healthcheckApp.SetHandler(apiApp.HealthcheckHandler())
+		healthcheckHandler := healthcheckApp.Handler()
+
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if strings.HasPrefix(r.URL.Path, websocketPrefix) {
+			if r.URL.Path == healthcheckPath && r.Method == http.MethodGet {
+				healthcheckHandler.ServeHTTP(w, r)
+			} else if strings.HasPrefix(r.URL.Path, websocketPrefix) {
 				websocketHandler.ServeHTTP(w, r)
 			} else {
 				restHandler.ServeHTTP(w, r)
@@ -80,5 +88,5 @@ func main() {
 		})
 	}, func() error {
 		return handleGracefulClose(deployApp)
-	}).ListenAndServe()
+	}, healthcheckApp).ListenAndServe()
 }

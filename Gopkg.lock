@@ -43,6 +43,7 @@
     "pkg/cert",
     "pkg/cors",
     "pkg/datadog",
+    "pkg/healthcheck",
     "pkg/httperror",
     "pkg/httpjson",
     "pkg/owasp",
@@ -50,7 +51,7 @@
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "e7c1fd8a46a63382a359fa2164174aa1f33e1d75"
+  revision = "6522e4f29297e1caa761d76f259e28d07d3bcc25"
 
 [[projects]]
   branch = "master"
@@ -83,7 +84,7 @@
     "api/types/volume",
     "client"
   ]
-  revision = "e2d3bb305258b78beb8e8f97a35d28cc6a75ac3c"
+  revision = "ab3cdd2b1bc1f6c2410a1ca28d0034eb6edcd1ef"
 
 [[projects]]
   name = "github.com/docker/go-connections"
@@ -148,13 +149,13 @@
     "internal/socks",
     "proxy"
   ]
-  revision = "640f4622ab692b87c2f3a94265e6f579fe38263d"
+  revision = "2491c5de3490fced2f6cff376127c667efeed857"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "6f686a352de66814cdd080d970febae7767857a3"
+  revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -165,6 +166,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f4a40515ec2a7c8c3ba973adfba8ab1513e0935290d3536366eeb676e647397d"
+  inputs-digest = "f15ca78cc79512f592f372a4a7b411ca60306eb228c1d0a81055a4f29d5bb734"
   solver-name = "gps-cdcl"
   solver-version = 1

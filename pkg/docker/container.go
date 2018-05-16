@@ -74,7 +74,7 @@ func (a *App) RestartContainer(containerID string, _ *types.ContainerJSON) (inte
 	return a.GracefulRestartContainer(containerID, &commons.DefaultTimeout)
 }
 
-// GracefulStopContainer stop a container
+// GracefulRestartContainer stop a container
 func (a *App) GracefulRestartContainer(containerID string, gracefulTimeout *time.Duration) (interface{}, error) {
 	ctx, cancel := commons.GetTimeoutCtx(gracefulTimeout)
 	defer cancel()

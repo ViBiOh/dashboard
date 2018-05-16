@@ -11,7 +11,6 @@ import (
 )
 
 const (
-	healthPath       = `/health`
 	containersPrefix = `/containers`
 	deployPrefix     = `/deploy`
 )
@@ -45,11 +44,6 @@ func (a *App) Handler() http.Handler {
 			return
 		}
 
-		if r.URL.Path == healthPath && r.Method == http.MethodGet {
-			a.healthHandler(w, r)
-			return
-		}
-
 		if strings.HasPrefix(r.URL.Path, containersPrefix) {
 			containerHandler.ServeHTTP(w, r)
 			return
@@ -64,16 +58,19 @@ func (a *App) Handler() http.Handler {
 	})
 }
 
-func (a *App) healthHandler(w http.ResponseWriter, r *http.Request) {
-	if a.dockerApp == nil {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		return
-	}
+// HealthcheckHandler for Healthcheck request. Should be use with net/http
+func (a *App) HealthcheckHandler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if a.dockerApp == nil {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
 
-	if !a.dockerApp.Healthcheck() {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		return
-	}
+		if !a.dockerApp.Healthcheck() {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
 
-	w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusOK)
+	})
 }

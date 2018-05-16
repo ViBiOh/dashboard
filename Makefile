@@ -95,7 +95,7 @@ start-auth:
 start-api:
 	go run cmd/dashboard/dashboard.go \
 		-tls=false \
-		-ws ".*" \
+		-dockerWs ".*" \
 		-dockerVersion '1.32' \
 		-authUrl http://localhost:1081 \
 		-authUsers admin:admin \
