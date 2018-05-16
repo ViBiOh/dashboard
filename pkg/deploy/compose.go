@@ -287,7 +287,7 @@ func (a *App) pullImage(image string) error {
 
 func (a *App) cleanContainers(containers []types.Container) error {
 	for _, container := range containers {
-		if _, err := a.dockerApp.StopContainer(container.ID, nil); err != nil {
+		if _, err := a.dockerApp.GracefulStopContainer(container.ID, time.Minute); err != nil {
 			return fmt.Errorf(`Error while stopping container %s: %v`, container.Names, err)
 		}
 	}

@@ -58,28 +58,28 @@ func (a *App) StartContainer(containerID string, _ *types.ContainerJSON) (interf
 
 // StopContainer stop a container
 func (a *App) StopContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
-	return a.GracefulStopContainer(containerID, &commons.DefaultTimeout)
+	return a.GracefulStopContainer(containerID, commons.DefaultTimeout)
 }
 
 // GracefulStopContainer stop a container
-func (a *App) GracefulStopContainer(containerID string, gracefulTimeout *time.Duration) (interface{}, error) {
+func (a *App) GracefulStopContainer(containerID string, gracefulTimeout time.Duration) (interface{}, error) {
 	ctx, cancel := commons.GetTimeoutCtx(gracefulTimeout)
 	defer cancel()
 
-	return nil, a.Docker.ContainerStop(ctx, containerID, gracefulTimeout)
+	return nil, a.Docker.ContainerStop(ctx, containerID, &gracefulTimeout)
 }
 
 // RestartContainer restarts a container
 func (a *App) RestartContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
-	return a.GracefulRestartContainer(containerID, &commons.DefaultTimeout)
+	return a.GracefulRestartContainer(containerID, commons.DefaultTimeout)
 }
 
 // GracefulRestartContainer stop a container
-func (a *App) GracefulRestartContainer(containerID string, gracefulTimeout *time.Duration) (interface{}, error) {
+func (a *App) GracefulRestartContainer(containerID string, gracefulTimeout time.Duration) (interface{}, error) {
 	ctx, cancel := commons.GetTimeoutCtx(gracefulTimeout)
 	defer cancel()
 
-	return nil, a.Docker.ContainerRestart(ctx, containerID, gracefulTimeout)
+	return nil, a.Docker.ContainerRestart(ctx, containerID, &gracefulTimeout)
 }
 
 // RmContainerAndImages clean env
