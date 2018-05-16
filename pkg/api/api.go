@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	healthPrefix     = `/health`
+	healthPath       = `/health`
 	containersPrefix = `/containers`
 	deployPrefix     = `/deploy`
 )
@@ -45,7 +45,7 @@ func (a *App) Handler() http.Handler {
 			return
 		}
 
-		if strings.HasPrefix(r.URL.Path, healthPrefix) && r.Method == http.MethodGet {
+		if r.URL.Path == healthPath && r.Method == http.MethodGet {
 			a.healthHandler(w, r)
 			return
 		}
