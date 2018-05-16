@@ -21,7 +21,6 @@ import (
 )
 
 const websocketPrefix = `/ws`
-const healthcheckPath = `/health`
 
 func handleGracefulClose(deployApp *deploy.App) error {
 	if deployApp.CanBeGracefullyClosed() {
@@ -53,7 +52,7 @@ func main() {
 	datadogConfig := datadog.Flags(`datadog`)
 
 	var deployApp *deploy.App
-	healthcheckApp := healthcheck.NewApp(nil)
+	healthcheckApp := healthcheck.NewApp()
 
 	httputils.NewApp(httputils.Flags(``), func() http.Handler {
 		authApp := auth.NewApp(authConfig, nil)
@@ -73,12 +72,10 @@ func main() {
 
 		restHandler := datadog.NewApp(datadogConfig).Handler(gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, apiApp.Handler()))))
 		websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
-
-		healthcheckApp.SetHandler(apiApp.HealthcheckHandler())
-		healthcheckHandler := healthcheckApp.Handler()
+		healthcheckHandler := healthcheckApp.Handler(apiApp.HealthcheckHandler())
 
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == healthcheckPath && r.Method == http.MethodGet {
+			if r.URL.Path == `/health` {
 				healthcheckHandler.ServeHTTP(w, r)
 			} else if strings.HasPrefix(r.URL.Path, websocketPrefix) {
 				websocketHandler.ServeHTTP(w, r)
