@@ -2,16 +2,6 @@
 
 
 [[projects]]
-  name = "github.com/DataDog/dd-trace-go"
-  packages = [
-    "contrib/net/http",
-    "tracer",
-    "tracer/ext"
-  ]
-  revision = "27617015d45e6cd550b9a7ac7715c37cc2f7d020"
-  version = "v0.6.1"
-
-[[projects]]
   name = "github.com/Microsoft/go-winio"
   packages = ["."]
   revision = "7da180ee92d8bd8bb8c37fc560e673e6557c392f"
@@ -32,7 +22,7 @@
     "pkg/model",
     "pkg/provider"
   ]
-  revision = "d10933d4547e8ca13e1968ce52557156c270ce20"
+  revision = "acd4fa56195f886e1188cba649555ff3c24da205"
 
 [[projects]]
   branch = "master"
@@ -42,7 +32,6 @@
     "pkg/alcotest",
     "pkg/cert",
     "pkg/cors",
-    "pkg/datadog",
     "pkg/healthcheck",
     "pkg/httperror",
     "pkg/httpjson",
@@ -136,11 +125,6 @@
   version = "v0.8.0"
 
 [[projects]]
-  name = "github.com/ugorji/go"
-  packages = ["codec"]
-  revision = "9c7f9b7a2bc3a520f7c7b30b34b7f85f47fe27b6"
-
-[[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = [
@@ -166,6 +150,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f15ca78cc79512f592f372a4a7b411ca60306eb228c1d0a81055a4f29d5bb734"
+  inputs-digest = "6535986368dfb99b333fa48dfa6ee321f8ed69fe0db418817cd9a91aebf6cfed"
   solver-name = "gps-cdcl"
   solver-version = 1

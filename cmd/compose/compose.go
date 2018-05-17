@@ -22,7 +22,6 @@ type arguments struct {
 	Tag        string
 	Version    string
 	DockerUser bool
-	Datadog    bool
 }
 
 func main() {
@@ -37,7 +36,6 @@ func main() {
 	version := flag.String(`version`, ``, `Docker image version`)
 	expose := flag.Bool(`expose`, false, `Expose opened ports`)
 	dockerUser := flag.Bool(`user`, false, `Enable docker user default`)
-	datadog := flag.Bool(`datadog`, false, `Enable Datadog`)
 	flag.Parse()
 
 	funcs := template.FuncMap{
@@ -64,7 +62,7 @@ func main() {
 		prefixedDomain = *domain
 	}
 
-	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *github, *selenium, *expose, prefixedDomain, *users, *tag, *version, *dockerUser, *datadog}); err != nil {
+	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *github, *selenium, *expose, prefixedDomain, *users, *tag, *version, *dockerUser}); err != nil {
 		log.Printf(`Error while rendering template: %v`, err)
 	}
 }

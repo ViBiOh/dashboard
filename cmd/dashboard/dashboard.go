@@ -15,7 +15,6 @@ import (
 	"github.com/ViBiOh/dashboard/pkg/stream"
 	"github.com/ViBiOh/httputils/pkg"
 	"github.com/ViBiOh/httputils/pkg/cors"
-	"github.com/ViBiOh/httputils/pkg/datadog"
 	"github.com/ViBiOh/httputils/pkg/healthcheck"
 	"github.com/ViBiOh/httputils/pkg/owasp"
 )
@@ -49,7 +48,6 @@ func main() {
 	dockerConfig := docker.Flags(`docker`)
 	deployConfig := deploy.Flags(`docker`)
 	streamConfig := stream.Flags(`docker`)
-	datadogConfig := datadog.Flags(`datadog`)
 
 	var deployApp *deploy.App
 	healthcheckApp := healthcheck.NewApp()
@@ -70,7 +68,7 @@ func main() {
 		deployApp = deploy.NewApp(deployConfig, authApp, dockerApp)
 		apiApp := api.NewApp(authApp, dockerApp, deployApp)
 
-		restHandler := datadog.NewApp(datadogConfig).Handler(gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, apiApp.Handler()))))
+		restHandler := gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, apiApp.Handler())))
 		websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
 		healthcheckHandler := healthcheckApp.Handler(apiApp.HealthcheckHandler())
 
