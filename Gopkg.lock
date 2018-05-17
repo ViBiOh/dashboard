@@ -32,7 +32,7 @@
     "pkg/model",
     "pkg/provider"
   ]
-  revision = "6a119930783b1e06488ea356cc620f564cbd6352"
+  revision = "d10933d4547e8ca13e1968ce52557156c270ce20"
 
 [[projects]]
   branch = "master"
@@ -51,7 +51,7 @@
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "8028a990597f0ec475330fe26c1ba1bd60a50ccc"
+  revision = "c31f6daa198242a777750942bd41d092cd438101"
 
 [[projects]]
   branch = "master"
@@ -84,7 +84,7 @@
     "api/types/volume",
     "client"
   ]
-  revision = "ab3cdd2b1bc1f6c2410a1ca28d0034eb6edcd1ef"
+  revision = "59698778fe9301225c456886f7b67d2e43703a05"
 
 [[projects]]
   name = "github.com/docker/go-connections"

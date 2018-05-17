@@ -93,9 +93,9 @@ func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App)
 		tasks:         sync.Map{},
 		dockerApp:     dockerApp,
 		authApp:       authApp,
-		network:       *config[`network`],
-		tag:           *config[`tag`],
-		containerUser: *config[`containerUser`],
+		network:       strings.TrimSpace(*config[`network`]),
+		tag:           strings.TrimSpace(*config[`tag`]),
+		containerUser: strings.TrimSpace(*config[`containerUser`]),
 	}
 }
 
@@ -126,7 +126,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 		Retries: healthcheck.Retries,
 	}
 
-	if healthcheck.Interval != `` {
+	if strings.TrimSpace(healthcheck.Interval) != `` {
 		interval, err := time.ParseDuration(healthcheck.Interval)
 		if err != nil {
 			return nil, fmt.Errorf(`Error while parsing healthcheck interval: %v`, err)
@@ -135,7 +135,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 		healthconfig.Interval = interval
 	}
 
-	if healthcheck.Timeout != `` {
+	if strings.TrimSpace(healthcheck.Timeout) != `` {
 		timeout, err := time.ParseDuration(healthcheck.Timeout)
 		if err != nil {
 			return nil, fmt.Errorf(`Error while parsing healthcheck timeout: %v`, err)
