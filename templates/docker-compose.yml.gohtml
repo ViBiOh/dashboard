@@ -20,6 +20,10 @@ services:
     - -githubClientSecret
     - ${GITHUB_OAUTH_CLIENT_SECRET}
   {{- end }}
+  {{- if .Tracing }}
+    - -tracingName
+    - dashboard_auth
+  {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard-auth" }}
   {{- end }}
@@ -67,6 +71,10 @@ services:
     - -corsCredentials
     - -csp
     - "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:"
+  {{- if .Tracing }}
+    - -tracingName
+    - dashboard_api
+  {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard-api" }}
   {{- end }}
@@ -96,6 +104,10 @@ services:
     - "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dashboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1081 localhost:1082{{ else }}api:1080 auth:1080{{ end }}{{ end }}"
     - -headers
     - X-UA-Compatible:ie=edge
+  {{- if .Tracing }}
+    - -tracingName
+    - dashboard_ui
+  {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard" }}
   {{- end }}

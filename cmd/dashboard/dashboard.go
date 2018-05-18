@@ -16,6 +16,7 @@ import (
 	"github.com/ViBiOh/httputils/pkg"
 	"github.com/ViBiOh/httputils/pkg/cors"
 	"github.com/ViBiOh/httputils/pkg/healthcheck"
+	"github.com/ViBiOh/httputils/pkg/opentracing"
 	"github.com/ViBiOh/httputils/pkg/owasp"
 )
 
@@ -48,6 +49,7 @@ func main() {
 	dockerConfig := docker.Flags(`docker`)
 	deployConfig := deploy.Flags(`docker`)
 	streamConfig := stream.Flags(`docker`)
+	opentracingConfig := opentracing.Flags(`tracing`)
 
 	var deployApp *deploy.App
 	healthcheckApp := healthcheck.NewApp()
@@ -68,7 +70,7 @@ func main() {
 		deployApp = deploy.NewApp(deployConfig, authApp, dockerApp)
 		apiApp := api.NewApp(authApp, dockerApp, deployApp)
 
-		restHandler := gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, apiApp.Handler())))
+		restHandler := opentracing.NewApp(opentracingConfig).Handler(gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, apiApp.Handler()))))
 		websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
 		healthcheckHandler := healthcheckApp.Handler(apiApp.HealthcheckHandler())
 
