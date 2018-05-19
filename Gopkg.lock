@@ -22,7 +22,7 @@
     "pkg/model",
     "pkg/provider"
   ]
-  revision = "de43d4fb5d0c5a22c65775e0a6cfe1dec493ac7e"
+  revision = "dccb6390bebe81e5e02a837aad5f53268ef2f66c"
 
 [[projects]]
   branch = "master"
@@ -35,12 +35,19 @@
     "pkg/healthcheck",
     "pkg/httperror",
     "pkg/httpjson",
+    "pkg/opentracing",
     "pkg/owasp",
     "pkg/request",
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "ea01d4c472e6c5bb84aa1b35fe08aca414f70a12"
+  revision = "8fd3c51a6af071af372a9bbeab41f5e641b5994b"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/codahale/hdrhistogram"
+  packages = ["."]
+  revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
 
 [[projects]]
   branch = "master"
@@ -119,10 +126,55 @@
   version = "v1.0.1"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/opentracing-contrib/go-stdlib"
+  packages = ["nethttp"]
+  revision = "36723135187404d2f4002f4f189938565e64cc5c"
+
+[[projects]]
+  name = "github.com/opentracing/opentracing-go"
+  packages = [
+    ".",
+    "ext",
+    "log"
+  ]
+  revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
+  version = "v1.0.2"
+
+[[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
+
+[[projects]]
+  name = "github.com/uber/jaeger-client-go"
+  packages = [
+    ".",
+    "config",
+    "internal/baggage",
+    "internal/baggage/remote",
+    "internal/spanlog",
+    "internal/throttler",
+    "internal/throttler/remote",
+    "log",
+    "rpcmetrics",
+    "thrift",
+    "thrift-gen/agent",
+    "thrift-gen/baggage",
+    "thrift-gen/jaeger",
+    "thrift-gen/sampling",
+    "thrift-gen/zipkincore",
+    "utils"
+  ]
+  revision = "b043381d944715b469fd6b37addfd30145ca1758"
+  version = "v2.14.0"
+
+[[projects]]
+  name = "github.com/uber/jaeger-lib"
+  packages = ["metrics"]
+  revision = "ed3a127ec5fef7ae9ea95b01b542c47fbd999ce5"
+  version = "v1.5.0"
 
 [[projects]]
   branch = "master"
@@ -150,6 +202,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6535986368dfb99b333fa48dfa6ee321f8ed69fe0db418817cd9a91aebf6cfed"
+  inputs-digest = "923feb3c8e52bb0882caf172370fda635ff8f66886ab67041273377cec2a8b27"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -96,7 +96,7 @@ func (a *App) upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websoc
 		return
 	}
 
-	user, err = a.authApp.IsAuthenticatedByAuth(string(basicAuth))
+	user, err = a.authApp.IsAuthenticatedByAuth(r.Context(), string(basicAuth))
 	if err != nil {
 		err = fmt.Errorf(`Error while checking authentification: %v`, err)
 		if writeErr := ws.WriteMessage(websocket.TextMessage, []byte(err.Error())); writeErr != nil {
