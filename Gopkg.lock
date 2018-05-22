@@ -22,7 +22,7 @@
     "pkg/model",
     "pkg/provider"
   ]
-  revision = "dccb6390bebe81e5e02a837aad5f53268ef2f66c"
+  revision = "f75db5a5dc898809306dd38851bc288ec443068a"
 
 [[projects]]
   branch = "master"
@@ -41,7 +41,7 @@
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "8fd3c51a6af071af372a9bbeab41f5e641b5994b"
+  revision = "cfc298ce459c9f1977ecab93b1a1345309fe9510"
 
 [[projects]]
   branch = "master"
@@ -56,7 +56,7 @@
     "digestset",
     "reference"
   ]
-  revision = "83389a148052d74ac602f5f1d62f86ff2f3c4aa5"
+  revision = "f0cc927784781fa395c06317c58dea2841ece3a9"
 
 [[projects]]
   branch = "master"
@@ -80,7 +80,7 @@
     "api/types/volume",
     "client"
   ]
-  revision = "76e43532f60355220619b5ff808c0d2cd4bd624b"
+  revision = "bcaf8913695e5ad57868c8c82af58f9e699e7f59"
 
 [[projects]]
   name = "github.com/docker/go-connections"
@@ -185,13 +185,13 @@
     "internal/socks",
     "proxy"
   ]
-  revision = "2491c5de3490fced2f6cff376127c667efeed857"
+  revision = "9ef9f5bb98a1fdc41f8cf6c250a4404b4085e389"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
+  revision = "7f59abf37be6a6007f075af1bc7f16f137bc176b"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"

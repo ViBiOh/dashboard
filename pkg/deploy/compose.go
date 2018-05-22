@@ -540,6 +540,7 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 	newServices, err := a.parseCompose(user, appName, composeFile)
 	if err != nil {
 		composeFailed(w, user, appName, err)
+		return
 	}
 
 	if err = a.checkTasks(user, appName); err != nil {
