@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"net/http"
@@ -50,7 +51,7 @@ func Flags(prefix string) map[string]*string {
 
 // Healthcheck check health of app
 func (a *App) Healthcheck() bool {
-	ctx, cancel := commons.GetCtx()
+	ctx, cancel := commons.GetCtx(context.Background())
 	defer cancel()
 
 	if _, err := a.Docker.Ping(ctx); err != nil {

@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -23,79 +24,67 @@ const (
 )
 
 // ListContainers list containers for user and app if provided
-func (a *App) ListContainers(user *model.User, appName string) ([]types.Container, error) {
+func (a *App) ListContainers(ctx context.Context, user *model.User, appName string) ([]types.Container, error) {
 	options := types.ContainerListOptions{All: true}
 
 	options.Filters = filters.NewArgs()
 	LabelFilters(user, &options.Filters, appName)
 
-	ctx, cancel := commons.GetCtx()
-	defer cancel()
-
 	return a.Docker.ContainerList(ctx, options)
 }
 
 // InspectContainer get detailed information of a container
-func (a *App) InspectContainer(containerID string) (*types.ContainerJSON, error) {
-	ctx, cancel := commons.GetCtx()
-	defer cancel()
-
+func (a *App) InspectContainer(ctx context.Context, containerID string) (*types.ContainerJSON, error) {
 	container, err := a.Docker.ContainerInspect(ctx, containerID)
 	return &container, err
 }
 
-func getContainer(containerID string, container *types.ContainerJSON) (interface{}, error) {
+func getContainer(_ context.Context, containerID string, container *types.ContainerJSON) (interface{}, error) {
 	return container, nil
 }
 
 // StartContainer start a container
-func (a *App) StartContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
-	ctx, cancel := commons.GetCtx()
-	defer cancel()
-
+func (a *App) StartContainer(ctx context.Context, containerID string, _ *types.ContainerJSON) (interface{}, error) {
 	return nil, a.Docker.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
 }
 
 // StopContainer stop a container
-func (a *App) StopContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
-	return a.GracefulStopContainer(containerID, commons.DefaultTimeout)
+func (a *App) StopContainer(ctx context.Context, containerID string, _ *types.ContainerJSON) (interface{}, error) {
+	return a.GracefulStopContainer(ctx, containerID, commons.DefaultTimeout)
 }
 
 // GracefulStopContainer stop a container
-func (a *App) GracefulStopContainer(containerID string, gracefulTimeout time.Duration) (interface{}, error) {
-	ctx, cancel := commons.GetTimeoutCtx(gracefulTimeout)
+func (a *App) GracefulStopContainer(ctx context.Context, containerID string, gracefulTimeout time.Duration) (interface{}, error) {
+	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout)
 	defer cancel()
 
-	return nil, a.Docker.ContainerStop(ctx, containerID, &gracefulTimeout)
+	return nil, a.Docker.ContainerStop(timeoutCtx, containerID, &gracefulTimeout)
 }
 
 // RestartContainer restarts a container
-func (a *App) RestartContainer(containerID string, _ *types.ContainerJSON) (interface{}, error) {
-	return a.GracefulRestartContainer(containerID, commons.DefaultTimeout)
+func (a *App) RestartContainer(ctx context.Context, containerID string, _ *types.ContainerJSON) (interface{}, error) {
+	return a.GracefulRestartContainer(ctx, containerID, commons.DefaultTimeout)
 }
 
 // GracefulRestartContainer stop a container
-func (a *App) GracefulRestartContainer(containerID string, gracefulTimeout time.Duration) (interface{}, error) {
-	ctx, cancel := commons.GetTimeoutCtx(gracefulTimeout)
+func (a *App) GracefulRestartContainer(ctx context.Context, containerID string, gracefulTimeout time.Duration) (interface{}, error) {
+	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout)
 	defer cancel()
 
-	return nil, a.Docker.ContainerRestart(ctx, containerID, &gracefulTimeout)
+	return nil, a.Docker.ContainerRestart(timeoutCtx, containerID, &gracefulTimeout)
 }
 
 // RmContainerAndImages clean env
-func (a *App) RmContainerAndImages(containerID string, container *types.ContainerJSON) (interface{}, error) {
-	return a.RmContainer(containerID, container, true)
+func (a *App) RmContainerAndImages(ctx context.Context, containerID string, container *types.ContainerJSON) (interface{}, error) {
+	return a.RmContainer(ctx, containerID, container, true)
 }
 
 // RmContainer remove a container
-func (a *App) RmContainer(containerID string, container *types.ContainerJSON, failOnImageFail bool) (interface{}, error) {
-	ctx, cancel := commons.GetCtx()
-	defer cancel()
-
+func (a *App) RmContainer(ctx context.Context, containerID string, container *types.ContainerJSON, failOnImageFail bool) (interface{}, error) {
 	var err error
 
 	if container == nil {
-		if container, err = a.InspectContainer(containerID); err != nil {
+		if container, err = a.InspectContainer(ctx, containerID); err != nil {
 			return nil, fmt.Errorf(`Error while inspecting container: %v`, err)
 		}
 	}
@@ -104,7 +93,7 @@ func (a *App) RmContainer(containerID string, container *types.ContainerJSON, fa
 		return nil, fmt.Errorf(`Error while removing container: %v`, err)
 	}
 
-	if err = a.RmImage(container.Image); err != nil {
+	if err = a.RmImage(ctx, container.Image); err != nil {
 		if failOnImageFail {
 			return nil, err
 		}
@@ -115,10 +104,7 @@ func (a *App) RmContainer(containerID string, container *types.ContainerJSON, fa
 }
 
 // RmImage remove image
-func (a *App) RmImage(imageID string) error {
-	ctx, cancel := commons.GetCtx()
-	defer cancel()
-
+func (a *App) RmImage(ctx context.Context, imageID string) error {
 	if _, err := a.Docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{}); err != nil {
 		return fmt.Errorf(`Error while removing image: %v`, err)
 	}
@@ -126,11 +112,11 @@ func (a *App) RmImage(imageID string) error {
 	return nil
 }
 
-func invalidAction(action string, _ *types.ContainerJSON) (interface{}, error) {
+func invalidAction(_ context.Context, action string, _ *types.ContainerJSON) (interface{}, error) {
 	return nil, fmt.Errorf(`Unknown action %s`, action)
 }
 
-func (a *App) doAction(action string) func(string, *types.ContainerJSON) (interface{}, error) {
+func (a *App) doAction(action string) func(context.Context, string, *types.ContainerJSON) (interface{}, error) {
 	switch action {
 	case getAction:
 		return getContainer
@@ -148,7 +134,10 @@ func (a *App) doAction(action string) func(string, *types.ContainerJSON) (interf
 }
 
 func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *model.User, containerID string, action string) {
-	allowed, container, err := a.isAllowed(user, containerID)
+	ctx, cancel := commons.GetCtx(r.Context())
+	defer cancel()
+
+	allowed, container, err := a.isAllowed(ctx, user, containerID)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
@@ -159,7 +148,7 @@ func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *m
 		return
 	}
 
-	result, err := a.doAction(action)(containerID, container)
+	result, err := a.doAction(action)(ctx, containerID, container)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
@@ -173,7 +162,10 @@ func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *m
 
 // ListContainersHandler handler list of containers
 func (a *App) ListContainersHandler(w http.ResponseWriter, r *http.Request, user *model.User) {
-	containers, err := a.ListContainers(user, ``)
+	ctx, cancel := commons.GetCtx(r.Context())
+	defer cancel()
+
+	containers, err := a.ListContainers(ctx, user, ``)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return

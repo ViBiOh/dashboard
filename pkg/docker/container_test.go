@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
@@ -25,7 +26,7 @@ func TestGetContainer(t *testing.T) {
 	var failed bool
 
 	for _, testCase := range cases {
-		result, err := getContainer(testCase.containerID, testCase.container)
+		result, err := getContainer(context.Background(), testCase.containerID, testCase.container)
 
 		failed = false
 

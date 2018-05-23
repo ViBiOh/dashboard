@@ -13,10 +13,6 @@ import (
 	"github.com/docker/docker/api/types/filters"
 )
 
-func getGracefulCtx() (context.Context, context.CancelFunc) {
-	return context.WithTimeout(context.Background(), DeployTimeout)
-}
-
 func healthyStatusFilters(filtersArgs *filters.Args, containersIds []string) {
 	filtersArgs.Add(`event`, `health_status: healthy`)
 
@@ -48,8 +44,8 @@ func checkParams(r *http.Request, user *model.User) (string, []byte, error) {
 	return appName, composeFile, nil
 }
 
-func (a *App) checkRights(user *model.User, appName string) ([]types.Container, error) {
-	oldContainers, err := a.dockerApp.ListContainers(user, appName)
+func (a *App) checkRights(ctx context.Context, user *model.User, appName string) ([]types.Container, error) {
+	oldContainers, err := a.dockerApp.ListContainers(ctx, user, appName)
 	if err != nil {
 		return nil, fmt.Errorf(`Error while listing containers: %v`, err)
 	}

@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/ViBiOh/auth/pkg/model"
@@ -30,12 +31,12 @@ func isMultiApp(user *model.User) bool {
 	return user.HasProfile(adminUser) || user.HasProfile(multiAppUser)
 }
 
-func (a *App) isAllowed(user *model.User, containerID string) (bool, *types.ContainerJSON, error) {
+func (a *App) isAllowed(ctx context.Context, user *model.User, containerID string) (bool, *types.ContainerJSON, error) {
 	if user == nil {
 		return false, nil, commons.ErrUserRequired
 	}
 
-	container, err := a.InspectContainer(containerID)
+	container, err := a.InspectContainer(ctx, containerID)
 	if err != nil {
 		return false, nil, fmt.Errorf(`Error while inspecting container: %v`, err)
 	}
