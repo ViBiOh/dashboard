@@ -521,28 +521,26 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 		return
 	}
 
-	ctx, cancel := context.WithCancel(r.Context())
+	ctx := r.Context()
 
 	oldContainers, err := a.checkRights(ctx, user, appName)
 	if err != nil {
-		cancel()
 		http.Error(w, err.Error(), http.StatusForbidden)
 		return
 	}
 
 	newServices, err := a.parseCompose(ctx, user, appName, composeFile)
 	if err != nil {
-		cancel()
 		composeFailed(w, user, appName, err)
 		return
 	}
 
 	if err = a.checkTasks(user, appName); err != nil {
-		cancel()
 		composeFailed(w, user, appName, err)
 		return
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
 	go a.finishDeploy(ctx, cancel, user, appName, newServices, oldContainers)
 
 	if err == nil {
