@@ -547,9 +547,8 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 		return
 	}
 
-	span, _ := opentracing.StartSpanFromContext(r.Context(), `deploy`)
 	ctx, cancel := context.WithCancel(context.Background())
-	ctx = opentracing.ContextWithSpan(ctx, span)
+	_, ctx = opentracing.StartSpanFromContext(ctx, `Deploy`)
 
 	go a.finishDeploy(ctx, cancel, user, appName, newServices, oldContainers)
 
