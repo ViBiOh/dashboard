@@ -440,7 +440,6 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 	span := opentracing.SpanFromContext(ctx)
 	span.SetTag(`app`, appName)
 	span.SetTag(`services_count`, len(services))
-
 	defer func() {
 		defer a.tasks.Delete(appName)
 		defer span.Finish()
@@ -548,9 +547,9 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 		return
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
 	span, _ := opentracing.StartSpanFromContext(r.Context(), `deploy`)
-	opentracing.ContextWithSpan(ctx, span)
+	ctx, cancel := context.WithCancel(context.Background())
+	ctx = opentracing.ContextWithSpan(ctx, span)
 
 	go a.finishDeploy(ctx, cancel, user, appName, newServices, oldContainers)
 
