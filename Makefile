@@ -93,7 +93,7 @@ start-auth:
 		-corsCredentials
 
 start-api:
-	go run cmd/dashboard/dashboard.go \
+	go run -race cmd/dashboard/dashboard.go \
 		-tls=false \
 		-dockerWs ".*" \
 		-dockerVersion '1.32' \

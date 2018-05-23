@@ -80,7 +80,7 @@
     "api/types/volume",
     "client"
   ]
-  revision = "bcaf8913695e5ad57868c8c82af58f9e699e7f59"
+  revision = "5a68e2617da4b18ea4bae9fb3205026bb541e8d4"
 
 [[projects]]
   name = "github.com/docker/go-connections"
@@ -191,7 +191,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "7f59abf37be6a6007f075af1bc7f16f137bc176b"
+  revision = "88eb85aaee56831ad49eaf7aa80d73de9814cde2"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"

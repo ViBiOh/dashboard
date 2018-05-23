@@ -28,6 +28,7 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/network"
+	opentracing "github.com/opentracing/opentracing-go"
 )
 
 const (
@@ -436,8 +437,15 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 }
 
 func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user *model.User, appName string, services map[string]*deployedService, oldContainers []types.Container) {
-	defer cancel()
-	defer a.tasks.Delete(appName)
+	span := opentracing.SpanFromContext(ctx)
+	span.SetTag(`app`, appName)
+	span.SetTag(`services_count`, len(services))
+
+	defer func() {
+		defer a.tasks.Delete(appName)
+		defer span.Finish()
+		defer cancel()
+	}()
 
 	if a.areContainersHealthy(ctx, user, appName, a.inspectServices(ctx, services, user, appName)) {
 		if err := a.cleanContainers(ctx, oldContainers); err != nil {
@@ -541,6 +549,9 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
+	span, _ := opentracing.StartSpanFromContext(r.Context(), `deploy`)
+	opentracing.ContextWithSpan(ctx, span)
+
 	go a.finishDeploy(ctx, cancel, user, appName, newServices, oldContainers)
 
 	if err == nil {
