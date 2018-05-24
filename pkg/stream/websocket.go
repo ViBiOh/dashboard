@@ -157,7 +157,9 @@ func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user 
 			}
 
 		case err := <-errors:
-			log.Printf(`[%s] Events reading in error: %v`, user.Username, err)
+			if err != nil {
+				log.Printf(`[%s] Events reading in error: %v`, user.Username, err)
+			}
 			cancel()
 		}
 	}
