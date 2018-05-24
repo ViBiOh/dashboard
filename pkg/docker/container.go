@@ -13,6 +13,7 @@ import (
 	"github.com/ViBiOh/httputils/pkg/httpjson"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
+	opentracing "github.com/opentracing/opentracing-go"
 )
 
 const (
@@ -25,6 +26,11 @@ const (
 
 // ListContainers list containers for user and app if provided
 func (a *App) ListContainers(ctx context.Context, user *model.User, appName string) ([]types.Container, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker list`)
+	defer span.Finish()
+	span.SetTag(`user`, user.Username)
+	span.SetTag(`app`, appName)
+
 	options := types.ContainerListOptions{All: true}
 
 	options.Filters = filters.NewArgs()
@@ -35,6 +41,10 @@ func (a *App) ListContainers(ctx context.Context, user *model.User, appName stri
 
 // InspectContainer get detailed information of a container
 func (a *App) InspectContainer(ctx context.Context, containerID string) (*types.ContainerJSON, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker inspect`)
+	defer span.Finish()
+	span.SetTag(`id`, containerID)
+
 	container, err := a.Docker.ContainerInspect(ctx, containerID)
 	return &container, err
 }
@@ -45,6 +55,10 @@ func getContainer(_ context.Context, containerID string, container *types.Contai
 
 // StartContainer start a container
 func (a *App) StartContainer(ctx context.Context, containerID string, _ *types.ContainerJSON) (interface{}, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker start`)
+	defer span.Finish()
+	span.SetTag(`id`, containerID)
+
 	return nil, a.Docker.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
 }
 
@@ -55,6 +69,10 @@ func (a *App) StopContainer(ctx context.Context, containerID string, _ *types.Co
 
 // GracefulStopContainer stop a container
 func (a *App) GracefulStopContainer(ctx context.Context, containerID string, gracefulTimeout time.Duration) (interface{}, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker stop`)
+	defer span.Finish()
+	span.SetTag(`id`, containerID)
+
 	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout)
 	defer cancel()
 
@@ -68,6 +86,10 @@ func (a *App) RestartContainer(ctx context.Context, containerID string, _ *types
 
 // GracefulRestartContainer stop a container
 func (a *App) GracefulRestartContainer(ctx context.Context, containerID string, gracefulTimeout time.Duration) (interface{}, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker restart`)
+	defer span.Finish()
+	span.SetTag(`id`, containerID)
+
 	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout)
 	defer cancel()
 
@@ -81,6 +103,10 @@ func (a *App) RmContainerAndImages(ctx context.Context, containerID string, cont
 
 // RmContainer remove a container
 func (a *App) RmContainer(ctx context.Context, containerID string, container *types.ContainerJSON, failOnImageFail bool) (interface{}, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker rm`)
+	defer span.Finish()
+	span.SetTag(`id`, containerID)
+
 	var err error
 
 	if container == nil {
@@ -105,6 +131,10 @@ func (a *App) RmContainer(ctx context.Context, containerID string, container *ty
 
 // RmImage remove image
 func (a *App) RmImage(ctx context.Context, imageID string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker rmi`)
+	defer span.Finish()
+	span.SetTag(`id`, imageID)
+
 	if _, err := a.Docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{}); err != nil {
 		return fmt.Errorf(`Error while removing image: %v`, err)
 	}
