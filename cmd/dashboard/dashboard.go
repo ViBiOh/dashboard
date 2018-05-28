@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/NYTimes/gziphandler"
 	"github.com/ViBiOh/auth/pkg/auth"
 	"github.com/ViBiOh/dashboard/pkg/api"
 	"github.com/ViBiOh/dashboard/pkg/deploy"
@@ -17,6 +16,7 @@ import (
 	"github.com/ViBiOh/httputils/pkg"
 	"github.com/ViBiOh/httputils/pkg/alcotest"
 	"github.com/ViBiOh/httputils/pkg/cors"
+	"github.com/ViBiOh/httputils/pkg/gzip"
 	"github.com/ViBiOh/httputils/pkg/healthcheck"
 	"github.com/ViBiOh/httputils/pkg/opentracing"
 	"github.com/ViBiOh/httputils/pkg/owasp"
@@ -66,6 +66,7 @@ func main() {
 	opentracingApp := opentracing.NewApp(opentracingConfig)
 	owaspApp := owasp.NewApp(owaspConfig)
 	corsApp := cors.NewApp(corsConfig)
+	gzipApp := gzip.NewApp()
 
 	authApp := auth.NewApp(authConfig, nil)
 	dockerApp, err := docker.NewApp(dockerConfig, authApp)
@@ -81,7 +82,7 @@ func main() {
 	deployApp := deploy.NewApp(deployConfig, authApp, dockerApp)
 	apiApp := api.NewApp(authApp, dockerApp, deployApp)
 
-	restHandler := server.ChainMiddlewares(gziphandler.GzipHandler(apiApp.Handler()), opentracingApp, owaspApp, corsApp)
+	restHandler := server.ChainMiddlewares(apiApp.Handler(), opentracingApp, gzipApp, owaspApp, corsApp)
 	websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
