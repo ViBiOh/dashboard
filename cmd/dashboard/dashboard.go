@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"log"
 	"net/http"
 	"strings"
@@ -14,10 +15,12 @@ import (
 	"github.com/ViBiOh/dashboard/pkg/docker"
 	"github.com/ViBiOh/dashboard/pkg/stream"
 	"github.com/ViBiOh/httputils/pkg"
+	"github.com/ViBiOh/httputils/pkg/alcotest"
 	"github.com/ViBiOh/httputils/pkg/cors"
 	"github.com/ViBiOh/httputils/pkg/healthcheck"
 	"github.com/ViBiOh/httputils/pkg/opentracing"
 	"github.com/ViBiOh/httputils/pkg/owasp"
+	"github.com/ViBiOh/httputils/pkg/server"
 )
 
 const websocketPrefix = `/ws`
@@ -43,47 +46,53 @@ func handleGracefulClose(deployApp *deploy.App) error {
 }
 
 func main() {
-	authConfig := auth.Flags(`auth`)
+	serverConfig := httputils.Flags(``)
+	alcotestConfig := alcotest.Flags(``)
+	opentracingConfig := opentracing.Flags(`tracing`)
 	owaspConfig := owasp.Flags(``)
 	corsConfig := cors.Flags(`cors`)
+
+	authConfig := auth.Flags(`auth`)
 	dockerConfig := docker.Flags(`docker`)
 	deployConfig := deploy.Flags(`docker`)
 	streamConfig := stream.Flags(`docker`)
-	opentracingConfig := opentracing.Flags(`tracing`)
 
-	var deployApp *deploy.App
+	flag.Parse()
+
+	alcotest.DoAndExit(alcotestConfig)
+
+	serverApp := httputils.NewApp(serverConfig)
 	healthcheckApp := healthcheck.NewApp()
+	opentracingApp := opentracing.NewApp(opentracingConfig)
+	owaspApp := owasp.NewApp(owaspConfig)
+	corsApp := cors.NewApp(corsConfig)
 
-	httputils.NewApp(httputils.Flags(``), func() http.Handler {
-		authApp := auth.NewApp(authConfig, nil)
+	authApp := auth.NewApp(authConfig, nil)
+	dockerApp, err := docker.NewApp(dockerConfig, authApp)
+	if err != nil {
+		log.Fatalf(`Error while creating docker: %v`, err)
+	}
 
-		dockerApp, err := docker.NewApp(dockerConfig, authApp)
-		if err != nil {
-			log.Fatalf(`Error while creating docker: %v`, err)
+	streamApp, err := stream.NewApp(streamConfig, authApp, dockerApp)
+	if err != nil {
+		log.Fatalf(`Error while creating stream: %v`, err)
+	}
+
+	deployApp := deploy.NewApp(deployConfig, authApp, dockerApp)
+	apiApp := api.NewApp(authApp, dockerApp, deployApp)
+
+	restHandler := server.ChainMiddlewares(gziphandler.GzipHandler(apiApp.Handler()), opentracingApp, owaspApp, corsApp)
+	websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, websocketPrefix) {
+			websocketHandler.ServeHTTP(w, r)
+		} else {
+			restHandler.ServeHTTP(w, r)
 		}
+	})
 
-		streamApp, err := stream.NewApp(streamConfig, authApp, dockerApp)
-		if err != nil {
-			log.Fatalf(`Error while creating stream: %v`, err)
-		}
-
-		deployApp = deploy.NewApp(deployConfig, authApp, dockerApp)
-		apiApp := api.NewApp(authApp, dockerApp, deployApp)
-
-		restHandler := opentracing.NewApp(opentracingConfig).Handler(gziphandler.GzipHandler(owasp.Handler(owaspConfig, cors.Handler(corsConfig, apiApp.Handler()))))
-		websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
-		healthcheckHandler := healthcheckApp.Handler(apiApp.HealthcheckHandler())
-
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == `/health` {
-				healthcheckHandler.ServeHTTP(w, r)
-			} else if strings.HasPrefix(r.URL.Path, websocketPrefix) {
-				websocketHandler.ServeHTTP(w, r)
-			} else {
-				restHandler.ServeHTTP(w, r)
-			}
-		})
-	}, func() error {
+	serverApp.ListenAndServe(handler, func() error {
 		return handleGracefulClose(deployApp)
-	}, healthcheckApp).ListenAndServe()
+	}, healthcheckApp)
 }
