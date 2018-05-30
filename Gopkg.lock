@@ -22,7 +22,7 @@
     "pkg/model",
     "pkg/provider"
   ]
-  revision = "92ab1ff6003fd02a3b925d531109a27fe1364e3d"
+  revision = "eafe35128250d8c1cb8f5147d434be2f31516159"
 
 [[projects]]
   branch = "master"
@@ -42,7 +42,7 @@
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "5f118d9228ef4b0d3a598415e4cccc37b65f5577"
+  revision = "9f9961492345a8306528feb1283c6b76fc6d7e3e"
 
 [[projects]]
   branch = "master"
@@ -87,7 +87,7 @@
     "api/types/volume",
     "client"
   ]
-  revision = "9c2c887b125df56e622d20ebbbe626c55b61e44a"
+  revision = "0a94468a5bed080a77a01847515123b9c2eff62e"
 
 [[projects]]
   name = "github.com/docker/go-connections"
@@ -240,7 +240,7 @@
     "internal/socks",
     "proxy"
   ]
-  revision = "dfa909b99c79129e1100513e5cd36307665e5723"
+  revision = "75944861c7512f64725d687546cfbc757626151f"
 
 [[projects]]
   branch = "master"
