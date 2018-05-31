@@ -32,7 +32,7 @@ func NewApp(authApp *auth.App, dockerApp *docker.App, deployApp *deploy.App) *Ap
 }
 
 // Handler for Docker request. Should be use with net/http
-func (a *App) Handler() http.Handler {
+func (a App) Handler() http.Handler {
 	containerHandler := http.StripPrefix(containersPrefix, a.dockerApp.Handler())
 	deployHandler := http.StripPrefix(deployPrefix, a.deployApp.Handler())
 
@@ -59,7 +59,7 @@ func (a *App) Handler() http.Handler {
 }
 
 // HealthcheckHandler for Healthcheck request. Should be use with net/http
-func (a *App) HealthcheckHandler() http.Handler {
+func (a App) HealthcheckHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if a.dockerApp == nil {
 			w.WriteHeader(http.StatusServiceUnavailable)
