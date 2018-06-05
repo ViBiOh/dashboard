@@ -47,8 +47,8 @@
 .external {
   padding: 0.4rem;
   text-align: right;
+}
 
-  svg {
-    color: var(--dark);
-  }
+.external svg {
+  color: var(--dark);
 }
