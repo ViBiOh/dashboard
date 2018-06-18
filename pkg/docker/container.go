@@ -64,7 +64,7 @@ func (a *App) StartContainer(ctx context.Context, containerID string, _ *types.C
 
 // StopContainer stop a container
 func (a *App) StopContainer(ctx context.Context, containerID string, _ *types.ContainerJSON) (interface{}, error) {
-	return a.GracefulStopContainer(ctx, containerID, commons.DefaultTimeout)
+	return a.GracefulStopContainer(ctx, containerID, time.Minute)
 }
 
 // GracefulStopContainer stop a container
@@ -73,7 +73,7 @@ func (a *App) GracefulStopContainer(ctx context.Context, containerID string, gra
 	defer span.Finish()
 	span.SetTag(`id`, containerID)
 
-	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout)
+	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout+(5*time.Second))
 	defer cancel()
 
 	return nil, a.Docker.ContainerStop(timeoutCtx, containerID, &gracefulTimeout)

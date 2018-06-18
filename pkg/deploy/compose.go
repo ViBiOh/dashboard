@@ -286,7 +286,7 @@ func (a *App) pullImage(ctx context.Context, image string) error {
 func (a *App) cleanContainers(ctx context.Context, containers []types.Container) error {
 	for _, container := range containers {
 		if _, err := a.dockerApp.GracefulStopContainer(ctx, container.ID, time.Minute); err != nil {
-			return fmt.Errorf(`Error while stopping container %s: %v`, container.Names, err)
+			log.Printf(`Error while stopping container %s: %v`, container.Names, err)
 		}
 	}
 
