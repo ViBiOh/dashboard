@@ -57,7 +57,7 @@ func main() {
 		},
 	}
 
-	tmpl := template.Must(template.New(`docker-compose.yml.gohtml`).Funcs(funcs).ParseFiles(`templates/docker-compose.yml.gohtml`))
+	tmpl := template.Must(template.New(`docker-compose.yml.html`).Funcs(funcs).ParseFiles(`templates/docker-compose.yml.html`))
 
 	prefixedDomain := fmt.Sprintf(`.%s`, *domain)
 	if strings.HasPrefix(*domain, `:`) {
