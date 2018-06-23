@@ -1,0 +1,194 @@
+version: '2.1'
+
+services:
+  auth:
+    image: vibioh/auth
+    command:
+  {{- if not .TLS }}
+    - -tls=false
+  {{- end }}
+  {{- if .AuthBasic }}
+    - -basicUsers
+    - 1:admin:${ADMIN_PASSWORD}
+  {{- end }}
+    - -corsHeaders
+    - Authorization
+    - -corsCredentials
+  {{- if .Github }}
+    - -githubClientId
+    - ${GITHUB_OAUTH_CLIENT_ID}
+    - -githubClientSecret
+    - ${GITHUB_OAUTH_CLIENT_SECRET}
+  {{- end }}
+  {{- if .Tracing }}
+    - -tracingName
+    - dashboard_auth
+  {{- end }}
+  {{- if .Traefik }}
+    {{- template "traefikLabels" merge . "Prefix:dashboard-auth" }}
+  {{- end }}
+  {{- template "healthcheck" . }}
+  {{- if .Expose }}
+    ports:
+    - 1081:1080/tcp
+  {{- end }}
+  {{- template "systemConfig" merge . "MemLimit:67108864" }}
+
+  api:
+    image: vibioh/dashboard-api{{- if ne .Version "" -}}:{{- .Version -}}{{- end }}
+    command:
+  {{- if not .TLS }}
+    - -tls=false
+  {{- end }}
+    - -dockerWs
+  {{- if .Traefik }}
+    - ^dashboard-api{{ .Domain }}$$
+  {{- else }}
+    - .*
+  {{- end }}
+    - -dockerVersion
+    - '1.32'
+  {{- if .DockerUser }}
+    - -dockerContainerUser
+    - ${CONTAINER_USER}
+  {{- end }}
+  {{- if ne .Tag "" }}
+    - -dockerTag
+    - {{ .Tag -}}
+  {{- end }}
+    - -authUrl
+  {{- if .Traefik }}
+    - http{{ if .TLS }}s{{ end }}://dashboard-auth{{ .Domain }}
+  {{- else }}
+    - http{{ if .TLS }}s{{ end }}://auth{{ .Domain }}
+  {{- end }}
+    - -authUsers
+    - {{ .Users }}
+    - -corsHeaders
+    - Content-Type,Authorization
+    - -corsMethods
+    - GET,POST,DELETE
+    - -corsCredentials
+    - -csp
+    - "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:"
+  {{- if .Tracing }}
+    - -tracingName
+    - dashboard_api
+  {{- end }}
+  {{- if .Traefik }}
+    {{- template "traefikLabels" merge . "Prefix:dashboard-api" }}
+  {{- end }}
+  {{- template "healthcheck" . }}
+  {{- if .Expose }}
+    ports:
+    - 1082:1080/tcp
+  {{- end }}
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+  {{- if .DockerUser }}
+    group_add:
+    - '${DOCKER_GROUP}'
+  {{- end -}}
+  {{- template "systemConfig" merge . "MemLimit:67108864" }}
+
+  front:
+    image: vibioh/dashboard-ui{{- if ne .Version "" -}}:{{- .Version -}}{{- end }}
+    command:
+  {{- if not .TLS }}
+    - -tls=false
+  {{- end }}
+    - -spa
+    - -env
+    - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED
+    - -csp
+    - "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dashboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1081 localhost:1082{{ else }}api:1080 auth:1080{{ end }}{{ end }}"
+    - -headers
+    - X-UA-Compatible:ie=edge
+  {{- if .Tracing }}
+    - -tracingName
+    - dashboard_ui
+  {{- end }}
+  {{- if .Traefik }}
+    {{- template "traefikLabels" merge . "Prefix:dashboard" }}
+  {{- end }}
+  {{- template "healthcheck" . }}
+  {{- if .Expose }}
+    ports:
+    - 1080:1080/tcp
+  {{- end }}
+    environment:
+    {{- if .Traefik }}
+      API_URL: 'http{{ if .TLS }}s{{ end }}://dashboard-api{{ .Domain }}'
+      WS_URL: 'ws{{ if .TLS }}s{{ end }}://dashboard-api{{ .Domain }}/ws'
+      AUTH_URL: 'http{{ if .TLS }}s{{ end }}://dashboard-auth{{ .Domain }}'
+    {{- else }}
+    {{- if .Expose }}
+      API_URL: 'http{{ if .TLS }}s{{ end }}://localhost:1082'
+      WS_URL: 'ws{{ if .TLS }}s{{ end }}://localhost:1082/ws'
+      AUTH_URL: 'http{{ if .TLS }}s{{ end }}://localhost:1081'
+    {{- else }}
+      API_URL: 'http{{ if .TLS }}s{{ end }}://api:1080'
+      WS_URL: 'ws{{ if .TLS }}s{{ end }}://api:1080/ws'
+      AUTH_URL: 'http{{ if .TLS }}s{{ end }}://auth:1080'
+    {{- end }}
+    {{- end }}
+    {{- if .AuthBasic }}
+      BASIC_AUTH_ENABLED: 'true'
+    {{- else }}
+      BASIC_AUTH_ENABLED: 'false'
+    {{- end }}
+    {{- if .Github }}
+      GITHUB_AUTH_ENABLED: 'true'
+    {{- else }}
+      GITHUB_AUTH_ENABLED: 'false'
+    {{- end }}
+  {{- template "systemConfig" merge . "MemLimit:67108864" }}
+{{ if .Selenium }}
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+    - 4444:4444/tcp
+    volumes:
+    - /dev/shm:/dev/shm
+{{- end }}
+{{- if .Traefik }}
+networks:
+  default:
+    external:
+      name: traefik
+{{ end }}
+
+{{- define "traefikLabels" }}
+    labels:
+      traefik.frontend.passHostHeader: 'true'
+      traefik.frontend.rule: 'Host: {{ .Prefix }}{{ .Domain }}'
+      traefik.protocol: 'http{{ if .TLS }}s{{ end }}'
+      traefik.port: '1080'
+      traefik.frontend.rateLimit.extractorFunc: 'client.ip'
+      traefik.frontend.rateLimit.rateSet.first.period: '60s'
+      traefik.frontend.rateLimit.rateSet.first.average: '100'
+      traefik.frontend.rateLimit.rateSet.first.burst: '200'
+{{- end }}
+
+{{- define "healthcheck" }}
+  {{- if not .TLS }}
+    healthcheck:
+      test: [ "CMD", "/bin/sh", "-c", "http://localhost:1080/health" ]
+  {{- end }}
+{{- end }}
+
+{{- define "systemConfig" }}
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+    {{- if .DockerUser }}
+    user: '${CONTAINER_USER}'
+    {{- end }}
+    restart: on-failure:5
+    read_only: true
+    cpu_shares: 128
+    mem_limit: {{ .MemLimit }}
+    security_opt:
+    - no-new-privileges
+{{- end }}
