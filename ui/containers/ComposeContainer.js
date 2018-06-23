@@ -16,11 +16,20 @@ const mapStateToProps = state => ({
  * @param {Function} dispatch Redux dispatch function
  */
 const mapDispatchToProps = dispatch => ({
-  onCompose: (name, file) => dispatch(actions.compose(name, file)),
+  onCompose: (name, file) =>
+    dispatch(
+      actions.compose(
+        name,
+        file,
+      ),
+    ),
   onBack: () => dispatch(actions.goHome()),
 });
 
 /**
  * Container for handling compose view.
  */
-export default connect(mapStateToProps, mapDispatchToProps)(Compose);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Compose);

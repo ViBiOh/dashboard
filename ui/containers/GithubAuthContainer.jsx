@@ -9,8 +9,8 @@ import Github from '../presentationals/Login/Github';
  * Select props from Redux state.
  * @param {Object} state Current state
  */
-const mapStateToProps = (state, props) => {
-  const params = SearchParams(props.location.search);
+const mapStateToProps = (state, { location: { search } }) => {
+  const params = SearchParams(search);
 
   return {
     error: params.error_description || state.error,
@@ -27,9 +27,9 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => ({
   component: (
     <Github
-      getAccessToken={(state, code, redirect) =>
-        dispatch(actions.getGithubAccessToken(state, code, redirect))
-      }
+      getAccessToken={(state, code, redirect) => {
+        dispatch(actions.getGithubAccessToken(state, code, redirect));
+      }}
     />
   ),
 });
@@ -37,4 +37,7 @@ const mapDispatchToProps = dispatch => ({
 /**
  * Github connected.
  */
-export default connect(mapStateToProps, mapDispatchToProps)(Wrapper);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Wrapper);

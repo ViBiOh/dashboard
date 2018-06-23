@@ -6,7 +6,9 @@ import style from './index.css';
 const Wrapper = ({ component, error, ...rest }) => (
   <span className={style.container}>
     <ErrorBanner error={error} />
-    <h2>Login</h2>
+    <h2>
+Login
+    </h2>
     {React.cloneElement(component, { error, ...rest })}
   </span>
 );

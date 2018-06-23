@@ -7,13 +7,14 @@ const container = {
   Mounts: [],
 };
 
-test('should not render if no Mounts', (t) => {
+test('should not render if no Mounts', t => {
   t.is(shallow(<ContainerVolumes container={container} />).type(), null);
 });
 
-test('should always render in a span and have a h3 title', (t) => {
-  const wrapper = shallow(<ContainerVolumes
-    container={{
+test('should always render in a span and have a h3 title', t => {
+  const wrapper = shallow(
+    <ContainerVolumes
+      container={{
         ...container,
         Mounts: [
           {
@@ -23,7 +24,8 @@ test('should always render in a span and have a h3 title', (t) => {
           },
         ],
       }}
-  />);
+    />,
+  );
 
   t.is(wrapper.type(), 'span');
   t.is(wrapper.find('h3').text(), 'Volumes');

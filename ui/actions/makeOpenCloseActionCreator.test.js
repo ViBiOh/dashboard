@@ -1,7 +1,7 @@
 import test from 'ava';
-import { makeOpenCloseActionCreator } from './';
+import { makeOpenCloseActionCreator } from '.';
 
-test('should return action type', (t) => {
+test('should return action type', t => {
   const busActions = makeOpenCloseActionCreator('channel');
   t.is(busActions.OPEN_CHANNEL, 'OPEN_CHANNEL');
   t.is(busActions.CLOSE_CHANNEL, 'CLOSE_CHANNEL');
@@ -9,7 +9,7 @@ test('should return action type', (t) => {
   t.is(busActions.CHANNEL_CLOSED, 'CHANNEL_CLOSED');
 });
 
-test('should return action creator', (t) => {
+test('should return action creator', t => {
   const busActions = makeOpenCloseActionCreator('channel');
   t.deepEqual(busActions.openChannel(), {
     type: 'OPEN_CHANNEL',

@@ -4,9 +4,9 @@ import { STORAGE_KEY_AUTH } from '../Constants';
 import Auth from '../services/Auth';
 import localStorage from '../services/LocalStorage';
 import actions from '../actions';
-import { getGithubAccesTokenSaga } from './';
+import { getGithubAccesTokenSaga } from '.';
 
-test('should call Auth.getGithubAccessToken with given state and code', (t) => {
+test('should call Auth.getGithubAccessToken with given state and code', t => {
   const iterator = getGithubAccesTokenSaga({
     state: 'state',
     code: 'secret',
@@ -15,7 +15,7 @@ test('should call Auth.getGithubAccessToken with given state and code', (t) => {
   t.deepEqual(iterator.next().value, call(Auth.getGithubAccessToken, 'state', 'secret'));
 });
 
-test('should store token, put success, fetching info and go home after API call', (t) => {
+test('should store token, put success, fetching info and go home after API call', t => {
   const iterator = getGithubAccesTokenSaga({});
   iterator.next();
 
@@ -27,7 +27,7 @@ test('should store token, put success, fetching info and go home after API call'
   ]);
 });
 
-test('should put error on failure', (t) => {
+test('should put error on failure', t => {
   const iterator = getGithubAccesTokenSaga({});
   iterator.next();
 

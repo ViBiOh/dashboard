@@ -25,7 +25,7 @@ const container = {
   },
 };
 
-test('should always render as a span', (t) => {
+test('should always render as a span', t => {
   const openLogs = sinon.spy();
   const onBack = sinon.spy();
   const onRefresh = sinon.spy();
@@ -34,19 +34,21 @@ test('should always render as a span', (t) => {
   const onStop = sinon.spy();
   const onDelete = sinon.spy();
 
-  const wrapper = shallow(<Container
-    openLogs={openLogs}
-    onBack={onBack}
-    onRefresh={onRefresh}
-    onStart={onStart}
-    onRestart={onRestart}
-    onStop={onStop}
-    onDelete={onDelete}
-  />);
+  const wrapper = shallow(
+    <Container
+      openLogs={openLogs}
+      onBack={onBack}
+      onRefresh={onRefresh}
+      onStart={onStart}
+      onRestart={onRestart}
+      onStop={onStop}
+      onDelete={onDelete}
+    />,
+  );
   t.is(wrapper.type(), 'span');
 });
 
-test('should have a Toolbar', (t) => {
+test('should have a Toolbar', t => {
   const openLogs = sinon.spy();
   const onBack = sinon.spy();
   const onRefresh = sinon.spy();
@@ -55,19 +57,21 @@ test('should have a Toolbar', (t) => {
   const onStop = sinon.spy();
   const onDelete = sinon.spy();
 
-  const wrapper = shallow(<Container
-    openLogs={openLogs}
-    onBack={onBack}
-    onRefresh={onRefresh}
-    onStart={onStart}
-    onRestart={onRestart}
-    onStop={onStop}
-    onDelete={onDelete}
-  />);
+  const wrapper = shallow(
+    <Container
+      openLogs={openLogs}
+      onBack={onBack}
+      onRefresh={onRefresh}
+      onStart={onStart}
+      onRestart={onRestart}
+      onStop={onStop}
+      onDelete={onDelete}
+    />,
+  );
   t.is(wrapper.find(Toolbar).length, 1);
 });
 
-test('should have a Throbber if pending', (t) => {
+test('should have a Throbber if pending', t => {
   const openLogs = sinon.spy();
   const onBack = sinon.spy();
   const onRefresh = sinon.spy();
@@ -76,21 +80,23 @@ test('should have a Throbber if pending', (t) => {
   const onStop = sinon.spy();
   const onDelete = sinon.spy();
 
-  const wrapper = shallow(<Container
-    openLogs={openLogs}
-    onBack={onBack}
-    onRefresh={onRefresh}
-    onStart={onStart}
-    onRestart={onRestart}
-    onStop={onStop}
-    onDelete={onDelete}
-    pending
-  />);
+  const wrapper = shallow(
+    <Container
+      openLogs={openLogs}
+      onBack={onBack}
+      onRefresh={onRefresh}
+      onStart={onStart}
+      onRestart={onRestart}
+      onStop={onStop}
+      onDelete={onDelete}
+      pending
+    />,
+  );
 
   t.is(wrapper.find(Throbber).length, 1);
 });
 
-test('should have a display components if not pending', (t) => {
+test('should have a display components if not pending', t => {
   const openLogs = sinon.spy();
   const onBack = sinon.spy();
   const onRefresh = sinon.spy();
@@ -99,17 +105,19 @@ test('should have a display components if not pending', (t) => {
   const onStop = sinon.spy();
   const onDelete = sinon.spy();
 
-  const wrapper = shallow(<Container
-    openLogs={openLogs}
-    onBack={onBack}
-    onRefresh={onRefresh}
-    onStart={onStart}
-    onRestart={onRestart}
-    onStop={onStop}
-    onDelete={onDelete}
-    pending={false}
-    container={container}
-  />);
+  const wrapper = shallow(
+    <Container
+      openLogs={openLogs}
+      onBack={onBack}
+      onRefresh={onRefresh}
+      onStart={onStart}
+      onRestart={onRestart}
+      onStop={onStop}
+      onDelete={onDelete}
+      pending={false}
+      container={container}
+    />,
+  );
 
   t.is(wrapper.find(ContainerInfo).length, 1);
   t.is(wrapper.find(ContainerNetwork).length, 1);
@@ -117,7 +125,7 @@ test('should have a display components if not pending', (t) => {
   t.is(wrapper.find(ContainerLogs).length, 1);
 });
 
-test('should have a two action button if up', (t) => {
+test('should have a two action button if up', t => {
   const openLogs = sinon.spy();
   const onBack = sinon.spy();
   const onRefresh = sinon.spy();
@@ -126,24 +134,26 @@ test('should have a two action button if up', (t) => {
   const onStop = sinon.spy();
   const onDelete = sinon.spy();
 
-  const wrapper = shallow(<Container
-    openLogs={openLogs}
-    onBack={onBack}
-    onRefresh={onRefresh}
-    onStart={onStart}
-    onRestart={onRestart}
-    onStop={onStop}
-    onDelete={onDelete}
-    pending={false}
-    container={container}
-  />);
+  const wrapper = shallow(
+    <Container
+      openLogs={openLogs}
+      onBack={onBack}
+      onRefresh={onRefresh}
+      onStart={onStart}
+      onRestart={onRestart}
+      onStop={onStop}
+      onDelete={onDelete}
+      pending={false}
+      container={container}
+    />,
+  );
 
   t.true(wrapper.find(ThrobberButton).length >= 2);
   t.is(wrapper.find('FaRetweet').length, 1);
   t.is(wrapper.find('FaStopCircle').length, 1);
 });
 
-test('should have a two action button if not up', (t) => {
+test('should have a two action button if not up', t => {
   const openLogs = sinon.spy();
   const onBack = sinon.spy();
   const onRefresh = sinon.spy();
@@ -152,20 +162,22 @@ test('should have a two action button if not up', (t) => {
   const onStop = sinon.spy();
   const onDelete = sinon.spy();
 
-  const wrapper = shallow(<Container
-    openLogs={openLogs}
-    onBack={onBack}
-    onRefresh={onRefresh}
-    onStart={onStart}
-    onRestart={onRestart}
-    onStop={onStop}
-    onDelete={onDelete}
-    pending={false}
-    container={{
+  const wrapper = shallow(
+    <Container
+      openLogs={openLogs}
+      onBack={onBack}
+      onRefresh={onRefresh}
+      onStart={onStart}
+      onRestart={onRestart}
+      onStop={onStop}
+      onDelete={onDelete}
+      pending={false}
+      container={{
         ...container,
         State: { Status: 'down', Running: false },
       }}
-  />);
+    />,
+  );
 
   t.true(wrapper.find(ThrobberButton).length >= 2);
   t.is(wrapper.find('FaPlay').length, 1);

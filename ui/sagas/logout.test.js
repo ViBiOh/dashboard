@@ -5,9 +5,9 @@ import { push } from 'react-router-redux';
 import { STORAGE_KEY_AUTH } from '../Constants';
 import localStorage from '../services/LocalStorage';
 import actions from '../actions';
-import { logoutSaga } from './';
+import { logoutSaga } from '.';
 
-test('should drop storage key, put success, close streams and redirect to login after API call', (t) => {
+test('should drop storage key, put success, close streams and redirect to login after API call', t => {
   const iterator = logoutSaga();
 
   t.deepEqual(iterator.next().value, [
@@ -19,7 +19,7 @@ test('should drop storage key, put success, close streams and redirect to login 
   ]);
 });
 
-test('should put error on failure', (t) => {
+test('should put error on failure', t => {
   const iterator = logoutSaga();
   iterator.next();
 

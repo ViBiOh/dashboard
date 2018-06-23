@@ -3,9 +3,9 @@ import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import Docker from '../services/Docker';
 import actions from '../actions';
-import { composeSaga } from './';
+import { composeSaga } from '.';
 
-test('should call Docker.containerCreate with given name and file', (t) => {
+test('should call Docker.containerCreate with given name and file', t => {
   const iterator = composeSaga({
     name: 'Test',
     file: 'File of test',
@@ -14,7 +14,7 @@ test('should call Docker.containerCreate with given name and file', (t) => {
   t.deepEqual(iterator.next().value, call(Docker.containerCreate, 'Test', 'File of test'));
 });
 
-test('should put success and redirect to home after API call', (t) => {
+test('should put success and redirect to home after API call', t => {
   const iterator = composeSaga({
     name: 'Test',
     file: 'File of test',
@@ -24,7 +24,7 @@ test('should put success and redirect to home after API call', (t) => {
   t.deepEqual(iterator.next().value, [put(actions.composeSucceeded()), put(push('/'))]);
 });
 
-test('should put error on failure', (t) => {
+test('should put error on failure', t => {
   const iterator = composeSaga({});
   iterator.next({});
 

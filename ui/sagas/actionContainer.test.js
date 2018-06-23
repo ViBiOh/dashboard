@@ -3,9 +3,9 @@ import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import Docker from '../services/Docker';
 import actions from '../actions';
-import { actionContainerSaga } from './';
+import { actionContainerSaga } from '.';
 
-test('should call Docker service from given name with given id', (t) => {
+test('should call Docker service from given name with given id', t => {
   const iterator = actionContainerSaga({
     action: 'containerStart',
     id: 'test',
@@ -14,7 +14,7 @@ test('should call Docker service from given name with given id', (t) => {
   t.deepEqual(iterator.next().value, call(Docker.containerStart, 'test'));
 });
 
-test('should put success after API call', (t) => {
+test('should put success after API call', t => {
   const iterator = actionContainerSaga({
     action: 'containerStart',
   });
@@ -23,7 +23,7 @@ test('should put success after API call', (t) => {
   t.deepEqual(iterator.next().value, put(actions.actionContainerSucceeded()));
 });
 
-test('should put fetch container after API call', (t) => {
+test('should put fetch container after API call', t => {
   const iterator = actionContainerSaga({
     action: 'containerStart',
     id: 'test',
@@ -34,7 +34,7 @@ test('should put fetch container after API call', (t) => {
   t.deepEqual(iterator.next().value, put(actions.fetchContainer('test')));
 });
 
-test('should go home after delete API call', (t) => {
+test('should go home after delete API call', t => {
   const iterator = actionContainerSaga({
     action: 'containerDelete',
     id: 'test',
@@ -45,7 +45,7 @@ test('should go home after delete API call', (t) => {
   t.deepEqual(iterator.next().value, put(push('/')));
 });
 
-test('should put error on failure', (t) => {
+test('should put error on failure', t => {
   const iterator = actionContainerSaga({
     action: 'containerDelete',
     id: 'test',

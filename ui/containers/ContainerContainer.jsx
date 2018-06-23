@@ -14,9 +14,11 @@ class ContainerComponent extends Component {
    * Fetch container and open streams for bus if bus provided.
    */
   componentDidMount() {
-    this.props.fetchContainer(this.props.containerId);
+    const { fetchContainer, containerId, bus } = this.props;
 
-    if (this.props.bus) {
+    fetchContainer(containerId);
+
+    if (bus) {
       this.openStreams();
     }
   }
@@ -26,8 +28,10 @@ class ContainerComponent extends Component {
    * Open streams for bus if bus provided.
    * @param {Object} nextProps Next props for component
    */
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.bus && nextProps.bus) {
+  componentWillReceiveProps({ bus: nextBus }) {
+    const { bus } = this.props;
+
+    if (!bus && nextBus) {
       this.openStreams();
     }
   }
@@ -45,8 +49,10 @@ class ContainerComponent extends Component {
    * @memberof ContainerComponent
    */
   openStreams() {
-    this.props.openLogs(this.props.containerId);
-    this.props.openStats(this.props.containerId);
+    const { openLogs, openStats, containerId } = this.props;
+
+    openLogs(containerId);
+    openStats(containerId);
   }
 
   /**
@@ -54,31 +60,42 @@ class ContainerComponent extends Component {
    * @memberof ContainerComponent
    */
   closeStreams() {
-    this.props.closeLogs();
-    this.props.closeStats();
+    const { closeLogs, closeStats } = this.props;
+
+    closeLogs();
+    closeStats();
   }
 
   /**
    * React lifecycle.
    */
   render() {
-    const { container } = this.props;
+    const {
+      pending,
+      pendingAction,
+      container,
+      logs,
+      stats,
+      onBack,
+      actionContainer,
+      error,
+    } = this.props;
 
     return (
       <Container
-        pending={this.props.pending}
-        pendingAction={this.props.pendingAction}
-        container={this.props.container}
-        logs={this.props.logs}
-        stats={this.props.stats}
-        onBack={this.props.onBack}
+        pending={pending}
+        pendingAction={pendingAction}
+        container={container}
+        logs={logs}
+        stats={stats}
+        onBack={onBack}
         openStreams={this.openStreams}
-        onRefresh={() => this.props.actionContainer('containerInfos', container.Id)}
-        onStart={() => this.props.actionContainer('containerStart', container.Id)}
-        onRestart={() => this.props.actionContainer('containerRestart', container.Id)}
-        onStop={() => this.props.actionContainer('containerStop', container.Id)}
-        onDelete={() => this.props.actionContainer('containerDelete', container.Id)}
-        error={this.props.error}
+        onRefresh={() => actionContainer('containerInfos', container.Id)}
+        onStart={() => actionContainer('containerStart', container.Id)}
+        onRestart={() => actionContainer('containerRestart', container.Id)}
+        onStop={() => actionContainer('containerStop', container.Id)}
+        onDelete={() => actionContainer('containerDelete', container.Id)}
+        error={error}
       />
     );
   }
@@ -112,7 +129,14 @@ ContainerComponent.defaultProps = {
  * Select props from Redux state.
  * @param {Object} state Current state
  */
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = (
+  state,
+  {
+    match: {
+      params: { containerId },
+    },
+  },
+) => ({
   pending: !!state.pending[actions.FETCH_CONTAINER],
   pendingAction: !!state.pending[actions.ACTION_CONTAINER],
   container: state.container,
@@ -120,7 +144,7 @@ const mapStateToProps = (state, props) => ({
   logs: state.logs,
   stats: state.stats,
   error: state.error,
-  containerId: props.match.params.containerId,
+  containerId,
 });
 
 /**
@@ -140,4 +164,7 @@ const mapDispatchToProps = dispatch => ({
 /**
  * Container for handling container view.
  */
-export default connect(mapStateToProps, mapDispatchToProps)(ContainerComponent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ContainerComponent);

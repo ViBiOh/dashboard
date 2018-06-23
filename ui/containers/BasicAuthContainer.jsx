@@ -9,8 +9,8 @@ import Basic from '../presentationals/Login/Basic';
  * Select props from Redux state.
  * @param {Object} state Current state
  */
-const mapStateToProps = (state, props) => {
-  const params = SearchParams(props.location.search);
+const mapStateToProps = (state, { location: { search } }) => {
+  const params = SearchParams(search);
 
   return {
     pending: !!state.pending[actions.LOGIN],
@@ -26,9 +26,9 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => ({
   component: (
     <Basic
-      onLogin={(username, password, redirect) =>
-        dispatch(actions.login(username, password, redirect))
-      }
+      onLogin={(username, password, redirect) => {
+        dispatch(actions.login(username, password, redirect));
+      }}
     />
   ),
 });
@@ -36,4 +36,7 @@ const mapDispatchToProps = dispatch => ({
 /**
  * Container for handling login view.
  */
-export default connect(mapStateToProps, mapDispatchToProps)(Wrapper);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Wrapper);

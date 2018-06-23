@@ -3,21 +3,22 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import ContainerStats from './ContainerStats';
 
-test('should render as a span', (t) => {
+test('should render as a span', t => {
   const wrapper = shallow(<ContainerStats />);
 
   t.is(wrapper.type(), 'span');
 });
 
-test('should not render Graph if entries are empty is not provided', (t) => {
+test('should not render Graph if entries are empty is not provided', t => {
   const wrapper = shallow(<ContainerStats />);
 
   t.is(wrapper.find('Graph').length, 0);
 });
 
-test('should display logs if given', (t) => {
-  const wrapper = shallow(<ContainerStats
-    stats={{
+test('should display logs if given', t => {
+  const wrapper = shallow(
+    <ContainerStats
+      stats={{
         cpuLimit: 800,
         memoryLimit: 16,
         memoryScale: 2,
@@ -28,7 +29,8 @@ test('should display logs if given', (t) => {
           },
         ],
       }}
-  />);
+    />,
+  );
 
   t.is(wrapper.type(), 'span');
 });

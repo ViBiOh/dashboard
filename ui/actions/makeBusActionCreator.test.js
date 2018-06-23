@@ -1,13 +1,13 @@
 import test from 'ava';
-import { makeBusActionCreator } from './';
+import { makeBusActionCreator } from '.';
 
-test('should return action type', (t) => {
+test('should return action type', t => {
   const busActions = makeBusActionCreator('stream');
   t.is(busActions.OPEN_STREAM, 'OPEN_STREAM');
   t.is(busActions.CLOSE_STREAM, 'CLOSE_STREAM');
 });
 
-test('should return action creator', (t) => {
+test('should return action creator', t => {
   const busActions = makeBusActionCreator('stream');
   t.deepEqual(busActions.openStream('id'), {
     type: 'OPEN_STREAM',

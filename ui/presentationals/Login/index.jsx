@@ -16,7 +16,9 @@ const Login = ({ location }) => {
 
   return (
     <span className={style.flex}>
-      <h2>Login</h2>
+      <h2>
+Login
+      </h2>
       <div className={style.center}>
         {getFromContext('BASIC_AUTH_ENABLED') === 'true' && (
           <a

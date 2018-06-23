@@ -14,9 +14,7 @@ import style from './index.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Compose form with inputs.
  */
-const Compose = ({
-  onCompose, onBack, pending, error,
-}) => {
+const Compose = ({ onCompose, onBack, pending, error }) => {
   const refs = {};
 
   /**
@@ -35,7 +33,9 @@ const Compose = ({
       </Toolbar>
       <div className={style.content}>
         <ErrorBanner error={error} />
-        <h2>Create an app</h2>
+        <h2>
+Create an app
+        </h2>
         <input
           ref={e => setRef(refs, 'nameInput', e)}
           name="name"

@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import funtch from 'funtch';
 import { STORAGE_KEY_AUTH } from '../../Constants';
 import localStorage from '../LocalStorage';
-import Docker from './';
+import Docker from '.';
 
 let data;
 let getItemSpy;
@@ -50,7 +50,7 @@ test.afterEach(() => {
   localStorage.getItem.restore();
 });
 
-test.serial('should throw error if not auth find', (t) => {
+test.serial('should throw error if not auth find', t => {
   localStorage.getItem.restore();
   sinon.stub(localStorage, 'getItem').callsFake(() => '');
 
@@ -61,9 +61,10 @@ test.serial('should throw error if not auth find', (t) => {
 test.serial('should list containers with auth', t =>
   Docker.containers().then(() => {
     t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
-  }));
+  }),
+);
 
-test.serial('should return results when listing containers', (t) => {
+test.serial('should return results when listing containers', t => {
   data = {
     results: [
       {
@@ -76,10 +77,11 @@ test.serial('should return results when listing containers', (t) => {
 });
 
 test.serial('should create container with given args', t =>
-  Docker.containerCreate('test', 'composeFileContent').then((result) => {
+  Docker.containerCreate('test', 'composeFileContent').then(result => {
     t.true(/deploy\/test\/$/.test(result.url));
     t.is(result.content, 'composeFileContent');
-  }));
+  }),
+);
 
 [
   {
@@ -118,16 +120,17 @@ test.serial('should create container with given args', t =>
     httpMethod: 'delete',
     url: /containers\/test\/$/,
   },
-].forEach((param) => {
+].forEach(param => {
   test.serial(`for ${param.method}`, t =>
-    Docker[param.method].apply(null, param.args).then((result) => {
+    Docker[param.method].apply(null, param.args).then(result => {
       t.is(result.method, param.httpMethod);
       t.true(param.url.test(result.url));
       t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
-    }));
+    }),
+  );
 });
 
-test.serial('should send auth on streamBus opening', (t) => {
+test.serial('should send auth on streamBus opening', t => {
   const onMessage = sinon.spy();
   const wsSend = sinon.spy();
 
@@ -142,7 +145,7 @@ test.serial('should send auth on streamBus opening', (t) => {
   t.true(getItemSpy.calledWith(STORAGE_KEY_AUTH));
 });
 
-test.serial('should call onMessage callback for streamBus', (t) => {
+test.serial('should call onMessage callback for streamBus', t => {
   const onMessage = sinon.spy();
   const wsSend = sinon.spy();
 

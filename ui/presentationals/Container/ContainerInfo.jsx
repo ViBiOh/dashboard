@@ -33,11 +33,16 @@ const ContainerInfo = ({ container }) => {
   let labelContent = null;
   if (Object.keys(container.Config.Labels).length > 0) {
     labelContent = [
-      <h3 key="labelsHeader">Labels</h3>,
+      <h3 key="labelsHeader">
+Labels
+      </h3>,
       <span key="labels" className={style.labels}>
         {Object.keys(container.Config.Labels).map(label => (
           <span key={label} className={style.item}>
-            {label} | {container.Config.Labels[label]}
+            {label}
+            {' '}
+|
+            {container.Config.Labels[label]}
           </span>
         ))}
       </span>,
@@ -47,14 +52,19 @@ const ContainerInfo = ({ container }) => {
   let envContent = null;
   if (container.Config.Env.length > 0) {
     envContent = [
-      <h3 key="envsHeader">Environment</h3>,
+      <h3 key="envsHeader">
+Environment
+      </h3>,
       <span key="envs" className={style.labels}>
         {container.Config.Env.filter(e => !!e)
           .map(env => ENV_PARSER.exec(env))
           .filter(parts => parts !== null && parts.length > 2)
           .map(parts => (
             <span key={parts[1]} className={style.item}>
-              {parts[1]} | {parts[2]}
+              {parts[1]}
+              {' '}
+|
+              {parts[2]}
             </span>
           ))}
       </span>,
@@ -82,28 +92,50 @@ const ContainerInfo = ({ container }) => {
           </span>
         )}
       </h2>
-      <h3 key="config">Config</h3>
+      <h3 key="config">
+Config
+      </h3>
       <span key="id" className={style.info}>
-        <span className={style.label}>Id</span>
-        <span>{String(container.Id).substring(0, 12)}</span>
+        <span className={style.label}>
+Id
+        </span>
+        <span>
+          {String(container.Id).substring(0, 12)}
+        </span>
       </span>
       <span key="created" className={style.info}>
-        <span className={style.label}>Created</span>
-        <span>{moment(container.Created).fromNow()}</span>
+        <span className={style.label}>
+Created
+        </span>
+        <span>
+          {moment(container.Created).fromNow()}
+        </span>
       </span>
       <span key="image" className={style.info}>
-        <span className={style.label}>Image</span>
-        <span>{container.Config.Image}</span>
+        <span className={style.label}>
+Image
+        </span>
+        <span>
+          {container.Config.Image}
+        </span>
       </span>
       <span key="command" className={style.info}>
-        <span className={style.label}>Command</span>
-        <pre className={style.code}>{`${container.Path} ${container.Args.join(' ')}`}</pre>
+        <span className={style.label}>
+Command
+        </span>
+        <pre className={style.code}>
+          {`${container.Path} ${container.Args.join(' ')}`}
+        </pre>
       </span>
-      <h3 key="hostConfig">HostConfig</h3>
+      <h3 key="hostConfig">
+HostConfig
+      </h3>
       <span key="hostLabels" className={style.labels}>
         {container.HostConfig.RestartPolicy && (
           <span key="restart" className={style.item}>
-            Restart | {container.HostConfig.RestartPolicy.Name}
+            Restart | 
+            {' '}
+            {container.HostConfig.RestartPolicy.Name}
             {container.HostConfig.RestartPolicy.MaximumRetryCount
               ? `:${container.HostConfig.RestartPolicy.MaximumRetryCount}`
               : ''}
@@ -116,18 +148,24 @@ const ContainerInfo = ({ container }) => {
         )}
         {container.HostConfig.CpuShares > 0 && (
           <span key="cpu" className={style.item}>
-            CPU Shares | {container.HostConfig.CpuShares}
+            CPU Shares | 
+            {' '}
+            {container.HostConfig.CpuShares}
           </span>
         )}
         {container.HostConfig.Memory > 0 && (
           <span key="memory" className={style.item}>
-            Memory limit | {humanSize(container.HostConfig.Memory)}
+            Memory limit | 
+            {' '}
+            {humanSize(container.HostConfig.Memory)}
           </span>
         )}
         {container.HostConfig.SecurityOpt &&
           container.HostConfig.SecurityOpt.length > 0 && (
             <span key="security" className={style.item}>
-              Security | {container.HostConfig.SecurityOpt.join(', ')}
+              Security | 
+              {' '}
+              {container.HostConfig.SecurityOpt.join(', ')}
             </span>
           )}
       </span>

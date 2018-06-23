@@ -6,7 +6,6 @@ ui/dist/
 .nyc_output
 .cache
 esdoc/
-package-lock.json
 e2e/output
 
 # Golang

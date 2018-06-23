@@ -39,12 +39,17 @@ export class ContainersListContainerComponent extends Component {
    * Retrieval of query string for synchronizing ReduxState and History.
    */
   componentDidMount() {
-    const queryFilter = SearchParams(this.props.location.search).filter;
+    const {
+      location: { search },
+      filter,
+      onFilterChange,
+    } = this.props;
+    const queryFilter = SearchParams(search).filter;
 
-    if (queryFilter && !this.props.filter) {
-      this.props.onFilterChange(queryFilter);
-    } else if (!queryFilter && this.props.filter) {
-      this.props.onFilterChange(this.props.filter);
+    if (queryFilter && !filter) {
+      onFilterChange(queryFilter);
+    } else if (!queryFilter && filter) {
+      onFilterChange(filter);
     }
   }
 
@@ -68,4 +73,7 @@ ContainersListContainerComponent.propTypes = {
 /**
  * Container for handling list view.
  */
-export default connect(mapStateToProps, mapDispatchToProps)(ContainersListContainerComponent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ContainersListContainerComponent);

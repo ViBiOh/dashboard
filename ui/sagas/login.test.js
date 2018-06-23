@@ -4,9 +4,9 @@ import { STORAGE_KEY_AUTH } from '../Constants';
 import Auth from '../services/Auth';
 import localStorage from '../services/LocalStorage';
 import actions from '../actions';
-import { loginSaga } from './';
+import { loginSaga } from '.';
 
-test('should call Auth.login with given username and password', (t) => {
+test('should call Auth.login with given username and password', t => {
   const iterator = loginSaga({
     username: 'Test',
     password: 'secret',
@@ -15,7 +15,7 @@ test('should call Auth.login with given username and password', (t) => {
   t.deepEqual(iterator.next().value, call(Auth.basicLogin, 'Test', 'secret'));
 });
 
-test('should put success, info, open event stream and go home after API call', (t) => {
+test('should put success, info, open event stream and go home after API call', t => {
   const iterator = loginSaga({});
   iterator.next();
 
@@ -27,7 +27,7 @@ test('should put success, info, open event stream and go home after API call', (
   ]);
 });
 
-test('should put error on failure', (t) => {
+test('should put error on failure', t => {
   const iterator = loginSaga({});
   iterator.next();
 

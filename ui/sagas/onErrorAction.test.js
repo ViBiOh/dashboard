@@ -1,16 +1,16 @@
 import test from 'ava';
 import { push } from 'react-router-redux';
 import actions from '../actions';
-import { onErrorAction } from './';
+import { onErrorAction } from '.';
 
-test('should not redirect on login', (t) => {
+test('should not redirect on login', t => {
   t.deepEqual(
     onErrorAction('logoutFailed', { toString: () => 'Test failed' }),
     actions.logoutFailed('Test failed'),
   );
 });
 
-test('should redirect to login if 401', (t) => {
+test('should redirect to login if 401', t => {
   t.deepEqual(
     onErrorAction('logoutFailed', {
       toString: () => 'Test failed',
@@ -20,7 +20,7 @@ test('should redirect to login if 401', (t) => {
   );
 });
 
-test('should redirect to login if no auth', (t) => {
+test('should redirect to login if no auth', t => {
   t.deepEqual(
     onErrorAction('logoutFailed', {
       toString: () => 'Test failed',

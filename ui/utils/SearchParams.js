@@ -15,7 +15,7 @@ export function computeRedirectSearch(redirect) {
  * @param {String} content Search location (e.g. document.location.search)
  * @returns {Object} Object containing every search param, true for param without value
  */
-export default function (content) {
+export default function(content) {
   const params = {};
 
   if (!content) {

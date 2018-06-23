@@ -4,9 +4,9 @@ import { put, fork, cancel } from 'redux-saga/effects';
 import { createMockTask } from 'redux-saga/utils';
 import Docker from '../services/Docker';
 import actions from '../actions';
-import { readBusSaga, writeBusSaga } from './';
+import { readBusSaga, writeBusSaga } from '.';
 
-test('should call Docker.streamBus and fork a write saga', (t) => {
+test('should call Docker.streamBus and fork a write saga', t => {
   const websocket = {
     close: () => null,
   };
@@ -20,7 +20,7 @@ test('should call Docker.streamBus and fork a write saga', (t) => {
   t.deepEqual(value, fork(writeBusSaga, websocket));
 });
 
-test('should wait for event from channel', (t) => {
+test('should wait for event from channel', t => {
   sinon.stub(Docker, 'streamBus').callsFake(() => ({
     close: () => null,
   }));
@@ -32,7 +32,7 @@ test('should wait for event from channel', (t) => {
   t.truthy(iterator.next(createMockTask()).value.TAKE.channel);
 });
 
-test('should put bus opened event', (t) => {
+test('should put bus opened event', t => {
   sinon.stub(Docker, 'streamBus').callsFake(() => ({
     close: () => null,
   }));
@@ -46,7 +46,7 @@ test('should put bus opened event', (t) => {
   t.deepEqual(iterator.next('ready').value, [put(actions.busOpened()), put(actions.openEvents())]);
 });
 
-test('should fetch containers if events', (t) => {
+test('should fetch containers if events', t => {
   sinon.stub(Docker, 'streamBus').callsFake(() => ({
     close: () => null,
   }));
@@ -62,7 +62,7 @@ test('should fetch containers if events', (t) => {
   t.deepEqual(iterator.next('events test').value, put(actions.fetchContainers()));
 });
 
-test('should add log if logs', (t) => {
+test('should add log if logs', t => {
   sinon.stub(Docker, 'streamBus').callsFake(() => ({
     close: () => null,
   }));
@@ -78,7 +78,7 @@ test('should add log if logs', (t) => {
   t.deepEqual(iterator.next('logs test').value, put(actions.addLog('test')));
 });
 
-test('should add stats if stats', (t) => {
+test('should add stats if stats', t => {
   sinon.stub(Docker, 'streamBus').callsFake(() => ({
     close: () => null,
   }));
@@ -94,7 +94,7 @@ test('should add stats if stats', (t) => {
   t.deepEqual(iterator.next('stats {"value": true}').value, put(actions.addStat({ value: true })));
 });
 
-test('should do nothing if unknown', (t) => {
+test('should do nothing if unknown', t => {
   sinon.stub(Docker, 'streamBus').callsFake(() => ({
     close: () => null,
   }));
@@ -110,7 +110,7 @@ test('should do nothing if unknown', (t) => {
   t.truthy(iterator.next('unknown start').value.TAKE.channel);
 });
 
-test('should graceful close fork and say stream ended', (t) => {
+test('should graceful close fork and say stream ended', t => {
   sinon.stub(Docker, 'streamBus').callsFake(() => ({
     close: () => null,
   }));

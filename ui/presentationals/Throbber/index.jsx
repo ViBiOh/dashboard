@@ -7,11 +7,13 @@ import style from './index.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Throbber with label and title if provided
  */
-const Throbber = ({
-  label, title, white, vertical, horizontalSm,
-}) => (
+const Throbber = ({ label, title, white, vertical, horizontalSm }) => (
   <div className={style.container} title={title}>
-    {!vertical && label ? <span>{label}</span> : null}
+    {!vertical && label ? (
+      <span>
+        {label}
+      </span>
+) : null}
     <div
       className={`${style.throbber} ${white && style.white} ${vertical &&
         style.column} ${horizontalSm && style['row-responsive']}`}

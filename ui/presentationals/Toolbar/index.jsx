@@ -8,7 +8,9 @@ import style from './index.css';
  * @return {React.Component} Toolbar with children and message if provided
  */
 const Toolbar = ({ children, className }) => (
-  <span className={`${style.flex} ${className}`}>{children}</span>
+  <span className={`${style.flex} ${className}`}>
+    {children}
+  </span>
 );
 
 Toolbar.propTypes = {

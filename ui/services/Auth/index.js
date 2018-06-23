@@ -15,7 +15,11 @@ export default class Auth {
    */
   static getGithubAccessToken(state, code) {
     return funtch
-      .url(`${getAuthApiUrl()}/login/github?state=${encodeURIComponent(state)}&code=${encodeURIComponent(code)}`)
+      .url(
+        `${getAuthApiUrl()}/login/github?state=${encodeURIComponent(
+          state,
+        )}&code=${encodeURIComponent(code)}`,
+      )
       .error(customError)
       .get();
   }

@@ -34,11 +34,13 @@ export default class Filter extends Component {
 
     this.setState({ value });
 
+    const { onChange } = this.props;
+
     /**
      * Timeout key for making a debounce.
      */
     this.onChangeTimeout = setTimeout(() => {
-      this.props.onChange(this.state.value);
+      onChange(value);
     }, DEBOUNCE_TIMEOUT);
   }
 
@@ -47,13 +49,15 @@ export default class Filter extends Component {
    * @return {ReactComponent} DOM Node
    */
   render() {
+    const { value } = this.state;
+
     return (
       <input
         data-search
         type="text"
         name="search"
         placeholder="Filter..."
-        value={this.state.value}
+        value={value}
         className={style.search}
         onChange={e => this.debouncedOnChange(e.target.value)}
       />

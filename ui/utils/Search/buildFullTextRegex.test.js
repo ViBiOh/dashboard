@@ -1,11 +1,11 @@
 import test from 'ava';
-import { buildFullTextRegex } from './';
+import { buildFullTextRegex } from '.';
 
-test('should have wildcard if value is empty', (t) => {
+test('should have wildcard if value is empty', t => {
   t.deepEqual(buildFullTextRegex(' '), new RegExp('[\\s\\S]*', 'gim'));
 });
 
-test('should build regex for all values', (t) => {
+test('should build regex for all values', t => {
   t.deepEqual(
     buildFullTextRegex('unit test dashboard'),
     new RegExp(

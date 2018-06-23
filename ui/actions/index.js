@@ -61,7 +61,7 @@ export const makeApiActionCreator = (camelCaseName, inputs = [], outputs = []) =
  * @param  {Array}  closes        Properties' names of close action
  * @return {[type]}               An object container constants and functions for requesting WS
  */
-export const makeOpenCloseActionCreator = (camelCaseName) => {
+export const makeOpenCloseActionCreator = camelCaseName => {
   const typeName = toTypeName(camelCaseName);
   const camelSuffix = camelCaseName.replace(/^(.)/, (all, char) => char.toUpperCase());
 
@@ -80,7 +80,7 @@ export const makeOpenCloseActionCreator = (camelCaseName) => {
  * @return {func}                Function that generate action with type and properties given the
  *                               params
  */
-export const makeBusPayloadActionCreator = (type, streamName, demand) => (id) => {
+export const makeBusPayloadActionCreator = (type, streamName, demand) => id => {
   let usedId = '';
   if (typeof id !== 'undefined') {
     usedId = ` ${id}`;
@@ -112,7 +112,7 @@ export const makeBusActionAndTypeCreator = (type, action, input = []) => ({
  * @param  {[type]} camelCaseName CamelCase name of action : the action function name
  * @return {[type]}               An object container constants and functions for requesting WS
  */
-export const makeBusActionCreator = (camelCaseName) => {
+export const makeBusActionCreator = camelCaseName => {
   const typeName = toTypeName(camelCaseName);
   const camelSuffix = camelCaseName.replace(/^(.)/, (all, char) => char.toUpperCase());
 

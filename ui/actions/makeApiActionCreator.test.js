@@ -1,7 +1,7 @@
 import test from 'ava';
-import { makeApiActionCreator } from './';
+import { makeApiActionCreator } from '.';
 
-test('should return action type', (t) => {
+test('should return action type', t => {
   const apiActions = makeApiActionCreator('fetch', ['payload'], ['response']);
   t.is(apiActions.FETCH, 'FETCH');
   t.is(apiActions.FETCH_REQUEST, 'FETCH_REQUEST');
@@ -9,7 +9,7 @@ test('should return action type', (t) => {
   t.is(apiActions.FETCH_FAILED, 'FETCH_FAILED');
 });
 
-test('should return action creator', (t) => {
+test('should return action creator', t => {
   const apiActions = makeApiActionCreator('fetch', ['payload'], ['response']);
   t.deepEqual(apiActions.fetch('id'), { type: 'FETCH_REQUEST', payload: 'id' });
   t.deepEqual(apiActions.fetchSucceeded('valid'), {

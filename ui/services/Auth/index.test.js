@@ -2,7 +2,7 @@ import test from 'ava';
 import sinon from 'sinon';
 import funtch from 'funtch';
 import btoa from '../../utils/btoa';
-import Auth from './';
+import Auth from '.';
 
 test.beforeEach(() => {
   function send(url, auth, method, content) {
@@ -39,9 +39,11 @@ test.afterEach(() => {
 test.serial('should forge request to get github access token', t =>
   Auth.getGithubAccessToken('state', 'code').then(({ url }) => {
     t.is(url, 'undefined/login/github?state=state&code=code');
-  }));
+  }),
+);
 
 test.serial('should basicLogin with given username and password', t =>
-  Auth.basicLogin('admin', 'password').then((result) => {
+  Auth.basicLogin('admin', 'password').then(result => {
     t.is(result, `Basic ${btoa('admin:password')}`);
-  }));
+  }),
+);

@@ -12,22 +12,30 @@ const ContainerNetwork = ({ container }) => {
     container.NetworkSettings.Networks &&
     Object.keys(container.NetworkSettings.Networks).map(network => (
       <span key={network} className={style.item}>
-        {network} | {container.NetworkSettings.Networks[network].IPAddress}
+        {network}
+        {' '}
+|
+        {container.NetworkSettings.Networks[network].IPAddress}
       </span>
     ));
 
   const linkContent =
     container.NetworkSettings.Networks &&
     []
-      .concat(...Object.keys(container.NetworkSettings.Networks)
-        .map(networkName => container.NetworkSettings.Networks[networkName])
-        .filter(network => network.Links)
-        .map(network => network.Links))
+      .concat(
+        ...Object.keys(container.NetworkSettings.Networks)
+          .map(networkName => container.NetworkSettings.Networks[networkName])
+          .filter(network => network.Links)
+          .map(network => network.Links),
+      )
       .map(link => link.split(':'))
       .filter(parts => parts.length > 1)
       .map(parts => (
         <span key={parts[1]} className={style.item}>
-          {parts[0]} | {parts[1]}
+          {parts[0]}
+          {' '}
+|
+          {parts[1]}
         </span>
       ));
 
@@ -37,7 +45,10 @@ const ContainerNetwork = ({ container }) => {
       .filter(port => container.NetworkSettings.Ports[port])
       .map(port => (
         <span key={port} className={style.item}>
-          {port} | {container.NetworkSettings.Ports[port].map(p => p.HostPort).join(', ')}
+          {port}
+          {' '}
+|
+          {container.NetworkSettings.Ports[port].map(p => p.HostPort).join(', ')}
         </span>
       ));
 
@@ -45,21 +56,27 @@ const ContainerNetwork = ({ container }) => {
     <span className={style.container}>
       {networkContent &&
         networkContent.length > 0 && [
-          <h3 key="networkHeader">Networks</h3>,
+          <h3 key="networkHeader">
+Networks
+          </h3>,
           <span key="networks" className={style.labels}>
             {networkContent}
           </span>,
         ]}
       {portContent &&
         portContent.length > 0 && [
-          <h3 key="portsHeader">Ports</h3>,
+          <h3 key="portsHeader">
+Ports
+          </h3>,
           <span key="ports" className={style.labels}>
             {portContent}
           </span>,
         ]}
       {linkContent &&
         linkContent.length > 0 && [
-          <h3 key="linksHeader">Links</h3>,
+          <h3 key="linksHeader">
+Links
+          </h3>,
           <span key="labels" className={style.labels}>
             {linkContent}
           </span>,

@@ -1,11 +1,11 @@
 import test from 'ava';
-import { makeActionAndTypeCreator } from './';
+import { makeActionAndTypeCreator } from '.';
 
-test('should return action type', (t) => {
+test('should return action type', t => {
   t.is(makeActionAndTypeCreator('ACTION_TYPE', 'actionType').ACTION_TYPE, 'ACTION_TYPE');
 });
 
-test('should return action creator', (t) => {
+test('should return action creator', t => {
   t.deepEqual(
     makeActionAndTypeCreator('ACTION_TYPE', 'actionType', ['payload']).actionType('content'),
     {

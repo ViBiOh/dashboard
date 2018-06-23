@@ -32,9 +32,7 @@ for (let i = 0; i < STATS_COUNT; i += 1) {
  * @return {ReactComponent} Section with stats informations
  */
 const ContainerStats = ({ stats }) => {
-  const {
-    entries, memoryScaleNames, memoryLimit, cpuLimit,
-  } = stats;
+  const { entries, memoryScaleNames, memoryLimit, cpuLimit } = stats;
 
   const data = {
     labels,
@@ -92,7 +90,9 @@ const ContainerStats = ({ stats }) => {
 
   return (
     <span className={style.container}>
-      <h3>Monitoring</h3>
+      <h3>
+Monitoring
+      </h3>
       <div className={style.content}>
         {entries.length > 0 ? (
           <Graph type="line" data={data} options={options} />

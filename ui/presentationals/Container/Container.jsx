@@ -23,7 +23,7 @@ import style from './Container.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Container informations.
  */
-const Container = (props) => {
+const Container = props => {
   const {
     pending,
     pendingAction,
@@ -54,49 +54,57 @@ const Container = (props) => {
     ];
 
     if (container.State.Running) {
-      buttons.push(<ThrobberButton
-        key="restart"
-        onClick={onRestart}
-        vertical
-        horizontalSm
-        pending={pendingAction}
-        title="Restart container"
-      >
-        <FaRetweet />
-                   </ThrobberButton>);
-      buttons.push(<ThrobberButton
-        key="stop"
-        type="danger"
-        onClick={onStop}
-        vertical
-        horizontalSm
-        pending={pendingAction}
-        title="Stop container"
-      >
-        <FaStopCircle />
-      </ThrobberButton>);
+      buttons.push(
+        <ThrobberButton
+          key="restart"
+          onClick={onRestart}
+          vertical
+          horizontalSm
+          pending={pendingAction}
+          title="Restart container"
+        >
+          <FaRetweet />
+        </ThrobberButton>,
+      );
+      buttons.push(
+        <ThrobberButton
+          key="stop"
+          type="danger"
+          onClick={onStop}
+          vertical
+          horizontalSm
+          pending={pendingAction}
+          title="Stop container"
+        >
+          <FaStopCircle />
+        </ThrobberButton>,
+      );
     } else {
-      buttons.push(<ThrobberButton
-        key="start"
-        onClick={onStart}
-        vertical
-        horizontalSm
-        pending={pendingAction}
-        title="Start container"
-      >
-        <FaPlay />
-      </ThrobberButton>);
-      buttons.push(<ThrobberButton
-        key="delete"
-        type="danger"
-        onClick={onDelete}
-        vertical
-        horizontalSm
-        pending={pendingAction}
-        title="Delete container"
-      >
-        <FaTrash />
-                   </ThrobberButton>);
+      buttons.push(
+        <ThrobberButton
+          key="start"
+          onClick={onStart}
+          vertical
+          horizontalSm
+          pending={pendingAction}
+          title="Start container"
+        >
+          <FaPlay />
+        </ThrobberButton>,
+      );
+      buttons.push(
+        <ThrobberButton
+          key="delete"
+          type="danger"
+          onClick={onDelete}
+          vertical
+          horizontalSm
+          pending={pendingAction}
+          title="Delete container"
+        >
+          <FaTrash />
+        </ThrobberButton>,
+      );
     }
   }
 

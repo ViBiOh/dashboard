@@ -30,8 +30,8 @@ export const DEBOUNCE_TIMEOUT = 300;
  * @return {Promise<Object>} Context
  */
 export function init() {
-  return new Promise((resolve) => {
-    funtch.get('/env').then((env) => {
+  return new Promise(resolve => {
+    funtch.get('/env').then(env => {
       context = env;
       resolve(context);
     });

@@ -2,9 +2,9 @@ import test from 'ava';
 import { put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import actions from '../actions';
-import { goHomeSaga } from './';
+import { goHomeSaga } from '.';
 
-test('should clear errors and redirect to root', (t) => {
+test('should clear errors and redirect to root', t => {
   const iterator = goHomeSaga({ redirect: 'list' });
 
   t.deepEqual(iterator.next().value, [put(actions.setError('')), put(push('/list'))]);

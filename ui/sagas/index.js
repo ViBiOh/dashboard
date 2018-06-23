@@ -226,7 +226,7 @@ export function* writeBusSaga(websocket) {
  */
 export function* readBusSaga() {
   let websocket;
-  const chan = eventChannel((emit) => {
+  const chan = eventChannel(emit => {
     websocket = Docker.streamBus(emit);
 
     return () => websocket.close();

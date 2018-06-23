@@ -11,8 +11,9 @@ export default class Github extends Component {
    * If no error provided, exhcange code for access token
    */
   componentDidMount() {
-    if (!this.props.error) {
-      this.props.getAccessToken(this.props.state, this.props.code, this.props.redirect);
+    const { error, getAccessToken, state, code, redirect } = this.props;
+    if (!error) {
+      getAccessToken(state, code, redirect);
     }
   }
 
@@ -22,7 +23,9 @@ export default class Github extends Component {
    * @return {ReactComponent} Component
    */
   render() {
-    if (!this.props.error) {
+    const { error } = this.props;
+
+    if (!error) {
       return <Throbber label="Getting access token" />;
     }
 

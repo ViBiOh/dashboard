@@ -1,7 +1,7 @@
 import test from 'ava';
 import React from 'react';
 import { shallow } from 'enzyme';
-import ContainersList from './';
+import ContainersList from '.';
 
 const fn = () => null;
 
@@ -13,20 +13,20 @@ const defaultProps = {
   onFilterChange: fn,
 };
 
-test('should always render as a span with Toolbar', (t) => {
+test('should always render as a span with Toolbar', t => {
   const wrapper = shallow(<ContainersList {...defaultProps} />);
 
   t.is(wrapper.type(), 'span');
   t.is(wrapper.find('Toolbar').length, 1);
 });
 
-test('should render a Throbber if pending', (t) => {
+test('should render a Throbber if pending', t => {
   const wrapper = shallow(<ContainersList {...defaultProps} pending />);
 
   t.is(wrapper.find('Throbber').length, 1);
 });
 
-test('should render a div list with ContainerCard if not pending', (t) => {
+test('should render a div list with ContainerCard if not pending', t => {
   const containers = [
     {
       Id: 1,
@@ -56,7 +56,7 @@ test('should render a div list with ContainerCard if not pending', (t) => {
   );
 });
 
-test('should indicate filtered list', (t) => {
+test('should indicate filtered list', t => {
   const props = {
     ...defaultProps,
     containers: [],

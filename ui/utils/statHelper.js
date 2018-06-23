@@ -54,7 +54,7 @@ export const cpuPercentageMax = stat => stat.cpu_stats.cpu_usage.percpu_usage.le
  * @param  {Object} stat Container's stat
  * @return {Number}      CPU percentage
  */
-export const computeCpuPercentage = (stat) => {
+export const computeCpuPercentage = stat => {
   const cpuDelta = stat.cpu_stats.cpu_usage.total_usage - stat.precpu_stats.cpu_usage.total_usage;
   const systemDelta = stat.cpu_stats.system_cpu_usage - stat.precpu_stats.system_cpu_usage;
   const ratio = cpuDelta / systemDelta;

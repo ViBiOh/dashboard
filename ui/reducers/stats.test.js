@@ -53,7 +53,7 @@ test('should append given stats on ADD_STAT', t =>
     memoryScaleNames: 'MB',
   }));
 
-test('should remove old element when STATS_COUNT is reached', (t) => {
+test('should remove old element when STATS_COUNT is reached', t => {
   const entries = [];
   for (let i = 0; i < STATS_COUNT; i += 1) {
     entries.push({ id: i });

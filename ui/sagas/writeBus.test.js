@@ -1,9 +1,9 @@
 import test from 'ava';
 import { call, take } from 'redux-saga/effects';
 import actions from '../actions';
-import { writeBusSaga } from './';
+import { writeBusSaga } from '.';
 
-test('should wait for write action', (t) => {
+test('should wait for write action', t => {
   const iterator = writeBusSaga();
 
   t.deepEqual(
@@ -19,7 +19,7 @@ test('should wait for write action', (t) => {
   );
 });
 
-test('should send received payload', (t) => {
+test('should send received payload', t => {
   const websocket = { send: () => null };
 
   const iterator = writeBusSaga(websocket);
@@ -28,7 +28,7 @@ test('should send received payload', (t) => {
   t.deepEqual(iterator.next({ payload: 'test' }).value, call([websocket, 'send'], 'test'));
 });
 
-test('should graceful close', (t) => {
+test('should graceful close', t => {
   const websocket = { send: () => null };
 
   const iterator = writeBusSaga(websocket);

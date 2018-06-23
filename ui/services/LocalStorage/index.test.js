@@ -1,7 +1,7 @@
 import test from 'ava';
-import { LocalStorage } from './';
+import { LocalStorage } from '.';
 
-test('should determine localStorage not available on error', (t) => {
+test('should determine localStorage not available on error', t => {
   global.localStorage = {
     setItem: () => {
       throw new Error('Test');
@@ -11,7 +11,7 @@ test('should determine localStorage not available on error', (t) => {
   t.false(new LocalStorage().isEnabled());
 });
 
-test('should determine localStorage not available on error', (t) => {
+test('should determine localStorage not available on error', t => {
   global.localStorage = {
     setItem: () => null,
     removeItem: () => {
@@ -22,7 +22,7 @@ test('should determine localStorage not available on error', (t) => {
   t.false(new LocalStorage().isEnabled());
 });
 
-test('should determine localStorage is available if all success', (t) => {
+test('should determine localStorage is available if all success', t => {
   global.localStorage = {
     setItem: () => null,
     removeItem: () => null,
@@ -31,7 +31,7 @@ test('should determine localStorage is available if all success', (t) => {
   t.true(new LocalStorage().isEnabled());
 });
 
-test('should use cached value for isEnabled', (t) => {
+test('should use cached value for isEnabled', t => {
   let count = 0;
   global.localStorage = {
     setItem: () => {
@@ -48,7 +48,7 @@ test('should use cached value for isEnabled', (t) => {
   t.is(count, 1);
 });
 
-test('should return asked key from global localStorage', (t) => {
+test('should return asked key from global localStorage', t => {
   global.localStorage = {
     setItem: () => null,
     removeItem: () => null,
@@ -58,7 +58,7 @@ test('should return asked key from global localStorage', (t) => {
   t.is(new LocalStorage().getItem('test'), 'Test');
 });
 
-test('should set key to global localStorage', (t) => {
+test('should set key to global localStorage', t => {
   const localStorage = {};
   global.localStorage = {
     setItem: (key, value) => {
@@ -73,7 +73,7 @@ test('should set key to global localStorage', (t) => {
   t.is(localStorage.test, 'value');
 });
 
-test('should remove key to global localStorage', (t) => {
+test('should remove key to global localStorage', t => {
   const localStorage = {
     test: 'value',
     remain: 'value',
@@ -88,7 +88,7 @@ test('should remove key to global localStorage', (t) => {
   t.deepEqual(localStorage, { remain: 'value' });
 });
 
-test('should return asked key from proxyfied localStorage', (t) => {
+test('should return asked key from proxyfied localStorage', t => {
   global.localStorage = {
     setItem: () => {
       throw new Error('Test');
@@ -103,7 +103,7 @@ test('should return asked key from proxyfied localStorage', (t) => {
   t.is(localStorage.getItem('test'), 'Test');
 });
 
-test('should set key to proxyfied localStorage', (t) => {
+test('should set key to proxyfied localStorage', t => {
   global.localStorage = {
     setItem: () => {
       throw new Error('Test');
@@ -116,7 +116,7 @@ test('should set key to proxyfied localStorage', (t) => {
   t.is(localStorage.storage.test, 'value');
 });
 
-test('should remove key to proxyfied localStorage', (t) => {
+test('should remove key to proxyfied localStorage', t => {
   global.localStorage = {
     setItem: () => {
       throw new Error('Test');

@@ -1,7 +1,7 @@
 import test from 'ava';
 import React from 'react';
 import { shallow } from 'enzyme';
-import Wrapper from './';
+import Wrapper from '.';
 
 function defaultProps() {
   return {
@@ -9,6 +9,6 @@ function defaultProps() {
   };
 }
 
-test('should always render as a div', (t) => {
+test('should always render as a div', t => {
   t.is(shallow(<Wrapper {...defaultProps()} />).type(), 'span');
 });

@@ -49,20 +49,24 @@ export function customError(response) {
     errorHandler(response)
       .then(resolve)
       .catch(err =>
-        reject(new Error({
-          ...err,
-          toString: () => {
-            if (!err.content && httpErrorMessage[err.status]) {
-              return httpErrorMessage[err.status];
-            }
+        reject(
+          new Error({
+            ...err,
+            toString: () => {
+              if (!err.content && httpErrorMessage[err.status]) {
+                return httpErrorMessage[err.status];
+              }
 
-            if (typeof err.content === 'string') {
-              return err.content;
-            }
+              if (typeof err.content === 'string') {
+                return err.content;
+              }
 
-            return JSON.stringify(err.content);
-          },
-        }))));
+              return JSON.stringify(err.content);
+            },
+          }),
+        ),
+      ),
+  );
 }
 
 /**

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import FaCloud from 'react-icons/lib/fa/cloud';
-import Button from '../Button/';
+import Button from '../Button';
 import style from './index.css';
 
 /**
@@ -28,13 +28,20 @@ const ContainerCard = ({ container, onClick }) => {
         title={container.Status}
       />
       <span className={style.column}>
-        <em className={style.image}>{container.Image}</em>
-        <strong>{name}</strong>
+        <em className={style.image}>
+          {container.Image}
+        </em>
+        <strong>
+          {name}
+        </strong>
       </span>
       <span>
         {moment.unix(container.Created).fromNow()}
         {container.Labels && container.Labels.owner ? (
-          <div className={style.owner}>by {container.Labels.owner}</div>
+          <div className={style.owner}>
+            by
+            {container.Labels.owner}
+          </div>
         ) : null}
         {container.Ports.some(port => port.IP) ? (
           <div className={style.external} title="Has external IP">
