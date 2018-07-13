@@ -109,13 +109,13 @@ First goal of this tool was to be available for students to deploy containers on
 
 In order to build the server stuff, run the following command.
 
-```
+```bash
 make
 ```
 
 It will compile API server.
 
-```
+```bash
 Usage of dashboard:
   -authUrl string
       [auth] Auth URL, if remote
@@ -137,6 +137,12 @@ Usage of dashboard:
       [deploy] Default container user (default "1000")
   -dockerHost string
       [docker] Host (default "unix:///var/run/docker.sock")
+  -dockerMailerPass string
+      Mailer Pass
+  -dockerMailerURL string
+      Mailer URL (default "https://mailer.vibioh.fr")
+  -dockerMailerUser string
+      Mailer User
   -dockerNetwork string
       [deploy] Default Network (default "traefik")
   -dockerTag string
@@ -159,26 +165,30 @@ Usage of dashboard:
       [tls] Self-signed certificate hosts, comma separated (default "localhost")
   -tlsKey string
       [tls] PEM Key file
+  -tlsOrganization string
+      [tls] Self-signed certificate organization (default "ViBiOh")
   -tracingAgent string
-      [opentracing] Jaeger Agent host:port (default "jaeger:6831")
+      [opentracing] Jaeger Agent (e.g. host:port) (default "jaeger:6831")
   -tracingName string
       [opentracing] Service name
   -url string
       [health] URL to check
+  -userAgent string
+      [health] User-Agent used (default "Golang alcotest")
 ```
 
 ### Front
 
 In order to build the front stuff, run the following command:
 
-```
+```bash
 npm i
 npm run build
 ```
 
 ## Local run
 
-```
+```bash
 make start-deps
 ./bin/compose -authBasic -domain=:1080 -expose -github=false -tls=false -traefik=false > docker-compose.local.yml
 export ADMIN_PASSWORD=`bcrypt password`

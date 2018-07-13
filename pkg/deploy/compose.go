@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"time"
@@ -42,42 +42,6 @@ const (
 	deploySuffix     = `_deploy`
 )
 
-var errHealthCheckFailed = errors.New(`Health check failed`)
-
-type dockerComposeHealthcheck struct {
-	Test     []string
-	Interval string
-	Timeout  string
-	Retries  int
-}
-
-type dockerComposeService struct {
-	Image         string
-	Command       []string
-	Environment   map[string]string
-	Labels        map[string]string
-	Ports         []string
-	Links         []string
-	ExternalLinks []string `yaml:"external_links"`
-	Volumes       []string
-	Hostname      string
-	User          string
-	Healthcheck   *dockerComposeHealthcheck
-	ReadOnly      bool  `yaml:"read_only"`
-	CPUShares     int64 `yaml:"cpu_shares"`
-	MemoryLimit   int64 `yaml:"mem_limit"`
-}
-
-type dockerCompose struct {
-	Version  string
-	Services map[string]dockerComposeService
-}
-
-type deployedService struct {
-	ID   string
-	Name string
-}
-
 // App stores informations
 type App struct {
 	tasks         sync.Map
@@ -86,6 +50,9 @@ type App struct {
 	network       string
 	tag           string
 	containerUser string
+	mailerURL     string
+	mailerUser    string
+	mailerPass    string
 }
 
 // NewApp creates new App from Flags' config
@@ -97,6 +64,9 @@ func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App)
 		network:       strings.TrimSpace(*config[`network`]),
 		tag:           strings.TrimSpace(*config[`tag`]),
 		containerUser: strings.TrimSpace(*config[`containerUser`]),
+		mailerURL:     strings.TrimSpace(*config[`mailerURL`]),
+		mailerUser:    strings.TrimSpace(*config[`mailerUser`]),
+		mailerPass:    strings.TrimSpace(*config[`mailerPass`]),
 	}
 }
 
@@ -106,6 +76,9 @@ func Flags(prefix string) map[string]*string {
 		`network`:       flag.String(tools.ToCamel(fmt.Sprintf(`%sNetwork`, prefix)), `traefik`, `[deploy] Default Network`),
 		`tag`:           flag.String(tools.ToCamel(fmt.Sprintf(`%sTag`, prefix)), `latest`, `[deploy] Default image tag)`),
 		`containerUser`: flag.String(tools.ToCamel(fmt.Sprintf(`%sContainerUser`, prefix)), `1000`, `[deploy] Default container user`),
+		`mailerURL`:     flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerURL`, prefix)), `https://mailer.vibioh.fr`, `Mailer URL`),
+		`mailerUser`:    flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerUser`, prefix)), ``, `Mailer User`),
+		`mailerPass`:    flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerPass`, prefix)), ``, `Mailer Pass`),
 	}
 }
 
@@ -317,33 +290,35 @@ func getFinalName(serviceFullName string) string {
 	return strings.TrimSuffix(serviceFullName, deploySuffix)
 }
 
-func (a *App) logServiceOutput(ctx context.Context, user *model.User, appName string, service *deployedService) {
+func (a *App) serviceOutput(ctx context.Context, user *model.User, appName string, service *deployedService) (logsContent []string, err error) {
 	logs, err := a.dockerApp.Docker.ContainerLogs(ctx, service.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
 	if logs != nil {
 		defer func() {
-			if err = logs.Close(); err != nil {
-				log.Printf(`[%s] [%s] Error while closing logs for service: %v`, user.Username, appName, err)
+			if closeErr := logs.Close(); closeErr != nil {
+				if err != nil {
+					err = fmt.Errorf(`%s, and also error while closing logs for service %s: %v`, err, service.Name, closeErr)
+				} else {
+					err = fmt.Errorf(`Error while closing logs for service %s: %v`, service.Name, closeErr)
+				}
 			}
 		}()
 	}
 	if err != nil {
-		log.Printf(`[%s] [%s] Error while reading logs for service %s: %v`, user.Username, appName, service.Name, err)
+		err = fmt.Errorf(`Error while reading logs for service %s: %v`, service.Name, err)
 		return
 	}
 
-	logsContent := make([]string, 0)
-	logsContent = append(logsContent, "\n")
+	logsContent = make([]string, 0)
 
 	scanner := bufio.NewScanner(logs)
 	for scanner.Scan() {
 		logLine := scanner.Bytes()
 		if len(logLine) > commons.IgnoredByteLogSize {
 			logsContent = append(logsContent, string(logLine[commons.IgnoredByteLogSize:]))
-			logsContent = append(logsContent, "\n")
 		}
 	}
 
-	log.Printf(`[%s] [%s] Logs output for %s: %s`, user.Username, appName, service.Name, logsContent)
+	return
 }
 
 func logServiceHealth(user *model.User, appName string, service *deployedService, infos *types.ContainerJSON) {
@@ -361,8 +336,6 @@ func logServiceHealth(user *model.User, appName string, service *deployedService
 
 func (a *App) deleteServices(ctx context.Context, appName string, services map[string]*deployedService, user *model.User) {
 	for service, container := range services {
-		a.logServiceOutput(ctx, user, appName, container)
-
 		infos, err := a.dockerApp.InspectContainer(ctx, container.ID)
 		if err != nil {
 			log.Printf(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service, err)
@@ -405,10 +378,19 @@ func (a *App) inspectServices(ctx context.Context, services map[string]*deployed
 	return containers
 }
 
-func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appName string, containers []*types.ContainerJSON) bool {
-	containersIdsWithHealthcheck := commons.GetContainersIDs(commons.FilterContainers(containers, hasHealthcheck))
+func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appName string, services map[string]*deployedService) bool {
+	containersIdsWithHealthcheck := commons.GetContainersIDs(commons.FilterContainers(a.inspectServices(ctx, services, user, appName), hasHealthcheck))
 	if len(containersIdsWithHealthcheck) == 0 {
 		return true
+	}
+
+	for _, id := range containersIdsWithHealthcheck {
+		for _, service := range services {
+			if service.ID == id {
+				service.State = `unhealthy`
+				break
+			}
+		}
 	}
 
 	filtersArgs := filters.NewArgs()
@@ -425,6 +407,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 		case <-ctx.Done():
 			return false
 		case message := <-messages:
+			services[message.ID].State = `healthy`
 			healthyContainers[message.ID] = true
 			if len(healthyContainers) == len(containersIdsWithHealthcheck) {
 				return true
@@ -434,6 +417,40 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 			return false
 		}
 	}
+}
+
+func (a *App) sendEmailNotification(ctx context.Context, user *model.User, appName string, services map[string]*deployedService, success bool) error {
+	if a.mailerURL == `` || a.mailerUser == `` || a.mailerPass == `` {
+		return nil
+	}
+
+	if user.Email == `` {
+		return fmt.Errorf(`No email found for user %s`, user.Username)
+	}
+
+	notificationContent := deployNotification{
+		Success: success,
+		App:     appName,
+		URL:     `https://dashboard.vibioh.fr`,
+	}
+
+	notificationContent.Services = make([]deployNotificationService, 0)
+	for _, service := range services {
+		notificationContent.Services = append(notificationContent.Services, deployNotificationService{
+			App:         service.Name,
+			State:       service.State,
+			ImageName:   service.ImageName,
+			ContainerID: service.ID,
+			Logs:        service.Logs,
+		})
+	}
+
+	_, err := request.DoJSON(ctx, fmt.Sprintf(`%s/render/dashboard?from=%s&sender=%s&to=%s&subject=%s`, a.mailerURL, url.QueryEscape(`dashboard@vibioh.fr`), url.QueryEscape(`Dashboard`), url.QueryEscape(user.Email), url.QueryEscape(fmt.Sprintf(`[dashboard] Deploy of %s`, appName))), notificationContent, http.Header{`Authorization`: []string{request.GetBasicAuth(a.mailerUser, a.mailerPass)}}, http.MethodPost)
+	if err != nil {
+		return fmt.Errorf(`Error while sending email: %v`, err)
+	}
+
+	return nil
 }
 
 func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user *model.User, appName string, services map[string]*deployedService, oldContainers []types.Container) {
@@ -446,7 +463,11 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 		defer cancel()
 	}()
 
-	if a.areContainersHealthy(ctx, user, appName, a.inspectServices(ctx, services, user, appName)) {
+	success := false
+
+	if a.areContainersHealthy(ctx, user, appName, services) {
+		success = true
+
 		if err := a.cleanContainers(ctx, oldContainers); err != nil {
 			log.Printf(`[%s] [%s] Error while cleaning old containers: %v`, user.Username, appName, err)
 		}
@@ -457,6 +478,22 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 	} else {
 		a.deleteServices(ctx, appName, services, user)
 		log.Printf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, errHealthCheckFailed)
+	}
+
+	for serviceName, service := range services {
+		logs, err := a.serviceOutput(ctx, user, appName, service)
+		if err != nil {
+			log.Printf(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, serviceName, err)
+		} else {
+			service.Logs = logs
+			if !success {
+				log.Printf("[%s] [%s] Logs output for %s: \n%s\n", user.Username, appName, serviceName, strings.Join(logs, "\""))
+			}
+		}
+	}
+
+	if err := a.sendEmailNotification(ctx, user, appName, services, success); err != nil {
+		log.Printf(`[%s] [%s] Error while sending email notification: %s`, user.Username, appName, err)
 	}
 }
 
@@ -489,7 +526,7 @@ func (a *App) createContainer(ctx context.Context, user *model.User, appName str
 		return nil, fmt.Errorf(`Error while creating service %s: %v`, serviceName, err)
 	}
 
-	return &deployedService{ID: createdContainer.ID, Name: serviceFullName}, nil
+	return &deployedService{ID: createdContainer.ID, Name: serviceFullName, ImageName: service.Image}, nil
 }
 
 func (a *App) parseCompose(ctx context.Context, user *model.User, appName string, composeFile []byte) (map[string]*deployedService, error) {

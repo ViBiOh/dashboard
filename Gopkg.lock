@@ -4,8 +4,8 @@
 [[projects]]
   name = "github.com/Microsoft/go-winio"
   packages = ["."]
-  revision = "7da180ee92d8bd8bb8c37fc560e673e6557c392f"
-  version = "v0.4.7"
+  revision = "67921128fb397dd80339870d2193d6b1e6856fd4"
+  version = "v0.4.8"
 
 [[projects]]
   name = "github.com/NYTimes/gziphandler"
@@ -22,7 +22,7 @@
     "pkg/model",
     "pkg/provider"
   ]
-  revision = "5a7e4f51b3c5b8dc19acfb5b76448a72276a18d1"
+  revision = "3bb2c499af0c0e60bf248ae5a5e1de6aa9ba0176"
 
 [[projects]]
   branch = "master"
@@ -42,7 +42,7 @@
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "9f9961492345a8306528feb1283c6b76fc6d7e3e"
+  revision = "d3fd46837fc82be160c28a0bac6a6238bd5ad2ee"
 
 [[projects]]
   branch = "master"
@@ -63,7 +63,7 @@
     "digestset",
     "reference"
   ]
-  revision = "f0cc927784781fa395c06317c58dea2841ece3a9"
+  revision = "749f6afb4572201e3c37325d0ffedb6f32be8950"
 
 [[projects]]
   branch = "master"
@@ -85,9 +85,10 @@
     "api/types/time",
     "api/types/versions",
     "api/types/volume",
-    "client"
+    "client",
+    "errdefs"
   ]
-  revision = "71cd53e4a197b303c6ba086bd584ffd67a884281"
+  revision = "23f4a3d5091b878b252bef73ce6ab10a54641eb4"
 
 [[projects]]
   name = "github.com/docker/go-connections"
@@ -148,7 +149,7 @@
   branch = "master"
   name = "github.com/opentracing-contrib/go-stdlib"
   packages = ["nethttp"]
-  revision = "36723135187404d2f4002f4f189938565e64cc5c"
+  revision = "07a764486eb10927e8cf38337918a40d430524ee"
 
 [[projects]]
   name = "github.com/opentracing/opentracing-go"
@@ -179,7 +180,7 @@
   branch = "master"
   name = "github.com/prometheus/client_model"
   packages = ["go"]
-  revision = "99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c"
+  revision = "5c3871d89910bfb32f5fcab2aa4b9ec68e65a99f"
 
 [[projects]]
   branch = "master"
@@ -200,7 +201,7 @@
     "nfs",
     "xfs"
   ]
-  revision = "61aaa706c6d4fda9365b6273c96839eb7e27f6e4"
+  revision = "ae68e2d4c00fed4943b5f6698d504a5fe083da8a"
 
 [[projects]]
   name = "github.com/uber/jaeger-client-go"
@@ -240,19 +241,19 @@
     "internal/socks",
     "proxy"
   ]
-  revision = "1e491301e022f8f977054da4c2d852decd59571f"
+  revision = "d0887baf81f4598189d4e12a37c6da86f0bba4d0"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
+  revision = "1b2967e3c290b7c545b3db0deeda16e9be4f98a2"
 
 [[projects]]
+  branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
-  version = "v2.2.1"
 
 [solve-meta]
   analyzer-name = "dep"

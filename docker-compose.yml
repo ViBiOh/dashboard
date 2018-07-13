@@ -45,6 +45,12 @@ services:
     - '1.32'
     - -dockerContainerUser
     - ${CONTAINER_USER}
+    - -dockerMailerURL
+    - ${MAILER_URL}
+    - -dockerMailerUser
+    - ${MAILER_USER}
+    - -dockerMailerPass
+    - ${MAILER_PASS}
     - -authUrl
     - https://dashboard-auth.vibioh.fr
     - -authUsers

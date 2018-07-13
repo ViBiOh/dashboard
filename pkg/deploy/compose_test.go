@@ -63,7 +63,7 @@ func TestComposeFailed(t *testing.T) {
 		wantStatus int
 	}{
 		{
-			model.NewUser(0, `admin`, `admin`),
+			model.NewUser(0, `admin`, ``, `admin`),
 			`test`,
 			errors.New(`test unit error`),
 			`[admin] [test] Failed to deploy: test unit error
