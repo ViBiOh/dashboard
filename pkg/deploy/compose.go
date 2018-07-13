@@ -407,7 +407,13 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 		case <-ctx.Done():
 			return false
 		case message := <-messages:
-			services[message.ID].State = `healthy`
+			for _, service := range services {
+				if service.ID == message.ID {
+					service.State = `healthy`
+					break
+				}
+			}
+
 			healthyContainers[message.ID] = true
 			if len(healthyContainers) == len(containersIdsWithHealthcheck) {
 				return true
