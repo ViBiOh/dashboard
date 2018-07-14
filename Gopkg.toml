@@ -8,6 +8,10 @@
 
 [[constraint]]
   branch = "master"
+  name = "github.com/ViBiOh/mailer"
+
+[[constraint]]
+  branch = "master"
   name = "github.com/docker/docker"
 
 [[override]]

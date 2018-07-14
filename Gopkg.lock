@@ -22,7 +22,7 @@
     "pkg/model",
     "pkg/provider"
   ]
-  revision = "3bb2c499af0c0e60bf248ae5a5e1de6aa9ba0176"
+  revision = "8cc0e2cabaf3368550ec0ab8423841aa222a87f3"
 
 [[projects]]
   branch = "master"
@@ -43,6 +43,12 @@
     "pkg/tools"
   ]
   revision = "d3fd46837fc82be160c28a0bac6a6238bd5ad2ee"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/ViBiOh/mailer"
+  packages = ["pkg/client"]
+  revision = "3462ed3f730cee64164e81b5e772f72c00e832ec"
 
 [[projects]]
   branch = "master"
@@ -88,7 +94,7 @@
     "client",
     "errdefs"
   ]
-  revision = "23f4a3d5091b878b252bef73ce6ab10a54641eb4"
+  revision = "d080de7074a05a1534bf7e91d000a311885fa221"
 
 [[projects]]
   name = "github.com/docker/go-connections"
@@ -258,6 +264,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "33f146b88fad6525ed6be47f1869b4876642b5a17dbb46abad59cb17964a73d6"
+  inputs-digest = "c7ce879245d3808a85db5fd7013add5748d03951b50d683f74753c4e90b2f1d0"
   solver-name = "gps-cdcl"
   solver-version = 1

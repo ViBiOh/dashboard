@@ -21,6 +21,7 @@ import (
 	"github.com/ViBiOh/httputils/pkg/httpjson"
 	"github.com/ViBiOh/httputils/pkg/request"
 	"github.com/ViBiOh/httputils/pkg/tools"
+	"github.com/ViBiOh/mailer/pkg/client"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	opentracing "github.com/opentracing/opentracing-go"
@@ -45,10 +46,8 @@ type App struct {
 	network       string
 	tag           string
 	containerUser string
-	mailerURL     string
-	mailerUser    string
-	mailerPass    string
 	appURL        string
+	mailerClient  *client.App
 }
 
 // NewApp creates new App from Flags' config
@@ -60,24 +59,27 @@ func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App)
 		network:       strings.TrimSpace(*config[`network`]),
 		tag:           strings.TrimSpace(*config[`tag`]),
 		containerUser: strings.TrimSpace(*config[`containerUser`]),
-		mailerURL:     strings.TrimSpace(*config[`mailerURL`]),
-		mailerUser:    strings.TrimSpace(*config[`mailerUser`]),
-		mailerPass:    strings.TrimSpace(*config[`mailerPass`]),
 		appURL:        strings.TrimSpace(*config[`appURL`]),
+		mailerClient:  client.NewApp(config),
 	}
 }
 
 // Flags adds flags for given prefix
 func Flags(prefix string) map[string]*string {
-	return map[string]*string{
+	mailerFlags := client.Flags(prefix)
+
+	flags := map[string]*string{
 		`network`:       flag.String(tools.ToCamel(fmt.Sprintf(`%sNetwork`, prefix)), `traefik`, `[deploy] Default Network`),
 		`tag`:           flag.String(tools.ToCamel(fmt.Sprintf(`%sTag`, prefix)), `latest`, `[deploy] Default image tag)`),
 		`containerUser`: flag.String(tools.ToCamel(fmt.Sprintf(`%sContainerUser`, prefix)), `1000`, `[deploy] Default container user`),
-		`mailerURL`:     flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerURL`, prefix)), `https://mailer.vibioh.fr`, `[deploy] Mailer URL`),
-		`mailerUser`:    flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerUser`, prefix)), ``, `[deploy] Mailer User`),
-		`mailerPass`:    flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerPass`, prefix)), ``, `[deploy] Mailer Pass`),
 		`appURL`:        flag.String(tools.ToCamel(fmt.Sprintf(`%sAppURL`, prefix)), `https://dashboard.vibioh.fr`, `[deploy] Application web URL`),
 	}
+
+	for key, value := range mailerFlags {
+		flags[key] = value
+	}
+
+	return flags
 }
 
 // CanBeGracefullyClosed indicates if application can terminate safely
