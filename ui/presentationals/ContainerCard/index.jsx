@@ -39,7 +39,7 @@ const ContainerCard = ({ container, onClick }) => {
         {moment.unix(container.Created).fromNow()}
         {container.Labels && container.Labels.owner ? (
           <div className={style.owner}>
-            by
+            by&nbsp;
             {container.Labels.owner}
           </div>
         ) : null}
