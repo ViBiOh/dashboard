@@ -1,14 +1,12 @@
 package deploy
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 	"strings"
 	"sync"
 	"time"
@@ -24,10 +22,7 @@ import (
 	"github.com/ViBiOh/httputils/pkg/request"
 	"github.com/ViBiOh/httputils/pkg/tools"
 	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/api/types/mount"
-	"github.com/docker/docker/api/types/network"
 	opentracing "github.com/opentracing/opentracing-go"
 )
 
@@ -53,6 +48,7 @@ type App struct {
 	mailerURL     string
 	mailerUser    string
 	mailerPass    string
+	appURL        string
 }
 
 // NewApp creates new App from Flags' config
@@ -67,6 +63,7 @@ func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App)
 		mailerURL:     strings.TrimSpace(*config[`mailerURL`]),
 		mailerUser:    strings.TrimSpace(*config[`mailerUser`]),
 		mailerPass:    strings.TrimSpace(*config[`mailerPass`]),
+		appURL:        strings.TrimSpace(*config[`appURL`]),
 	}
 }
 
@@ -76,9 +73,10 @@ func Flags(prefix string) map[string]*string {
 		`network`:       flag.String(tools.ToCamel(fmt.Sprintf(`%sNetwork`, prefix)), `traefik`, `[deploy] Default Network`),
 		`tag`:           flag.String(tools.ToCamel(fmt.Sprintf(`%sTag`, prefix)), `latest`, `[deploy] Default image tag)`),
 		`containerUser`: flag.String(tools.ToCamel(fmt.Sprintf(`%sContainerUser`, prefix)), `1000`, `[deploy] Default container user`),
-		`mailerURL`:     flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerURL`, prefix)), `https://mailer.vibioh.fr`, `Mailer URL`),
-		`mailerUser`:    flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerUser`, prefix)), ``, `Mailer User`),
-		`mailerPass`:    flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerPass`, prefix)), ``, `Mailer Pass`),
+		`mailerURL`:     flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerURL`, prefix)), `https://mailer.vibioh.fr`, `[deploy] Mailer URL`),
+		`mailerUser`:    flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerUser`, prefix)), ``, `[deploy] Mailer User`),
+		`mailerPass`:    flag.String(tools.ToCamel(fmt.Sprintf(`%sMailerPass`, prefix)), ``, `[deploy] Mailer Pass`),
+		`appURL`:        flag.String(tools.ToCamel(fmt.Sprintf(`%sAppURL`, prefix)), `https://dashboard.vibioh.fr`, `[deploy] Application web URL`),
 	}
 }
 
@@ -92,154 +90,6 @@ func (a *App) CanBeGracefullyClosed() (canBe bool) {
 	})
 
 	return
-}
-
-func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.HealthConfig, error) {
-	healthconfig := container.HealthConfig{
-		Test:    healthcheck.Test,
-		Retries: healthcheck.Retries,
-	}
-
-	if strings.TrimSpace(healthcheck.Interval) != `` {
-		interval, err := time.ParseDuration(healthcheck.Interval)
-		if err != nil {
-			return nil, fmt.Errorf(`Error while parsing healthcheck interval: %v`, err)
-		}
-
-		healthconfig.Interval = interval
-	}
-
-	if strings.TrimSpace(healthcheck.Timeout) != `` {
-		timeout, err := time.ParseDuration(healthcheck.Timeout)
-		if err != nil {
-			return nil, fmt.Errorf(`Error while parsing healthcheck timeout: %v`, err)
-		}
-
-		healthconfig.Timeout = timeout
-	}
-
-	return &healthconfig, nil
-}
-
-func (a *App) getConfig(service *dockerComposeService, user *model.User, appName string) (*container.Config, error) {
-	environments := make([]string, 0, len(service.Environment))
-	for key, value := range service.Environment {
-		environments = append(environments, fmt.Sprintf(`%s=%s`, key, value))
-	}
-
-	if service.Labels == nil {
-		service.Labels = make(map[string]string)
-	}
-
-	service.Labels[commons.OwnerLabel] = user.Username
-	service.Labels[commons.AppLabel] = appName
-
-	config := container.Config{
-		Hostname: service.Hostname,
-		Image:    service.Image,
-		Labels:   service.Labels,
-		Env:      environments,
-		User:     service.User,
-	}
-
-	if config.User == `` {
-		config.User = a.containerUser
-	}
-
-	if len(service.Command) != 0 {
-		config.Cmd = service.Command
-	}
-
-	if service.Healthcheck != nil {
-		healthcheck, err := getHealthcheckConfig(service.Healthcheck)
-		if err != nil {
-			return nil, err
-		}
-
-		config.Healthcheck = healthcheck
-	}
-
-	return &config, nil
-}
-
-func getVolumesConfig(hostConfig *container.HostConfig, volumes []string) {
-	for _, rawVolume := range volumes {
-		parts := strings.Split(rawVolume, colonSeparator)
-
-		if len(parts) > 1 && parts[0] != `/` && parts[0] != `/var/run/docker.sock` {
-			volume := mount.Mount{Type: mount.TypeBind, BindOptions: &mount.BindOptions{Propagation: mount.PropagationRPrivate}, Source: parts[0], Target: parts[1]}
-			if len(parts) > 2 && parts[2] == `ro` {
-				volume.ReadOnly = true
-			}
-
-			hostConfig.Mounts = append(hostConfig.Mounts, volume)
-		}
-	}
-}
-
-func (a *App) getHostConfig(service *dockerComposeService, user *model.User) *container.HostConfig {
-	hostConfig := container.HostConfig{
-		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-			`max-size`: `10m`,
-		}},
-		NetworkMode:   container.NetworkMode(a.network),
-		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
-		Resources: container.Resources{
-			CPUShares: defaultCPUShares,
-			Memory:    minMemory,
-		},
-		SecurityOpt: []string{`no-new-privileges`},
-	}
-
-	if service.ReadOnly {
-		hostConfig.ReadonlyRootfs = true
-	}
-
-	if service.CPUShares != 0 {
-		hostConfig.Resources.CPUShares = service.CPUShares
-	}
-
-	if service.MemoryLimit != 0 {
-		if service.MemoryLimit <= maxMemory {
-			hostConfig.Resources.Memory = service.MemoryLimit
-		} else {
-			hostConfig.Resources.Memory = maxMemory
-		}
-	}
-
-	if docker.IsAdmin(user) && len(service.Volumes) > 0 {
-		getVolumesConfig(&hostConfig, service.Volumes)
-	}
-
-	return &hostConfig
-}
-
-func addLinks(settings *network.EndpointSettings, links []string) {
-	for _, link := range links {
-		linkParts := strings.Split(link, colonSeparator)
-		target := linkParts[0]
-		alias := linkParts[0]
-
-		if len(linkParts) > 1 {
-			alias = linkParts[1]
-		}
-
-		settings.Links = append(settings.Links, fmt.Sprintf(`%s%s%s`, target, colonSeparator, alias))
-	}
-}
-
-func (a *App) getNetworkConfig(serviceName string, service *dockerComposeService) *network.NetworkingConfig {
-	endpointConfig := network.EndpointSettings{}
-	endpointConfig.Aliases = append(endpointConfig.Aliases, serviceName)
-
-	addLinks(&endpointConfig, service.Links)
-	addLinks(&endpointConfig, service.ExternalLinks)
-
-	return &network.NetworkingConfig{
-		EndpointsConfig: map[string]*network.EndpointSettings{
-			a.network: &endpointConfig,
-		},
-	}
 }
 
 func (a *App) pullImage(ctx context.Context, image string) error {
@@ -282,65 +132,17 @@ func (a *App) renameDeployedContainers(ctx context.Context, services map[string]
 	return nil
 }
 
-func getServiceFullName(app string, service string) string {
-	return fmt.Sprintf(`%s_%s%s`, app, service, deploySuffix)
-}
-
-func getFinalName(serviceFullName string) string {
-	return strings.TrimSuffix(serviceFullName, deploySuffix)
-}
-
-func (a *App) serviceOutput(ctx context.Context, user *model.User, appName string, service *deployedService) (logsContent []string, err error) {
-	logs, err := a.dockerApp.Docker.ContainerLogs(ctx, service.ContainerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
-	if logs != nil {
-		defer func() {
-			if closeErr := logs.Close(); closeErr != nil {
-				if err != nil {
-					err = fmt.Errorf(`%s, and also error while closing logs for service %s: %v`, err, service.Name, closeErr)
-				} else {
-					err = fmt.Errorf(`Error while closing logs for service %s: %v`, service.Name, closeErr)
-				}
-			}
-		}()
-	}
-	if err != nil {
-		err = fmt.Errorf(`Error while reading logs for service %s: %v`, service.Name, err)
-		return
-	}
-
-	logsContent = make([]string, 0)
-
-	scanner := bufio.NewScanner(logs)
-	for scanner.Scan() {
-		logLine := scanner.Bytes()
-		if len(logLine) > commons.IgnoredByteLogSize {
-			logsContent = append(logsContent, string(logLine[commons.IgnoredByteLogSize:]))
-		}
-	}
-
-	return
-}
-
-func logServiceHealth(user *model.User, appName string, service *deployedService, infos *types.ContainerJSON) {
-	if infos.State.Health != nil {
-		inspectOutput := make([]string, 0)
-		inspectOutput = append(inspectOutput, "\n")
-
-		for _, log := range infos.State.Health.Log {
-			inspectOutput = append(inspectOutput, fmt.Sprintf(`code=%d, log=%s`, log.ExitCode, log.Output))
-		}
-
-		log.Printf(`[%s] [%s] Healthcheck output for %s: %s`, user.Username, appName, service.Name, inspectOutput)
-	}
-}
-
 func (a *App) deleteServices(ctx context.Context, appName string, services map[string]*deployedService, user *model.User) {
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
 			log.Printf(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service.Name, err)
 		} else {
-			logServiceHealth(user, appName, service, infos)
+			healthOutput := serviceHealthOutput(user, appName, service, infos)
+			if healthOutput != nil {
+				service.HealthLogs = healthOutput
+				log.Printf("[%s] [%s] Healthcheck output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(healthOutput, "\n"))
+			}
 
 			if _, err := a.dockerApp.StopContainer(ctx, service.ContainerID, infos); err != nil {
 				log.Printf(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service.Name, err)
@@ -385,11 +187,8 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 	}
 
 	for _, id := range containersIdsWithHealthcheck {
-		for _, service := range services {
-			if service.ContainerID == id {
-				service.State = `unhealthy`
-				break
-			}
+		if service := findServiceByContainerID(services, id); service != nil {
+			service.State = `unhealthy`
 		}
 	}
 
@@ -407,11 +206,8 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 		case <-ctx.Done():
 			return false
 		case message := <-messages:
-			for _, service := range services {
-				if service.ContainerID == message.ID {
-					service.State = `healthy`
-					break
-				}
+			if service := findServiceByContainerID(services, message.ID); service != nil {
+				service.State = `healthy`
 			}
 
 			healthyContainers[message.ID] = true
@@ -423,34 +219,6 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 			return false
 		}
 	}
-}
-
-func (a *App) sendEmailNotification(ctx context.Context, user *model.User, appName string, services map[string]*deployedService, success bool) error {
-	if a.mailerURL == `` || a.mailerUser == `` || a.mailerPass == `` {
-		return nil
-	}
-
-	if user.Email == `` {
-		return fmt.Errorf(`No email found for user`)
-	}
-
-	notificationContent := deployNotification{
-		Success: success,
-		App:     appName,
-		URL:     `https://dashboard.vibioh.fr`,
-	}
-
-	notificationContent.Services = make([]deployedService, 0)
-	for _, service := range services {
-		notificationContent.Services = append(notificationContent.Services, *service)
-	}
-
-	_, err := request.DoJSON(ctx, fmt.Sprintf(`%s/render/dashboard?from=%s&sender=%s&to=%s&subject=%s`, a.mailerURL, url.QueryEscape(`dashboard@vibioh.fr`), url.QueryEscape(`Dashboard`), url.QueryEscape(user.Email), url.QueryEscape(fmt.Sprintf(`[dashboard] Deploy of %s`, appName))), notificationContent, http.Header{`Authorization`: []string{request.GetBasicAuth(a.mailerUser, a.mailerPass)}}, http.MethodPost)
-	if err != nil {
-		return fmt.Errorf(`Error while sending email: %v`, err)
-	}
-
-	return nil
 }
 
 func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user *model.User, appName string, services map[string]*deployedService, oldContainers []types.Container) {
@@ -476,8 +244,8 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 			log.Printf(`[%s] [%s] Error while renaming deployed containers: %v`, user.Username, appName, err)
 		}
 	} else {
-		a.deleteServices(ctx, appName, services, user)
 		log.Printf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, errHealthCheckFailed)
+		a.deleteServices(ctx, appName, services, user)
 	}
 
 	for _, service := range services {
@@ -487,7 +255,7 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 		} else {
 			service.Logs = logs
 			if !success {
-				log.Printf("[%s] [%s] Logs output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(logs, "\""))
+				log.Printf("[%s] [%s] Logs output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(logs, "\n"))
 			}
 		}
 	}

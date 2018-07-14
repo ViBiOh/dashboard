@@ -36,9 +36,10 @@ type dockerCompose struct {
 type deployedService struct {
 	Name        string   `json:"name"`
 	FullName    string   `json:"fullname"`
-	ContainerID string   `json:"containerID"`
+	ContainerID string   `json:"containerId"`
 	ImageName   string   `json:"imageName"`
 	Logs        []string `json:"logs"`
+	HealthLogs  []string `json:"healthLogs"`
 	State       string   `json:"state"`
 }
 

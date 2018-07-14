@@ -65,3 +65,21 @@ func (a *App) checkTasks(user *model.User, appName string) error {
 
 	return nil
 }
+
+func getServiceFullName(app string, service string) string {
+	return fmt.Sprintf(`%s_%s%s`, app, service, deploySuffix)
+}
+
+func getFinalName(serviceFullName string) string {
+	return strings.TrimSuffix(serviceFullName, deploySuffix)
+}
+
+func findServiceByContainerID(services map[string]*deployedService, containerID string) *deployedService {
+	for _, service := range services {
+		if service.ContainerID == containerID {
+			return service
+		}
+	}
+
+	return nil
+}

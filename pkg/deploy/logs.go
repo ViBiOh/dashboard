@@ -1,0 +1,55 @@
+package deploy
+
+import (
+	"bufio"
+	"context"
+	"fmt"
+
+	"github.com/ViBiOh/auth/pkg/model"
+	"github.com/ViBiOh/dashboard/pkg/commons"
+	"github.com/docker/docker/api/types"
+)
+
+func (a *App) serviceOutput(ctx context.Context, user *model.User, appName string, service *deployedService) (logsContent []string, err error) {
+	logs, err := a.dockerApp.Docker.ContainerLogs(ctx, service.ContainerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
+	if logs != nil {
+		defer func() {
+			if closeErr := logs.Close(); closeErr != nil {
+				if err != nil {
+					err = fmt.Errorf(`%s, and also error while closing logs for service %s: %v`, err, service.Name, closeErr)
+				} else {
+					err = fmt.Errorf(`Error while closing logs for service %s: %v`, service.Name, closeErr)
+				}
+			}
+		}()
+	}
+	if err != nil {
+		err = fmt.Errorf(`Error while reading logs for service %s: %v`, service.Name, err)
+		return
+	}
+
+	logsContent = make([]string, 0)
+
+	scanner := bufio.NewScanner(logs)
+	for scanner.Scan() {
+		logLine := scanner.Bytes()
+		if len(logLine) > commons.IgnoredByteLogSize {
+			logsContent = append(logsContent, string(logLine[commons.IgnoredByteLogSize:]))
+		}
+	}
+
+	return
+}
+
+func serviceHealthOutput(user *model.User, appName string, service *deployedService, infos *types.ContainerJSON) []string {
+	if infos.State.Health == nil {
+		return nil
+	}
+
+	healthOutput := make([]string, 0)
+	for _, log := range infos.State.Health.Log {
+		healthOutput = append(healthOutput, fmt.Sprintf(`code=%d, log=%s`, log.ExitCode, log.Output))
+	}
+
+	return healthOutput
+}
