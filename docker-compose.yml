@@ -47,11 +47,11 @@ services:
     - '1.32'
     - -dockerContainerUser
     - ${CONTAINER_USER}
-    - -dockerMailerURL
+    - -mailerURL
     - ${MAILER_URL}
-    - -dockerMailerUser
+    - -mailerUser
     - ${MAILER_USER}
-    - -dockerMailerPass
+    - -mailerPass
     - ${MAILER_PASS}
     - -authUrl
     - https://dashboard-auth.vibioh.fr

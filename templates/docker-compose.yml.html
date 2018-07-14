@@ -53,6 +53,16 @@ services:
   {{- if .DockerUser }}
     - -dockerContainerUser
     - ${CONTAINER_USER}
+    - -dockerAppURL
+    - http{{— if .TLS -}}s{{— end -}}://dashboard.{{ .Domain }}
+  {{- end }}
+  {{- if .Mailer }}
+    - -mailerURL
+    - ${MAILER_URL}
+    - -mailerUser
+    - ${MAILER_USER}
+    - -mailerPass
+    - ${MAILER_PASS}
   {{- end }}
   {{- if ne .Tag "" }}
     - -dockerTag

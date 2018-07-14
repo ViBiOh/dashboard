@@ -21,6 +21,7 @@ import (
 	"github.com/ViBiOh/httputils/pkg/opentracing"
 	"github.com/ViBiOh/httputils/pkg/owasp"
 	"github.com/ViBiOh/httputils/pkg/server"
+	"github.com/ViBiOh/mailer/pkg/client"
 )
 
 const websocketPrefix = `/ws`
@@ -56,6 +57,7 @@ func main() {
 	dockerConfig := docker.Flags(`docker`)
 	deployConfig := deploy.Flags(`docker`)
 	streamConfig := stream.Flags(`docker`)
+	mailerConfig := client.Flags(`mailer`)
 
 	flag.Parse()
 
@@ -79,7 +81,8 @@ func main() {
 		log.Fatalf(`Error while creating stream: %v`, err)
 	}
 
-	deployApp := deploy.NewApp(deployConfig, authApp, dockerApp)
+	mailerApp := client.NewApp(mailerConfig)
+	deployApp := deploy.NewApp(deployConfig, authApp, dockerApp, mailerApp)
 	apiApp := api.NewApp(authApp, dockerApp, deployApp)
 
 	restHandler := server.ChainMiddlewares(apiApp.Handler(), opentracingApp, gzipApp, owaspApp, corsApp)

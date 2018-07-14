@@ -9,6 +9,7 @@ go run cmd/compose/compose.go \
   -authBasic \
   -traefik=false \
   -github=false \
+  -mailer=false \
   -selenium=true \
   -domain=:1080 \
   -version=`git log --pretty=format:'%h' -n 1` > docker-compose.yml

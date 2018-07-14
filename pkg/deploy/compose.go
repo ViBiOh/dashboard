@@ -47,39 +47,31 @@ type App struct {
 	tag           string
 	containerUser string
 	appURL        string
-	mailerClient  *client.App
+	mailerApp     *client.App
 }
 
 // NewApp creates new App from Flags' config
-func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App) *App {
+func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App, mailerApp *client.App) *App {
 	return &App{
 		tasks:         sync.Map{},
 		dockerApp:     dockerApp,
 		authApp:       authApp,
+		mailerApp:     mailerApp,
 		network:       strings.TrimSpace(*config[`network`]),
 		tag:           strings.TrimSpace(*config[`tag`]),
 		containerUser: strings.TrimSpace(*config[`containerUser`]),
 		appURL:        strings.TrimSpace(*config[`appURL`]),
-		mailerClient:  client.NewApp(config),
 	}
 }
 
 // Flags adds flags for given prefix
 func Flags(prefix string) map[string]*string {
-	mailerFlags := client.Flags(prefix)
-
-	flags := map[string]*string{
+	return map[string]*string{
 		`network`:       flag.String(tools.ToCamel(fmt.Sprintf(`%sNetwork`, prefix)), `traefik`, `[deploy] Default Network`),
 		`tag`:           flag.String(tools.ToCamel(fmt.Sprintf(`%sTag`, prefix)), `latest`, `[deploy] Default image tag)`),
 		`containerUser`: flag.String(tools.ToCamel(fmt.Sprintf(`%sContainerUser`, prefix)), `1000`, `[deploy] Default container user`),
 		`appURL`:        flag.String(tools.ToCamel(fmt.Sprintf(`%sAppURL`, prefix)), `https://dashboard.vibioh.fr`, `[deploy] Application web URL`),
 	}
-
-	for key, value := range mailerFlags {
-		flags[key] = value
-	}
-
-	return flags
 }
 
 // CanBeGracefullyClosed indicates if application can terminate safely

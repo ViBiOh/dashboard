@@ -33,16 +33,24 @@ Usage of cmd/compose.go:
       Expose opened ports
   -github
       Github logging (default true)
+  -mailer
+      Enable mailer (default true)
   -selenium
       Selenium container
   -tag string
       Docker tag used
   -tls
       TLS for all containers (default true)
+  -tracing
+      Enable opentracing
   -traefik
       Traefik load-balancer (default true)
+  -user
+      Enable docker user default
   -users string
       Allowed users list (default "admin:admin")
+  -version string
+      Docker image version
 ```
 
 ## Websocket
@@ -73,9 +81,13 @@ Authentification has been externalized into its own services in [vibioh/auth](ht
 
 Create your OAuth app on [GitHub interface](https://github.com/settings/developers). The authorization callback URL must be in the form of `https://[URL_OF_DASHBOARD]/auth/github`.
 
+## Email notification
+
+Email notification has been externalized into its own services in [vibioh/mailer](https://github.com/vibioh/mailer). Check out documentation of this project for configuring email notification for Dashboard.
+
 ## Deploy
 
-When deploying, images are pulled and all services are started. After successful deploy, old images are removed, if possible, from docker host in order to free up disk space.
+When deploying, images are pulled and all services are started. After successful deploy, old images are removed, if possible, from docker host in order to free up disk space. An email notification is sent if service has been configured.
 
 ## HotDeploy
 
@@ -133,16 +145,12 @@ Usage of dashboard:
       [cors] Access-Control-Allow-Origin (default "*")
   -csp string
       [owasp] Content-Security-Policy (default "default-src 'self'; base-uri 'self'")
+  -dockerAppURL string
+      [deploy] Application web URL (default "https://dashboard.vibioh.fr")
   -dockerContainerUser string
       [deploy] Default container user (default "1000")
   -dockerHost string
       [docker] Host (default "unix:///var/run/docker.sock")
-  -dockerMailerPass string
-      Mailer Pass
-  -dockerMailerURL string
-      Mailer URL (default "https://mailer.vibioh.fr")
-  -dockerMailerUser string
-      Mailer User
   -dockerNetwork string
       [deploy] Default Network (default "traefik")
   -dockerTag string
@@ -155,6 +163,12 @@ Usage of dashboard:
       [owasp] X-Frame-Options (default "deny")
   -hsts
       [owasp] Indicate Strict Transport Security (default true)
+  -mailerPass string
+      [mailer] Mailer Pass
+  -mailerURL string
+      [mailer] Mailer URL (default "https://mailer.vibioh.fr")
+  -mailerUser string
+      [mailer] Mailer User
   -port int
       Listen port (default 1080)
   -tls
@@ -190,7 +204,7 @@ npm run build
 
 ```bash
 make start-deps
-./bin/compose -authBasic -domain=:1080 -expose -github=false -tls=false -traefik=false > docker-compose.local.yml
+./bin/compose -authBasic -domain=:1080 -expose -mailer=false -github=false -tls=false -traefik=false > docker-compose.local.yml
 export ADMIN_PASSWORD=`bcrypt password`
 docker-compose -p dashboard -f docker-compose.local.yml up -d
 ```

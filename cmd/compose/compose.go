@@ -11,33 +11,37 @@ import (
 )
 
 type arguments struct {
-	TLS        bool
 	AuthBasic  bool
-	Traefik    bool
-	Github     bool
-	Selenium   bool
-	Expose     bool
-	Domain     string
-	Users      string
-	Tag        string
-	Version    string
 	DockerUser bool
+	Domain     string
+	Expose     bool
+	Github     bool
+	Mailer     bool
+	Selenium   bool
+	Tag        string
+	TLS        bool
 	Tracing    bool
+	Traefik    bool
+	Users      string
+	Version    string
 }
 
 func main() {
-	tls := flag.Bool(`tls`, true, `TLS for all containers`)
-	authBasic := flag.Bool(`authBasic`, false, `Basic auth`)
-	traefik := flag.Bool(`traefik`, true, `Traefik load-balancer`)
-	github := flag.Bool(`github`, true, `Github logging`)
-	selenium := flag.Bool(`selenium`, false, `Selenium container`)
-	domain := flag.String(`domain`, `vibioh.fr`, `Domain name`)
-	users := flag.String(`users`, `admin:admin`, `Allowed users list`)
-	tag := flag.String(`tag`, ``, `Docker tag used`)
-	version := flag.String(`version`, ``, `Docker image version`)
-	expose := flag.Bool(`expose`, false, `Expose opened ports`)
-	dockerUser := flag.Bool(`user`, false, `Enable docker user default`)
-	tracing := flag.Bool(`tracing`, false, `Enable opentracing`)
+	args := arguments{
+		AuthBasic:  *flag.Bool(`authBasic`, false, `Basic auth`),
+		DockerUser: *flag.Bool(`user`, false, `Enable docker user default`),
+		Domain:     *flag.String(`domain`, `vibioh.fr`, `Domain name`),
+		Expose:     *flag.Bool(`expose`, false, `Expose opened ports`),
+		Github:     *flag.Bool(`github`, true, `Github logging`),
+		Mailer:     *flag.Bool(`mailer`, true, `Enable mailer`),
+		Selenium:   *flag.Bool(`selenium`, false, `Selenium container`),
+		Tag:        *flag.String(`tag`, ``, `Docker tag used`),
+		TLS:        *flag.Bool(`tls`, true, `TLS for all containers`),
+		Tracing:    *flag.Bool(`tracing`, false, `Enable opentracing`),
+		Traefik:    *flag.Bool(`traefik`, true, `Traefik load-balancer`),
+		Users:      *flag.String(`users`, `admin:admin`, `Allowed users list`),
+		Version:    *flag.String(`version`, ``, `Docker image version`),
+	}
 	flag.Parse()
 
 	funcs := template.FuncMap{
@@ -59,12 +63,11 @@ func main() {
 
 	tmpl := template.Must(template.New(`docker-compose.yml.html`).Funcs(funcs).ParseFiles(`templates/docker-compose.yml.html`))
 
-	prefixedDomain := fmt.Sprintf(`.%s`, *domain)
-	if strings.HasPrefix(*domain, `:`) {
-		prefixedDomain = *domain
+	if !strings.HasPrefix(args.Domain, `:`) {
+		args.Domain = fmt.Sprintf(`.%s`, args.Domain)
 	}
 
-	if err := tmpl.Execute(os.Stdout, arguments{*tls, *authBasic, *traefik, *github, *selenium, *expose, prefixedDomain, *users, *tag, *version, *dockerUser, *tracing}); err != nil {
+	if err := tmpl.Execute(os.Stdout, args); err != nil {
 		log.Printf(`Error while rendering template: %v`, err)
 	}
 }
