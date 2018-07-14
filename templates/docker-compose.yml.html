@@ -54,7 +54,7 @@ services:
     - -dockerContainerUser
     - ${CONTAINER_USER}
     - -dockerAppURL
-    - http{{— if .TLS -}}s{{— end -}}://dashboard.{{ .Domain }}
+    - http{{- if .TLS -}}s{{- end -}}://dashboard.{{- .Domain -}}
   {{- end }}
   {{- if .Mailer }}
     - -mailerURL
