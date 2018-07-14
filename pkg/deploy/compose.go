@@ -431,7 +431,7 @@ func (a *App) sendEmailNotification(ctx context.Context, user *model.User, appNa
 	}
 
 	if user.Email == `` {
-		return fmt.Errorf(`No email found for user %s`, user.Username)
+		return fmt.Errorf(`No email found for user`)
 	}
 
 	notificationContent := deployNotification{
