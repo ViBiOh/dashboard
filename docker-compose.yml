@@ -11,6 +11,8 @@ services:
     - ${GITHUB_OAUTH_CLIENT_ID}
     - -githubClientSecret
     - ${GITHUB_OAUTH_CLIENT_SECRET}
+    - -githubScopes
+    - user:email
     - -tracingName
     - dashboard_auth
     labels:
