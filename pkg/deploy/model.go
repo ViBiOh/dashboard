@@ -34,24 +34,17 @@ type dockerCompose struct {
 }
 
 type deployedService struct {
-	ID        string
-	Name      string
-	ImageName string
-	State     string
-	Logs      []string
-}
-
-type deployNotificationService struct {
-	App         string
-	State       string
-	ImageName   string
-	ContainerID string
-	Logs        []string
+	Name        string   `json:"name"`
+	FullName    string   `json:"fullname"`
+	ContainerID string   `json:"containerID"`
+	ImageName   string   `json:"imageName"`
+	Logs        []string `json:"logs"`
+	State       string   `json:"state"`
 }
 
 type deployNotification struct {
-	Success  bool
-	App      string
-	URL      string
-	Services []deployNotificationService
+	App      string            `json:"app"`
+	URL      string            `json:"url"`
+	Success  bool              `json:"success"`
+	Services []deployedService `json:"services"`
 }

@@ -272,10 +272,10 @@ func (a *App) cleanContainers(ctx context.Context, containers []types.Container)
 	return nil
 }
 
-func (a *App) renameDeployedContainers(ctx context.Context, containers map[string]*deployedService) error {
-	for service, container := range containers {
-		if err := a.dockerApp.Docker.ContainerRename(ctx, container.ID, getFinalName(container.Name)); err != nil {
-			return fmt.Errorf(`Error while renaming container %s: %v`, service, err)
+func (a *App) renameDeployedContainers(ctx context.Context, services map[string]*deployedService) error {
+	for _, service := range services {
+		if err := a.dockerApp.Docker.ContainerRename(ctx, service.ContainerID, getFinalName(service.FullName)); err != nil {
+			return fmt.Errorf(`Error while renaming container %s: %v`, service.Name, err)
 		}
 	}
 
@@ -291,7 +291,7 @@ func getFinalName(serviceFullName string) string {
 }
 
 func (a *App) serviceOutput(ctx context.Context, user *model.User, appName string, service *deployedService) (logsContent []string, err error) {
-	logs, err := a.dockerApp.Docker.ContainerLogs(ctx, service.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
+	logs, err := a.dockerApp.Docker.ContainerLogs(ctx, service.ContainerID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: false})
 	if logs != nil {
 		defer func() {
 			if closeErr := logs.Close(); closeErr != nil {
@@ -335,28 +335,28 @@ func logServiceHealth(user *model.User, appName string, service *deployedService
 }
 
 func (a *App) deleteServices(ctx context.Context, appName string, services map[string]*deployedService, user *model.User) {
-	for service, container := range services {
-		infos, err := a.dockerApp.InspectContainer(ctx, container.ID)
+	for _, service := range services {
+		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			log.Printf(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service, err)
+			log.Printf(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service.Name, err)
 		} else {
-			logServiceHealth(user, appName, container, infos)
+			logServiceHealth(user, appName, service, infos)
 
-			if _, err := a.dockerApp.StopContainer(ctx, container.ID, infos); err != nil {
-				log.Printf(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service, err)
+			if _, err := a.dockerApp.StopContainer(ctx, service.ContainerID, infos); err != nil {
+				log.Printf(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service.Name, err)
 			}
 
-			if _, err := a.dockerApp.RmContainer(ctx, container.ID, infos, true); err != nil {
-				log.Printf(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service, err)
+			if _, err := a.dockerApp.RmContainer(ctx, service.ContainerID, infos, true); err != nil {
+				log.Printf(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service.Name, err)
 			}
 		}
 	}
 }
 
 func (a *App) startServices(ctx context.Context, services map[string]*deployedService) error {
-	for service, container := range services {
-		if _, err := a.dockerApp.StartContainer(ctx, container.ID, nil); err != nil {
-			return fmt.Errorf(`Error while starting service %s: %v`, service, err)
+	for _, service := range services {
+		if _, err := a.dockerApp.StartContainer(ctx, service.ContainerID, nil); err != nil {
+			return fmt.Errorf(`Error while starting service %s: %v`, service.Name, err)
 		}
 	}
 
@@ -366,10 +366,10 @@ func (a *App) startServices(ctx context.Context, services map[string]*deployedSe
 func (a *App) inspectServices(ctx context.Context, services map[string]*deployedService, user *model.User, appName string) []*types.ContainerJSON {
 	containers := make([]*types.ContainerJSON, 0, len(services))
 
-	for service, container := range services {
-		infos, err := a.dockerApp.InspectContainer(ctx, container.ID)
+	for _, service := range services {
+		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			log.Printf(`[%s] [%s] Error while inspecting container %s: %v`, user.Username, appName, service, err)
+			log.Printf(`[%s] [%s] Error while inspecting container %s: %v`, user.Username, appName, service.Name, err)
 		} else {
 			containers = append(containers, infos)
 		}
@@ -386,7 +386,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 
 	for _, id := range containersIdsWithHealthcheck {
 		for _, service := range services {
-			if service.ID == id {
+			if service.ContainerID == id {
 				service.State = `unhealthy`
 				break
 			}
@@ -408,7 +408,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 			return false
 		case message := <-messages:
 			for _, service := range services {
-				if service.ID == message.ID {
+				if service.ContainerID == message.ID {
 					service.State = `healthy`
 					break
 				}
@@ -440,15 +440,9 @@ func (a *App) sendEmailNotification(ctx context.Context, user *model.User, appNa
 		URL:     `https://dashboard.vibioh.fr`,
 	}
 
-	notificationContent.Services = make([]deployNotificationService, 0)
+	notificationContent.Services = make([]deployedService, 0)
 	for _, service := range services {
-		notificationContent.Services = append(notificationContent.Services, deployNotificationService{
-			App:         service.Name,
-			State:       service.State,
-			ImageName:   service.ImageName,
-			ContainerID: service.ID,
-			Logs:        service.Logs,
-		})
+		notificationContent.Services = append(notificationContent.Services, *service)
 	}
 
 	_, err := request.DoJSON(ctx, fmt.Sprintf(`%s/render/dashboard?from=%s&sender=%s&to=%s&subject=%s`, a.mailerURL, url.QueryEscape(`dashboard@vibioh.fr`), url.QueryEscape(`Dashboard`), url.QueryEscape(user.Email), url.QueryEscape(fmt.Sprintf(`[dashboard] Deploy of %s`, appName))), notificationContent, http.Header{`Authorization`: []string{request.GetBasicAuth(a.mailerUser, a.mailerPass)}}, http.MethodPost)
@@ -486,14 +480,14 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 		log.Printf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, errHealthCheckFailed)
 	}
 
-	for serviceName, service := range services {
+	for _, service := range services {
 		logs, err := a.serviceOutput(ctx, user, appName, service)
 		if err != nil {
-			log.Printf(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, serviceName, err)
+			log.Printf(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, service.Name, err)
 		} else {
 			service.Logs = logs
 			if !success {
-				log.Printf("[%s] [%s] Logs output for %s: \n%s\n", user.Username, appName, serviceName, strings.Join(logs, "\""))
+				log.Printf("[%s] [%s] Logs output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(logs, "\""))
 			}
 		}
 	}
@@ -532,7 +526,12 @@ func (a *App) createContainer(ctx context.Context, user *model.User, appName str
 		return nil, fmt.Errorf(`Error while creating service %s: %v`, serviceName, err)
 	}
 
-	return &deployedService{ID: createdContainer.ID, Name: serviceFullName, ImageName: service.Image}, nil
+	return &deployedService{
+		Name:        serviceName,
+		FullName:    serviceFullName,
+		ContainerID: createdContainer.ID,
+		ImageName:   service.Image,
+	}, nil
 }
 
 func (a *App) parseCompose(ctx context.Context, user *model.User, appName string, composeFile []byte) (map[string]*deployedService, error) {
