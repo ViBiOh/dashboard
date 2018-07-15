@@ -175,7 +175,14 @@ func (a *App) inspectServices(ctx context.Context, services map[string]*deployed
 }
 
 func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appName string, services map[string]*deployedService) bool {
-	containersIdsWithHealthcheck := commons.GetContainersIDs(commons.FilterContainers(a.inspectServices(ctx, services, user, appName), hasHealthcheck))
+	containersServices := a.inspectServices(ctx, services, user, appName)
+	for _, container := range containersServices {
+		if !container.State.Running {
+			return false
+		}
+	}
+
+	containersIdsWithHealthcheck := commons.GetContainersIDs(commons.FilterContainers(containersServices, hasHealthcheck))
 	if len(containersIdsWithHealthcheck) == 0 {
 		return true
 	}
