@@ -5,16 +5,18 @@ set -e
 echo Starting Dashboard with local configuration
 
 go run cmd/compose/compose.go \
-  -tls=false \
   -authBasic \
-  -traefik=false \
+  -domain=:1080 \
   -github=false \
   -mailer=false \
   -selenium=true \
-  -domain=:1080 \
-  -version=`git log --pretty=format:'%h' -n 1` > docker-compose.yml
+  -tls=false \
+  -tracing=false \
+  -traefik=false \
+  -version=`git log --pretty=format:'%h' -n 1` \
+  > docker-compose.yml
 
-go get -u github.com/ViBiOh/auth/cmd/bcrypt
+go get github.com/ViBiOh/auth/cmd/bcrypt
 export ADMIN_PASSWORD=`bcrypt admin`
 docker-compose -p dashboard -f docker-compose.yml up -d
 

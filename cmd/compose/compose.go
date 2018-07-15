@@ -27,22 +27,32 @@ type arguments struct {
 }
 
 func main() {
-	args := arguments{
-		AuthBasic:  *flag.Bool(`authBasic`, false, `Basic auth`),
-		DockerUser: *flag.Bool(`user`, false, `Enable docker user default`),
-		Domain:     *flag.String(`domain`, `vibioh.fr`, `Domain name`),
-		Expose:     *flag.Bool(`expose`, false, `Expose opened ports`),
-		Github:     *flag.Bool(`github`, true, `Github logging`),
-		Mailer:     *flag.Bool(`mailer`, true, `Enable mailer`),
-		Selenium:   *flag.Bool(`selenium`, false, `Selenium container`),
-		Tag:        *flag.String(`tag`, ``, `Docker tag used`),
-		TLS:        *flag.Bool(`tls`, true, `TLS for all containers`),
-		Tracing:    *flag.Bool(`tracing`, false, `Enable opentracing`),
-		Traefik:    *flag.Bool(`traefik`, true, `Traefik load-balancer`),
-		Users:      *flag.String(`users`, `admin:admin`, `Allowed users list`),
-		Version:    *flag.String(`version`, ``, `Docker image version`),
+	flagArgs := map[string]interface{}{
+		`AuthBasic`:  flag.Bool(`authBasic`, false, `Basic auth`),
+		`DockerUser`: flag.Bool(`user`, false, `Enable docker user default`),
+		`Domain`:     flag.String(`domain`, `vibioh.fr`, `Domain name`),
+		`Expose`:     flag.Bool(`expose`, false, `Expose opened ports`),
+		`Github`:     flag.Bool(`github`, true, `Github logging`),
+		`Mailer`:     flag.Bool(`mailer`, true, `Enable mailer`),
+		`Selenium`:   flag.Bool(`selenium`, false, `Selenium container`),
+		`Tag`:        flag.String(`tag`, ``, `Docker tag used`),
+		`TLS`:        flag.Bool(`tls`, true, `TLS for all containers`),
+		`Tracing`:    flag.Bool(`tracing`, true, `Enable opentracing`),
+		`Traefik`:    flag.Bool(`traefik`, true, `Traefik load-balancer`),
+		`Users`:      flag.String(`users`, `admin:admin`, `Allowed users list`),
+		`Version`:    flag.String(`version`, ``, `Docker image version`),
 	}
 	flag.Parse()
+
+	var args arguments
+
+	if content, err := json.Marshal(flagArgs); err != nil {
+		log.Printf(`Error while marshalling flags: %v`, err)
+		return
+	} else if err := json.Unmarshal(content, &args); err != nil {
+		log.Printf(`Error while unmarshalling flags: %v`, err)
+		return
+	}
 
 	funcs := template.FuncMap{
 		`merge`: func(o interface{}, newKey string) map[string]interface{} {
