@@ -132,12 +132,6 @@ func (a *App) deleteServices(ctx context.Context, appName string, services map[s
 		if err != nil {
 			log.Printf(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service.Name, err)
 		} else {
-			healthOutput := serviceHealthOutput(user, appName, service, infos)
-			if healthOutput != nil {
-				service.HealthLogs = healthOutput
-				log.Printf("[%s] [%s] Healthcheck output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(healthOutput, "\n"))
-			}
-
 			if _, err := a.dockerApp.StopContainer(ctx, service.ContainerID, infos); err != nil {
 				log.Printf(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service.Name, err)
 			}
@@ -178,7 +172,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 	containersServices := a.inspectServices(ctx, services, user, appName)
 	for _, container := range containersServices {
 		if !container.State.Running {
-			return false
+			log.Printf(`[%s] [%s] Non running container %v`, user.Username, appName, container.Name)
 		}
 	}
 
@@ -232,11 +226,10 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 		defer cancel()
 	}()
 
-	success := false
+	success := a.areContainersHealthy(ctx, user, appName, services)
+	a.captureServicesOutput(ctx, user, appName, services)
 
-	if a.areContainersHealthy(ctx, user, appName, services) {
-		success = true
-
+	if success {
 		if err := a.cleanContainers(ctx, oldContainers); err != nil {
 			log.Printf(`[%s] [%s] Error while cleaning old containers: %v`, user.Username, appName, err)
 		}
@@ -249,15 +242,10 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 		a.deleteServices(ctx, appName, services, user)
 	}
 
-	for _, service := range services {
-		logs, err := a.serviceOutput(ctx, user, appName, service)
-		if err != nil {
-			log.Printf(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, service.Name, err)
-		} else {
-			service.Logs = logs
-			if !success {
-				log.Printf("[%s] [%s] Logs output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(logs, "\n"))
-			}
+	if !success {
+		for _, service := range services {
+			log.Printf("[%s] [%s] Logs output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(service.Logs, "\n"))
+			log.Printf("[%s] [%s] Health output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(service.HealthLogs, "\n"))
 		}
 	}
 

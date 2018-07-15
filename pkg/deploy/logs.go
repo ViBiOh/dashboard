@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
@@ -41,7 +42,7 @@ func (a *App) serviceOutput(ctx context.Context, user *model.User, appName strin
 	return
 }
 
-func serviceHealthOutput(user *model.User, appName string, service *deployedService, infos *types.ContainerJSON) []string {
+func (a *App) serviceHealthOutput(user *model.User, appName string, service *deployedService, infos *types.ContainerJSON) []string {
 	if infos.State.Health == nil {
 		return nil
 	}
@@ -52,4 +53,15 @@ func serviceHealthOutput(user *model.User, appName string, service *deployedServ
 	}
 
 	return healthOutput
+}
+
+func (a *App) captureServicesOutput(ctx context.Context, user *model.User, appName string, services map[string]*deployedService) {
+	for _, service := range services {
+		logs, err := a.serviceOutput(ctx, user, appName, service)
+		if err != nil {
+			log.Printf(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, service.Name, err)
+		}
+
+		service.Logs = logs
+	}
 }
