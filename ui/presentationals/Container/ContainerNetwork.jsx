@@ -13,8 +13,7 @@ const ContainerNetwork = ({ container }) => {
     Object.keys(container.NetworkSettings.Networks).map(network => (
       <span key={network} className={style.item}>
         {network}
-        {' '}
-|
+        {' | '}
         {container.NetworkSettings.Networks[network].IPAddress}
       </span>
     ));
@@ -33,8 +32,7 @@ const ContainerNetwork = ({ container }) => {
       .map(parts => (
         <span key={parts[1]} className={style.item}>
           {parts[0]}
-          {' '}
-|
+          {' | '}
           {parts[1]}
         </span>
       ));
@@ -46,8 +44,7 @@ const ContainerNetwork = ({ container }) => {
       .map(port => (
         <span key={port} className={style.item}>
           {port}
-          {' '}
-|
+          {' | '}
           {container.NetworkSettings.Ports[port].map(p => p.HostPort).join(', ')}
         </span>
       ));

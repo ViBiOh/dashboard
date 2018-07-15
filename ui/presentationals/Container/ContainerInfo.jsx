@@ -40,8 +40,7 @@ Labels
         {Object.keys(container.Config.Labels).map(label => (
           <span key={label} className={style.item}>
             {label}
-            {' '}
-|
+            {' | '}
             {container.Config.Labels[label]}
           </span>
         ))}
@@ -62,8 +61,7 @@ Environment
           .map(parts => (
             <span key={parts[1]} className={style.item}>
               {parts[1]}
-              {' '}
-|
+              {' | '}
               {parts[2]}
             </span>
           ))}
@@ -133,8 +131,8 @@ HostConfig
       <span key="hostLabels" className={style.labels}>
         {container.HostConfig.RestartPolicy && (
           <span key="restart" className={style.item}>
-            Restart | 
-            {' '}
+            Restart
+            {' | '}
             {container.HostConfig.RestartPolicy.Name}
             {container.HostConfig.RestartPolicy.MaximumRetryCount
               ? `:${container.HostConfig.RestartPolicy.MaximumRetryCount}`
@@ -148,23 +146,23 @@ HostConfig
         )}
         {container.HostConfig.CpuShares > 0 && (
           <span key="cpu" className={style.item}>
-            CPU Shares | 
-            {' '}
+            CPU Shares
+            {' | '}
             {container.HostConfig.CpuShares}
           </span>
         )}
         {container.HostConfig.Memory > 0 && (
           <span key="memory" className={style.item}>
-            Memory limit | 
-            {' '}
+            Memory limit
+            {' | '}
             {humanSize(container.HostConfig.Memory)}
           </span>
         )}
         {container.HostConfig.SecurityOpt &&
           container.HostConfig.SecurityOpt.length > 0 && (
             <span key="security" className={style.item}>
-              Security | 
-              {' '}
+              Security
+              {' | '}
               {container.HostConfig.SecurityOpt.join(', ')}
             </span>
           )}
