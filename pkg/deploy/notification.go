@@ -7,7 +7,17 @@ import (
 	"github.com/ViBiOh/auth/pkg/model"
 )
 
+const (
+	never   = `never`
+	onError = `onError`
+	all     = `all`
+)
+
 func (a *App) sendEmailNotification(ctx context.Context, user *model.User, appName string, services map[string]*deployedService, success bool) error {
+	if a.notification == never || (success && a.notification == onError) {
+		return nil
+	}
+
 	notificationContent := deployNotification{
 		Success: success,
 		App:     appName,

@@ -39,6 +39,11 @@ func Test_Flags(t *testing.T) {
 			`appURL`,
 			`*string`,
 		},
+		{
+			`should add string notification param to flags`,
+			`notification`,
+			`*string`,
+		},
 	}
 
 	for _, testCase := range cases {

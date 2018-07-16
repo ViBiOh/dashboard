@@ -47,6 +47,7 @@ type App struct {
 	tag           string
 	containerUser string
 	appURL        string
+	notification  string
 	mailerApp     *client.App
 }
 
@@ -61,6 +62,7 @@ func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App,
 		tag:           strings.TrimSpace(*config[`tag`]),
 		containerUser: strings.TrimSpace(*config[`containerUser`]),
 		appURL:        strings.TrimSpace(*config[`appURL`]),
+		notification:  strings.TrimSpace(*config[`notification`]),
 	}
 }
 
@@ -71,6 +73,7 @@ func Flags(prefix string) map[string]*string {
 		`tag`:           flag.String(tools.ToCamel(fmt.Sprintf(`%sTag`, prefix)), `latest`, `[deploy] Default image tag)`),
 		`containerUser`: flag.String(tools.ToCamel(fmt.Sprintf(`%sContainerUser`, prefix)), `1000`, `[deploy] Default container user`),
 		`appURL`:        flag.String(tools.ToCamel(fmt.Sprintf(`%sAppURL`, prefix)), `https://dashboard.vibioh.fr`, `[deploy] Application web URL`),
+		`notification`:  flag.String(tools.ToCamel(fmt.Sprintf(`%sNotification`, prefix)), `onError`, `[deploy] Send email notification when deploy ends (possibles values ares "never", "onError", "all")`),
 	}
 }
 
