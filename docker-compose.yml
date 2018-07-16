@@ -47,6 +47,8 @@ services:
     - '1.32'
     - -dockerContainerUser
     - ${CONTAINER_USER}
+    - -dockerNotification
+    - all
     - -mailerURL
     - ${MAILER_URL}
     - -mailerUser

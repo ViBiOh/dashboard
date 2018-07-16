@@ -153,6 +153,8 @@ Usage of dashboard:
       [docker] Host (default "unix:///var/run/docker.sock")
   -dockerNetwork string
       [deploy] Default Network (default "traefik")
+  -dockerNotification string
+      [deploy] Send email notification when deploy ends (possibles values ares "never", "onError", "all") (default "onError")
   -dockerTag string
       [deploy] Default image tag) (default "latest")
   -dockerVersion string
