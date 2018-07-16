@@ -22,7 +22,7 @@
     "pkg/model",
     "pkg/provider"
   ]
-  revision = "8cc0e2cabaf3368550ec0ab8423841aa222a87f3"
+  revision = "7c591330c4da1ca8f784cb404d13d2d50b3ea5af"
 
 [[projects]]
   branch = "master"
@@ -42,13 +42,13 @@
     "pkg/server",
     "pkg/tools"
   ]
-  revision = "d3fd46837fc82be160c28a0bac6a6238bd5ad2ee"
+  revision = "3d6b6ec57092ce1abfd478ee08a44be1f12b5047"
 
 [[projects]]
   branch = "master"
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
-  revision = "3462ed3f730cee64164e81b5e772f72c00e832ec"
+  revision = "5660091d7e6d68b2576c48cc107b89984cd81980"
 
 [[projects]]
   branch = "master"
@@ -94,7 +94,7 @@
     "client",
     "errdefs"
   ]
-  revision = "d080de7074a05a1534bf7e91d000a311885fa221"
+  revision = "492545e139e7461aac044149a931bb4b2dd48f75"
 
 [[projects]]
   name = "github.com/docker/go-connections"
@@ -115,8 +115,8 @@
 [[projects]]
   name = "github.com/gogo/protobuf"
   packages = ["proto"]
-  revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
-  version = "v1.0.0"
+  revision = "7d68e886eac4f7e34d0d82241a6273d6c304c5cf"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -253,7 +253,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["windows"]
-  revision = "1b2967e3c290b7c545b3db0deeda16e9be4f98a2"
+  revision = "ac767d655b305d4e9612f5f6e33120b9176c4ad4"
 
 [[projects]]
   branch = "v2"

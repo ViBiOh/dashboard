@@ -1,12 +1,44 @@
 package docker
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/docker/docker/api/types/filters"
 )
+
+func Test_Flags(t *testing.T) {
+	var cases = []struct {
+		intention string
+		want      string
+		wantType  string
+	}{
+		{
+			`should add string host param to flags`,
+			`host`,
+			`*string`,
+		},
+		{
+			`should add string version param to flags`,
+			`version`,
+			`*string`,
+		},
+	}
+
+	for _, testCase := range cases {
+		result := Flags(testCase.intention)[testCase.want]
+
+		if result == nil {
+			t.Errorf("%s\nFlags() = %+v, want `%s`", testCase.intention, result, testCase.want)
+		}
+
+		if fmt.Sprintf(`%T`, result) != testCase.wantType {
+			t.Errorf("%s\nFlags() = `%T`, want `%s`", testCase.intention, result, testCase.wantType)
+		}
+	}
+}
 
 func Test_LabelFilters(t *testing.T) {
 	var cases = []struct {

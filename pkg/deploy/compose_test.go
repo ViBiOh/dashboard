@@ -2,6 +2,7 @@ package deploy
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -11,6 +12,47 @@ import (
 	"github.com/ViBiOh/httputils/pkg/request"
 	"github.com/docker/docker/api/types/filters"
 )
+
+func Test_Flags(t *testing.T) {
+	var cases = []struct {
+		intention string
+		want      string
+		wantType  string
+	}{
+		{
+			`should add string network param to flags`,
+			`network`,
+			`*string`,
+		},
+		{
+			`should add string tag param to flags`,
+			`tag`,
+			`*string`,
+		},
+		{
+			`should add string containerUser param to flags`,
+			`containerUser`,
+			`*string`,
+		},
+		{
+			`should add string appURL param to flags`,
+			`appURL`,
+			`*string`,
+		},
+	}
+
+	for _, testCase := range cases {
+		result := Flags(testCase.intention)[testCase.want]
+
+		if result == nil {
+			t.Errorf("%s\nFlags() = %+v, want `%s`", testCase.intention, result, testCase.want)
+		}
+
+		if fmt.Sprintf(`%T`, result) != testCase.wantType {
+			t.Errorf("%s\nFlags() = `%T`, want `%s`", testCase.intention, result, testCase.wantType)
+		}
+	}
+}
 
 func TestGetServiceFullName(t *testing.T) {
 	var cases = []struct {
