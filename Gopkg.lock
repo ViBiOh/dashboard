@@ -32,7 +32,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:69a13ec881bb0fc68794a86c51f0eb7cee972ce3055480d4ccd82aa23c36f7ff"
+  digest = "1:b13bfb440731c6232c086cc02a20ecbbb8542d17fc241dbc5307928330618c62"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -46,11 +46,12 @@
     "pkg/opentracing",
     "pkg/owasp",
     "pkg/request",
+    "pkg/rollbar",
     "pkg/server",
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "67d995ec217a84719ac27402d18098a7ace2b7de"
+  revision = "2fcc7ba9b1ad5146caa8429b51593452b3df3077"
 
 [[projects]]
   branch = "master"
@@ -258,6 +259,14 @@
   revision = "ae68e2d4c00fed4943b5f6698d504a5fe083da8a"
 
 [[projects]]
+  digest = "1:f9141ca80ae9d81b7b8a624848750d6ac73bf942de994086bdcf6e373349be3f"
+  name = "github.com/rollbar/rollbar-go"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "dff56a4ed902ad4f385427794b1748ea2182e84c"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:7627e9377eb0551bc8c6e2b0c54abbbf67e9afb675f45ea916bc63d8acb1d690"
   name = "github.com/uber/jaeger-client-go"
   packages = [
@@ -335,6 +344,7 @@
     "github.com/ViBiOh/httputils/pkg/opentracing",
     "github.com/ViBiOh/httputils/pkg/owasp",
     "github.com/ViBiOh/httputils/pkg/request",
+    "github.com/ViBiOh/httputils/pkg/rollbar",
     "github.com/ViBiOh/httputils/pkg/server",
     "github.com/ViBiOh/httputils/pkg/tools",
     "github.com/ViBiOh/mailer/pkg/client",
