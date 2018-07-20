@@ -72,3 +72,11 @@ git pull
 
 echo "Deploying ${PROJECT_NAME}"
 docker-compose-deploy ${PROJECT_NAME}
+
+if [ -n "${ROLLBAR_TOKEN}" ]; then
+  curl https://api.rollbar.com/api/1/deploy/ \
+    -F access_token=${ROLLBAR_TOKEN} \
+    -F environment=prod \
+    -F revision=`make version` \
+    -F local_username=`whoami`
+fi
