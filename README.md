@@ -173,6 +173,12 @@ Usage of dashboard:
       [mailer] Mailer User
   -port int
       Listen port (default 1080)
+  -rollbarEnv string
+      [rollbar] Environment (default "prod")
+  -rollbarServerRoot string
+      [rollbar] Server Root
+  -rollbarToken string
+      [rollbar] Token
   -tls
       Serve TLS content (default true)
   -tlsCert string

@@ -66,6 +66,10 @@ services:
     - -corsCredentials
     - -tracingName
     - dashboard_api
+    - -rollbarToken
+    - ${ROLLBAR_TOKEN}
+    - -rollbarServerRoot
+    - github.com/ViBiOh/dashboard
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'

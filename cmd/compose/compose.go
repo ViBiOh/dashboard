@@ -17,6 +17,7 @@ type arguments struct {
 	Expose     bool
 	Github     bool
 	Mailer     bool
+	Rollbar    bool
 	Selenium   bool
 	Tag        string
 	TLS        bool
@@ -34,6 +35,7 @@ func main() {
 		`Expose`:     flag.Bool(`expose`, false, `Expose opened ports`),
 		`Github`:     flag.Bool(`github`, true, `Github logging`),
 		`Mailer`:     flag.Bool(`mailer`, true, `Enable mailer`),
+		`Rollbar`:    flag.Bool(`rollbar`, true, `Rollbar error reporting`),
 		`Selenium`:   flag.Bool(`selenium`, false, `Selenium container`),
 		`Tag`:        flag.String(`tag`, ``, `Docker tag used`),
 		`TLS`:        flag.Bool(`tls`, true, `TLS for all containers`),

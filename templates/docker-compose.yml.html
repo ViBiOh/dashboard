@@ -87,6 +87,12 @@ services:
     - -tracingName
     - dashboard_api
   {{- end }}
+  {{- if .Rollbar }}
+    - -rollbarToken
+    - ${ROLLBAR_TOKEN}
+    - -rollbarServerRoot
+    - github.com/ViBiOh/dashboard
+  {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard-api" }}
   {{- end }}
