@@ -32,7 +32,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:b13bfb440731c6232c086cc02a20ecbbb8542d17fc241dbc5307928330618c62"
+  digest = "1:915ce7746ee087a3b5df17e56e67485cf4b6f317b362f6f6fa63b7592c3f8e93"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -51,7 +51,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "2fcc7ba9b1ad5146caa8429b51593452b3df3077"
+  revision = "8c260f4b49f6508c01910c44b9a3f89c029b879d"
 
 [[projects]]
   branch = "master"
@@ -86,7 +86,7 @@
     "reference",
   ]
   pruneopts = "UT"
-  revision = "749f6afb4572201e3c37325d0ffedb6f32be8950"
+  revision = "0dae0957e5fe3156c265d22bef4cba9efbf388e2"
 
 [[projects]]
   branch = "master"
@@ -113,7 +113,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "683738900eec52f86b834234eeef054c4e135031"
+  revision = "1ef1cc8388165b2b848f9b3f53ec91c87de09f63"
 
 [[projects]]
   digest = "1:e76dacf1c43685d6abc79c89bab193362c2028744e57eee425ebfa277b46efb2"
