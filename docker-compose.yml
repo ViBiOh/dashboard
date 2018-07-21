@@ -100,7 +100,7 @@ services:
     command:
     - -spa
     - -env
-    - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED
+    - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED,ENVIRONMENT,ROLLBAR_TOKEN
     - -csp
     - "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' wss: dashboard-api.vibioh.fr dashboard-auth.vibioh.fr"
     - -headers
@@ -117,11 +117,13 @@ services:
       traefik.frontend.rateLimit.rateSet.first.average: '100'
       traefik.frontend.rateLimit.rateSet.first.burst: '200'
     environment:
+      ENVIRONMENT: 'prod'
       API_URL: 'https://dashboard-api.vibioh.fr'
       WS_URL: 'wss://dashboard-api.vibioh.fr/ws'
       AUTH_URL: 'https://dashboard-auth.vibioh.fr'
       BASIC_AUTH_ENABLED: 'false'
       GITHUB_AUTH_ENABLED: 'true'
+      ROLLBAR_TOKEN: '${ROLLBAR_CLIENT_TOKEN}'
     logging:
       driver: json-file
       options:

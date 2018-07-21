@@ -117,7 +117,7 @@ services:
   {{- end }}
     - -spa
     - -env
-    - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED
+    - API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED,ENVIRONMENT,ROLLBAR_TOKEN
     - -csp
     - "default-src 'self'; base-uri 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws{{ if .TLS }}s{{ end }}: {{ if .Traefik }}dashboard-api{{ .Domain }} dashboard-auth{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1081 localhost:1082{{ else }}api:1080 auth:1080{{ end }}{{ end }}"
     - -headers
@@ -135,6 +135,7 @@ services:
     - 1080:1080/tcp
   {{- end }}
     environment:
+      ENVIRONMENT: '{{- .Environment -}}'
     {{- if .Traefik }}
       API_URL: 'http{{ if .TLS }}s{{ end }}://dashboard-api{{ .Domain }}'
       WS_URL: 'ws{{ if .TLS }}s{{ end }}://dashboard-api{{ .Domain }}/ws'
@@ -159,6 +160,9 @@ services:
       GITHUB_AUTH_ENABLED: 'true'
     {{- else }}
       GITHUB_AUTH_ENABLED: 'false'
+    {{- end }}
+    {{- if .Rollbar }}
+      ROLLBAR_TOKEN: '${ROLLBAR_CLIENT_TOKEN}'
     {{- end }}
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 {{ if .Selenium }}

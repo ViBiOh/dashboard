@@ -113,8 +113,8 @@ start-front:
 	viws \
 		-tls=false \
 		-spa \
-		-env API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED \
+		-env API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED,ENVIRONMENT,ROLLBAR_TOKEN \
 		-csp "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: localhost:1081 localhost:1082;" \
-		-directory `pwd`/dist
+		-directory `pwd`/ui/dist
 
 .PHONY: api go version deps format lint tst bench build docker-deps docker-login docker-promote docker-push dockere-delete docker-api docker-ui docker-build-api docker-push-api docker-promote-api dockere-delete-api docker-build-ui docker-push-ui docker-promote-ui dockere-delete-ui start-deps start-auth start-api start-front
