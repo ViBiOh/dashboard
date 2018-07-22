@@ -19,6 +19,8 @@ services:
     - ${ROLLBAR_TOKEN}
     - -rollbarServerRoot
     - github.com/ViBiOh/auth
+    - -rollbarEnv
+    - prod
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-auth.vibioh.fr'
@@ -51,8 +53,6 @@ services:
     - '1.32'
     - -dockerContainerUser
     - ${CONTAINER_USER}
-    - -dockerNotification
-    - all
     - -mailerURL
     - ${MAILER_URL}
     - -mailerUser
@@ -74,6 +74,8 @@ services:
     - ${ROLLBAR_TOKEN}
     - -rollbarServerRoot
     - github.com/ViBiOh/dashboard
+    - -rollbarEnv
+    - prod
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
@@ -85,13 +87,13 @@ services:
       traefik.frontend.rateLimit.rateSet.first.burst: '200'
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
-    group_add:
-    - '${DOCKER_GROUP}'
     logging:
       driver: json-file
       options:
         max-size: '10m'
     user: '${CONTAINER_USER}'
+    group_add:
+    - '${DOCKER_GROUP}'
     restart: on-failure:5
     read_only: true
     cpu_shares: 128
@@ -115,6 +117,8 @@ services:
     - ${ROLLBAR_TOKEN}
     - -rollbarServerRoot
     - github.com/ViBiOh/viws
+    - -rollbarEnv
+    - prod
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr'

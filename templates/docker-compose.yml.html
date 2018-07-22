@@ -31,6 +31,8 @@ services:
     - ${ROLLBAR_TOKEN}
     - -rollbarServerRoot
     - github.com/ViBiOh/auth
+    - -rollbarEnv
+    - {{ .Environment -}}
   {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard-auth" }}
@@ -59,9 +61,9 @@ services:
   {{- if .DockerUser }}
     - -dockerContainerUser
     - ${CONTAINER_USER}
+  {{- end }}
     - -dockerAppURL
     - http{{- if .TLS -}}s{{- end -}}://dashboard.{{- .Domain -}}
-  {{- end }}
   {{- if .Mailer }}
     - -mailerURL
     - ${MAILER_URL}
@@ -87,8 +89,6 @@ services:
     - -corsMethods
     - GET,POST,DELETE
     - -corsCredentials
-    - -csp
-    - "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:"
   {{- if .Tracing }}
     - -tracingName
     - dashboard_api
@@ -98,6 +98,8 @@ services:
     - ${ROLLBAR_TOKEN}
     - -rollbarServerRoot
     - github.com/ViBiOh/dashboard
+    - -rollbarEnv
+    - {{ .Environment -}}
   {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard-api" }}
@@ -109,10 +111,6 @@ services:
   {{- end }}
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
-  {{- if .DockerUser }}
-    group_add:
-    - '${DOCKER_GROUP}'
-  {{- end -}}
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 
   front:
@@ -137,6 +135,8 @@ services:
     - ${ROLLBAR_TOKEN}
     - -rollbarServerRoot
     - github.com/ViBiOh/viws
+    - -rollbarEnv
+    - {{ .Environment -}}
   {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard" }}
@@ -218,6 +218,8 @@ networks:
         max-size: '10m'
     {{- if .DockerUser }}
     user: '${CONTAINER_USER}'
+    group_add:
+    - '${DOCKER_GROUP}'
     {{- end }}
     restart: on-failure:5
     read_only: true

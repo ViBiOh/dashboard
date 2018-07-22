@@ -8,7 +8,7 @@ echo Starting Dashboard with local configuration
 go run cmd/compose/compose.go \
   -authBasic \
   -domain=:1080 \
-  -environment "e2e" \
+  -environment="e2e" \
   -github=false \
   -mailer=false \
   -selenium=true \
