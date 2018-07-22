@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -u
 
 function readVariableIfRequired() {
   if [ -z "${!1}" ]; then

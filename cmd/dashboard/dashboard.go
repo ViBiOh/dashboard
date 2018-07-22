@@ -101,5 +101,5 @@ func main() {
 
 	serverApp.ListenAndServe(handler, func() error {
 		return handleGracefulClose(deployApp)
-	}, healthcheckApp)
+	}, healthcheckApp, rollbarApp)
 }
