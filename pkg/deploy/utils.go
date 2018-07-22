@@ -3,12 +3,14 @@ package deploy
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
 	"github.com/ViBiOh/httputils/pkg/request"
+	"github.com/ViBiOh/httputils/pkg/rollbar"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 )
@@ -82,4 +84,11 @@ func findServiceByContainerID(services map[string]*deployedService, containerID 
 	}
 
 	return nil
+}
+
+func logError(format string, a ...interface{}) {
+	err := fmt.Errorf(format, a...)
+
+	log.Print(err)
+	rollbar.Error(err)
 }

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
@@ -59,7 +58,7 @@ func (a *App) captureServicesOutput(ctx context.Context, user *model.User, appNa
 	for _, service := range services {
 		logs, err := a.serviceOutput(ctx, user, appName, service)
 		if err != nil {
-			log.Printf(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, service.Name, err)
+			logError(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, service.Name, err)
 		}
 
 		service.Logs = logs
