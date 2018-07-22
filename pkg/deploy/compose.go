@@ -252,7 +252,7 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 		logError(`[%s] [%s] Error while sending email notification: %s`, user.Username, appName, err)
 	}
 
-	if err := a.sendRollbarNotification(ctx, user, requestParams.Get(`rollbar_token`), requestParams.Get(`environment`), requestParams.Get(`revision`)); err != nil {
+	if err := a.sendRollbarNotification(ctx, user, requestParams); err != nil {
 		logError(`[%s] [%s] Error while sending rollbar notification: %s`, user.Username, appName, err)
 	}
 }
