@@ -26,6 +26,12 @@ services:
     - -tracingName
     - dashboard_auth
   {{- end }}
+  {{- if .Rollbar }}
+    - -rollbarToken
+    - ${ROLLBAR_TOKEN}
+    - -rollbarServerRoot
+    - github.com/ViBiOh/auth
+  {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard-auth" }}
   {{- end }}
@@ -125,6 +131,12 @@ services:
   {{- if .Tracing }}
     - -tracingName
     - dashboard_ui
+  {{- end }}
+  {{- if .Rollbar }}
+    - -rollbarToken
+    - ${ROLLBAR_TOKEN}
+    - -rollbarServerRoot
+    - github.com/ViBiOh/viws
   {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard" }}
