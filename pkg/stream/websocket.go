@@ -246,7 +246,7 @@ func (a *App) busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer func() {
-		if err := ws.Close(); err != nil {
+		if err := ws.Close(); err != nil && websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
 			rollbar.LogError(`Error while closing connection to websocket: %v`, err)
 		}
 	}()
