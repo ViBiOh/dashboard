@@ -21,6 +21,7 @@ import (
 	"github.com/ViBiOh/httputils/pkg/httperror"
 	"github.com/ViBiOh/httputils/pkg/httpjson"
 	"github.com/ViBiOh/httputils/pkg/request"
+	"github.com/ViBiOh/httputils/pkg/rollbar"
 	"github.com/ViBiOh/httputils/pkg/tools"
 	"github.com/ViBiOh/mailer/pkg/client"
 	"github.com/docker/docker/api/types"
@@ -107,7 +108,7 @@ func (a *App) pullImage(ctx context.Context, image string) error {
 func (a *App) cleanContainers(ctx context.Context, containers []types.Container) error {
 	for _, container := range containers {
 		if _, err := a.dockerApp.GracefulStopContainer(ctx, container.ID, time.Minute); err != nil {
-			logError(`Error while stopping container %s: %v`, container.Names, err)
+			rollbar.LogError(`Error while stopping container %s: %v`, container.Names, err)
 		}
 	}
 
@@ -134,14 +135,14 @@ func (a *App) deleteServices(ctx context.Context, appName string, services map[s
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			logError(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service.Name, err)
+			rollbar.LogError(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service.Name, err)
 		} else {
 			if _, err := a.dockerApp.StopContainer(ctx, service.ContainerID, infos); err != nil {
-				logError(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service.Name, err)
+				rollbar.LogError(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service.Name, err)
 			}
 
 			if _, err := a.dockerApp.RmContainer(ctx, service.ContainerID, infos, true); err != nil {
-				logError(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service.Name, err)
+				rollbar.LogError(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service.Name, err)
 			}
 		}
 	}
@@ -163,7 +164,7 @@ func (a *App) inspectServices(ctx context.Context, services map[string]*deployed
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			logError(`[%s] [%s] Error while inspecting container %s: %v`, user.Username, appName, service.Name, err)
+			rollbar.LogError(`[%s] [%s] Error while inspecting container %s: %v`, user.Username, appName, service.Name, err)
 		} else {
 			containers = append(containers, infos)
 		}
@@ -209,7 +210,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 				return true
 			}
 		case err := <-errors:
-			logError(`[%s] [%s] Error while reading healthy events: %v`, user.Username, appName, err)
+			rollbar.LogError(`[%s] [%s] Error while reading healthy events: %v`, user.Username, appName, err)
 			return false
 		}
 	}
@@ -230,14 +231,14 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 
 	if success {
 		if err := a.cleanContainers(ctx, oldContainers); err != nil {
-			logError(`[%s] [%s] Error while cleaning old containers: %v`, user.Username, appName, err)
+			rollbar.LogError(`[%s] [%s] Error while cleaning old containers: %v`, user.Username, appName, err)
 		}
 
 		if err := a.renameDeployedContainers(ctx, services); err != nil {
-			logError(`[%s] [%s] Error while renaming deployed containers: %v`, user.Username, appName, err)
+			rollbar.LogError(`[%s] [%s] Error while renaming deployed containers: %v`, user.Username, appName, err)
 		}
 	} else {
-		log.Printf(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, errHealthCheckFailed)
+		rollbar.LogWarning(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, errHealthCheckFailed)
 		a.deleteServices(ctx, appName, services, user)
 	}
 
@@ -249,11 +250,11 @@ func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user 
 	}
 
 	if err := a.sendEmailNotification(ctx, user, appName, services, success); err != nil {
-		logError(`[%s] [%s] Error while sending email notification: %s`, user.Username, appName, err)
+		rollbar.LogError(`[%s] [%s] Error while sending email notification: %s`, user.Username, appName, err)
 	}
 
 	if err := a.sendRollbarNotification(ctx, user, requestParams); err != nil {
-		logError(`[%s] [%s] Error while sending rollbar notification: %s`, user.Username, appName, err)
+		rollbar.LogError(`[%s] [%s] Error while sending rollbar notification: %s`, user.Username, appName, err)
 	}
 }
 

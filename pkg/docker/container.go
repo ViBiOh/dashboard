@@ -3,7 +3,6 @@ package docker
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -11,6 +10,7 @@ import (
 	"github.com/ViBiOh/dashboard/pkg/commons"
 	"github.com/ViBiOh/httputils/pkg/httperror"
 	"github.com/ViBiOh/httputils/pkg/httpjson"
+	"github.com/ViBiOh/httputils/pkg/rollbar"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	opentracing "github.com/opentracing/opentracing-go"
@@ -123,7 +123,7 @@ func (a *App) RmContainer(ctx context.Context, containerID string, container *ty
 		if failOnImageFail {
 			return nil, err
 		}
-		log.Print(err)
+		rollbar.LogError(`%v`, err)
 	}
 
 	return nil, nil
