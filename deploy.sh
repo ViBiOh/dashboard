@@ -79,5 +79,5 @@ if [ -n "${ROLLBAR_TOKEN}" ]; then
     -F access_token=${ROLLBAR_TOKEN} \
     -F environment=prod \
     -F revision=`make version` \
-    -F local_username=`make author`
+    -F local_username=`make author | sed "s| |+|g"`
 fi
