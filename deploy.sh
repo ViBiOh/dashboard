@@ -79,5 +79,5 @@ if [ -n "${ROLLBAR_TOKEN}" ]; then
     -F access_token=${ROLLBAR_TOKEN} \
     -F environment=prod \
     -F revision=`make version` \
-    -F local_username=`whoami`
+    -F local_username=`make author`
 fi

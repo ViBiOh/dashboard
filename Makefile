@@ -1,4 +1,5 @@
 VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
+AUTHOR ?= $(shell git log --pretty=format:'%an' -n 1)
 APP_NAME = dashboard
 
 default: api
@@ -9,6 +10,9 @@ go: format lint tst bench build
 
 version:
 	@echo -n $(VERSION)
+
+author:
+	@echo -n $(AUTHOR)
 
 deps:
 	go get -u github.com/golang/dep/cmd/dep
@@ -110,11 +114,13 @@ start-front:
 	WS_URL=ws://localhost:1082/ws \
 	AUTH_URL=http://localhost:1081 \
 	BASIC_AUTH_ENABLED=true \
+	ROLLBAR_TOKEN=$(ROLLBAR_TOKEN) \
+	ENVIRONMENT=dev \
 	viws \
 		-tls=false \
 		-spa \
 		-env API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED,ENVIRONMENT,ROLLBAR_TOKEN \
-		-csp "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: localhost:1081 localhost:1082;" \
+		-csp "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com/ajax/libs/rollbar.js/; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: localhost:1081 localhost:1082 api.rollbar.com" \
 		-directory `pwd`/ui/dist
 
-.PHONY: api go version deps format lint tst bench build docker-deps docker-login docker-promote docker-push dockere-delete docker-api docker-ui docker-build-api docker-push-api docker-promote-api dockere-delete-api docker-build-ui docker-push-ui docker-promote-ui dockere-delete-ui start-deps start-auth start-api start-front
+.PHONY: api go version author deps format lint tst bench build docker-deps docker-login docker-promote docker-push dockere-delete docker-api docker-ui docker-build-api docker-push-api docker-promote-api dockere-delete-api docker-build-ui docker-push-ui docker-promote-ui dockere-delete-ui start-deps start-auth start-api start-front

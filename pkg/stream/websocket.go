@@ -79,7 +79,7 @@ func (a *App) upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websoc
 
 	defer func() {
 		if err != nil && ws != nil {
-			if closeErr := ws.Close(); closeErr != nil {
+			if closeErr := ws.Close(); closeErr != nil && websocket.IsUnexpectedCloseError(closeErr, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
 				err = fmt.Errorf(`%v, and also error while closing connection: %v`, err, closeErr)
 			}
 		}
@@ -121,7 +121,7 @@ func readContent(user *model.User, ws *websocket.Conn, name string, done chan<- 
 		}
 
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived, websocket.CloseAbnormalClosure) {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
 				rollbar.LogError(`[%s] Error while reading from %s socket: %v`, user.Username, name, err)
 			}
 
