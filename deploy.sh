@@ -79,5 +79,5 @@ if [ -n "${ROLLBAR_TOKEN}" ]; then
     -F access_token=${ROLLBAR_TOKEN} \
     -F environment=prod \
     -F revision=`make version` \
-    -F local_username=`make author | sed "s| |+|g"`
+    -F local_username=`perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$(make author)"`
 fi

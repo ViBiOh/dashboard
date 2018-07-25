@@ -20,7 +20,11 @@ const endError = /_SUCCEEDED$/;
  */
 export default (state = '', action) => {
   if (action.type === actions.SET_ERROR || startError.test(action.type)) {
-    return action.error;
+    if (global.Rollbar) {
+      global.Rollbar.error(action.error);
+    }
+
+    return String(action.error);
   }
   if (endError.test(action.type)) {
     return '';

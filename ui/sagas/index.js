@@ -65,7 +65,7 @@ export function* loginSaga(action) {
       put(actions.goHome(action.redirect)),
     ];
   } catch (e) {
-    yield put(actions.loginFailed(String(e)));
+    yield put(actions.loginFailed(e));
   }
 }
 
@@ -85,7 +85,7 @@ export function* getGithubAccesTokenSaga(action) {
       put(actions.goHome(action.redirect)),
     ];
   } catch (e) {
-    yield put(actions.getGithubAccessTokenFailed(String(e)));
+    yield put(actions.getGithubAccessTokenFailed(e));
   }
 }
 

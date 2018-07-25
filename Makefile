@@ -84,9 +84,9 @@ docker-delete-ui:
 	curl -X DELETE -u "$(DOCKER_USER):$(DOCKER_CLOUD_TOKEN)" "https://cloud.docker.com/v2/repositories/$(DOCKER_USER)/$(APP_NAME)-ui/tags/$(VERSION)/"
 
 start-deps:
-	go get -u github.com/ViBiOh/auth/cmd/auth
-	go get -u github.com/ViBiOh/auth/cmd/bcrypt
-	go get -u github.com/ViBiOh/viws/cmd
+	go get github.com/ViBiOh/auth/cmd/auth
+	go get github.com/ViBiOh/auth/cmd/bcrypt
+	go get github.com/ViBiOh/viws/cmd
 
 start-auth:
 	auth \

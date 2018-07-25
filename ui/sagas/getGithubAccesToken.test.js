@@ -31,8 +31,7 @@ test('should put error on failure', t => {
   const iterator = getGithubAccesTokenSaga({});
   iterator.next();
 
-  t.deepEqual(
-    iterator.throw(new Error('Test')).value,
-    put(actions.getGithubAccessTokenFailed('Error: Test')),
-  );
+  const err = new Error('Test');
+
+  t.deepEqual(iterator.throw(err).value, put(actions.getGithubAccessTokenFailed(err)));
 });

@@ -31,5 +31,7 @@ test('should put error on failure', t => {
   const iterator = loginSaga({});
   iterator.next();
 
-  t.deepEqual(iterator.throw(new Error('Test')).value, put(actions.loginFailed('Error: Test')));
+  const err = new Error('Test');
+
+  t.deepEqual(iterator.throw(err).value, put(actions.loginFailed(err)));
 });
