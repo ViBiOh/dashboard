@@ -47,7 +47,18 @@ export const humanSize = (size, scale = humanSizeScale(size)) =>
  * @param  {Object} stat Container's stat
  * @return {Number} Maximum CPU percentage
  */
-export const cpuPercentageMax = stat => stat.cpu_stats.cpu_usage.percpu_usage.length * 100;
+export const cpuPercentageMax = stat => {
+  if (
+    stat &&
+    stat.cpu_stats &&
+    stat.cpu_stats.cpu_usage &&
+    Array.isArray(stat.cpu_stats.cpu_usage.percpu_usage)
+  ) {
+    return stat.cpu_stats.cpu_usage.percpu_usage.length * 100;
+  }
+
+  return 0;
+};
 
 /**
  * Compute CPU percentage of containers.
