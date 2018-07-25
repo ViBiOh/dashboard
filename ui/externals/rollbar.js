@@ -1,6 +1,15 @@
 /* eslint-disable */
 
+/**
+ * Initialize Rollbar error reporter
+ * @param  {String} accessToken Rollbar Token
+ * @param  {String} environment Environment
+ */
 export default function(accessToken, environment) {
+  if (!accessToken || !environment) {
+    return;
+  }
+
   var _rollbarConfig = {
     accessToken,
     captureUncaught: true,
