@@ -17,6 +17,17 @@ View detailed informations about containers, start / stop / restart them.
 
 # Getting Started
 
+## Features
+
+* Traefik ready
+* Github OAuth / Basic Login
+* Deploy without downtime
+* Full TLS support
+* Opentracing with Jaeger
+* Prometheus monitoring
+* Rollbar error reporting
+* Read-only containers
+
 ## Docker
 
 Docker's images are available, `vibioh/dashboard-ui` and `vibioh/dashboard-api`, and a `docker-compose.yml` generator. Everything is almost configured, you only have to tweak domain's name, mainly configured for being used with [traefik](https://traefik.io), and adjust some secrets.
@@ -96,6 +107,26 @@ At deploy time, if the new containers have [`HEALTHCHECK`](https://docs.docker.c
 If no healthcheck is provided, `dashboard` doesn't know if your container is ready for business, so it's a simple launch new containers then destroy old containers, without waiting time.
 
 If you don't have an healthcheck on your container, check [vibioh/httputils](https://github.com/ViBiOh/httputils) for having a simple HTTP Client that request the defined endpoint with `alcotest`.
+
+## Monitoring
+
+[Prometheus](https://prometheus.io/) is embed in every service to monitor basic Golang metrics. Data are available on the `/metrics` endpoint.
+
+## Tracing
+
+[Opentracing](http://opentracing.io/) is embed in every service to trace incoming (except for healhtcheck and metrics) or outcoming request. [Jaeger](https://www.jaegertracing.io/) is used as tracing implementation and configurable via CLI of each service.
+
+## Error reporting
+
+[Rollbar](https://rollbar.com/) is embed in every service to report every error. Token, environment and server root are configurable vie CLI of each service.
+
+### Deploy notification
+
+While deploying, Dashboard can also send [deploy notification](https://docs.rollbar.com/docs/bash) after successful deploy. You have to provide following query parameters :
+
+* `rollbar_token` Rollbar token allowed to send deploy notification
+* `user` User at the origin of deploy
+* `revision` Git sha1 of current version
 
 ## Another Docker Infrastructure Manager ?
 
