@@ -127,6 +127,7 @@ While deploying, Dashboard can also send [deploy notification](https://docs.roll
 * `rollbar_token` Rollbar token allowed to send deploy notification
 * `user` User at the origin of deploy
 * `revision` Git sha1 of current version
+* `environment` Environment deployed
 
 ## Another Docker Infrastructure Manager ?
 
