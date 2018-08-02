@@ -58,7 +58,7 @@ svg {
 
 @media print {
   body::after {
-    content: 'Save ink, share link.';
+    content: 'Save ink, share link. Save paper, use browser.';
   }
 
   body > * {
