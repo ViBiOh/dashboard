@@ -353,16 +353,16 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 		err = a.startServices(ctx, newServices)
 	}
 
-	if err != nil {
-		composeFailed(w, user, appName, err)
-		return
-	}
-
 	ctx = context.Background()
 	parentSpanContext := opentracing.SpanFromContext(r.Context()).Context()
 	_, ctx = opentracing.StartSpanFromContext(ctx, `Deploy`, opentracing.FollowsFrom(parentSpanContext))
 
 	go a.finishDeploy(ctx, user, appName, newServices, oldContainers, r.URL.Query())
+
+	if err != nil {
+		composeFailed(w, user, appName, err)
+		return
+	}
 
 	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
