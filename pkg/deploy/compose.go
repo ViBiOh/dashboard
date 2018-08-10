@@ -216,14 +216,13 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 	}
 }
 
-func (a *App) finishDeploy(ctx context.Context, cancel context.CancelFunc, user *model.User, appName string, services map[string]*deployedService, oldContainers []types.Container, requestParams url.Values) {
+func (a *App) finishDeploy(ctx context.Context, user *model.User, appName string, services map[string]*deployedService, oldContainers []types.Container, requestParams url.Values) {
 	span := opentracing.SpanFromContext(ctx)
 	span.SetTag(`app`, appName)
 	span.SetTag(`services_count`, len(services))
 	defer func() {
 		defer a.tasks.Delete(appName)
 		defer span.Finish()
-		defer cancel()
 	}()
 
 	success := a.areContainersHealthy(ctx, user, appName, services)
@@ -350,21 +349,20 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 		return
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	parentSpanContext := opentracing.SpanFromContext(r.Context()).Context()
-	_, ctx = opentracing.StartSpanFromContext(ctx, `Deploy`, opentracing.FollowsFrom(parentSpanContext))
-
-	go a.finishDeploy(ctx, cancel, user, appName, newServices, oldContainers, r.URL.Query())
-
 	if err == nil {
 		err = a.startServices(ctx, newServices)
 	}
 
 	if err != nil {
-		cancel()
 		composeFailed(w, user, appName, err)
 		return
 	}
+
+	ctx = context.Background()
+	parentSpanContext := opentracing.SpanFromContext(r.Context()).Context()
+	_, ctx = opentracing.StartSpanFromContext(ctx, `Deploy`, opentracing.FollowsFrom(parentSpanContext))
+
+	go a.finishDeploy(ctx, user, appName, newServices, oldContainers, r.URL.Query())
 
 	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
 		httperror.InternalServerError(w, err)
