@@ -118,4 +118,4 @@ start:
 		-csp "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:" \
 		-port 1082
 
-.PHONY: $(APP_NAME) go name version author deps format lint tst bench build docker-deps docker-login docker-promote docker-push docker-api docker-ui docker-build-api docker-push-api docker-promote-api docker-build-ui docker-push-ui docker-promote-ui start-deps start-auth start start-front
+.PHONY: $(APP_NAME) go name version author deps format lint tst bench build doc docker-deps docker-login docker-promote docker-push docker-api docker-ui docker-build-api docker-push-api docker-promote-api docker-build-ui docker-push-ui docker-promote-ui start-deps start-auth start start-front
