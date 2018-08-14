@@ -56,6 +56,8 @@ docker-promote: docker-promote-api docker-promote-ui
 
 docker-push: docker-push-api docker-push-ui
 
+docker-pull: docker-pull-api docker-pull-ui
+
 docker-api: docker-build-api docker-push-api
 
 docker-ui: docker-build-ui docker-push-ui
@@ -66,6 +68,9 @@ docker-build-api: docker-deps doc
 docker-push-api: docker-login
 	docker push vibioh/$(APP_NAME)-api:$(VERSION)
 
+docker-pull-api: docker-login
+	docker pull vibioh/$(APP_NAME)-api:$(VERSION)
+
 docker-promote-api:
 	docker tag vibioh/$(APP_NAME)-api:$(VERSION) vibioh/$(APP_NAME)-api:latest
 
@@ -74,6 +79,9 @@ docker-build-ui: docker-deps
 
 docker-push-ui: docker-login
 	docker push vibioh/$(APP_NAME)-ui:$(VERSION)
+
+docker-pull-ui: docker-login
+	docker pull vibioh/$(APP_NAME)-ui:$(VERSION)
 
 docker-promote-ui:
 	docker tag vibioh/$(APP_NAME)-ui:$(VERSION) vibioh/$(APP_NAME)-ui:latest

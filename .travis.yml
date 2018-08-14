@@ -41,6 +41,7 @@ jobs:
     - docker
     go: '1.10'
     script: |
+      make docker-pull
       make docker-promote
       VERSION=latest make docker-push
     after_success: |
