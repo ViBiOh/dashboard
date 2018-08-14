@@ -23,4 +23,4 @@ VOLUME /var/run/docker.sock
 
 COPY doc/api.html /api.html
 COPY --from=builder /app/cacert.pem /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app/zoneinfo.zip /app/${APP_NAME} /
+COPY --from=builder /app/${APP_NAME} /
