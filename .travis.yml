@@ -2,11 +2,13 @@ jobs:
   include:
   - stage: Build
 
-    language: go
     sudo: required
     services:
     - docker
-    go: '1.10'
+    script: make
+    after_success: |
+      echo ${DOCKER_PASS} | docker login -u vibioh --password-stdin
+      docker push vibioh/`make name`-api:`make version`
 
   - stage: Build
 
@@ -16,12 +18,11 @@ jobs:
     - docker
     node_js: 10
     script: |
-      npm run build && make docker-ui
+      npm run build
+      docker build -t vibioh/`make name`-ui:`make version` ./ui/
     after_success: |
-      if [ "${TRAVIS_BRANCH}" == "master" ]; then
-        bash <(curl -s https://codecov.io/bash)
-        curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create
-      fi
+      echo ${DOCKER_PASS} | docker login -u vibioh --password-stdin
+      docker push vibioh/`make name`-ui:`make version`
 
   - stage: Test
 
@@ -30,22 +31,24 @@ jobs:
     services:
     - docker
     go: '1.10'
-    script: |
-      ./e2e.sh
+    script: ./e2e.sh
 
   - stage: Publish
 
-    language: go
     sudo: required
     services:
     - docker
-    go: '1.10'
     script: |
-      make docker-pull
-      make docker-promote
-      VERSION=latest make docker-push
+      echo ${DOCKER_PASS} | docker login -u vibioh --password-stdin
+      docker pull vibioh/`make name`-api:`make version`
+      docker pull vibioh/`make name`-ui:`make version`
+      docker tag vibioh/`make name`-api:`make version` vibioh/`make name`-api:latest
+      docker tag vibioh/`make name`-ui:`make version` vibioh/`make name`-ui:latest
+      docker push vibioh/`make name`-api:latest
+      docker push vibioh/`make name`-ui:latest
     after_success: |
       curl -s -X POST https://goreportcard.com/checks?repo=github.com/ViBiOh/dashboard
+      curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create
 
   - stage: Deploy
 

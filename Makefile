@@ -2,9 +2,10 @@ APP_NAME = dashboard
 VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
 AUTHOR ?= $(shell git log --pretty=format:'%an' -n 1)
 
-default: $(APP_NAME)
+default:
+	docker build -t vibioh/$(APP_NAME):$(VERSION) .
 
-$(APP_NAME): deps go docker-api
+$(APP_NAME): deps go
 
 go: format lint tst bench build
 
@@ -46,46 +47,6 @@ build:
 doc:
 	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
 
-docker-deps:
-	curl -s -o cacert.pem https://curl.haxx.se/ca/cacert.pem
-
-docker-login:
-	echo $(DOCKER_PASS) | docker login -u vibioh --password-stdin
-
-docker-promote: docker-promote-api docker-promote-ui
-
-docker-push: docker-push-api docker-push-ui
-
-docker-pull: docker-pull-api docker-pull-ui
-
-docker-api: docker-build-api docker-push-api
-
-docker-ui: docker-build-ui docker-push-ui
-
-docker-build-api: docker-deps doc
-	docker build -t vibioh/dashboard-api:$(VERSION) .
-
-docker-push-api: docker-login
-	docker push vibioh/$(APP_NAME)-api:$(VERSION)
-
-docker-pull-api: docker-login
-	docker pull vibioh/$(APP_NAME)-api:$(VERSION)
-
-docker-promote-api:
-	docker tag vibioh/$(APP_NAME)-api:$(VERSION) vibioh/$(APP_NAME)-api:latest
-
-docker-build-ui: docker-deps
-	docker build -t vibioh/$(APP_NAME)-ui:$(VERSION) -f ui/Dockerfile ./ui/
-
-docker-push-ui: docker-login
-	docker push vibioh/$(APP_NAME)-ui:$(VERSION)
-
-docker-pull-ui: docker-login
-	docker pull vibioh/$(APP_NAME)-ui:$(VERSION)
-
-docker-promote-ui:
-	docker tag vibioh/$(APP_NAME)-ui:$(VERSION) vibioh/$(APP_NAME)-ui:latest
-
 start-deps:
 	go get github.com/ViBiOh/auth/cmd/auth
 	go get github.com/ViBiOh/auth/cmd/bcrypt
@@ -126,4 +87,4 @@ start:
 		-csp "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:" \
 		-port 1082
 
-.PHONY: $(APP_NAME) go name version author deps format lint tst bench build doc docker-deps docker-login docker-promote docker-push docker-api docker-ui docker-build-api docker-push-api docker-promote-api docker-build-ui docker-push-ui docker-promote-ui start-deps start-auth start start-front
+.PHONY: $(APP_NAME) go name version author deps format lint tst bench build doc start-deps start-auth start-front start
