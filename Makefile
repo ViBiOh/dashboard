@@ -5,6 +5,9 @@ AUTHOR ?= $(shell git log --pretty=format:'%an' -n 1)
 docker: doc
 	docker build -t vibioh/$(APP_NAME)-api:$(VERSION) .
 
+docker-ui: doc
+	docker build -t vibioh/$(APP_NAME)-ui:$(VERSION) -f Dockerfile_ui ./ui/
+
 $(APP_NAME): deps go
 
 go: format lint tst bench build

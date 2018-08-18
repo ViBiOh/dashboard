@@ -5,20 +5,17 @@ jobs:
     sudo: required
     services:
     - docker
-    script: make docker    after_success: |
+    script: make docker
+    after_success: |
       echo ${DOCKER_PASS} | docker login -u vibioh --password-stdin
       docker push vibioh/`make name`-api:`make version`
 
   - stage: Build
 
-    language: node_js
     sudo: required
     services:
     - docker
-    node_js: 10
-    script: |
-      npm run build
-      docker build -t vibioh/`make name`-ui:`make version` ./ui/
+    script: make ui
     after_success: |
       echo ${DOCKER_PASS} | docker login -u vibioh --password-stdin
       docker push vibioh/`make name`-ui:`make version`
