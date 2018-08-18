@@ -50,6 +50,10 @@ build:
 doc:
 	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
 
+ui:
+	npm install
+	npm run build
+
 start-deps:
 	go get github.com/ViBiOh/auth/cmd/auth
 	go get github.com/ViBiOh/auth/cmd/bcrypt
