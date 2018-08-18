@@ -6,7 +6,7 @@ docker: doc
 	docker build -t vibioh/$(APP_NAME)-api:$(VERSION) .
 
 docker-ui:
-	docker build -t vibioh/$(APP_NAME)-ui:$(VERSION) -f Dockerfile_ui ./ui/
+	docker build -t vibioh/$(APP_NAME)-ui:$(VERSION) ./ui/
 
 $(APP_NAME): deps go
 
