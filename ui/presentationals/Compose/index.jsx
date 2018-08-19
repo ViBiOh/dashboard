@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
+import { FaArrowLeft } from 'react-icons/fa';
 import setRef from '../../utils/ref';
 import onKeyDown from '../../utils/input';
 import ErrorBanner from '../ErrorBanner';
@@ -33,9 +33,7 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
       </Toolbar>
       <div className={style.content}>
         <ErrorBanner error={error} />
-        <h2>
-Create an app
-        </h2>
+        <h2>Create an app</h2>
         <input
           ref={e => setRef(refs, 'nameInput', e)}
           name="name"

@@ -9,11 +9,7 @@ import style from './index.css';
  */
 const Throbber = ({ label, title, white, vertical, horizontalSm }) => (
   <div className={style.container} title={title}>
-    {!vertical && label ? (
-      <span>
-        {label}
-      </span>
-) : null}
+    {!vertical && label ? <span>{label}</span> : null}
     <div
       className={`${style.throbber} ${white && style.white} ${vertical &&
         style.column} ${horizontalSm && style['row-responsive']}`}

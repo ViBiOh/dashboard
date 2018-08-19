@@ -10,9 +10,7 @@ test('should always render as a button', t => {
 test('should not wrap child', t => {
   const wrapper = shallow(
     <Button>
-      <span>
-First
-      </span>
+      <span>First</span>
     </Button>,
   );
 
@@ -22,12 +20,8 @@ First
 test('should wrap children in div', t => {
   const wrapper = shallow(
     <Button>
-      <span>
-First
-      </span>
-      <span>
-Second
-      </span>
+      <span>First</span>
+      <span>Second</span>
     </Button>,
   );
 

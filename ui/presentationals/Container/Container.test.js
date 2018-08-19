@@ -2,6 +2,7 @@ import test from 'ava';
 import sinon from 'sinon';
 import React from 'react';
 import { shallow } from 'enzyme';
+import { FaRetweet, FaStopCircle, FaPlay, FaTrash } from 'react-icons/fa';
 import Toolbar from '../Toolbar';
 import Throbber from '../Throbber';
 import ThrobberButton from '../Throbber/ThrobberButton';
@@ -149,8 +150,8 @@ test('should have a two action button if up', t => {
   );
 
   t.true(wrapper.find(ThrobberButton).length >= 2);
-  t.is(wrapper.find('FaRetweet').length, 1);
-  t.is(wrapper.find('FaStopCircle').length, 1);
+  t.is(wrapper.find(FaRetweet).length, 1);
+  t.is(wrapper.find(FaStopCircle).length, 1);
 });
 
 test('should have a two action button if not up', t => {
@@ -180,6 +181,6 @@ test('should have a two action button if not up', t => {
   );
 
   t.true(wrapper.find(ThrobberButton).length >= 2);
-  t.is(wrapper.find('FaPlay').length, 1);
-  t.is(wrapper.find('FaTrash').length, 1);
+  t.is(wrapper.find(FaPlay).length, 1);
+  t.is(wrapper.find(FaTrash).length, 1);
 });

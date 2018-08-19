@@ -1,11 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FaArrowLeft from 'react-icons/lib/fa/arrow-left';
-import FaPlay from 'react-icons/lib/fa/play';
-import FaStopCircle from 'react-icons/lib/fa/stop-circle';
-import FaTrash from 'react-icons/lib/fa/trash';
-import FaRefresh from 'react-icons/lib/fa/refresh';
-import FaRetweet from 'react-icons/lib/fa/retweet';
+import { FaArrowLeft, FaPlay, FaStopCircle, FaTrash, FaRefresh, FaRetweet } from 'react-icons/fa';
 import Toolbar from '../Toolbar';
 import Button from '../Button';
 import ErrorBanner from '../ErrorBanner';

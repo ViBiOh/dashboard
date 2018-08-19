@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FaUnlockAlt from 'react-icons/lib/fa/unlock-alt';
-import FaGithub from 'react-icons/lib/fa/github';
+import { FaUnlockAlt, FaGithub } from 'react-icons/fa';
 import { getFromContext, getGithubOauthUrl } from '../../Constants';
 import SearchParams, { computeRedirectSearch } from '../../utils/SearchParams';
 import style from './index.css';
@@ -16,9 +15,7 @@ const Login = ({ location }) => {
 
   return (
     <span className={style.flex}>
-      <h2>
-Login
-      </h2>
+      <h2>Login</h2>
       <div className={style.center}>
         {getFromContext('BASIC_AUTH_ENABLED') === 'true' && (
           <a

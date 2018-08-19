@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import FaThumbsODown from 'react-icons/lib/fa/thumbs-o-down';
-import FaThumbsOUp from 'react-icons/lib/fa/thumbs-o-up';
-import FaEllipsisH from 'react-icons/lib/fa/ellipsis-h';
+import { FaThumbsODown, FaThumbsOUp, FaEllipsisH } from 'react-icons/fa';
 import { humanSize } from '../../utils/statHelper';
 import style from './ContainerInfo.css';
 
@@ -33,9 +31,7 @@ const ContainerInfo = ({ container }) => {
   let labelContent = null;
   if (Object.keys(container.Config.Labels).length > 0) {
     labelContent = [
-      <h3 key="labelsHeader">
-Labels
-      </h3>,
+      <h3 key="labelsHeader">Labels</h3>,
       <span key="labels" className={style.labels}>
         {Object.keys(container.Config.Labels).map(label => (
           <span key={label} className={style.item}>
@@ -51,9 +47,7 @@ Labels
   let envContent = null;
   if (container.Config.Env.length > 0) {
     envContent = [
-      <h3 key="envsHeader">
-Environment
-      </h3>,
+      <h3 key="envsHeader">Environment</h3>,
       <span key="envs" className={style.labels}>
         {container.Config.Env.filter(e => !!e)
           .map(env => ENV_PARSER.exec(env))
@@ -90,44 +84,24 @@ Environment
           </span>
         )}
       </h2>
-      <h3 key="config">
-Config
-      </h3>
+      <h3 key="config">Config</h3>
       <span key="id" className={style.info}>
-        <span className={style.label}>
-Id
-        </span>
-        <span>
-          {String(container.Id).substring(0, 12)}
-        </span>
+        <span className={style.label}>Id</span>
+        <span>{String(container.Id).substring(0, 12)}</span>
       </span>
       <span key="created" className={style.info}>
-        <span className={style.label}>
-Created
-        </span>
-        <span>
-          {moment(container.Created).fromNow()}
-        </span>
+        <span className={style.label}>Created</span>
+        <span>{moment(container.Created).fromNow()}</span>
       </span>
       <span key="image" className={style.info}>
-        <span className={style.label}>
-Image
-        </span>
-        <span>
-          {container.Config.Image}
-        </span>
+        <span className={style.label}>Image</span>
+        <span>{container.Config.Image}</span>
       </span>
       <span key="command" className={style.info}>
-        <span className={style.label}>
-Command
-        </span>
-        <pre className={style.code}>
-          {`${container.Path} ${container.Args.join(' ')}`}
-        </pre>
+        <span className={style.label}>Command</span>
+        <pre className={style.code}>{`${container.Path} ${container.Args.join(' ')}`}</pre>
       </span>
-      <h3 key="hostConfig">
-HostConfig
-      </h3>
+      <h3 key="hostConfig">HostConfig</h3>
       <span key="hostLabels" className={style.labels}>
         {container.HostConfig.RestartPolicy && (
           <span key="restart" className={style.item}>

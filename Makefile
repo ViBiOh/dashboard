@@ -51,7 +51,7 @@ doc:
 	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
 
 ui:
-	npm install
+	npm ci
 	npm run build
 
 start-deps:

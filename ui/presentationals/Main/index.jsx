@@ -9,9 +9,7 @@ import style from './index.css';
  */
 const Main = ({ children }) => (
   <span className={style.layout}>
-    <article className={style.article}>
-      {children}
-    </article>
+    <article className={style.article}>{children}</article>
   </span>
 );
 

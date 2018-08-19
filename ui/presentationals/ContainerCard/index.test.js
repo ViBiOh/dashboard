@@ -2,6 +2,7 @@ import test from 'ava';
 import sinon from 'sinon';
 import React from 'react';
 import { shallow } from 'enzyme';
+import { FaCloud } from 'react-icons/fa';
 import Button from '../Button';
 import ContainerCard from '.';
 
@@ -61,5 +62,5 @@ test('should display icon if container has external IP', t => {
     <ContainerCard {...props} container={{ ...container, Ports: [{ IP: '0.0.0.0' }] }} />,
   );
 
-  t.is(wrapper.find('FaCloud').length, 1);
+  t.is(wrapper.find(FaCloud).length, 1);
 });

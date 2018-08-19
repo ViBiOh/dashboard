@@ -9,12 +9,8 @@ import style from './ContainerLogs.css';
  */
 const ContainerLogs = ({ logs }) => (
   <span className={style.container}>
-    <h3>
-Logs
-    </h3>
-    <pre className={style.code}>
-      {logs.join('\n')}
-    </pre>
+    <h3>Logs</h3>
+    <pre className={style.code}>{logs.join('\n')}</pre>
   </span>
 );
 

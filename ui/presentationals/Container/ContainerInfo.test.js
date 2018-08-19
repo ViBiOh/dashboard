@@ -1,6 +1,7 @@
 import test from 'ava';
 import React from 'react';
 import { shallow } from 'enzyme';
+import { FaEllipsisH } from 'react-icons/fa';
 import ContainerInfo from './ContainerInfo';
 
 const container = {
@@ -239,5 +240,5 @@ test('should render FaEllipsisH Icon if Health Status is starting', t => {
       }}
     />,
   );
-  t.is(wrapper.find('FaEllipsisH').length, 1);
+  t.is(wrapper.find(FaEllipsisH).length, 1);
 });

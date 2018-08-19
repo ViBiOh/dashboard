@@ -53,27 +53,21 @@ const ContainerNetwork = ({ container }) => {
     <span className={style.container}>
       {networkContent &&
         networkContent.length > 0 && [
-          <h3 key="networkHeader">
-Networks
-          </h3>,
+          <h3 key="networkHeader">Networks</h3>,
           <span key="networks" className={style.labels}>
             {networkContent}
           </span>,
         ]}
       {portContent &&
         portContent.length > 0 && [
-          <h3 key="portsHeader">
-Ports
-          </h3>,
+          <h3 key="portsHeader">Ports</h3>,
           <span key="ports" className={style.labels}>
             {portContent}
           </span>,
         ]}
       {linkContent &&
         linkContent.length > 0 && [
-          <h3 key="linksHeader">
-Links
-          </h3>,
+          <h3 key="linksHeader">Links</h3>,
           <span key="labels" className={style.labels}>
             {linkContent}
           </span>,

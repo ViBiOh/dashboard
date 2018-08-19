@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FaPlus from 'react-icons/lib/fa/plus';
-import FaRefresh from 'react-icons/lib/fa/refresh';
-import FaUserTimes from 'react-icons/lib/fa/user-times';
-import FaCubes from 'react-icons/lib/fa/cubes';
+import { FaPlus, FaRefresh, FaUserTimes, FaCubes } from 'react-icons/fa';
 import Toolbar from '../Toolbar';
 import Button from '../Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
