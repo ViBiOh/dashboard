@@ -8,7 +8,7 @@ COPY ./ ${WORKDIR}/
 
 RUN make ${APP_NAME} \
  && mkdir -p /app \
- && cp -r dist/ /app/
+ && cp -r ui/dist/ /app/
 
 FROM vibioh/viws
 

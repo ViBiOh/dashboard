@@ -2,4 +2,5 @@ vendor/
 bin/
 
 node_modules/
-ui/
+.nyc_output/
+.cache/
