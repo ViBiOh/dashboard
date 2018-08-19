@@ -1,5 +1,5 @@
 import test from 'ava';
-import { call, take } from 'redux-saga/effects';
+import { all, call, take } from 'redux-saga/effects';
 import actions from '../actions';
 import { writeBusSaga } from '.';
 
@@ -34,9 +34,12 @@ test('should graceful close', t => {
   const iterator = writeBusSaga(websocket);
   iterator.next();
 
-  t.deepEqual(iterator.throw(new Error('test')).value, [
-    call([websocket, 'send'], actions.closeEvents().payload),
-    call([websocket, 'send'], actions.closeLogs().payload),
-    call([websocket, 'send'], actions.closeStats().payload),
-  ]);
+  t.deepEqual(
+    iterator.throw(new Error('test')).value,
+    all([
+      call([websocket, 'send'], actions.closeEvents().payload),
+      call([websocket, 'send'], actions.closeLogs().payload),
+      call([websocket, 'send'], actions.closeStats().payload),
+    ]),
+  );
 });

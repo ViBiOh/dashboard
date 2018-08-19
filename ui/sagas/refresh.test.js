@@ -1,12 +1,15 @@
 import test from 'ava';
-import { put } from 'redux-saga/effects';
+import { put, all } from 'redux-saga/effects';
 import actions from '../actions';
 import { refreshSaga } from '.';
 
 test('should put open bus and fetchContaines', t => {
   const iterator = refreshSaga();
 
-  t.deepEqual(iterator.next({}).value, [put(actions.openBus()), put(actions.fetchContainers())]);
+  t.deepEqual(
+    iterator.next({}).value,
+    all([put(actions.openBus()), put(actions.fetchContainers())]),
+  );
 });
 
 test('should put error on failure', t => {

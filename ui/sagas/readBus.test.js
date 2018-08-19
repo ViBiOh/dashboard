@@ -1,6 +1,6 @@
 import test from 'ava';
 import sinon from 'sinon';
-import { put, fork, cancel } from 'redux-saga/effects';
+import { put, all, fork, cancel } from 'redux-saga/effects';
 import { createMockTask } from 'redux-saga/utils';
 import Docker from '../services/Docker';
 import actions from '../actions';
@@ -43,7 +43,10 @@ test('should put bus opened event', t => {
 
   iterator.next(createMockTask());
 
-  t.deepEqual(iterator.next('ready').value, [put(actions.busOpened()), put(actions.openEvents())]);
+  t.deepEqual(
+    iterator.next('ready').value,
+    all([put(actions.busOpened()), put(actions.openEvents())]),
+  );
 });
 
 test('should fetch containers if events', t => {
@@ -124,5 +127,8 @@ test('should graceful close fork and say stream ended', t => {
   iterator.next('ready');
   iterator.next();
 
-  t.deepEqual(iterator.throw(new Error('test')).value, [cancel(task), put(actions.busClosed())]);
+  t.deepEqual(
+    iterator.throw(new Error('test')).value,
+    all([cancel(task), put(actions.busClosed())]),
+  );
 });

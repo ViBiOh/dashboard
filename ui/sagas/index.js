@@ -244,7 +244,7 @@ export function* readBusSaga() {
       const bus = yield take(chan);
 
       let demand;
-      bus.replace(/^(\S+) (.*)$/, (all, type, content) => {
+      bus.replace(/^(\S+) (.*)$/, (_, type, content) => {
         if (type === 'stats') {
           demand = actions.addStat(JSON.parse(content));
         } else if (type === 'logs') {

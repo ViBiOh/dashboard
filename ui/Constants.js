@@ -31,12 +31,7 @@ export const DEBOUNCE_TIMEOUT = 300;
  */
 export function init() {
   return new Promise(resolve => {
-    if (process.NODE_ENV === 'production') {
-      funtch.get('/env').then(env => {
-        context = env;
-        resolve(context);
-      });
-    } else {
+    if (process.env.NODE_ENV === 'development') {
       context = {
         API_URL: 'http://localhost:1082',
         AUTH_URL: 'http://localhost:1081',
@@ -47,6 +42,11 @@ export function init() {
       };
 
       resolve(context);
+    } else {
+      funtch.get('/env').then(env => {
+        context = env;
+        resolve(context);
+      });
     }
   });
 }
