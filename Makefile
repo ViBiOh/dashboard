@@ -94,4 +94,4 @@ start:
 		-csp "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:" \
 		-port 1082
 
-.PHONY: docker docker-ui $(APP_NAME) go name version author deps format lint tst bench build doc start-deps start-auth start-front start
+.PHONY: docker docker-ui $(APP_NAME) go name version author deps format lint tst bench build doc ui start-deps start-auth start-front start
