@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaArrowLeft, FaPlay, FaStopCircle, FaTrash, FaRefresh, FaRetweet } from 'react-icons/fa';
+import { FaArrowLeft, FaPlay, FaStopCircle, FaTrash, FaSync, FaRetweet } from 'react-icons/fa';
 import Toolbar from '../Toolbar';
 import Button from '../Button';
 import ErrorBanner from '../ErrorBanner';
@@ -116,7 +116,7 @@ const Container = props => {
           pending={pendingAction}
           title="Refresh container infos"
         >
-          <FaRefresh />
+          <FaSync />
         </ThrobberButton>
         <span className={style.fill} />
         {buttons}

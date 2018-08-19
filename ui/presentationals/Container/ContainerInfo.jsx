@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { FaThumbsODown, FaThumbsOUp, FaEllipsisH } from 'react-icons/fa';
+import { FaThumbsDown, FaThumbsUp, FaEllipsisH } from 'react-icons/fa';
 import { humanSize } from '../../utils/statHelper';
 import style from './ContainerInfo.css';
 
@@ -17,8 +17,8 @@ const ENV_PARSER = /(.*?)=(.*)/;
  */
 const healthIndicators = {
   starting: <FaEllipsisH />,
-  healthy: <FaThumbsOUp />,
-  unhealthy: <FaThumbsODown />,
+  healthy: <FaThumbsUp />,
+  unhealthy: <FaThumbsDown />,
   none: '',
 };
 

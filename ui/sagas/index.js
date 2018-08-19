@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import { call, put, fork, take, takeLatest, cancel } from 'redux-saga/effects';
+import { call, put, fork, take, takeLatest, cancel, all } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { push } from 'react-router-redux';
 import { STORAGE_KEY_AUTH } from '../Constants';
@@ -34,7 +34,7 @@ export function onErrorAction(calledAction, error) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* goHomeSaga({ redirect = '' }) {
-  yield [put(actions.setError('')), put(push(`/${redirect}`))];
+  yield all([put(actions.setError('')), put(push(`/${redirect}`))]);
 }
 
 /**
@@ -42,7 +42,7 @@ export function* goHomeSaga({ redirect = '' }) {
  * @yield {Function} Saga effects to sequence flow of work
  */
 export function* goLoginSaga({ redirect = '' }) {
-  yield [put(actions.setError('')), put(push(`/login${computeRedirectSearch(redirect)}`))];
+  yield all([put(actions.setError('')), put(push(`/login${computeRedirectSearch(redirect)}`))]);
 }
 
 /**
@@ -58,12 +58,12 @@ export function* loginSaga(action) {
   try {
     const hash = yield call(Auth.basicLogin, action.username, action.password);
 
-    yield [
+    yield all([
       call([localStorage, localStorage.setItem], STORAGE_KEY_AUTH, hash),
       put(actions.loginSucceeded()),
       put(actions.refresh()),
       put(actions.goHome(action.redirect)),
-    ];
+    ]);
   } catch (e) {
     yield put(actions.loginFailed(e));
   }
@@ -78,12 +78,12 @@ export function* getGithubAccesTokenSaga(action) {
   try {
     const token = yield call(Auth.getGithubAccessToken, action.state, action.code);
 
-    yield [
+    yield all([
       call([localStorage, localStorage.setItem], STORAGE_KEY_AUTH, `GitHub ${token}`),
       put(actions.getGithubAccessTokenSucceeded()),
       put(actions.refresh()),
       put(actions.goHome(action.redirect)),
-    ];
+    ]);
   } catch (e) {
     yield put(actions.getGithubAccessTokenFailed(e));
   }
@@ -98,13 +98,13 @@ export function* getGithubAccesTokenSaga(action) {
  */
 export function* logoutSaga() {
   try {
-    yield [
+    yield all([
       call([localStorage, localStorage.removeItem], STORAGE_KEY_AUTH),
       put(actions.logoutSucceeded()),
       put(actions.closeBus()),
       put(actions.setError('')),
       put(push('/login')),
-    ];
+    ]);
   } catch (e) {
     yield put(onErrorAction('logoutFailed', e));
   }
@@ -116,7 +116,7 @@ export function* logoutSaga() {
  */
 export function* refreshSaga() {
   try {
-    yield [put(actions.openBus()), put(actions.fetchContainers())];
+    yield all([put(actions.openBus()), put(actions.fetchContainers())]);
   } catch (e) {
     yield put(onErrorAction('setError', e));
   }
@@ -183,7 +183,7 @@ export function* actionContainerSaga(action) {
 export function* composeSaga(action) {
   try {
     yield call(Docker.containerCreate, action.name, action.file);
-    yield [put(actions.composeSucceeded()), put(push('/'))];
+    yield all([put(actions.composeSucceeded()), put(push('/'))]);
   } catch (e) {
     yield put(onErrorAction('composeFailed', e));
   }
@@ -210,11 +210,11 @@ export function* writeBusSaga(websocket) {
       yield call([websocket, 'send'], action.payload);
     }
   } finally {
-    yield [
+    yield all([
       call([websocket, 'send'], actions.closeEvents().payload),
       call([websocket, 'send'], actions.closeLogs().payload),
       call([websocket, 'send'], actions.closeStats().payload),
-    ];
+    ]);
   }
 }
 
@@ -237,7 +237,7 @@ export function* readBusSaga() {
     task = yield fork(writeBusSaga, websocket);
 
     yield take(chan);
-    yield [put(actions.busOpened()), put(actions.openEvents())];
+    yield all([put(actions.busOpened()), put(actions.openEvents())]);
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -260,7 +260,7 @@ export function* readBusSaga() {
     }
   } finally {
     chan.close();
-    yield [cancel(task), put(actions.busClosed())];
+    yield all([cancel(task), put(actions.busClosed())]);
   }
 }
 

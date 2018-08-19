@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaPlus, FaRefresh, FaUserTimes, FaCubes } from 'react-icons/fa';
+import { FaPlus, FaSync, FaUserTimes, FaCubes } from 'react-icons/fa';
 import Toolbar from '../Toolbar';
 import Button from '../Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
@@ -64,7 +64,7 @@ const ContainersList = ({
           vertical
           horizontalSm
         >
-          <FaRefresh />
+          <FaSync />
         </ThrobberButton>
         <span className={style.fill} />
         <Button onClick={onLogout} title="Logout" type="danger">
