@@ -6,7 +6,7 @@ ENV WORKDIR ${GOPATH}/src/github.com/ViBiOh/dashboard
 WORKDIR ${WORKDIR}
 COPY ./ ${WORKDIR}/
 
-RUN make ${APP_NAME} \
+RUN make ${APP_NAME}-api \
  && mkdir -p /app \
  && curl -s -o /app/cacert.pem https://curl.haxx.se/ca/cacert.pem \
  && cp bin/${APP_NAME} /app/

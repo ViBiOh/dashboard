@@ -2,15 +2,11 @@ APP_NAME = dashboard
 VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
 AUTHOR ?= $(shell git log --pretty=format:'%an' -n 1)
 
-docker: doc
-	docker build -t vibioh/$(APP_NAME)-api:$(VERSION) .
+$(APP_NAME)-api: deps go
 
-docker-ui:
-	docker build -t vibioh/$(APP_NAME)-ui:$(VERSION) -f Dockerfile_ui ./
+$(APP_NAME)-ui: build-ui
 
-$(APP_NAME): deps go
-
-go: format lint tst bench build
+go: format lint tst bench build-api
 
 name:
 	@echo -n $(APP_NAME)
@@ -43,14 +39,14 @@ tst:
 bench:
 	go test ./... -bench . -benchmem -run Benchmark.*
 
-build:
+build-api:
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/dashboard cmd/dashboard/dashboard.go
 	CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix nocgo -o bin/compose cmd/compose/compose.go
 
 doc:
 	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
 
-ui:
+build-ui:
 	npm ci
 	npm run build
 
@@ -94,4 +90,4 @@ start:
 		-csp "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:" \
 		-port 1082
 
-.PHONY: docker docker-ui $(APP_NAME) go name version author deps format lint tst bench build doc ui start-deps start-auth start-front start
+.PHONY: $(APP_NAME)-api $(APP_NAME)-ui go name version author deps format lint tst bench build-api build-ui doc start-deps start-auth start-front start

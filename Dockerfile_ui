@@ -1,12 +1,12 @@
 FROM node:10 as builder
 
-ENV APP_NAME ui
+ENV APP_NAME dashboard
 ENV WORKDIR /usr/src/app
 
 WORKDIR ${WORKDIR}
 COPY ./ ${WORKDIR}/
 
-RUN make ${APP_NAME} \
+RUN make ${APP_NAME}-ui \
  && mkdir -p /app \
  && cp -r ui/dist/ /app/
 
