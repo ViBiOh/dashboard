@@ -7,7 +7,7 @@ jobs:
     - docker
     script: |
       make doc
-      docker build -t vibioh/`make name`:`make version` -f Dockerfile_api .
+      docker build -t vibioh/`make name`-api:`make version` -f Dockerfile_api .
     after_success: |
       echo ${DOCKER_PASS} | docker login -u vibioh --password-stdin
       docker push vibioh/`make name`-api:`make version`
@@ -17,7 +17,7 @@ jobs:
     sudo: required
     services:
     - docker
-    script: docker build -t vibioh/`make name`:`make version`-ui -f Dockerfile_ui .
+    script: docker build -t vibioh/`make name`-ui:`make version` -f Dockerfile_ui .
     after_success: |
       echo ${DOCKER_PASS} | docker login -u vibioh --password-stdin
       docker push vibioh/`make name`-ui:`make version`
