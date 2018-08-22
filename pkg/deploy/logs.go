@@ -55,6 +55,18 @@ func (a *App) serviceHealthOutput(user *model.User, appName string, service *dep
 	return healthOutput
 }
 
+func (a *App) captureServicesHealth(ctx context.Context, user *model.User, appName string, services map[string]*deployedService) {
+	for _, service := range services {
+		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
+		if err != nil {
+			rollbar.LogError(`[%s] [%s] Error while inspecting service %s: %s`, user.Username, appName, service.Name, err)
+			continue
+		}
+
+		service.Logs = a.serviceHealthOutput(user, appName, service, infos)
+	}
+}
+
 func (a *App) captureServicesOutput(ctx context.Context, user *model.User, appName string, services map[string]*deployedService) {
 	for _, service := range services {
 		logs, err := a.serviceOutput(ctx, user, appName, service)

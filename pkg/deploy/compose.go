@@ -238,6 +238,7 @@ func (a *App) finishDeploy(ctx context.Context, user *model.User, appName string
 		}
 	} else {
 		rollbar.LogWarning(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, errHealthCheckFailed)
+		a.captureServicesHealth(ctx, user, appName, services)
 		a.deleteServices(ctx, appName, services, user)
 	}
 
