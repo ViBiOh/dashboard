@@ -42,12 +42,16 @@ Usage of cmd/compose.go:
       Basic auth
   -domain string
       Domain name (default "vibioh.fr")
+  -environment string
+      Environment (default "prod")
   -expose
       Expose opened ports
   -github
       Github logging (default true)
   -mailer
       Enable mailer (default true)
+  -rollbar
+      Rollbar error reporting (default true)
   -selenium
       Selenium container
   -tag string
@@ -55,7 +59,7 @@ Usage of cmd/compose.go:
   -tls
       TLS for all containers (default true)
   -tracing
-      Enable opentracing
+      Enable opentracing (default true)
   -traefik
       Traefik load-balancer (default true)
   -user
