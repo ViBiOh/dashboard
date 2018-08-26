@@ -63,7 +63,7 @@ func (a *App) captureServicesHealth(ctx context.Context, user *model.User, appNa
 			continue
 		}
 
-		service.Logs = a.serviceHealthOutput(user, appName, service, infos)
+		service.HealthLogs = a.serviceHealthOutput(user, appName, service, infos)
 	}
 }
 
