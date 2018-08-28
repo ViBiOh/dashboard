@@ -198,7 +198,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 
 	for {
 		select {
-		case <-ctx.Done():
+		case <-timeoutCtx.Done():
 			return false
 		case message := <-messages:
 			if service := findServiceByContainerID(services, message.ID); service != nil {
@@ -229,6 +229,8 @@ func (a *App) finishDeploy(ctx context.Context, user *model.User, appName string
 	a.captureServicesOutput(ctx, user, appName, services)
 
 	if success {
+		log.Printf(`[%s] [%s] Successful deploy`, user.Username, appName)
+
 		if err := a.cleanContainers(ctx, oldContainers); err != nil {
 			rollbar.LogError(`[%s] [%s] Error while cleaning old containers: %v`, user.Username, appName, err)
 		}
