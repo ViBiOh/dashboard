@@ -184,7 +184,7 @@ func (a *App) basicActionHandler(w http.ResponseWriter, r *http.Request, user *m
 		return
 	}
 
-	if err := httpjson.ResponseJSON(w, http.StatusOK, result, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
+	if err := httpjson.ResponseJSON(w, http.StatusOK, result, httpjson.IsPretty(r)); err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
@@ -201,7 +201,7 @@ func (a *App) ListContainersHandler(w http.ResponseWriter, r *http.Request, user
 		return
 	}
 
-	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, containers, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
+	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, containers, httpjson.IsPretty(r)); err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}

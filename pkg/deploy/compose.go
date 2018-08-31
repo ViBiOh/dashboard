@@ -367,7 +367,7 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 		return
 	}
 
-	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r.URL.RawQuery)); err != nil {
+	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r)); err != nil {
 		httperror.InternalServerError(w, err)
 	}
 }

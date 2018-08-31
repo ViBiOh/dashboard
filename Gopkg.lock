@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:adbfc2db750d6fbe0c165ad801ba2d730883a3bc40bc8fe829516eb42ed17771"
+  digest = "1:f9ae348e1f793dcf9ed930ed47136a67343dbd6809c5c91391322267f4476892"
   name = "github.com/Microsoft/go-winio"
   packages = ["."]
   pruneopts = "UT"
-  revision = "a6d595ae73cf27a1b8fc32930668708f45ce1c85"
-  version = "v0.4.9"
+  revision = "97e4973ce50b2ff5f09635a57e2b88a037aae829"
+  version = "v0.4.11"
 
 [[projects]]
   digest = "1:0803645e1f57fb5271a6edc7570b9ea59bac2e5de67957075a43f3d74c8dbd97"
@@ -28,11 +28,11 @@
     "pkg/provider",
   ]
   pruneopts = "UT"
-  revision = "2e1d6f34cf1ce9a0986ab424ac321e28722cb211"
+  revision = "150db9542dd44578993615afdd8b6eb9cc49722b"
 
 [[projects]]
   branch = "master"
-  digest = "1:bca04bf62c1486224d92aea55f95009093b83929e571b7498a9ccbd4fb415363"
+  digest = "1:c56f1e3ab5f369f584eff2a32e3c1d1b717aa29256818758d3fa0e361476673b"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -46,13 +46,14 @@
     "pkg/model",
     "pkg/opentracing",
     "pkg/owasp",
+    "pkg/query",
     "pkg/request",
     "pkg/rollbar",
     "pkg/server",
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "84c531cc56b128dfe1cd9bc10a40151fb7bb3ecc"
+  revision = "f3ea8ad8f900dc62836623435ef0daadf32a887a"
 
 [[projects]]
   branch = "master"
@@ -60,7 +61,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "6c33cb7a858b28b21964b6478c1d9927bbccf01b"
+  revision = "f5460a9f2d8657a13c1243708298b4d1ae85457a"
 
 [[projects]]
   branch = "master"
@@ -87,11 +88,11 @@
     "reference",
   ]
   pruneopts = "UT"
-  revision = "0dae0957e5fe3156c265d22bef4cba9efbf388e2"
+  revision = "90705d2fb81dda1466be49bd958ed8a0dd9a6145"
 
 [[projects]]
   branch = "master"
-  digest = "1:c73f5be409f47c9d3eddfda26af2d3aac7d92856c6ad1eb666a4ba43a653b914"
+  digest = "1:f6fb2d1e1f984e76b8bf38ed49bb20a4e4cc8aeb6483bff774067720d1140647"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -114,7 +115,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "f57f260b49b6142366e6bc1274204ee0a1205945"
+  revision = "64b7575802d4cab61fd339f14427b1d881c3b6c4"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -145,20 +146,20 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:15042ad3498153684d09f393bbaec6b216c8eec6d61f63dff711de7d64ed8861"
+  digest = "1:97df918963298c287643883209a2c3f642e6593379f97ab400c2a2e219ab647d"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   pruneopts = "UT"
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
-  version = "v1.1.0"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
 
 [[projects]]
-  digest = "1:43dd08a10854b2056e615d1b1d22ac94559d822e1f8b6fcc92c1a1057e85188e"
+  digest = "1:cee8e8ac80df6373e7daa11baf1f98c1b6f7242c49ccae7e1ec34a971dc408d9"
   name = "github.com/gorilla/websocket"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
-  version = "v1.2.0"
+  revision = "3ff3320c2a1756a3691521efc290b4701575147c"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:ff5ebae34cfbf047d505ee150de27e60570e8c394b3b8fdbb720ff6ac71985fc"
@@ -311,15 +312,15 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
+  revision = "8a410e7b638dca158bf9e766925842f6651ff828"
 
 [[projects]]
   branch = "master"
-  digest = "1:cbf3da13bdb8fff0cea91ffc9ac5bb9211117315842c191511a72c58245f1416"
+  digest = "1:c50cc93e8bc99bc12f0c78d03e80ee254177fad18f4f6b599601edf51035492e"
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "0ffbfd41fbef8ffcf9b62b0b0aa3a5873ed7a4fe"
+  revision = "fa5fdf94c78965f1aa8423f0cc50b8b8d728b05a"
 
 [[projects]]
   branch = "v2"
