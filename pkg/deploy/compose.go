@@ -217,13 +217,17 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 }
 
 func (a *App) finishDeploy(ctx context.Context, user *model.User, appName string, services map[string]*deployedService, oldContainers []types.Container, requestParams url.Values) {
-	span := opentracing.SpanFromContext(ctx)
-	span.SetTag(`app`, appName)
-	span.SetTag(`services_count`, len(services))
 	defer func() {
 		defer a.tasks.Delete(appName)
-		defer span.Finish()
 	}()
+
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		span.SetTag(`app`, appName)
+		span.SetTag(`services_count`, len(services))
+		defer func() {
+			defer span.Finish()
+		}()
+	}
 
 	success := a.areContainersHealthy(ctx, user, appName, services)
 	a.captureServicesOutput(ctx, user, appName, services)
@@ -357,8 +361,10 @@ func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model
 	}
 
 	ctx = context.Background()
-	parentSpanContext := opentracing.SpanFromContext(r.Context()).Context()
-	_, ctx = opentracing.StartSpanFromContext(ctx, `Deploy`, opentracing.FollowsFrom(parentSpanContext))
+	if span := opentracing.SpanFromContext(r.Context()); span != nil {
+		parentSpanContext := span.Context()
+		_, ctx = opentracing.StartSpanFromContext(ctx, `Deploy`, opentracing.FollowsFrom(parentSpanContext))
+	}
 
 	go a.finishDeploy(ctx, user, appName, newServices, oldContainers, r.URL.Query())
 

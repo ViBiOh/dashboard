@@ -8,7 +8,7 @@ import style from './index.css';
  * @param Object} props Props of the component.
  * @return {React.Component} Button with rendered children.
  */
-const Button = ({ children, type, active, className, ...buttonProps }) => {
+export default function Button({ children, type, active, className, ...buttonProps }) {
   let content = children;
   if (Array.isArray(children)) {
     content = <div className={style.wrapper}>{children}</div>;
@@ -26,7 +26,7 @@ const Button = ({ children, type, active, className, ...buttonProps }) => {
       {content}
     </button>
   );
-};
+}
 
 Button.displayName = 'Button';
 
@@ -43,5 +43,3 @@ Button.defaultProps = {
   active: false,
   className: '',
 };
-
-export default Button;
