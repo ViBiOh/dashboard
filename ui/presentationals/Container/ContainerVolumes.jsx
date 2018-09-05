@@ -7,7 +7,7 @@ import style from './ContainerVolumes.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Container's volumes information.
  */
-const ContainerVolumes = ({ container }) => {
+export default function ContainerVolumes({ container }) {
   if (container.Mounts.length === 0) {
     return null;
   }
@@ -30,7 +30,7 @@ const ContainerVolumes = ({ container }) => {
       </span>
     </span>
   );
-};
+}
 
 ContainerVolumes.displayName = 'ContainerVolumes';
 
@@ -39,5 +39,3 @@ ContainerVolumes.propTypes = {
     Mounts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   }).isRequired,
 };
-
-export default ContainerVolumes;

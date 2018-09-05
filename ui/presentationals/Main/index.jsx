@@ -7,14 +7,14 @@ import style from './index.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Wrapper of App
  */
-const Main = ({ children }) => (
-  <span className={style.layout}>
-    <article className={style.article}>{children}</article>
-  </span>
-);
+export default function Main({ children }) {
+  return (
+    <span className={style.layout}>
+      <article className={style.article}>{children}</article>
+    </span>
+  );
+}
 
 Main.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
 };
-
-export default Main;

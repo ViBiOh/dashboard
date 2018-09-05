@@ -16,7 +16,7 @@ const GREEN_STATUS = /up/i;
  * @param {Object} props Props of the component.
  * @return {React.Component} Card with summarized details of container.
  */
-const ContainerCard = ({ container, onClick }) => {
+export default function ContainerCard({ container, onClick }) {
   const name = container.Names[0].replace(/^\//, '');
 
   return (
@@ -47,7 +47,7 @@ const ContainerCard = ({ container, onClick }) => {
       </span>
     </Button>
   );
-};
+}
 
 ContainerCard.displayName = 'ContainerCard';
 
@@ -60,5 +60,3 @@ ContainerCard.propTypes = {
   }).isRequired,
   onClick: PropTypes.func.isRequired,
 };
-
-export default ContainerCard;

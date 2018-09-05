@@ -14,21 +14,21 @@ import history from './History';
 /**
  * Application wrapper.
  */
-const App = () => (
-  <Router history={history}>
-    <Main>
-      <Route exact path="/" component={ContainersListContainer} />
-      <Route path="/login" component={Login} />
-      <Route path="/auth/basic" component={BasicAuthContainer} />
-      <Route path="/auth/github" component={GithubAuthContainer} />
-      <Switch>
-        <Route path="/containers/New" component={ComposeContainer} />
-        <Route path="/containers/:containerId" component={ContainerContainer} />
-      </Switch>
-    </Main>
-  </Router>
-);
+export default function App() {
+  return (
+    <Router history={history}>
+      <Main>
+        <Route exact path="/" component={ContainersListContainer} />
+        <Route path="/login" component={Login} />
+        <Route path="/auth/basic" component={BasicAuthContainer} />
+        <Route path="/auth/github" component={GithubAuthContainer} />
+        <Switch>
+          <Route path="/containers/New" component={ComposeContainer} />
+          <Route path="/containers/:containerId" component={ContainerContainer} />
+        </Switch>
+      </Main>
+    </Router>
+  );
+}
 
 App.displayName = 'App';
-
-export default App;

@@ -31,7 +31,7 @@ for (let i = 0; i < STATS_COUNT; i += 1) {
  * @param  {Array<Object>} stats Container stats
  * @return {ReactComponent} Section with stats informations
  */
-const ContainerStats = ({ stats }) => {
+export default function ContainerStats({ stats }) {
   const { entries, memoryScaleNames, memoryLimit, cpuLimit } = stats;
 
   const data = {
@@ -100,7 +100,7 @@ const ContainerStats = ({ stats }) => {
       </div>
     </span>
   );
-};
+}
 
 ContainerStats.displayName = 'ContainerStats';
 
@@ -113,5 +113,3 @@ ContainerStats.defaultProps = {
     entries: [],
   },
 };
-
-export default ContainerStats;

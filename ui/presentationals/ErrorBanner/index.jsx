@@ -7,7 +7,7 @@ import style from './index.css';
  * @param  {String} error Error to display
  * @return {ReactComponent} div with error or null if no error
  */
-const ErrorBanner = ({ error }) => {
+export default function ErrorBanner({ error }) {
   if (error) {
     return (
       <div data-error className={style.error}>
@@ -16,7 +16,7 @@ const ErrorBanner = ({ error }) => {
     );
   }
   return null;
-};
+}
 
 ErrorBanner.displayName = 'ErrorBanner';
 
@@ -27,5 +27,3 @@ ErrorBanner.propTypes = {
 ErrorBanner.defaultProps = {
   error: null,
 };
-
-export default ErrorBanner;

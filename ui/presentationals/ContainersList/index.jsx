@@ -15,7 +15,7 @@ import style from './index.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} List view of containers
  */
-const ContainersList = ({
+export default function ContainersList({
   pending,
   containersTotalCount,
   containers,
@@ -26,7 +26,7 @@ const ContainersList = ({
   onSelect,
   onLogout,
   onFilterChange,
-}) => {
+}) {
   let content;
 
   if (pending || !Array.isArray(containers)) {
@@ -77,7 +77,7 @@ const ContainersList = ({
       </div>
     </span>
   );
-};
+}
 
 ContainersList.displayName = 'ContainersList';
 
@@ -101,5 +101,3 @@ ContainersList.defaultProps = {
   filter: '',
   error: '',
 };
-
-export default ContainersList;

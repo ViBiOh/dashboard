@@ -10,7 +10,7 @@ import style from './index.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Login with username/password
  */
-const Login = ({ location }) => {
+export default function Login({ location }) {
   const { redirect } = SearchParams(location.search);
 
   return (
@@ -42,7 +42,7 @@ const Login = ({ location }) => {
       </div>
     </span>
   );
-};
+}
 
 Login.displayName = 'Login';
 
@@ -55,5 +55,3 @@ Login.propTypes = {
 Login.defaultProps = {
   location: {},
 };
-
-export default Login;

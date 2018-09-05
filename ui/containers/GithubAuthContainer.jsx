@@ -9,7 +9,7 @@ import Github from '../presentationals/Login/Github';
  * Select props from Redux state.
  * @param {Object} state Current state
  */
-const mapStateToProps = (state, { location: { search } }) => {
+function mapStateToProps(state, { location: { search } }) {
   const params = SearchParams(search);
 
   return {
@@ -18,21 +18,23 @@ const mapStateToProps = (state, { location: { search } }) => {
     code: params.code,
     redirect: params.redirect,
   };
-};
+}
 
 /**
  * Provide dispatch functions in props.
  * @param {Function} dispatch Redux dispatch function
  */
-const mapDispatchToProps = dispatch => ({
-  component: (
-    <Github
-      getAccessToken={(state, code, redirect) => {
-        dispatch(actions.getGithubAccessToken(state, code, redirect));
-      }}
-    />
-  ),
-});
+function mapDispatchToProps(dispatch) {
+  return {
+    component: (
+      <Github
+        getAccessToken={(state, code, redirect) => {
+          dispatch(actions.getGithubAccessToken(state, code, redirect));
+        }}
+      />
+    ),
+  };
+}
 
 /**
  * Github connected.

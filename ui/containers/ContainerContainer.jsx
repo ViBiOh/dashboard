@@ -129,37 +129,41 @@ ContainerComponent.defaultProps = {
  * Select props from Redux state.
  * @param {Object} state Current state
  */
-const mapStateToProps = (
+function mapStateToProps(
   state,
   {
     match: {
       params: { containerId },
     },
   },
-) => ({
-  pending: !!state.pending[actions.FETCH_CONTAINER],
-  pendingAction: !!state.pending[actions.ACTION_CONTAINER],
-  container: state.container,
-  bus: state.bus,
-  logs: state.logs,
-  stats: state.stats,
-  error: state.error,
-  containerId,
-});
+) {
+  return {
+    pending: !!state.pending[actions.FETCH_CONTAINER],
+    pendingAction: !!state.pending[actions.ACTION_CONTAINER],
+    container: state.container,
+    bus: state.bus,
+    logs: state.logs,
+    stats: state.stats,
+    error: state.error,
+    containerId,
+  };
+}
 
 /**
  * Provide dispatch functions in props.
  * @param {Function} dispatch Redux dispatch function
  */
-const mapDispatchToProps = dispatch => ({
-  fetchContainer: id => dispatch(actions.fetchContainer(id)),
-  actionContainer: (action, id) => dispatch(actions.actionContainer(action, id)),
-  onBack: () => dispatch(actions.goHome()),
-  openLogs: id => dispatch(actions.openLogs(id)),
-  closeLogs: () => dispatch(actions.closeLogs()),
-  openStats: id => dispatch(actions.openStats(id)),
-  closeStats: () => dispatch(actions.closeStats()),
-});
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchContainer: id => dispatch(actions.fetchContainer(id)),
+    actionContainer: (action, id) => dispatch(actions.actionContainer(action, id)),
+    onBack: () => dispatch(actions.goHome()),
+    openLogs: id => dispatch(actions.openLogs(id)),
+    closeLogs: () => dispatch(actions.closeLogs()),
+    openStats: id => dispatch(actions.openStats(id)),
+    closeStats: () => dispatch(actions.closeStats()),
+  };
+}
 
 /**
  * Container for handling container view.

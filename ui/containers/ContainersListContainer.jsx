@@ -10,25 +10,29 @@ import ContainersList from '../presentationals/ContainersList';
  * Select props from Redux state.
  * @param {Object} state Current state
  */
-const mapStateToProps = state => ({
-  pending: !!state.pending[actions.INFO] || !!state.pending[actions.FETCH_CONTAINERS],
-  containersTotalCount: state.containers ? state.containers.length : 0,
-  containers: state.filteredContainers,
-  filter: state.filter,
-  error: state.error,
-});
+function mapStateToProps(state) {
+  return {
+    pending: !!state.pending[actions.INFO] || !!state.pending[actions.FETCH_CONTAINERS],
+    containersTotalCount: state.containers ? state.containers.length : 0,
+    containers: state.filteredContainers,
+    filter: state.filter,
+    error: state.error,
+  };
+}
 
 /**
  * Provide dispatch functions in props.
  * @param {Function} dispatch Redux dispatch function
  */
-const mapDispatchToProps = dispatch => ({
-  onRefresh: () => dispatch(actions.refresh()),
-  onAdd: () => dispatch(push('/containers/New')),
-  onSelect: id => dispatch(push(`/containers/${id}`)),
-  onLogout: () => dispatch(actions.logout()),
-  onFilterChange: value => dispatch(actions.changeFilter(value)),
-});
+function mapDispatchToProps(dispatch) {
+  return {
+    onRefresh: () => dispatch(actions.refresh()),
+    onAdd: () => dispatch(push('/containers/New')),
+    onSelect: id => dispatch(push(`/containers/${id}`)),
+    onLogout: () => dispatch(actions.logout()),
+    onFilterChange: value => dispatch(actions.changeFilter(value)),
+  };
+}
 
 /**
  * Container without connect for testing purpose

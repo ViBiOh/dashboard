@@ -7,7 +7,7 @@ import style from './ContainerNetwork.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Container's network information.
  */
-const ContainerNetwork = ({ container }) => {
+export default function ContainerNetwork({ container }) {
   const networkContent =
     container.NetworkSettings.Networks &&
     Object.keys(container.NetworkSettings.Networks).map(network => (
@@ -74,7 +74,7 @@ const ContainerNetwork = ({ container }) => {
         ]}
     </span>
   );
-};
+}
 
 ContainerNetwork.displayName = 'ContainerNetwork';
 
@@ -86,5 +86,3 @@ ContainerNetwork.propTypes = {
     }).isRequired,
   }).isRequired,
 };
-
-export default ContainerNetwork;

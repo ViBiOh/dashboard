@@ -9,7 +9,7 @@ import Basic from '../presentationals/Login/Basic';
  * Select props from Redux state.
  * @param {Object} state Current state
  */
-const mapStateToProps = (state, { location: { search } }) => {
+function mapStateToProps(state, { location: { search } }) {
   const params = SearchParams(search);
 
   return {
@@ -17,21 +17,23 @@ const mapStateToProps = (state, { location: { search } }) => {
     error: state.error,
     redirect: params.redirect,
   };
-};
+}
 
 /**
  * Provide dispatch functions in props.
  * @param {Function} dispatch Redux dispatch function
  */
-const mapDispatchToProps = dispatch => ({
-  component: (
-    <Basic
-      onLogin={(username, password, redirect) => {
-        dispatch(actions.login(username, password, redirect));
-      }}
-    />
-  ),
-});
+function mapDispatchToProps(dispatch) {
+  return {
+    component: (
+      <Basic
+        onLogin={(username, password, redirect) => {
+          dispatch(actions.login(username, password, redirect));
+        }}
+      />
+    ),
+  };
+}
 
 /**
  * Container for handling login view.

@@ -7,12 +7,14 @@ import style from './ContainerLogs.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Container's logs.
  */
-const ContainerLogs = ({ logs }) => (
-  <span className={style.container}>
-    <h3>Logs</h3>
-    <pre className={style.code}>{logs.join('\n')}</pre>
-  </span>
-);
+export default function ContainerLogs({ logs }) {
+  return (
+    <span className={style.container}>
+      <h3>Logs</h3>
+      <pre className={style.code}>{logs.join('\n')}</pre>
+    </span>
+  );
+}
 
 ContainerLogs.displayName = 'ContainerLogs';
 
@@ -23,5 +25,3 @@ ContainerLogs.propTypes = {
 ContainerLogs.defaultProps = {
   logs: [],
 };
-
-export default ContainerLogs;

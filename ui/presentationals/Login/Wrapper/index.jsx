@@ -3,13 +3,18 @@ import PropTypes from 'prop-types';
 import ErrorBanner from '../../ErrorBanner';
 import style from './index.css';
 
-const Wrapper = ({ component, error, ...rest }) => (
-  <span className={style.container}>
-    <ErrorBanner error={error} />
-    <h2>Login</h2>
-    {React.cloneElement(component, { error, ...rest })}
-  </span>
-);
+/**
+ * Wrapper Functional Component.
+ */
+export default function Wrapper({ component, error, ...rest }) {
+  return (
+    <span className={style.container}>
+      <ErrorBanner error={error} />
+      <h2>Login</h2>
+      {React.cloneElement(component, { error, ...rest })}
+    </span>
+  );
+}
 
 Wrapper.displayName = 'Wrapper';
 
@@ -21,8 +26,3 @@ Wrapper.propTypes = {
 Wrapper.defaultProps = {
   error: '',
 };
-
-/**
- * Wrapper Functional Component.
- */
-export default Wrapper;

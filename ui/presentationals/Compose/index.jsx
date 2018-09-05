@@ -14,7 +14,7 @@ import style from './index.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Compose form with inputs.
  */
-const Compose = ({ onCompose, onBack, pending, error }) => {
+export default function Compose({ onCompose, onBack, pending, error }) {
   const refs = {};
 
   /**
@@ -57,7 +57,7 @@ const Compose = ({ onCompose, onBack, pending, error }) => {
       </div>
     </div>
   );
-};
+}
 
 Compose.displayName = 'Compose';
 
@@ -72,5 +72,3 @@ Compose.defaultProps = {
   pending: false,
   error: '',
 };
-
-export default Compose;

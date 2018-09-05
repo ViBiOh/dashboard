@@ -10,7 +10,7 @@ import style from './index.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Login with username/password
  */
-const Basic = ({ redirect, pending, onLogin }) => {
+export default function Basic({ redirect, pending, onLogin }) {
   const refs = {};
 
   function submit() {
@@ -42,7 +42,7 @@ const Basic = ({ redirect, pending, onLogin }) => {
       </div>
     </span>
   );
-};
+}
 
 Basic.displayName = 'Basic';
 
@@ -56,5 +56,3 @@ Basic.defaultProps = {
   pending: false,
   redirect: '',
 };
-
-export default Basic;

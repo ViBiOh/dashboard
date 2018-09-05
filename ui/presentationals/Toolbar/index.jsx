@@ -7,9 +7,9 @@ import style from './index.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Toolbar with children and message if provided
  */
-const Toolbar = ({ children, className }) => (
-  <span className={`${style.flex} ${className}`}>{children}</span>
-);
+export default function Toolbar({ children, className }) {
+  return <span className={`${style.flex} ${className}`}>{children}</span>;
+}
 
 Toolbar.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
@@ -20,5 +20,3 @@ Toolbar.defaultProps = {
   children: null,
   className: '',
 };
-
-export default Toolbar;

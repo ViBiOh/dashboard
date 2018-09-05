@@ -8,11 +8,20 @@ import Throbber from '..';
  * @param {Object} props Props of the component.
  * @return {React.Component} Button with wrapped children or Thorbber if pending.
  */
-const ThrobberButton = ({ pending, vertical, horizontalSm, onClick, children, ...buttonProps }) => (
-  <Button {...buttonProps} onClick={e => (pending ? null : onClick(e))}>
-    {pending ? <Throbber vertical={vertical} horizontalSm={horizontalSm} white /> : children}
-  </Button>
-);
+export default function ThrobberButton({
+  pending,
+  vertical,
+  horizontalSm,
+  onClick,
+  children,
+  ...buttonProps
+}) {
+  return (
+    <Button {...buttonProps} onClick={e => (pending ? null : onClick(e))}>
+      {pending ? <Throbber vertical={vertical} horizontalSm={horizontalSm} white /> : children}
+    </Button>
+  );
+}
 
 ThrobberButton.displayName = 'ThrobberButton';
 
@@ -30,5 +39,3 @@ ThrobberButton.defaultProps = {
   horizontalSm: false,
   children: '',
 };
-
-export default ThrobberButton;
