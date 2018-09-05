@@ -16,7 +16,7 @@ const endPending = /^(.*?)_(?:SUCCEEDED|FAILED)$/;
  * @param  {Object} action Action dispatched
  * @return {Object}        New state
  */
-export default (state = {}, action) => {
+export default function(state = {}, action) {
   const start = startPending.exec(action.type);
   if (start && start.length > 1) {
     return { ...state, [start[1]]: true };
@@ -28,4 +28,4 @@ export default (state = {}, action) => {
   }
 
   return state;
-};
+}

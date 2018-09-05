@@ -6,7 +6,7 @@ import actions from '../actions';
  * @param  {Object} action Action dispatched
  * @return {Bool}        New state
  */
-export default (state = false, action) => {
+export default function(state = false, action) {
   switch (action.type) {
     case actions.BUS_OPENED:
       return true;
@@ -15,4 +15,4 @@ export default (state = false, action) => {
     default:
       return state;
   }
-};
+}

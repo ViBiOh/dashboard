@@ -18,7 +18,7 @@ import style from './Container.css';
  * @param {Object} props Props of the component.
  * @return {React.Component} Container informations.
  */
-const Container = props => {
+export default function Container(props) {
   const {
     pending,
     pendingAction,
@@ -127,7 +127,7 @@ const Container = props => {
       </span>
     </span>
   );
-};
+}
 
 Container.displayName = 'Container';
 
@@ -158,5 +158,3 @@ Container.defaultProps = {
   stats: null,
   error: '',
 };
-
-export default Container;

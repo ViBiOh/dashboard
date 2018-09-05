@@ -6,7 +6,7 @@ import actions from '../actions';
  * @param  {Object} action Action dispatched
  * @return {Object}        New state
  */
-export default (state = null, action) => {
+export default function(state = null, action) {
   switch (action.type) {
     case actions.FETCH_CONTAINERS_SUCCEEDED:
       return action.containers;
@@ -16,4 +16,4 @@ export default (state = null, action) => {
     default:
       return state;
   }
-};
+}

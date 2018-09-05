@@ -18,7 +18,7 @@ const endError = /_SUCCEEDED$/;
  * @param  {Object} action Action dispatched
  * @return {Object}        New state
  */
-export default (state = '', action) => {
+export default function(state = '', action) {
   if (action.type === actions.SET_ERROR || startError.test(action.type)) {
     if (global.Rollbar) {
       global.Rollbar.error(action.error);
@@ -31,4 +31,4 @@ export default (state = '', action) => {
   }
 
   return state;
-};
+}

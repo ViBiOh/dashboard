@@ -22,7 +22,7 @@ const initialState = {
  * @param  {Object} action Action dispatched
  * @return {Object}        New state
  */
-export default (state = initialState, action) => {
+export default function(state = initialState, action) {
   if (action.type === actions.OPEN_STATS) {
     return initialState;
   }
@@ -61,4 +61,4 @@ export default (state = initialState, action) => {
   }
 
   return state;
-};
+}
