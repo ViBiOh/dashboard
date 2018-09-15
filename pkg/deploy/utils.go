@@ -32,7 +32,7 @@ func checkParams(r *http.Request, user *model.User) (string, []byte, error) {
 		return appName, nil, commons.ErrUserRequired
 	}
 
-	composeFile, err := request.ReadBody(r.Body)
+	composeFile, err := request.ReadBodyRequest(r)
 	if err != nil {
 		return appName, nil, fmt.Errorf(`Error while reading compose file: %v`, err)
 	}

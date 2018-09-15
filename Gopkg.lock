@@ -28,11 +28,11 @@
     "pkg/provider",
   ]
   pruneopts = "UT"
-  revision = "150db9542dd44578993615afdd8b6eb9cc49722b"
+  revision = "4b3e81b3ef2f00c7288165f3becbb0d76795a4c9"
 
 [[projects]]
   branch = "master"
-  digest = "1:c56f1e3ab5f369f584eff2a32e3c1d1b717aa29256818758d3fa0e361476673b"
+  digest = "1:eae7b7b5e97cb9f0d23882e34d2869f867b046924496db6b3785d9c2e4dfcbf9"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -53,15 +53,15 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "f3ea8ad8f900dc62836623435ef0daadf32a887a"
+  revision = "462fc2b0349c2706e4aaa2f3ae86c1be3d2c83fe"
 
 [[projects]]
   branch = "master"
-  digest = "1:44f38831494b2d47b8c301c7e4681f23686960fd8261dd4a94296eda241dd8eb"
+  digest = "1:890dd570e765e2985b11e3d780a6cb6e17476c7e632e9b0a0e514a7687a96da3"
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "f5460a9f2d8657a13c1243708298b4d1ae85457a"
+  revision = "0e775f70b772ad9ce966109e9461fb40f37497b3"
 
 [[projects]]
   branch = "master"
@@ -88,11 +88,11 @@
     "reference",
   ]
   pruneopts = "UT"
-  revision = "90705d2fb81dda1466be49bd958ed8a0dd9a6145"
+  revision = "b089e91688254eb5aef187f188c8ee0ebe4e4675"
 
 [[projects]]
   branch = "master"
-  digest = "1:f6fb2d1e1f984e76b8bf38ed49bb20a4e4cc8aeb6483bff774067720d1140647"
+  digest = "1:3f6f0577213d032539b1900fb535c6eb8ed166d60264626c26033864d8ca2ba0"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -115,7 +115,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "64b7575802d4cab61fd339f14427b1d881c3b6c4"
+  revision = "ed392603acbf7849aa68d760c67d9c645ac035d8"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -154,12 +154,12 @@
   version = "v1.2.0"
 
 [[projects]]
-  digest = "1:cee8e8ac80df6373e7daa11baf1f98c1b6f7242c49ccae7e1ec34a971dc408d9"
+  digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
   name = "github.com/gorilla/websocket"
   packages = ["."]
   pruneopts = "UT"
-  revision = "3ff3320c2a1756a3691521efc290b4701575147c"
-  version = "v1.3.0"
+  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
+  version = "v1.4.0"
 
 [[projects]]
   digest = "1:ff5ebae34cfbf047d505ee150de27e60570e8c394b3b8fdbb720ff6ac71985fc"
@@ -303,7 +303,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:58cb5fbdf85e1f468c749aa31773ff102866831106f52762b2823ae235ca11e7"
+  digest = "1:d9f9f45d3383b93ce1c7e744b3ede6974917ae4d100e1a7abfc2906e5e5e2e28"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -312,15 +312,15 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "8a410e7b638dca158bf9e766925842f6651ff828"
+  revision = "26e67e76b6c3f6ce91f7c52def5af501b4e0f3a2"
 
 [[projects]]
   branch = "master"
-  digest = "1:c50cc93e8bc99bc12f0c78d03e80ee254177fad18f4f6b599601edf51035492e"
+  digest = "1:29002e64d6ff5a3ca18805f6fa641be58a4d963026d83b051762faf58b6b893e"
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "fa5fdf94c78965f1aa8423f0cc50b8b8d728b05a"
+  revision = "d0be0721c37eeb5299f245a996a483160fc36940"
 
 [[projects]]
   branch = "v2"
