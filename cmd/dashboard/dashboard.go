@@ -42,7 +42,7 @@ func handleGracefulClose(deployApp *deploy.App) error {
 				return nil
 			}
 		case <-timeout:
-			return errors.New(`Timeout exceeded for graceful close`)
+			return errors.New(`timeout exceeded for graceful close`)
 		}
 	}
 }

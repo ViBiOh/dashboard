@@ -51,7 +51,7 @@ type App struct {
 func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App) (*App, error) {
 	hostCheck, err := regexp.Compile(*config[`websocketOrigin`])
 	if err != nil {
-		return nil, fmt.Errorf(`Error while compiling websocket regexp: %v`, err)
+		return nil, fmt.Errorf(`error while compiling websocket regexp: %v`, err)
 	}
 
 	return &App{
@@ -86,13 +86,13 @@ func (a *App) upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websoc
 	}()
 
 	if err != nil {
-		err = fmt.Errorf(`Error while upgrading connection: %v`, err)
+		err = fmt.Errorf(`error while upgrading connection: %v`, err)
 		return
 	}
 
 	_, basicAuth, err := ws.ReadMessage()
 	if err != nil {
-		err = fmt.Errorf(`Error while reading authentification message: %v`, err)
+		err = fmt.Errorf(`error while reading authentification message: %v`, err)
 		return
 	}
 
@@ -101,7 +101,7 @@ func (a *App) upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websoc
 
 	user, err = a.authApp.IsAuthenticatedByAuth(ctx, string(basicAuth))
 	if err != nil {
-		err = fmt.Errorf(`Error while checking authentification: %v`, err)
+		err = fmt.Errorf(`error while checking authentification: %v`, err)
 		if writeErr := ws.WriteMessage(websocket.TextMessage, []byte(err.Error())); writeErr != nil {
 			err = fmt.Errorf(`%v, and also error while writing error message: %v`, err, writeErr)
 		}

@@ -19,13 +19,13 @@ func (a *App) serviceOutput(ctx context.Context, user *model.User, appName strin
 				if err != nil {
 					err = fmt.Errorf(`%s, and also error while closing logs for service %s: %v`, err, service.Name, closeErr)
 				} else {
-					err = fmt.Errorf(`Error while closing logs for service %s: %v`, service.Name, closeErr)
+					err = fmt.Errorf(`error while closing logs for service %s: %v`, service.Name, closeErr)
 				}
 			}
 		}()
 	}
 	if err != nil {
-		err = fmt.Errorf(`Error while reading logs for service %s: %v`, service.Name, err)
+		err = fmt.Errorf(`error while reading logs for service %s: %v`, service.Name, err)
 		return
 	}
 

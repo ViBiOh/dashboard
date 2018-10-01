@@ -111,12 +111,12 @@ func (a *App) RmContainer(ctx context.Context, containerID string, container *ty
 
 	if container == nil {
 		if container, err = a.InspectContainer(ctx, containerID); err != nil {
-			return nil, fmt.Errorf(`Error while inspecting container: %v`, err)
+			return nil, fmt.Errorf(`error while inspecting container: %v`, err)
 		}
 	}
 
 	if err = a.Docker.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
-		return nil, fmt.Errorf(`Error while removing container: %v`, err)
+		return nil, fmt.Errorf(`error while removing container: %v`, err)
 	}
 
 	if err = a.RmImage(ctx, container.Image); err != nil {
@@ -136,14 +136,14 @@ func (a *App) RmImage(ctx context.Context, imageID string) error {
 	span.SetTag(`id`, imageID)
 
 	if _, err := a.Docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{}); err != nil {
-		return fmt.Errorf(`Error while removing image: %v`, err)
+		return fmt.Errorf(`error while removing image: %v`, err)
 	}
 
 	return nil
 }
 
 func invalidAction(_ context.Context, action string, _ *types.ContainerJSON) (interface{}, error) {
-	return nil, fmt.Errorf(`Unknown action %s`, action)
+	return nil, fmt.Errorf(`unknown action %s`, action)
 }
 
 func (a *App) doAction(action string) func(context.Context, string, *types.ContainerJSON) (interface{}, error) {

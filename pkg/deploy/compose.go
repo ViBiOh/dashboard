@@ -98,7 +98,7 @@ func (a *App) pullImage(ctx context.Context, image string) error {
 
 	pull, err := a.dockerApp.Docker.ImagePull(ctx, image, types.ImagePullOptions{})
 	if err != nil {
-		return fmt.Errorf(`Error while pulling image: %v`, err)
+		return fmt.Errorf(`error while pulling image: %v`, err)
 	}
 
 	_, err = request.ReadBody(pull)
@@ -114,7 +114,7 @@ func (a *App) cleanContainers(ctx context.Context, containers []types.Container)
 
 	for _, container := range containers {
 		if _, err := a.dockerApp.RmContainer(ctx, container.ID, nil, false); err != nil {
-			return fmt.Errorf(`Error while deleting container %s: %v`, container.Names, err)
+			return fmt.Errorf(`error while deleting container %s: %v`, container.Names, err)
 		}
 	}
 
@@ -124,7 +124,7 @@ func (a *App) cleanContainers(ctx context.Context, containers []types.Container)
 func (a *App) renameDeployedContainers(ctx context.Context, services map[string]*deployedService) error {
 	for _, service := range services {
 		if err := a.dockerApp.Docker.ContainerRename(ctx, service.ContainerID, getFinalName(service.FullName)); err != nil {
-			return fmt.Errorf(`Error while renaming container %s: %v`, service.Name, err)
+			return fmt.Errorf(`error while renaming container %s: %v`, service.Name, err)
 		}
 	}
 
@@ -151,7 +151,7 @@ func (a *App) deleteServices(ctx context.Context, appName string, services map[s
 func (a *App) startServices(ctx context.Context, services map[string]*deployedService) error {
 	for _, service := range services {
 		if _, err := a.dockerApp.StartContainer(ctx, service.ContainerID, nil); err != nil {
-			return fmt.Errorf(`Error while starting service %s: %v`, service.Name, err)
+			return fmt.Errorf(`error while starting service %s: %v`, service.Name, err)
 		}
 	}
 
@@ -285,12 +285,12 @@ func (a *App) createContainer(ctx context.Context, user *model.User, appName str
 
 	config, err := a.getConfig(service, user, appName)
 	if err != nil {
-		return nil, fmt.Errorf(`Error while getting config: %v`, err)
+		return nil, fmt.Errorf(`error while getting config: %v`, err)
 	}
 
 	createdContainer, err := a.dockerApp.Docker.ContainerCreate(ctx, config, a.getHostConfig(service, user), a.getNetworkConfig(serviceName, service), serviceFullName)
 	if err != nil {
-		return nil, fmt.Errorf(`Error while creating service %s: %v`, serviceName, err)
+		return nil, fmt.Errorf(`error while creating service %s: %v`, serviceName, err)
 	}
 
 	return &deployedService{

@@ -32,7 +32,7 @@ type App struct {
 func NewApp(config map[string]*string, authApp *auth.App) (*App, error) {
 	client, err := client.NewClient(*config[`host`], *config[`version`], nil, nil)
 	if err != nil {
-		return nil, fmt.Errorf(`Error while creating docker client: %v`, err)
+		return nil, fmt.Errorf(`error while creating docker client: %v`, err)
 	}
 
 	return &App{

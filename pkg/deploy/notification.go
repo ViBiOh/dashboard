@@ -32,7 +32,7 @@ func (a *App) sendEmailNotification(ctx context.Context, user *model.User, appNa
 	recipients := []string{user.Email}
 
 	if err := a.mailerApp.SendEmail(ctx, `dashboard`, `dashboard@vibioh.fr`, `Dashboard`, fmt.Sprintf(`[dashboard] Deploy of %s`, appName), recipients, notificationContent); err != nil {
-		return fmt.Errorf(`Error while sending email: %v`, err)
+		return fmt.Errorf(`error while sending email: %v`, err)
 	}
 
 	return nil

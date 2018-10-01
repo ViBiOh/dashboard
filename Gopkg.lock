@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6117f0f7e754530e4dd7db211814e32a2ff53806900601fa49a64fa4cdcc070d"
+  digest = "1:c2b67e32d78d4048854f7eb7c385e54ed3928464f33f10fb67bd28bf3f0e6fcf"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,11 +28,11 @@
     "pkg/provider",
   ]
   pruneopts = "UT"
-  revision = "4b3e81b3ef2f00c7288165f3becbb0d76795a4c9"
+  revision = "244aa3e4c507736ad814a10b7dff1240a213f727"
 
 [[projects]]
   branch = "master"
-  digest = "1:eae7b7b5e97cb9f0d23882e34d2869f867b046924496db6b3785d9c2e4dfcbf9"
+  digest = "1:e9782dfd0eb5c97c098e3b80e98d4955e6534521097246b5e5661087a1718354"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -53,15 +53,15 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "462fc2b0349c2706e4aaa2f3ae86c1be3d2c83fe"
+  revision = "b6d3cd35d8be695407c488c7142e582a1e626ebc"
 
 [[projects]]
   branch = "master"
-  digest = "1:890dd570e765e2985b11e3d780a6cb6e17476c7e632e9b0a0e514a7687a96da3"
+  digest = "1:8c783b063439cc0c5e6f762eab9aff228291be1948b56d79d679c9ab93fc14f8"
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "0e775f70b772ad9ce966109e9461fb40f37497b3"
+  revision = "1c505ec6196fde568510542354e8ef6d83ce6685"
 
 [[projects]]
   branch = "master"
@@ -81,18 +81,18 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4189ee6a3844f555124d9d2656fe7af02fca961c2a9bad9074789df13a0c62e0"
+  digest = "1:4ddc17aeaa82cb18c5f0a25d7c253a10682f518f4b2558a82869506eec223d76"
   name = "github.com/docker/distribution"
   packages = [
     "digestset",
     "reference",
   ]
   pruneopts = "UT"
-  revision = "b089e91688254eb5aef187f188c8ee0ebe4e4675"
+  revision = "17b3ff188dfde7d5b59a94ab99e6a967b3a59563"
 
 [[projects]]
   branch = "master"
-  digest = "1:3f6f0577213d032539b1900fb535c6eb8ed166d60264626c26033864d8ca2ba0"
+  digest = "1:ffa69535f6379a179c86e9e7c88fac92ab9b09bafd334315eaa6c82887fd70ec"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -115,7 +115,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "ed392603acbf7849aa68d760c67d9c645ac035d8"
+  revision = "299015de409743b3c85a33872dce645ed748d804"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -249,7 +249,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8c49953a1414305f2ff5465147ee576dd705487c35b15918fcd4efdc0cb7a290"
+  digest = "1:ef1dd9945e58ee9b635273d28c0ef3fa3742a7dedc038ebe207fd63e6ce000ef"
   name = "github.com/prometheus/procfs"
   packages = [
     ".",
@@ -258,7 +258,7 @@
     "xfs",
   ]
   pruneopts = "UT"
-  revision = "05ee40e3a273f7245e8777337fc7b46e533a9a92"
+  revision = "418d78d0b9a7b7de3a6bbc8a23def624cc977bb2"
 
 [[projects]]
   digest = "1:8b6db3b490230af0836cd57f2da94e092ac0c2837fe24e762458006531749b53"
@@ -312,15 +312,15 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "26e67e76b6c3f6ce91f7c52def5af501b4e0f3a2"
+  revision = "4dfa2610cdf3b287375bbba5b8f2a14d3b01d8de"
 
 [[projects]]
   branch = "master"
-  digest = "1:29002e64d6ff5a3ca18805f6fa641be58a4d963026d83b051762faf58b6b893e"
+  digest = "1:68a4638398cf8c864a6aa50c8853ebe7935f939aa3acf7e44cb35b67852e9fef"
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "d0be0721c37eeb5299f245a996a483160fc36940"
+  revision = "e4b3c5e9061176387e7cea65e4dc5853801f3fb7"
 
 [[projects]]
   branch = "v2"

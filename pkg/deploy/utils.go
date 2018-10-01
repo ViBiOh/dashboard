@@ -34,7 +34,7 @@ func checkParams(r *http.Request, user *model.User) (string, []byte, error) {
 
 	composeFile, err := request.ReadBodyRequest(r)
 	if err != nil {
-		return appName, nil, fmt.Errorf(`Error while reading compose file: %v`, err)
+		return appName, nil, fmt.Errorf(`error while reading compose file: %v`, err)
 	}
 
 	if len(appName) == 0 || len(composeFile) == 0 {
@@ -47,7 +47,7 @@ func checkParams(r *http.Request, user *model.User) (string, []byte, error) {
 func (a *App) checkRights(ctx context.Context, user *model.User, appName string) ([]types.Container, error) {
 	oldContainers, err := a.dockerApp.ListContainers(ctx, user, appName)
 	if err != nil {
-		return nil, fmt.Errorf(`Error while listing containers: %v`, err)
+		return nil, fmt.Errorf(`error while listing containers: %v`, err)
 	}
 
 	if len(oldContainers) > 0 && oldContainers[0].Labels[commons.OwnerLabel] != user.Username {

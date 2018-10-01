@@ -38,7 +38,7 @@ func (a *App) isAllowed(ctx context.Context, user *model.User, containerID strin
 
 	container, err := a.InspectContainer(ctx, containerID)
 	if err != nil {
-		return false, nil, fmt.Errorf(`Error while inspecting container: %v`, err)
+		return false, nil, fmt.Errorf(`error while inspecting container: %v`, err)
 	}
 
 	if !IsAdmin(user) {

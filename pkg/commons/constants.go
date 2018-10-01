@@ -14,4 +14,4 @@ const (
 )
 
 // ErrUserRequired occurs when an user if required
-var ErrUserRequired = errors.New(`An user is required`)
+var ErrUserRequired = errors.New(`an user is required`)

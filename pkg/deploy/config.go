@@ -22,7 +22,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 	if strings.TrimSpace(healthcheck.Interval) != `` {
 		interval, err := time.ParseDuration(healthcheck.Interval)
 		if err != nil {
-			return nil, fmt.Errorf(`Error while parsing healthcheck interval: %v`, err)
+			return nil, fmt.Errorf(`error while parsing healthcheck interval: %v`, err)
 		}
 
 		healthconfig.Interval = interval
@@ -31,7 +31,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 	if strings.TrimSpace(healthcheck.Timeout) != `` {
 		timeout, err := time.ParseDuration(healthcheck.Timeout)
 		if err != nil {
-			return nil, fmt.Errorf(`Error while parsing healthcheck timeout: %v`, err)
+			return nil, fmt.Errorf(`error while parsing healthcheck timeout: %v`, err)
 		}
 
 		healthconfig.Timeout = timeout

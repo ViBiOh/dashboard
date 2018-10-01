@@ -25,7 +25,7 @@ func (a *App) sendRollbarNotification(ctx context.Context, user *model.User, req
 	}
 
 	if err := rollbar.Deploy(ctx, token, environment, revision, username); err != nil {
-		return fmt.Errorf(`Error while sending deploy request: %v`, err)
+		return fmt.Errorf(`error while sending deploy request: %v`, err)
 	}
 
 	return nil
