@@ -20,6 +20,7 @@ type dockerComposeService struct {
 	Links         []string
 	ExternalLinks []string `yaml:"external_links"`
 	Volumes       []string
+	DNS           []string
 	Hostname      string
 	User          string
 	Healthcheck   *dockerComposeHealthcheck

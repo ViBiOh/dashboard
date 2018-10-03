@@ -108,6 +108,7 @@ func (a *App) getHostConfig(service *dockerComposeService, user *model.User) *co
 			Memory:    minMemory,
 		},
 		SecurityOpt: []string{`no-new-privileges`},
+		DNS:         service.DNS,
 	}
 
 	if service.ReadOnly {
