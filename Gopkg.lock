@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4111b215396a62fbe95a567cf9d49c564141c756357a7f9ccf58d40766b627db"
+  digest = "1:70f31571111f5cfa386f9b4361807f9b876296b22acce7132be5238ce23789ca"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,7 +28,7 @@
     "pkg/provider",
   ]
   pruneopts = "UT"
-  revision = "803c4d7646520e7949d9a191b7a701729339c5fa"
+  revision = "f16025365ea385458f04ee7c56d243ed1e98b21b"
 
 [[projects]]
   branch = "master"
@@ -92,7 +92,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:35db1511aca738ca5f3dfb311d141cc79aee14e01b5fbc0ecef381235ccf7587"
+  digest = "1:6b30f7efd8a99255132890325aad3903cc81410d4bcc741d9e91aae7276bbc70"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -115,7 +115,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "82a4797499a6a72ffa71ef746652999982e67bd1"
+  revision = "10ebe6381e1f31faf6b66a53babe5bc4be41457a"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -269,7 +269,7 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:104a2d7446f4628e4663d7c029b18da1aad4313735de775f37b6e7720b1d0aa7"
+  digest = "1:ac6f26e917fd2fb3194a7ebe2baf6fb32de2f2fbfed130c18aac0e758a6e1d22"
   name = "github.com/uber/jaeger-client-go"
   packages = [
     ".",
@@ -287,11 +287,12 @@
     "thrift-gen/jaeger",
     "thrift-gen/sampling",
     "thrift-gen/zipkincore",
+    "transport",
     "utils",
   ]
   pruneopts = "UT"
-  revision = "b043381d944715b469fd6b37addfd30145ca1758"
-  version = "v2.14.0"
+  revision = "1a782e2da844727691fef1757c72eb190c2909f0"
+  version = "v2.15.0"
 
 [[projects]]
   digest = "1:0f09db8429e19d57c8346ad76fbbc679341fa86073d3b8fb5ac919f0357d8f4c"
@@ -312,7 +313,7 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "146acd28ed5894421fb5aac80ca93bc1b1f46f87"
+  revision = "49bb7cea24b1df9410e1712aa6433dae904ff66a"
 
 [[projects]]
   branch = "master"
@@ -320,7 +321,7 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "4497e2df6f9e69048a54498c7affbbec3294ad47"
+  revision = "fa43e7bc11baaae89f3f902b2b4d832b68234844"
 
 [[projects]]
   branch = "v2"
