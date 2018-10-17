@@ -152,9 +152,7 @@
       "browser": true
     },
     "rules": {
-      "react/jsx-filename-extension": 1,
-      "react/jsx-closing-tag-location": 1,
-      "react/jsx-indent": 1
+      "react/jsx-filename-extension": 1
     }
   },
   "stylelint": {
