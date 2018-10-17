@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"flag"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -18,6 +17,7 @@ import (
 	"github.com/ViBiOh/httputils/pkg/cors"
 	"github.com/ViBiOh/httputils/pkg/gzip"
 	"github.com/ViBiOh/httputils/pkg/healthcheck"
+	"github.com/ViBiOh/httputils/pkg/logger"
 	"github.com/ViBiOh/httputils/pkg/opentracing"
 	"github.com/ViBiOh/httputils/pkg/owasp"
 	"github.com/ViBiOh/httputils/pkg/rollbar"
@@ -76,12 +76,12 @@ func main() {
 	authApp := auth.NewApp(authConfig, nil)
 	dockerApp, err := docker.NewApp(dockerConfig, authApp)
 	if err != nil {
-		log.Fatalf(`Error while creating docker: %v`, err)
+		logger.Fatal(`error while creating docker: %v`, err)
 	}
 
 	streamApp, err := stream.NewApp(streamConfig, authApp, dockerApp)
 	if err != nil {
-		log.Fatalf(`Error while creating stream: %v`, err)
+		logger.Fatal(`error while creating stream: %v`, err)
 	}
 
 	mailerApp := client.NewApp(mailerConfig)

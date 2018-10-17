@@ -14,7 +14,7 @@ import (
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
 	"github.com/ViBiOh/dashboard/pkg/docker"
-	"github.com/ViBiOh/httputils/pkg/rollbar"
+	"github.com/ViBiOh/httputils/pkg/logger"
 	"github.com/ViBiOh/httputils/pkg/tools"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
@@ -122,7 +122,7 @@ func readContent(user *model.User, ws *websocket.Conn, name string, done chan<- 
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
-				rollbar.LogError(`[%s] Error while reading from %s socket: %v`, user.Username, name, err)
+				logger.Error(`[%s] Error while reading from %s socket: %v`, user.Username, name, err)
 			}
 
 			close(done)
@@ -150,7 +150,7 @@ func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user 
 		case message := <-messages:
 			messageJSON, err := json.Marshal(message)
 			if err != nil {
-				rollbar.LogError(`[%s] Events marshalling in error: %v`, user.Username, err)
+				logger.Error(`[%s] Events marshalling in error: %v`, user.Username, err)
 				cancel()
 			} else {
 				output <- append(eventsPrefix, messageJSON...)
@@ -158,7 +158,7 @@ func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user 
 
 		case err := <-errors:
 			if err != nil {
-				rollbar.LogError(`[%s] Events reading in error: %v`, user.Username, err)
+				logger.Error(`[%s] Events reading in error: %v`, user.Username, err)
 			}
 			cancel()
 		}
@@ -172,12 +172,12 @@ func (a *App) streamLogs(ctx context.Context, cancel context.CancelFunc, user *m
 	if logs != nil {
 		defer func() {
 			if err := logs.Close(); err != nil {
-				rollbar.LogError(`[%s] Error while closing logs for %s: %v`, user.Username, containerID, err)
+				logger.Error(`[%s] Error while closing logs for %s: %v`, user.Username, containerID, err)
 			}
 		}()
 	}
 	if err != nil {
-		rollbar.LogError(`[%s] Error while opening logs for %s: %v`, user.Username, containerID, err)
+		logger.Error(`[%s] Error while opening logs for %s: %v`, user.Username, containerID, err)
 		return
 	}
 
@@ -195,12 +195,12 @@ func (a *App) streamStats(ctx context.Context, cancel context.CancelFunc, user *
 	defer cancel()
 
 	if err != nil {
-		rollbar.LogError(`[%s] Error while opening stats for %s: %v`, user.Username, containerID, err)
+		logger.Error(`[%s] Error while opening stats for %s: %v`, user.Username, containerID, err)
 		return
 	}
 	defer func() {
 		if err := stats.Body.Close(); err != nil {
-			rollbar.LogError(`[%s] Error while closing stats for %s: %v`, user.Username, containerID, err)
+			logger.Error(`[%s] Error while closing stats for %s: %v`, user.Username, containerID, err)
 		}
 	}()
 
@@ -213,7 +213,7 @@ func (a *App) streamStats(ctx context.Context, cancel context.CancelFunc, user *
 func handleBusDemand(user *model.User, name string, input []byte, demand *regexp.Regexp, cancel context.CancelFunc, output chan<- []byte, streamFn func(context.Context, context.CancelFunc, *model.User, string, chan<- []byte)) context.CancelFunc {
 	demandGroups := demand.FindSubmatch(input)
 	if len(demandGroups) < 2 {
-		rollbar.LogError(`[%s] Unable to parse bus demand %s for %s`, user.Username, input, name)
+		logger.Error(`[%s] Unable to parse bus demand %s for %s`, user.Username, input, name)
 	}
 
 	action := string(demandGroups[1])
@@ -242,12 +242,12 @@ func handleBusDemand(user *model.User, name string, input []byte, demand *regexp
 func (a *App) busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	ws, user, err := a.upgradeAndAuth(w, r)
 	if err != nil {
-		rollbar.LogError(`Error while upgrading connection to websocket: %v`, err)
+		logger.Error(`Error while upgrading connection to websocket: %v`, err)
 		return
 	}
 	defer func() {
 		if err := ws.Close(); err != nil && websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
-			rollbar.LogError(`Error while closing connection to websocket: %v`, err)
+			logger.Error(`Error while closing connection to websocket: %v`, err)
 		}
 	}()
 
@@ -266,7 +266,7 @@ func (a *App) busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	var statsCancelFunc context.CancelFunc
 
 	if err = ws.WriteMessage(websocket.TextMessage, []byte(`ready`)); err != nil {
-		rollbar.LogError(`[%s] Error while saying ready: %v`, user.Username, err)
+		logger.Error(`[%s] Error while saying ready: %v`, user.Username, err)
 	}
 
 	for {
@@ -294,7 +294,7 @@ func (a *App) busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 		case outputBytes := <-output:
 			if err = ws.WriteMessage(websocket.TextMessage, outputBytes); err != nil {
-				rollbar.LogError(`[%s] Error while writing to streaming: %v`, user.Username, err)
+				logger.Error(`[%s] Error while writing to streaming: %v`, user.Username, err)
 				close(done)
 			}
 		}

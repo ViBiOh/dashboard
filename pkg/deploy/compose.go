@@ -5,14 +5,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
-
-	yaml "gopkg.in/yaml.v2"
 
 	"github.com/ViBiOh/auth/pkg/auth"
 	"github.com/ViBiOh/auth/pkg/model"
@@ -20,13 +17,14 @@ import (
 	"github.com/ViBiOh/dashboard/pkg/docker"
 	"github.com/ViBiOh/httputils/pkg/httperror"
 	"github.com/ViBiOh/httputils/pkg/httpjson"
+	"github.com/ViBiOh/httputils/pkg/logger"
 	"github.com/ViBiOh/httputils/pkg/request"
-	"github.com/ViBiOh/httputils/pkg/rollbar"
 	"github.com/ViBiOh/httputils/pkg/tools"
 	"github.com/ViBiOh/mailer/pkg/client"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	opentracing "github.com/opentracing/opentracing-go"
+	yaml "gopkg.in/yaml.v2"
 )
 
 const (
@@ -108,7 +106,7 @@ func (a *App) pullImage(ctx context.Context, image string) error {
 func (a *App) cleanContainers(ctx context.Context, containers []types.Container) error {
 	for _, container := range containers {
 		if _, err := a.dockerApp.GracefulStopContainer(ctx, container.ID, time.Minute); err != nil {
-			rollbar.LogError(`Error while stopping container %s: %v`, container.Names, err)
+			logger.Error(`Error while stopping container %s: %v`, container.Names, err)
 		}
 	}
 
@@ -135,14 +133,14 @@ func (a *App) deleteServices(ctx context.Context, appName string, services map[s
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			rollbar.LogError(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service.Name, err)
+			logger.Error(`[%s] [%s] Error while inspecting service %s: %v`, user.Username, appName, service.Name, err)
 		} else {
 			if _, err := a.dockerApp.StopContainer(ctx, service.ContainerID, infos); err != nil {
-				rollbar.LogError(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service.Name, err)
+				logger.Error(`[%s] [%s] Error while stopping service %s: %v`, user.Username, appName, service.Name, err)
 			}
 
 			if _, err := a.dockerApp.RmContainer(ctx, service.ContainerID, infos, true); err != nil {
-				rollbar.LogError(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service.Name, err)
+				logger.Error(`[%s] [%s] Error while deleting service %s: %v`, user.Username, appName, service.Name, err)
 			}
 		}
 	}
@@ -164,7 +162,7 @@ func (a *App) inspectServices(ctx context.Context, services map[string]*deployed
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			rollbar.LogError(`[%s] [%s] Error while inspecting container %s: %v`, user.Username, appName, service.Name, err)
+			logger.Error(`[%s] [%s] Error while inspecting container %s: %v`, user.Username, appName, service.Name, err)
 		} else {
 			containers = append(containers, infos)
 		}
@@ -210,7 +208,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 				return true
 			}
 		case err := <-errors:
-			rollbar.LogError(`[%s] [%s] Error while reading healthy events: %v`, user.Username, appName, err)
+			logger.Error(`[%s] [%s] Error while reading healthy events: %v`, user.Username, appName, err)
 			return false
 		}
 	}
@@ -233,34 +231,34 @@ func (a *App) finishDeploy(ctx context.Context, user *model.User, appName string
 	a.captureServicesOutput(ctx, user, appName, services)
 
 	if success {
-		log.Printf(`[%s] [%s] Successful deploy`, user.Username, appName)
+		logger.Info(`[%s] [%s] Successful deploy`, user.Username, appName)
 
 		if err := a.cleanContainers(ctx, oldContainers); err != nil {
-			rollbar.LogError(`[%s] [%s] Error while cleaning old containers: %v`, user.Username, appName, err)
+			logger.Error(`[%s] [%s] Error while cleaning old containers: %v`, user.Username, appName, err)
 		}
 
 		if err := a.renameDeployedContainers(ctx, services); err != nil {
-			rollbar.LogError(`[%s] [%s] Error while renaming deployed containers: %v`, user.Username, appName, err)
+			logger.Error(`[%s] [%s] Error while renaming deployed containers: %v`, user.Username, appName, err)
 		}
 	} else {
-		rollbar.LogWarning(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, errHealthCheckFailed)
+		logger.Warn(`[%s] [%s] Failed to deploy: %v`, user.Username, appName, errHealthCheckFailed)
 		a.captureServicesHealth(ctx, user, appName, services)
 		a.deleteServices(ctx, appName, services, user)
 	}
 
 	if !success {
 		for _, service := range services {
-			log.Printf("[%s] [%s] Logs output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(service.Logs, "\n"))
-			log.Printf("[%s] [%s] Health output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(service.HealthLogs, "\n"))
+			logger.Info("[%s] [%s] Logs output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(service.Logs, "\n"))
+			logger.Info("[%s] [%s] Health output for %s: \n%s\n", user.Username, appName, service.Name, strings.Join(service.HealthLogs, "\n"))
 		}
 	}
 
 	if err := a.sendEmailNotification(ctx, user, appName, services, success); err != nil {
-		rollbar.LogError(`[%s] [%s] Error while sending email notification: %s`, user.Username, appName, err)
+		logger.Error(`[%s] [%s] Error while sending email notification: %s`, user.Username, appName, err)
 	}
 
 	if err := a.sendRollbarNotification(ctx, user, requestParams); err != nil {
-		rollbar.LogError(`[%s] [%s] Error while sending rollbar notification: %s`, user.Username, appName, err)
+		logger.Error(`[%s] [%s] Error while sending rollbar notification: %s`, user.Username, appName, err)
 	}
 }
 

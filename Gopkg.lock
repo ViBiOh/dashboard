@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:70f31571111f5cfa386f9b4361807f9b876296b22acce7132be5238ce23789ca"
+  digest = "1:f0e96e6b79ea3f6194178fde4b9980819d43c33a158d3d1e0199a56a250985f6"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,11 +28,11 @@
     "pkg/provider",
   ]
   pruneopts = "UT"
-  revision = "f16025365ea385458f04ee7c56d243ed1e98b21b"
+  revision = "587cc066dc5651bd9a766663f3211cef5924c11c"
 
 [[projects]]
   branch = "master"
-  digest = "1:bb9bc8fb14c75d16be00a1052f1c5b212d82d214306116955b20a48bb8bc1f7b"
+  digest = "1:3afce04d5df987f7512f69d5603d69a90fd793d0c7a4bdc1fec67909e8e1fa5e"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -43,6 +43,7 @@
     "pkg/healthcheck",
     "pkg/httperror",
     "pkg/httpjson",
+    "pkg/logger",
     "pkg/model",
     "pkg/opentracing",
     "pkg/owasp",
@@ -53,7 +54,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "fd50c443407db1c331917bcaa769fa78261d71bc"
+  revision = "6d390f0a5253464bccb4c2b069fde6d58fc9d6ed"
 
 [[projects]]
   branch = "master"
@@ -61,7 +62,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "1c505ec6196fde568510542354e8ef6d83ce6685"
+  revision = "f7d673eefa20db17965bf21cb0cd9808668e7d79"
 
 [[projects]]
   branch = "master"
@@ -92,7 +93,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6b30f7efd8a99255132890325aad3903cc81410d4bcc741d9e91aae7276bbc70"
+  digest = "1:1a5ff941d2e57590c82b19eec0a583c3aa57b583eb4be4bcc5a1bdffff3cde6f"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -115,7 +116,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "10ebe6381e1f31faf6b66a53babe5bc4be41457a"
+  revision = "5271c7cb484d44a22b96709894080ea85c8eef14"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -237,7 +238,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:63b68062b8968092eb86bedc4e68894bd096ea6b24920faca8b9dcf451f54bb5"
+  digest = "1:c0d39a0cad193ac49b6e24516e0f994b241d7c27142e5a58e8bd13defb2d9ac8"
   name = "github.com/prometheus/common"
   packages = [
     "expfmt",
@@ -245,7 +246,7 @@
     "model",
   ]
   pruneopts = "UT"
-  revision = "c7de2306084e37d54b8be01f3541a8464345e9a5"
+  revision = "bcb74de08d37a417cb6789eec1d6c810040f0470"
 
 [[projects]]
   branch = "master"

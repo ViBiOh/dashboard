@@ -7,7 +7,7 @@ import (
 
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
-	"github.com/ViBiOh/httputils/pkg/rollbar"
+	"github.com/ViBiOh/httputils/pkg/logger"
 	"github.com/docker/docker/api/types"
 )
 
@@ -59,7 +59,7 @@ func (a *App) captureServicesHealth(ctx context.Context, user *model.User, appNa
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			rollbar.LogError(`[%s] [%s] Error while inspecting service %s: %s`, user.Username, appName, service.Name, err)
+			logger.Error(`[%s] [%s] Error while inspecting service %s: %s`, user.Username, appName, service.Name, err)
 			continue
 		}
 
@@ -71,7 +71,7 @@ func (a *App) captureServicesOutput(ctx context.Context, user *model.User, appNa
 	for _, service := range services {
 		logs, err := a.serviceOutput(ctx, user, appName, service)
 		if err != nil {
-			rollbar.LogError(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, service.Name, err)
+			logger.Error(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, service.Name, err)
 		}
 
 		service.Logs = logs
