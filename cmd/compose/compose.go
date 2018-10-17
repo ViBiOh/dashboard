@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"text/template"
-
-	"github.com/ViBiOh/httputils/pkg/logger"
 )
 
 type arguments struct {
@@ -52,10 +51,10 @@ func main() {
 	var args arguments
 
 	if content, err := json.Marshal(flagArgs); err != nil {
-		logger.Error(`error while marshalling flags: %v`, err)
+		log.Printf(`error while marshalling flags: %v`, err)
 		return
 	} else if err := json.Unmarshal(content, &args); err != nil {
-		logger.Error(`error while unmarshalling flags: %v`, err)
+		log.Printf(`error while unmarshalling flags: %v`, err)
 		return
 	}
 
@@ -64,7 +63,7 @@ func main() {
 			var output map[string]interface{}
 			oStr, _ := json.Marshal(o)
 			if err := json.Unmarshal(oStr, &output); err != nil {
-				logger.Error(`error while unmarshalling content: %v`, err)
+				log.Printf(`error while unmarshalling content: %v`, err)
 			}
 
 			if newKey != `` {
@@ -83,6 +82,6 @@ func main() {
 	}
 
 	if err := tmpl.Execute(os.Stdout, args); err != nil {
-		logger.Error(`error while rendering template: %v`, err)
+		log.Printf(`error while rendering template: %v`, err)
 	}
 }
