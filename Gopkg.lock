@@ -28,11 +28,11 @@
     "pkg/provider",
   ]
   pruneopts = "UT"
-  revision = "587cc066dc5651bd9a766663f3211cef5924c11c"
+  revision = "2da2e43de425b914b71081505210604481714322"
 
 [[projects]]
   branch = "master"
-  digest = "1:3afce04d5df987f7512f69d5603d69a90fd793d0c7a4bdc1fec67909e8e1fa5e"
+  digest = "1:118a66f7743784bb9173883810c13dbdbbc27c95c968d9060b959a6607551287"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -47,6 +47,7 @@
     "pkg/model",
     "pkg/opentracing",
     "pkg/owasp",
+    "pkg/prometheus",
     "pkg/query",
     "pkg/request",
     "pkg/rollbar",
@@ -54,7 +55,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "6d390f0a5253464bccb4c2b069fde6d58fc9d6ed"
+  revision = "2fa55f3c04629fa0b3a5be6a2efba29137fddaaa"
 
 [[projects]]
   branch = "master"
@@ -62,7 +63,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "f7d673eefa20db17965bf21cb0cd9808668e7d79"
+  revision = "e555c8bdf1a421949b7e321e928515cbdaa85b91"
 
 [[projects]]
   branch = "master"
@@ -93,7 +94,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:1a5ff941d2e57590c82b19eec0a583c3aa57b583eb4be4bcc5a1bdffff3cde6f"
+  digest = "1:1043c56f457f247092fb9fd1c11fb6c38172f50f907af508af06f78b287c5848"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -116,7 +117,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "5271c7cb484d44a22b96709894080ea85c8eef14"
+  revision = "0e3d5e279fccb42c6f914a6b3ee069363c586e52"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -305,16 +306,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d9f9f45d3383b93ce1c7e744b3ede6974917ae4d100e1a7abfc2906e5e5e2e28"
+  digest = "1:7be36f3dbb6f35e6605ae69026335061089b4e9f078ecd481d546fe4564eeb17"
   name = "golang.org/x/net"
   packages = [
     "context",
-    "context/ctxhttp",
     "internal/socks",
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "49bb7cea24b1df9410e1712aa6433dae904ff66a"
+  revision = "04a2e542c03f1d053ab3e4d6e5abcd4b66e2be8e"
 
 [[projects]]
   branch = "master"
@@ -345,8 +345,10 @@
     "github.com/ViBiOh/httputils/pkg/healthcheck",
     "github.com/ViBiOh/httputils/pkg/httperror",
     "github.com/ViBiOh/httputils/pkg/httpjson",
+    "github.com/ViBiOh/httputils/pkg/logger",
     "github.com/ViBiOh/httputils/pkg/opentracing",
     "github.com/ViBiOh/httputils/pkg/owasp",
+    "github.com/ViBiOh/httputils/pkg/prometheus",
     "github.com/ViBiOh/httputils/pkg/request",
     "github.com/ViBiOh/httputils/pkg/rollbar",
     "github.com/ViBiOh/httputils/pkg/server",

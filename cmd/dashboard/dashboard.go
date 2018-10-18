@@ -20,6 +20,7 @@ import (
 	"github.com/ViBiOh/httputils/pkg/logger"
 	"github.com/ViBiOh/httputils/pkg/opentracing"
 	"github.com/ViBiOh/httputils/pkg/owasp"
+	"github.com/ViBiOh/httputils/pkg/prometheus"
 	"github.com/ViBiOh/httputils/pkg/rollbar"
 	"github.com/ViBiOh/httputils/pkg/server"
 	"github.com/ViBiOh/mailer/pkg/client"
@@ -53,6 +54,7 @@ func main() {
 	opentracingConfig := opentracing.Flags(`tracing`)
 	owaspConfig := owasp.Flags(``)
 	corsConfig := cors.Flags(`cors`)
+	prometheusConfig := prometheus.Flags(`prometheus`)
 	rollbarConfig := rollbar.Flags(`rollbar`)
 
 	authConfig := auth.Flags(`auth`)
@@ -70,6 +72,7 @@ func main() {
 	opentracingApp := opentracing.NewApp(opentracingConfig)
 	owaspApp := owasp.NewApp(owaspConfig)
 	corsApp := cors.NewApp(corsConfig)
+	prometheusApp := prometheus.NewApp(prometheusConfig)
 	rollbarApp := rollbar.NewApp(rollbarConfig)
 	gzipApp := gzip.NewApp()
 
@@ -88,7 +91,7 @@ func main() {
 	deployApp := deploy.NewApp(deployConfig, authApp, dockerApp, mailerApp)
 	apiApp := api.NewApp(authApp, dockerApp, deployApp)
 
-	restHandler := server.ChainMiddlewares(apiApp.Handler(), opentracingApp, rollbarApp, gzipApp, owaspApp, corsApp)
+	restHandler := server.ChainMiddlewares(apiApp.Handler(), prometheusApp, opentracingApp, rollbarApp, gzipApp, owaspApp, corsApp)
 	websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
