@@ -5,7 +5,7 @@ Scenario('Basic auth error', (I, loginPage) => {
   loginPage.basicLogin('admin', 'invalid');
   I.waitForVisible(loginPage.error, 5);
   I.seeElement(loginPage.error);
-  I.see('invalid credentials for admin');
+  I.see('invalid credentials');
 });
 
 Scenario('Basic auth success', (I, loginPage, listPage) => {
