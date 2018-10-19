@@ -32,13 +32,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:118a66f7743784bb9173883810c13dbdbbc27c95c968d9060b959a6607551287"
+  digest = "1:95efe2e4ff6c8b32365f6f92c4db16fdd198de99dabb2cccaa0d693e40178c7f"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
     "pkg/alcotest",
     "pkg/cert",
     "pkg/cors",
+    "pkg/errors",
     "pkg/gzip",
     "pkg/healthcheck",
     "pkg/httperror",
@@ -55,7 +56,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "2fa55f3c04629fa0b3a5be6a2efba29137fddaaa"
+  revision = "a147310fb9a8c422292a2d6f7fe4781eda74919d"
 
 [[projects]]
   branch = "master"
@@ -117,7 +118,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "0e3d5e279fccb42c6f914a6b3ee069363c586e52"
+  revision = "f7e5154f37a45dc2e576abbef404f3032e9823bf"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -239,7 +240,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c0d39a0cad193ac49b6e24516e0f994b241d7c27142e5a58e8bd13defb2d9ac8"
+  digest = "1:1261069fb38fbe59aba55117ee39c59814f211c027d66d59ed1c60e5c11b377c"
   name = "github.com/prometheus/common"
   packages = [
     "expfmt",
@@ -247,7 +248,7 @@
     "model",
   ]
   pruneopts = "UT"
-  revision = "bcb74de08d37a417cb6789eec1d6c810040f0470"
+  revision = "16b4535ad14a9ef20a9d9fd8055143c5faa15224"
 
 [[projects]]
   branch = "master"
@@ -322,7 +323,7 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "fa43e7bc11baaae89f3f902b2b4d832b68234844"
+  revision = "8f1d3d21f81be6e86ebcd6febee89c89bc50719f"
 
 [[projects]]
   branch = "v2"
@@ -341,6 +342,7 @@
     "github.com/ViBiOh/httputils/pkg",
     "github.com/ViBiOh/httputils/pkg/alcotest",
     "github.com/ViBiOh/httputils/pkg/cors",
+    "github.com/ViBiOh/httputils/pkg/errors",
     "github.com/ViBiOh/httputils/pkg/gzip",
     "github.com/ViBiOh/httputils/pkg/healthcheck",
     "github.com/ViBiOh/httputils/pkg/httperror",

@@ -10,6 +10,7 @@ import (
 	"github.com/ViBiOh/auth/pkg/auth"
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
+	"github.com/ViBiOh/httputils/pkg/errors"
 	"github.com/ViBiOh/httputils/pkg/httperror"
 	"github.com/ViBiOh/httputils/pkg/tools"
 	"github.com/docker/docker/client"
@@ -32,7 +33,7 @@ type App struct {
 func NewApp(config map[string]*string, authApp *auth.App) (*App, error) {
 	client, err := client.NewClient(*config[`host`], *config[`version`], nil, nil)
 	if err != nil {
-		return nil, fmt.Errorf(`error while creating docker client: %v`, err)
+		return nil, errors.WithStack(err)
 	}
 
 	return &App{

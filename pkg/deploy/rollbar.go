@@ -2,7 +2,6 @@ package deploy
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 	"strings"
 
@@ -25,7 +24,7 @@ func (a *App) sendRollbarNotification(ctx context.Context, user *model.User, req
 	}
 
 	if err := rollbar.Deploy(ctx, token, environment, revision, username); err != nil {
-		return fmt.Errorf(`error while sending deploy request: %v`, err)
+		return err
 	}
 
 	return nil

@@ -7,6 +7,7 @@ import (
 
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
+	"github.com/ViBiOh/httputils/pkg/errors"
 	"github.com/ViBiOh/httputils/pkg/logger"
 	"github.com/docker/docker/api/types"
 )
@@ -17,15 +18,16 @@ func (a *App) serviceOutput(ctx context.Context, user *model.User, appName strin
 		defer func() {
 			if closeErr := logs.Close(); closeErr != nil {
 				if err != nil {
-					err = fmt.Errorf(`%s, and also error while closing logs for service %s: %v`, err, service.Name, closeErr)
+					err = errors.New(`%s and also %v`, err, closeErr)
 				} else {
-					err = fmt.Errorf(`error while closing logs for service %s: %v`, service.Name, closeErr)
+					err = errors.WithStack(err)
 				}
 			}
 		}()
 	}
+
 	if err != nil {
-		err = fmt.Errorf(`error while reading logs for service %s: %v`, service.Name, err)
+		err = errors.WithStack(err)
 		return
 	}
 
@@ -59,7 +61,7 @@ func (a *App) captureServicesHealth(ctx context.Context, user *model.User, appNa
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			logger.Error(`[%s] [%s] Error while inspecting service %s: %s`, user.Username, appName, service.Name, err)
+			logger.Error(`user=%s app=%s service=%s %+v`, user.Username, appName, service.Name, err)
 			continue
 		}
 
@@ -71,7 +73,7 @@ func (a *App) captureServicesOutput(ctx context.Context, user *model.User, appNa
 	for _, service := range services {
 		logs, err := a.serviceOutput(ctx, user, appName, service)
 		if err != nil {
-			logger.Error(`[%s] [%s] Error while reading logs for service %s: %s`, user.Username, appName, service.Name, err)
+			logger.Error(`user=%s app=%s service=%s %+v`, user.Username, appName, service.Name, err)
 		}
 
 		service.Logs = logs

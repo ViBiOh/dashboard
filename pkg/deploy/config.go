@@ -8,6 +8,7 @@ import (
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
 	"github.com/ViBiOh/dashboard/pkg/docker"
+	"github.com/ViBiOh/httputils/pkg/errors"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/network"
@@ -22,7 +23,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 	if strings.TrimSpace(healthcheck.Interval) != `` {
 		interval, err := time.ParseDuration(healthcheck.Interval)
 		if err != nil {
-			return nil, fmt.Errorf(`error while parsing healthcheck interval: %v`, err)
+			return nil, errors.WithStack(err)
 		}
 
 		healthconfig.Interval = interval
@@ -31,7 +32,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 	if strings.TrimSpace(healthcheck.Timeout) != `` {
 		timeout, err := time.ParseDuration(healthcheck.Timeout)
 		if err != nil {
-			return nil, fmt.Errorf(`error while parsing healthcheck timeout: %v`, err)
+			return nil, errors.WithStack(err)
 		}
 
 		healthconfig.Timeout = timeout

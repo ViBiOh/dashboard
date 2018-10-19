@@ -1,15 +1,10 @@
 package deploy
 
 import (
-	"errors"
 	"fmt"
-	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/ViBiOh/auth/pkg/model"
-	"github.com/ViBiOh/httputils/pkg/request"
 	"github.com/docker/docker/api/types/filters"
 )
 
@@ -97,39 +92,6 @@ func TestGetFinalName(t *testing.T) {
 	for _, testCase := range cases {
 		if result := getFinalName(testCase.serviceFullName); result != testCase.want {
 			t.Errorf(`getFinalName(%+v) = %+v, want %+v`, testCase.serviceFullName, result, testCase.want)
-		}
-	}
-}
-
-func TestComposeFailed(t *testing.T) {
-	var cases = []struct {
-		user       *model.User
-		appName    string
-		err        error
-		want       string
-		wantStatus int
-	}{
-		{
-			model.NewUser(0, `admin`, ``, `admin`),
-			`test`,
-			errors.New(`test unit error`),
-			`[admin] [test] Failed to deploy: test unit error
-`,
-			http.StatusInternalServerError,
-		},
-	}
-
-	for _, testCase := range cases {
-		writer := httptest.NewRecorder()
-
-		composeFailed(writer, testCase.user, testCase.appName, testCase.err)
-
-		if result := writer.Code; result != testCase.wantStatus {
-			t.Errorf(`composeFailed(%+v, %+v, %+v) = %+v, want %+v`, testCase.user, testCase.appName, testCase.err, result, testCase.wantStatus)
-		}
-
-		if result, _ := request.ReadBody(writer.Result().Body); string(result) != testCase.want {
-			t.Errorf(`composeFailed(%+v, %+v, %+v) = %+v, want %+v`, testCase.user, testCase.appName, testCase.err, string(result), testCase.want)
 		}
 	}
 }

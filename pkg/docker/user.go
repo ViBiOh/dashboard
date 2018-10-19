@@ -2,7 +2,6 @@ package docker
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
@@ -38,7 +37,7 @@ func (a *App) isAllowed(ctx context.Context, user *model.User, containerID strin
 
 	container, err := a.InspectContainer(ctx, containerID)
 	if err != nil {
-		return false, nil, fmt.Errorf(`error while inspecting container: %v`, err)
+		return false, nil, err
 	}
 
 	if !IsAdmin(user) {

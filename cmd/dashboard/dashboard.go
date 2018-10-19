@@ -79,12 +79,12 @@ func main() {
 	authApp := auth.NewApp(authConfig, nil)
 	dockerApp, err := docker.NewApp(dockerConfig, authApp)
 	if err != nil {
-		logger.Fatal(`error while creating docker: %v`, err)
+		logger.Fatal(`%+v`, err)
 	}
 
 	streamApp, err := stream.NewApp(streamConfig, authApp, dockerApp)
 	if err != nil {
-		logger.Fatal(`error while creating stream: %v`, err)
+		logger.Fatal(`%+v`, err)
 	}
 
 	mailerApp := client.NewApp(mailerConfig)

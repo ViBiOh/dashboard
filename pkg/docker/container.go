@@ -8,6 +8,7 @@ import (
 
 	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
+	"github.com/ViBiOh/httputils/pkg/errors"
 	"github.com/ViBiOh/httputils/pkg/httperror"
 	"github.com/ViBiOh/httputils/pkg/httpjson"
 	"github.com/ViBiOh/httputils/pkg/logger"
@@ -36,7 +37,8 @@ func (a *App) ListContainers(ctx context.Context, user *model.User, appName stri
 	options.Filters = filters.NewArgs()
 	LabelFilters(user, &options.Filters, appName)
 
-	return a.Docker.ContainerList(ctx, options)
+	output, err := a.Docker.ContainerList(ctx, options)
+	return output, errors.WithStack(err)
 }
 
 // InspectContainer get detailed information of a container
@@ -46,7 +48,7 @@ func (a *App) InspectContainer(ctx context.Context, containerID string) (*types.
 	span.SetTag(`id`, containerID)
 
 	container, err := a.Docker.ContainerInspect(ctx, containerID)
-	return &container, err
+	return &container, errors.WithStack(err)
 }
 
 func getContainer(_ context.Context, containerID string, container *types.ContainerJSON) (interface{}, error) {
@@ -59,7 +61,7 @@ func (a *App) StartContainer(ctx context.Context, containerID string, _ *types.C
 	defer span.Finish()
 	span.SetTag(`id`, containerID)
 
-	return nil, a.Docker.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
+	return nil, errors.WithStack(a.Docker.ContainerStart(ctx, containerID, types.ContainerStartOptions{}))
 }
 
 // StopContainer stop a container
@@ -76,7 +78,7 @@ func (a *App) GracefulStopContainer(ctx context.Context, containerID string, gra
 	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout+(5*time.Second))
 	defer cancel()
 
-	return nil, a.Docker.ContainerStop(timeoutCtx, containerID, &gracefulTimeout)
+	return nil, errors.WithStack(a.Docker.ContainerStop(timeoutCtx, containerID, &gracefulTimeout))
 }
 
 // RestartContainer restarts a container
@@ -93,7 +95,7 @@ func (a *App) GracefulRestartContainer(ctx context.Context, containerID string, 
 	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout)
 	defer cancel()
 
-	return nil, a.Docker.ContainerRestart(timeoutCtx, containerID, &gracefulTimeout)
+	return nil, errors.WithStack(a.Docker.ContainerRestart(timeoutCtx, containerID, &gracefulTimeout))
 }
 
 // RmContainerAndImages clean env
@@ -111,19 +113,19 @@ func (a *App) RmContainer(ctx context.Context, containerID string, container *ty
 
 	if container == nil {
 		if container, err = a.InspectContainer(ctx, containerID); err != nil {
-			return nil, fmt.Errorf(`error while inspecting container: %v`, err)
+			return nil, err
 		}
 	}
 
 	if err = a.Docker.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{RemoveVolumes: true, Force: true}); err != nil {
-		return nil, fmt.Errorf(`error while removing container: %v`, err)
+		return nil, errors.WithStack(err)
 	}
 
 	if err = a.RmImage(ctx, container.Image); err != nil {
 		if failOnImageFail {
 			return nil, err
 		}
-		logger.Error(`%v`, err)
+		logger.Error(`%+v`, err)
 	}
 
 	return nil, nil
@@ -135,15 +137,12 @@ func (a *App) RmImage(ctx context.Context, imageID string) error {
 	defer span.Finish()
 	span.SetTag(`id`, imageID)
 
-	if _, err := a.Docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{}); err != nil {
-		return fmt.Errorf(`error while removing image: %v`, err)
-	}
-
-	return nil
+	_, err := a.Docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{})
+	return errors.WithStack(err)
 }
 
 func invalidAction(_ context.Context, action string, _ *types.ContainerJSON) (interface{}, error) {
-	return nil, fmt.Errorf(`unknown action %s`, action)
+	return nil, errors.New(`unknown action %s`, action)
 }
 
 func (a *App) doAction(action string) func(context.Context, string, *types.ContainerJSON) (interface{}, error) {
