@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f0e96e6b79ea3f6194178fde4b9980819d43c33a158d3d1e0199a56a250985f6"
+  digest = "1:3d7bcd1a70ff03e90156c481d8f01268f78b1d9406bce632f5956429c5490f66"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,7 +28,7 @@
     "pkg/provider",
   ]
   pruneopts = "UT"
-  revision = "2da2e43de425b914b71081505210604481714322"
+  revision = "818d3c7980e252f10a14d6ca5fcd2ba9876e6e7f"
 
 [[projects]]
   branch = "master"
@@ -60,11 +60,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8c783b063439cc0c5e6f762eab9aff228291be1948b56d79d679c9ab93fc14f8"
+  digest = "1:6ffa1a0de728f99e462e4470cfb4fb7991815599423afa87d231c86a33570317"
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "e555c8bdf1a421949b7e321e928515cbdaa85b91"
+  revision = "04403e08266322376a63cff865d2195017089c3b"
 
 [[projects]]
   branch = "master"
@@ -323,7 +323,7 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "8f1d3d21f81be6e86ebcd6febee89c89bc50719f"
+  revision = "8e24a49d80f82323e1c4db1b5da3e0f31171a151"
 
 [[projects]]
   branch = "v2"
