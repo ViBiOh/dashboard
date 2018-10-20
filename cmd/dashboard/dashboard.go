@@ -51,11 +51,11 @@ func handleGracefulClose(deployApp *deploy.App) error {
 func main() {
 	serverConfig := httputils.Flags(``)
 	alcotestConfig := alcotest.Flags(``)
+	prometheusConfig := prometheus.Flags(`prometheus`)
 	opentracingConfig := opentracing.Flags(`tracing`)
+	rollbarConfig := rollbar.Flags(`rollbar`)
 	owaspConfig := owasp.Flags(``)
 	corsConfig := cors.Flags(`cors`)
-	prometheusConfig := prometheus.Flags(`prometheus`)
-	rollbarConfig := rollbar.Flags(`rollbar`)
 
 	authConfig := auth.Flags(`auth`)
 	dockerConfig := docker.Flags(`docker`)
@@ -69,12 +69,12 @@ func main() {
 
 	serverApp := httputils.NewApp(serverConfig)
 	healthcheckApp := healthcheck.NewApp()
-	opentracingApp := opentracing.NewApp(opentracingConfig)
-	owaspApp := owasp.NewApp(owaspConfig)
-	corsApp := cors.NewApp(corsConfig)
 	prometheusApp := prometheus.NewApp(prometheusConfig)
+	opentracingApp := opentracing.NewApp(opentracingConfig)
 	rollbarApp := rollbar.NewApp(rollbarConfig)
 	gzipApp := gzip.NewApp()
+	owaspApp := owasp.NewApp(owaspConfig)
+	corsApp := cors.NewApp(corsConfig)
 
 	authApp := auth.NewApp(authConfig, nil)
 	dockerApp, err := docker.NewApp(dockerConfig, authApp)
