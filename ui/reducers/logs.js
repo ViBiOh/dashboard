@@ -4,7 +4,10 @@ import actions from '../actions';
  * Initial state for logs.
  * @type {Array}
  */
-const initialState = [];
+const initialState = {
+  fullscreen: false,
+  logs: [],
+};
 
 /**
  * Logs's reducer.
@@ -13,14 +16,22 @@ const initialState = [];
  * @return {Object}        New state
  */
 export default function(state = initialState, action) {
-  if (action.type === actions.OPEN_LOGS) {
-    return initialState;
+  switch (action.type) {
+    case actions.OPEN_LOGS:
+      return initialState;
+    case actions.ADD_LOG:
+      return {
+        ...state,
+        logs: [...state.logs, action.log],
+      };
+    case actions.CLOSE_LOGS:
+      return initialState;
+    case actions.TOGGLE_FULLSCREEN_LOGS:
+      return {
+        ...state,
+        fullscreen: !state.fullscreen,
+      };
+    default:
+      return state;
   }
-  if (action.type === actions.ADD_LOG) {
-    return [...state, action.log];
-  }
-  if (action.type === actions.CLOSE_LOGS) {
-    return initialState;
-  }
-  return state;
 }

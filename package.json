@@ -9,7 +9,7 @@
     "eslint": "eslint --fix --ext .jsx \"./ui/**/*.{js,jsx}\"",
     "lint": "npm run eslint && npm run stylelint",
     "doc": "esdoc",
-    "start": "parcel ui/index.html --public-url / -d ./ui/dist --open",
+    "start": "NODE_ENV=staging parcel ui/index.html --public-url / -d ./ui/dist --open",
     "test": "nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ava",
     "prebuild": "npm run format && npm run lint && npm test",
     "build": "parcel build ui/index.html --public-url / -d ./ui/dist",

@@ -28,11 +28,18 @@ class ContainerComponent extends Component {
    * Open streams for bus if bus provided.
    * @param {Object} nextProps Next props for component
    */
-  componentWillReceiveProps({ bus: nextBus }) {
-    const { bus } = this.props;
+  componentWillReceiveProps({ bus: nextBus, logs: { fullscreen: nextFullscreen } }) {
+    const {
+      bus,
+      logs: { fullscreen },
+    } = this.props;
 
     if (!bus && nextBus) {
       this.openStreams();
+    }
+
+    if (!fullscreen && nextFullscreen) {
+      window.scrollTo(0, 0);
     }
   }
 
@@ -78,6 +85,7 @@ class ContainerComponent extends Component {
       stats,
       onBack,
       actionContainer,
+      toggleFullScreenLogs,
       error,
     } = this.props;
 
@@ -95,6 +103,7 @@ class ContainerComponent extends Component {
         onRestart={() => actionContainer('containerRestart', container.Id)}
         onStop={() => actionContainer('containerStop', container.Id)}
         onDelete={() => actionContainer('containerDelete', container.Id)}
+        toggleFullScreenLogs={toggleFullScreenLogs}
         error={error}
       />
     );
@@ -102,21 +111,25 @@ class ContainerComponent extends Component {
 }
 
 ContainerComponent.propTypes = {
-  containerId: PropTypes.string.isRequired,
-  pending: PropTypes.bool.isRequired,
-  pendingAction: PropTypes.bool.isRequired,
-  container: PropTypes.shape({}),
+  actionContainer: PropTypes.func.isRequired,
   bus: PropTypes.bool.isRequired,
-  logs: PropTypes.arrayOf(PropTypes.string),
-  stats: PropTypes.shape({}),
+  closeLogs: PropTypes.func.isRequired,
+  closeStats: PropTypes.func.isRequired,
+  container: PropTypes.shape({}),
+  containerId: PropTypes.string.isRequired,
   error: PropTypes.string.isRequired,
   fetchContainer: PropTypes.func.isRequired,
-  actionContainer: PropTypes.func.isRequired,
+  logs: PropTypes.shape({
+    logs: PropTypes.arrayOf(PropTypes.string),
+    fullscreen: PropTypes.bool,
+  }),
   onBack: PropTypes.func.isRequired,
   openLogs: PropTypes.func.isRequired,
-  closeLogs: PropTypes.func.isRequired,
   openStats: PropTypes.func.isRequired,
-  closeStats: PropTypes.func.isRequired,
+  pending: PropTypes.bool.isRequired,
+  pendingAction: PropTypes.bool.isRequired,
+  stats: PropTypes.shape({}),
+  toggleFullScreenLogs: PropTypes.func.isRequired,
 };
 
 ContainerComponent.defaultProps = {
@@ -162,6 +175,7 @@ function mapDispatchToProps(dispatch) {
     closeLogs: () => dispatch(actions.closeLogs()),
     openStats: id => dispatch(actions.openStats(id)),
     closeStats: () => dispatch(actions.closeStats()),
+    toggleFullScreenLogs: () => dispatch(actions.toggleFullScreenLogs()),
   };
 }
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaPlus, FaSync, FaUserTimes, FaCubes } from 'react-icons/fa';
+import { FaPlus, FaSync, FaUserTimes } from 'react-icons/fa';
 import Toolbar from '../Toolbar';
 import Button from '../Button';
 import ThrobberButton from '../Throbber/ThrobberButton';
 import Throbber from '../Throbber';
 import ErrorBanner from '../ErrorBanner';
-import FilterBar from '../Filter';
+import ListTitle from '../ListTitle';
 import ContainerCard from '../ContainerCard';
 import style from './index.css';
 
@@ -38,11 +38,7 @@ export default function ContainersList({
         : containers.length;
 
     content = [
-      <span key="size" className={style.size} title="Number of containers">
-        {count}
-        <FaCubes />
-        <FilterBar value={filter} onChange={onFilterChange} />
-      </span>,
+      <ListTitle key="size" count={count} filter={filter} onFilterChange={onFilterChange} />,
       <div key="containers" className={style.list}>
         {containers.map(container => (
           <ContainerCard key={container.Id} container={container} onClick={onSelect} />

@@ -150,4 +150,5 @@ export default {
   ...makeActionAndTypeCreator('GO_HOME', 'goHome', ['redirect']),
   ...makeActionAndTypeCreator('GO_LOGIN', 'goLogin', ['redirect']),
   ...makeActionAndTypeCreator('CHANGE_FILTER', 'changeFilter', ['value']),
+  ...makeActionAndTypeCreator('TOGGLE_FULLSCREEN_LOGS', 'toggleFullScreenLogs'),
 };

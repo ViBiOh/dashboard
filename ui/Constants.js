@@ -42,6 +42,17 @@ export function init() {
       };
 
       resolve(context);
+    } else if (process.env.NODE_ENV === 'staging') {
+      context = {
+        API_URL: 'https://dashboard-api.vibioh.fr',
+        AUTH_URL: 'https://dashboard-auth.vibioh.fr',
+        BASIC_AUTH_ENABLED: 'false',
+        ENVIRONMENT: 'dev',
+        GITHUB_AUTH_ENABLED: 'true',
+        WS_URL: 'wss://dashboard-api.vibioh.fr/ws',
+      };
+
+      resolve(context);
     } else {
       funtch.get('/env').then(env => {
         context = env;

@@ -46,14 +46,7 @@ test('should render a div list with ContainerCard if not pending', t => {
 
   t.is(wrapper.find('div').length, 2);
   t.is(wrapper.find('ContainerCard').length, 1);
-  t.is(wrapper.find('span').length, 3);
-  t.regex(
-    wrapper
-      .find('span')
-      .at(2)
-      .text(),
-    /^1/,
-  );
+  t.is(wrapper.find('ListTitle').length, 1);
 });
 
 test('should indicate filtered list', t => {
@@ -64,11 +57,5 @@ test('should indicate filtered list', t => {
   };
   const wrapper = shallow(<ContainersList {...props} />);
 
-  t.regex(
-    wrapper
-      .find('span')
-      .at(2)
-      .text(),
-    /^0 \/ 1/,
-  );
+  t.regex(wrapper.find('ListTitle').props().count, /^0 \/ 1/);
 });

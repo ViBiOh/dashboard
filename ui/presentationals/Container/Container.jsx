@@ -31,6 +31,8 @@ export default function Container(props) {
     onStop,
     onStart,
     onDelete,
+    fullScreenLogs,
+    toggleFullScreenLogs,
     error,
   } = props;
 
@@ -45,7 +47,12 @@ export default function Container(props) {
       <ContainerNetwork key="network" container={container} />,
       <ContainerVolumes key="volumes" container={container} />,
       <ContainerStats key="stats" stats={stats} />,
-      <ContainerLogs key="logs " logs={logs} />,
+      <ContainerLogs
+        key="logs "
+        logs={logs}
+        isFullScreen={fullScreenLogs}
+        toggleFullScreenLogs={toggleFullScreenLogs}
+      />,
     ];
 
     if (container.State.Running) {
@@ -132,29 +139,35 @@ export default function Container(props) {
 Container.displayName = 'Container';
 
 Container.propTypes = {
-  pending: PropTypes.bool,
-  pendingAction: PropTypes.bool,
   container: PropTypes.shape({
     State: PropTypes.shape({
       Running: PropTypes.bool,
     }).isRequired,
   }),
-  logs: PropTypes.arrayOf(PropTypes.string),
-  stats: PropTypes.shape({}),
-  onBack: PropTypes.func.isRequired,
-  onRefresh: PropTypes.func.isRequired,
-  onStart: PropTypes.func.isRequired,
-  onRestart: PropTypes.func.isRequired,
-  onStop: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
   error: PropTypes.string,
+  fullScreenLogs: PropTypes.bool,
+  logs: PropTypes.shape({
+    logs: PropTypes.arrayOf(PropTypes.string),
+    fullscreen: PropTypes.bool,
+  }),
+  onBack: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired,
+  onRestart: PropTypes.func.isRequired,
+  onStart: PropTypes.func.isRequired,
+  onStop: PropTypes.func.isRequired,
+  pending: PropTypes.bool,
+  pendingAction: PropTypes.bool,
+  stats: PropTypes.shape({}),
+  toggleFullScreenLogs: PropTypes.func.isRequired,
 };
 
 Container.defaultProps = {
+  container: null,
+  error: '',
+  fullScreenLogs: false,
+  logs: null,
   pending: false,
   pendingAction: false,
-  container: null,
-  logs: null,
   stats: null,
-  error: '',
 };

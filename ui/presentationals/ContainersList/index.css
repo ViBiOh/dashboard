@@ -21,17 +21,6 @@
   width: 100%;
 }
 
-.size {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  padding: 0.6rem 0 0.4rem;
-}
-
-.size svg {
-  margin-left: 1rem;
-}
-
 @media screen and (max-width: 669px) {
   .container {
     flex-wrap: wrap;

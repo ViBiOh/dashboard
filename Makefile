@@ -97,7 +97,7 @@ build-ui:
 start-deps:
 	go get github.com/ViBiOh/auth/cmd/auth
 	go get github.com/ViBiOh/auth/cmd/bcrypt
-	go get github.com/ViBiOh/viws/cmd
+	go get github.com/ViBiOh/viws/cmd/viws
 
 ## start-auth: Start authentification server
 .PHONY: start-auth
