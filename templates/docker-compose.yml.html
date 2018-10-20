@@ -26,14 +26,6 @@ services:
     - -tracingName
     - dashboard_auth
   {{- end }}
-  {{- if .Rollbar }}
-    - -rollbarToken
-    - ${ROLLBAR_TOKEN}
-    - -rollbarServerRoot
-    - github.com/ViBiOh/auth
-    - -rollbarEnv
-    - {{ .Environment -}}
-  {{- end }}
   {{- if .Traefik }}
     {{- template "traefikLabels" merge . "Prefix:dashboard-auth" }}
   {{- end }}

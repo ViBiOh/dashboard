@@ -15,12 +15,6 @@ services:
     - user:email
     - -tracingName
     - dashboard_auth
-    - -rollbarToken
-    - ${ROLLBAR_TOKEN}
-    - -rollbarServerRoot
-    - github.com/ViBiOh/auth
-    - -rollbarEnv
-    - prod
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-auth.vibioh.fr'
