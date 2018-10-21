@@ -51,6 +51,7 @@ svg {
 }
 
 .no-overflow {
+  -webkit-overflow-scrolling: hidden;
   overflow: hidden;
 }
 
