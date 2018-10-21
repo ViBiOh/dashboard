@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import actions from '../actions';
 import Container from '../presentationals/Container/Container';
+import style from '../main.css';
 
 /**
  * Container.
@@ -40,6 +41,11 @@ class ContainerComponent extends Component {
 
     if (!fullscreen && nextFullscreen) {
       window.scrollTo(0, 0);
+      document.getElementsByTagName('body')[0].classList.add(style['no-overflow']);
+    }
+
+    if (!nextFullscreen && !fullscreen) {
+      document.getElementsByTagName('body')[0].classList.remove(style['no-overflow']);
     }
   }
 
