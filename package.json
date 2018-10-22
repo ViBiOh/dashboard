@@ -4,16 +4,16 @@
   "description": "Docker management",
   "main": "index.js",
   "scripts": {
-    "format": "prettier --write \"./ui/**/*.{js,jsx,css}\"",
-    "stylelint": "stylelint \"./ui/**/*.{css}\"",
-    "eslint": "eslint --fix --ext .jsx \"./ui/**/*.{js,jsx}\"",
+    "format": "prettier --write \"./src/**/*.{js,jsx,css}\"",
+    "stylelint": "stylelint \"./src/**/*.{css}\"",
+    "eslint": "eslint --fix --ext .jsx \"./src/**/*.{js,jsx}\"",
     "lint": "npm run eslint && npm run stylelint",
     "doc": "esdoc",
-    "start": "NODE_ENV=staging parcel ui/index.html --public-url / -d ./ui/dist --open",
-    "test": "nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ava",
+    "start": "NODE_ENV=staging parcel src/index.html --public-url / -d ./dist --open",
+    "test": "nyc --reporter text --reporter lcov --extension .jsx --require babel-core/register ava --verbose",
     "prebuild": "npm run format && npm run lint && npm test",
-    "build": "parcel build ui/index.html --public-url / -d ./ui/dist",
-    "postbuild": "cp ./ui/robots.txt ./ui/favicon/* ./ui/dist/"
+    "build": "parcel build src/index.html --public-url / -d ./dist",
+    "postbuild": "cp ./src/robots.txt ./src/favicon/* ./dist/"
   },
   "repository": {
     "type": "git",
@@ -42,6 +42,7 @@
   "devDependencies": {
     "ava": "latest",
     "babel-core": "latest",
+    "babel-plugin-module-resolver": "latest",
     "babel-plugin-transform-object-rest-spread": "latest",
     "babel-preset-env": "latest",
     "babel-preset-react": "latest",
@@ -55,6 +56,7 @@
     "eslint": "4",
     "eslint-config-airbnb": "latest",
     "eslint-config-prettier": "latest",
+    "eslint-import-resolver-babel-module": "latest",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jsx-a11y": "latest",
     "eslint-plugin-react": "latest",
@@ -93,11 +95,11 @@
   },
   "ava": {
     "files": [
-      "./ui/**/*.test.js"
+      "./src/**/*.test.js"
     ],
     "require": [
       "ignore-styles",
-      "./ui/utils/Test.js"
+      "./src/utils/Test.js"
     ],
     "babel": "inherit"
   },
@@ -153,6 +155,11 @@
     },
     "rules": {
       "react/jsx-filename-extension": 1
+    },
+    "settings": {
+      "import/resolver": {
+        "babel-module": {}
+      }
     }
   },
   "stylelint": {

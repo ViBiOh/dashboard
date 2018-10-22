@@ -123,7 +123,7 @@ start-front:
 		-spa \
 		-env API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED,ENVIRONMENT,ROLLBAR_TOKEN \
 		-csp "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com/ajax/libs/rollbar.js/; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: localhost:1081 localhost:1082 api.rollbar.com" \
-		-directory `pwd`/ui/dist
+		-directory `pwd`/dist
 
 ## start: Start app
 .PHONY: start
