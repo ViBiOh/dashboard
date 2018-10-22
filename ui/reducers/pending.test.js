@@ -1,28 +1,25 @@
 import test from 'ava';
-import reducer from './pending';
+import reducer, { initialState } from './pending';
 
 test('should have a default empty state', t => {
-  t.deepEqual(reducer(undefined, { type: 'ON_CHANGE' }), {});
+  t.deepEqual(reducer(undefined, { type: 'ON_CHANGE' }), initialState);
 });
 
 test('should return given state if action type does not match', t => {
-  t.deepEqual(reducer({ ACTION: true }, { type: 'ON_CHANGE' }), {
-    ACTION: true,
-  });
+  t.deepEqual(reducer(initialState, { type: 'ON_CHANGE' }), initialState);
 });
 
 test('should turn on pending if action type match pattern', t => {
-  t.deepEqual(reducer({}, { type: 'ACTION_REQUEST' }), { ACTION: true });
+  t.deepEqual(reducer(initialState, { type: 'ACTION_REQUEST' }), { ...initialState, ACTION: true });
 });
 
 test('should return given state if pattern match but pending not present', t => {
-  t.deepEqual(reducer({ ACTION: true }, { type: 'VALIDATE_SUCCEEDED' }), {
-    ACTION: true,
-  });
+  t.deepEqual(reducer(initialState, { type: 'VALIDATE_SUCCEEDED' }), initialState);
 });
 
 test('should turn off pending if action type match pattern', t => {
-  t.deepEqual(reducer({ ACTION: true }, { type: 'ACTION_SUCCEEDED' }), {
+  t.deepEqual(reducer({ ...initialState, ACTION: true }, { type: 'ACTION_SUCCEEDED' }), {
+    ...initialState,
     ACTION: false,
   });
 });

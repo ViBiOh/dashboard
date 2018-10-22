@@ -1,16 +1,16 @@
 import actions from '../actions';
 
 /**
- * Initial state for logs.
- * @type {Array}
+ * Logs' reducer initial state.
+ * @type {Object}
  */
-const initialState = {
+export const initialState = {
   fullscreen: false,
   logs: [],
 };
 
 /**
- * Logs's reducer.
+ * Logs' reducer.
  * @param  {Object} state  Existing logs's state
  * @param  {Object} action Action dispatched
  * @return {Object}        New state

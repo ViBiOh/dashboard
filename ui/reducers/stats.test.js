@@ -1,7 +1,7 @@
 import test from 'ava';
 import actions from '../actions';
 import { STATS_COUNT } from '../Constants';
-import reducer from './stats';
+import reducer, { initialState } from './stats';
 
 const stat = {
   read: '2017-05-13T13:18:55.001886639Z',
@@ -25,21 +25,17 @@ const stat = {
   },
 };
 
-test('should have an empty default state', t =>
-  t.deepEqual(reducer(undefined, {}), { entries: [] }));
+test('should have an empty default state', t => t.deepEqual(reducer(undefined, {}), initialState));
 
 test('should create empty array on OPEN_STATS', t =>
-  t.deepEqual(reducer(undefined, { type: actions.OPEN_STATS }), {
-    entries: [],
-  }));
+  t.deepEqual(reducer(initialState, { type: actions.OPEN_STATS }), initialState));
 
-test('should create empty array on CLOSE_STATS', t =>
-  t.deepEqual(reducer(undefined, { type: actions.CLOSE_STATS }), {
-    entries: [],
-  }));
+test('should return to initial state on CLOSE_STATS', t =>
+  t.deepEqual(reducer(true, { type: actions.CLOSE_STATS }), initialState));
 
 test('should append given stats on ADD_STAT', t =>
-  t.deepEqual(reducer({ entries: [] }, { type: actions.ADD_STAT, stat }), {
+  t.deepEqual(reducer(initialState, { type: actions.ADD_STAT, stat }), {
+    ...initialState,
     cpuLimit: 800,
     entries: [
       {

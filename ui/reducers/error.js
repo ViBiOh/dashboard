@@ -13,12 +13,18 @@ const startError = /_FAILED$/;
 const endError = /_SUCCEEDED$/;
 
 /**
+ * Error's reducer initial state.
+ * @type {String}
+ */
+export const initialState = '';
+
+/**
  * Error's reducer.
  * @param  {Object} state  Existing error's state
  * @param  {Object} action Action dispatched
  * @return {Object}        New state
  */
-export default function(state = '', action) {
+export default function(state = initialState, action) {
   if (action.type === actions.SET_ERROR || startError.test(action.type)) {
     if (global.Rollbar) {
       global.Rollbar.error(action.error);
@@ -26,8 +32,9 @@ export default function(state = '', action) {
 
     return String(action.error);
   }
+
   if (endError.test(action.type)) {
-    return '';
+    return initialState;
   }
 
   return state;

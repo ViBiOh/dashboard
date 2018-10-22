@@ -9,56 +9,58 @@ import {
 } from '../utils/statHelper';
 
 /**
- * Default initial state with empty entries.
+ * Stats' reducer initial state.
  * @type {Object}
  */
-const initialState = {
+export const initialState = {
   entries: [],
 };
 
 /**
- * Logs's reducer.
- * @param  {Object} state  Existing logs's state
+ * Stats' reducer.
+ * @param  {Object} state  Existing stats' state
  * @param  {Object} action Action dispatched
  * @return {Object}        New state
  */
 export default function(state = initialState, action) {
-  if (action.type === actions.OPEN_STATS) {
-    return initialState;
+  let nextState;
+
+  switch (action.type) {
+    case actions.OPEN_STATS:
+      return initialState;
+
+    case actions.ADD_STAT:
+      nextState = { ...state };
+
+      if (!nextState.memoryScale && action.stat.memory_stats.limit) {
+        nextState.memoryScale = humanSizeScale(action.stat.memory_stats.limit);
+        nextState.memoryScaleNames = BYTES_NAMES[nextState.memoryScale];
+        nextState.memoryLimit = scaleSize(action.stat.memory_stats.limit, nextState.memoryScale);
+      }
+
+      if (!nextState.cpuLimit) {
+        nextState.cpuLimit = cpuPercentageMax(action.stat);
+      }
+
+      nextState.entries = [
+        ...state.entries,
+        {
+          ts: new Date(Date.parse(action.stat.read)),
+          cpu: computeCpuPercentage(action.stat),
+          memory: scaleSize(action.stat.memory_stats.usage, nextState.memoryScale),
+        },
+      ];
+
+      if (nextState.entries.length > STATS_COUNT) {
+        nextState.entries.shift();
+      }
+
+      return nextState;
+
+    case actions.CLOSE_STATS:
+      return initialState;
+
+    default:
+      return state;
   }
-
-  if (action.type === actions.ADD_STAT) {
-    const nextState = { ...state };
-
-    if (!nextState.memoryScale && action.stat.memory_stats.limit) {
-      nextState.memoryScale = humanSizeScale(action.stat.memory_stats.limit);
-      nextState.memoryScaleNames = BYTES_NAMES[nextState.memoryScale];
-      nextState.memoryLimit = scaleSize(action.stat.memory_stats.limit, nextState.memoryScale);
-    }
-
-    if (!nextState.cpuLimit) {
-      nextState.cpuLimit = cpuPercentageMax(action.stat);
-    }
-
-    nextState.entries = [
-      ...state.entries,
-      {
-        ts: new Date(Date.parse(action.stat.read)),
-        cpu: computeCpuPercentage(action.stat),
-        memory: scaleSize(action.stat.memory_stats.usage, nextState.memoryScale),
-      },
-    ];
-
-    if (nextState.entries.length > STATS_COUNT) {
-      nextState.entries.shift();
-    }
-
-    return nextState;
-  }
-
-  if (action.type === actions.CLOSE_STATS) {
-    return initialState;
-  }
-
-  return state;
 }
