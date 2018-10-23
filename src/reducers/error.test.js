@@ -1,4 +1,5 @@
 import test from 'ava';
+import sinon from 'sinon';
 import reducer, { initialState } from './error';
 
 test('should have a default empty state', t => {
@@ -15,4 +16,15 @@ test('should store given error on pattern action type', t => {
 
 test('should restore error on succeed', t => {
   t.is(reducer('invalid', { type: 'REQUEST_SUCCEEDED' }), initialState);
+});
+
+test('should report to rollbar on error', t => {
+  global.Rollbar = {
+    error: sinon.spy(),
+  };
+
+  reducer(initialState, { type: 'SET_ERROR', error: 'invalid' })
+  t.is(global.Rollbar.error.calledWith('invalid'), true);
+
+  delete global.Rollbar;
 });
