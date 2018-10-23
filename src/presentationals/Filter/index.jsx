@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DEBOUNCE_TIMEOUT } from '../../Constants';
+import { DEBOUNCE_TIMEOUT } from 'Constants';
 import style from './index.css';
 
 /**

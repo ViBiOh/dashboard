@@ -1,7 +1,7 @@
 import test from 'ava';
 import { put, all } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
-import actions from '../actions';
+import actions from 'actions';
 import { goHomeSaga } from './index';
 
 test('should clear errors and redirect to root', t => {

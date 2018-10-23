@@ -2,8 +2,8 @@ import test from 'ava';
 import sinon from 'sinon';
 import { put, all, fork, cancel } from 'redux-saga/effects';
 import { createMockTask } from 'redux-saga/utils';
-import Docker from '../services/Docker';
-import actions from '../actions';
+import Docker from 'services/Docker';
+import actions from 'actions';
 import { readBusSaga, writeBusSaga } from './index';
 
 test('should call Docker.streamBus and fork a write saga', t => {

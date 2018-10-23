@@ -2,12 +2,12 @@ import 'babel-polyfill';
 import { call, put, fork, take, takeLatest, cancel, all } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { push } from 'react-router-redux';
-import { STORAGE_KEY_AUTH } from '../Constants';
-import Docker from '../services/Docker';
-import localStorage from '../services/LocalStorage';
-import Auth from '../services/Auth';
-import SearchParams, { computeRedirectSearch } from '../utils/SearchParams';
-import actions from '../actions';
+import { STORAGE_KEY_AUTH } from 'Constants';
+import Docker from 'services/Docker';
+import localStorage from 'services/LocalStorage';
+import Auth from 'services/Auth';
+import SearchParams, { computeRedirectSearch } from 'utils/SearchParams';
+import actions from 'actions';
 
 /**
  * Handle error on sagas. Redirect to login if status is 401.

@@ -1,4 +1,4 @@
-import { getApiUrl, getWsUrl, STORAGE_KEY_AUTH } from '../../Constants';
+import { getApiUrl, getWsUrl, STORAGE_KEY_AUTH } from 'Constants';
 import localStorage from '../LocalStorage';
 import { auth } from '../Commons';
 

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import actions from '../actions';
-import { buildFullTextRegex, fullTextRegexFilter, flatValues } from '../utils/Search';
+import actions from 'actions';
+import { buildFullTextRegex, fullTextRegexFilter, flatValues } from 'utils/Search';
 import containers from './containers';
 import container from './container';
 import logs from './logs';

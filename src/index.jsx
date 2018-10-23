@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import rollbar from './externals/rollbar';
-import actions from './actions';
-import { init } from './Constants';
+import rollbar from 'externals/rollbar';
+import actions from 'actions';
+import { init } from 'Constants';
 import appStore from './Store';
 import App from './App';
 

@@ -1,5 +1,5 @@
 import funtch from 'funtch';
-import { computeRedirectSearch } from './utils/SearchParams';
+import { computeRedirectSearch } from 'utils/SearchParams';
 
 /**
  * App context that store variables.

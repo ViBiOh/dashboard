@@ -1,5 +1,5 @@
 import test from 'ava';
-import actions from '../actions';
+import actions from 'actions';
 import reducer, { initialState } from './container';
 
 test('should have a default null state', t => {

@@ -1,8 +1,8 @@
 import test from 'ava';
 import { call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
-import Docker from '../services/Docker';
-import actions from '../actions';
+import Docker from 'services/Docker';
+import actions from 'actions';
 import { actionContainerSaga } from './index';
 
 test('should call Docker service from given name with given id', t => {

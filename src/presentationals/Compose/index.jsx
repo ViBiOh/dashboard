@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FaArrowLeft } from 'react-icons/fa';
-import setRef from '../../utils/ref';
-import onKeyDown from '../../utils/input';
+import setRef from 'utils/ref';
+import onKeyDown from 'utils/input';
 import ErrorBanner from '../ErrorBanner';
 import Toolbar from '../Toolbar';
 import Button from '../Button';

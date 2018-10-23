@@ -1,6 +1,6 @@
 import test from 'ava';
 import { push } from 'react-router-redux';
-import actions from '../actions';
+import actions from 'actions';
 import { onErrorAction } from './index';
 
 test('should not redirect on login', t => {

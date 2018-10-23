@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import actions from '../actions';
-import Container from '../presentationals/Container/Container';
+import actions from 'actions';
+import Container from 'presentationals/Container/Container';
 import style from '../main.css';
 
 /**

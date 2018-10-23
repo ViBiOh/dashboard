@@ -1,5 +1,5 @@
 import funtch, { errorHandler } from 'funtch';
-import { STORAGE_KEY_AUTH } from '../../Constants';
+import { STORAGE_KEY_AUTH } from 'Constants';
 import localStorage from '../LocalStorage';
 
 /**

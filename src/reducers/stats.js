@@ -1,12 +1,12 @@
-import actions from '../actions';
-import { STATS_COUNT } from '../Constants';
+import actions from 'actions';
+import { STATS_COUNT } from 'Constants';
 import {
   BYTES_NAMES,
   humanSizeScale,
   scaleSize,
   cpuPercentageMax,
   computeCpuPercentage,
-} from '../utils/statHelper';
+} from 'utils/statHelper';
 
 /**
  * Stats' reducer initial state.

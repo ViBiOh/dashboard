@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import actions from '../actions';
-import Compose from '../presentationals/Compose';
+import actions from 'actions';
+import Compose from 'presentationals/Compose';
 
 /**
  * Select props from Redux state.

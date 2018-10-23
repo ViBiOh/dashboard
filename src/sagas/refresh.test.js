@@ -1,6 +1,6 @@
 import test from 'ava';
 import { put, all } from 'redux-saga/effects';
-import actions from '../actions';
+import actions from 'actions';
 import { refreshSaga } from './index';
 
 test('should put open bus and fetchContaines', t => {

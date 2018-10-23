@@ -1,7 +1,7 @@
 import test from 'ava';
 import { put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
-import actions from '../actions';
+import actions from 'actions';
 import { changeFilterSaga } from './index';
 
 test('should push empty history if no value', t => {

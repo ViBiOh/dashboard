@@ -1,6 +1,6 @@
 import test from 'ava';
 import { takeLatest } from 'redux-saga/effects';
-import actions from '../actions';
+import actions from 'actions';
 import appSaga, { goHomeSaga } from './index';
 
 test('should take latest LOGIN request', t => {

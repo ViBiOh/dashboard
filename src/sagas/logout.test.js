@@ -2,9 +2,9 @@
 import test from 'ava';
 import { call, put, all } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
-import { STORAGE_KEY_AUTH } from '../Constants';
-import localStorage from '../services/LocalStorage';
-import actions from '../actions';
+import { STORAGE_KEY_AUTH } from 'Constants';
+import localStorage from 'services/LocalStorage';
+import actions from 'actions';
 import { logoutSaga } from './index';
 
 test('should drop storage key, put success, close streams and redirect to login after API call', t => {

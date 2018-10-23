@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import SearchParams from '../utils/SearchParams';
-import actions from '../actions';
-import Wrapper from '../presentationals/Login/Wrapper';
-import Github from '../presentationals/Login/Github';
+import SearchParams from 'utils/SearchParams';
+import actions from 'actions';
+import Wrapper from 'presentationals/Login/Wrapper';
+import Github from 'presentationals/Login/Github';
 
 /**
  * Select props from Redux state.

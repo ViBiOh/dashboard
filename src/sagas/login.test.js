@@ -1,9 +1,9 @@
 import test from 'ava';
 import { call, put, all } from 'redux-saga/effects';
-import { STORAGE_KEY_AUTH } from '../Constants';
-import Auth from '../services/Auth';
-import localStorage from '../services/LocalStorage';
-import actions from '../actions';
+import { STORAGE_KEY_AUTH } from 'Constants';
+import Auth from 'services/Auth';
+import localStorage from 'services/LocalStorage';
+import actions from 'actions';
 import { loginSaga } from './index';
 
 test('should call Auth.login with given username and password', t => {

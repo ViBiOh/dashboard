@@ -1,7 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
 import funtch from 'funtch';
-import { init, getApiUrl, getWsUrl, getAuthApiUrl, getGithubOauthUrl } from './Constants';
+import { init, getApiUrl, getWsUrl, getAuthApiUrl, getGithubOauthUrl } from 'Constants';
 
 test.beforeEach(() => {
   sinon.stub(funtch, 'get').callsFake(url =>

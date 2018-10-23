@@ -1,7 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
 import funtch from 'funtch';
-import { STORAGE_KEY_AUTH } from '../../Constants';
+import { STORAGE_KEY_AUTH } from 'Constants';
 import localStorage from '../LocalStorage';
 import Docker from './index';
 

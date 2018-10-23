@@ -1,6 +1,6 @@
 import test from 'ava';
 import { all, call, take } from 'redux-saga/effects';
-import actions from '../actions';
+import actions from 'actions';
 import { writeBusSaga } from './index';
 
 test('should wait for write action', t => {

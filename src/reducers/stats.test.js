@@ -1,6 +1,6 @@
 import test from 'ava';
-import actions from '../actions';
-import { STATS_COUNT } from '../Constants';
+import actions from 'actions';
+import { STATS_COUNT } from 'Constants';
 import reducer, { initialState } from './stats';
 
 const stat = {

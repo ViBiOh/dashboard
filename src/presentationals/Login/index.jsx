@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FaUnlockAlt, FaGithub } from 'react-icons/fa';
-import { getFromContext, getGithubOauthUrl } from '../../Constants';
-import SearchParams, { computeRedirectSearch } from '../../utils/SearchParams';
+import { getFromContext, getGithubOauthUrl } from 'Constants';
+import SearchParams, { computeRedirectSearch } from 'utils/SearchParams';
 import style from './index.css';
 
 /**

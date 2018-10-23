@@ -1,7 +1,7 @@
 import test from 'ava';
 import { call, put } from 'redux-saga/effects';
-import Docker from '../services/Docker';
-import actions from '../actions';
+import Docker from 'services/Docker';
+import actions from 'actions';
 import { fetchContainersSaga } from './index';
 
 test('should call Docker.containers', t => {

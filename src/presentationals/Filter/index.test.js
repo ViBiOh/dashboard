@@ -2,7 +2,7 @@ import test from 'ava';
 import sinon from 'sinon';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { DEBOUNCE_TIMEOUT } from '../../Constants';
+import { DEBOUNCE_TIMEOUT } from 'Constants';
 import Filter from './index';
 
 const defaultProps = {

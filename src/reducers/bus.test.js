@@ -1,5 +1,5 @@
 import test from 'ava';
-import actions from '../actions';
+import actions from 'actions';
 import reducer, { initialState } from './bus';
 
 test('should have a default falsy state', t => {

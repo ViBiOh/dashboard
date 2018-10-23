@@ -2,13 +2,13 @@ import React from 'react';
 import Route from 'react-router-dom/Route';
 import Router from 'react-router-dom/Router';
 import Switch from 'react-router-dom/Switch';
-import Main from './presentationals/Main';
-import ContainersListContainer from './containers/ContainersListContainer';
-import Login from './presentationals/Login';
-import BasicAuthContainer from './containers/BasicAuthContainer';
-import GithubAuthContainer from './containers/GithubAuthContainer';
-import ComposeContainer from './containers/ComposeContainer';
-import ContainerContainer from './containers/ContainerContainer';
+import Main from 'presentationals/Main';
+import ContainersListContainer from 'containers/ContainersListContainer';
+import BasicAuthContainer from 'containers/BasicAuthContainer';
+import GithubAuthContainer from 'containers/GithubAuthContainer';
+import ComposeContainer from 'containers/ComposeContainer';
+import ContainerContainer from 'containers/ContainerContainer';
+import Login from 'presentationals/Login';
 import history from './History';
 
 /**

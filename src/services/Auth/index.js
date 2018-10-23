@@ -1,6 +1,6 @@
 import funtch from 'funtch';
-import btoa from '../../utils/btoa';
-import { getAuthApiUrl } from '../../Constants';
+import btoa from 'utils/btoa';
+import { getAuthApiUrl } from 'Constants';
 import { customError, auth } from '../Commons';
 
 /**

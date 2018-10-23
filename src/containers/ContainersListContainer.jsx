@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import SearchParams from '../utils/SearchParams';
-import actions from '../actions';
-import ContainersList from '../presentationals/ContainersList';
+import SearchParams from 'utils/SearchParams';
+import actions from 'actions';
+import ContainersList from 'presentationals/ContainersList';
 
 /**
  * Select props from Redux state.
