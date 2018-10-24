@@ -167,6 +167,8 @@ It will compile API server.
 
 ```bash
 Usage of dashboard:
+  -authDisable
+      [auth] Disable auth
   -authUrl string
       [auth] Auth URL, if remote
   -authUsers string
@@ -211,6 +213,8 @@ Usage of dashboard:
       [mailer] Mailer User
   -port int
       Listen port (default 1080)
+  -prometheusPath string
+      [prometheus] Path for exposing metrics (default "/metrics")
   -rollbarEnv string
       [rollbar] Environment (default "prod")
   -rollbarServerRoot string
@@ -234,7 +238,7 @@ Usage of dashboard:
   -url string
       [health] URL to check
   -userAgent string
-      [health] User-Agent used (default "Golang alcotest")
+      [health] User-Agent for check (default "Golang alcotest")
 ```
 
 ### Front
