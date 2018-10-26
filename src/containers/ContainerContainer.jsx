@@ -29,22 +29,22 @@ class ContainerComponent extends Component {
    * Open streams for bus if bus provided.
    * @param {Object} nextProps Next props for component
    */
-  componentWillReceiveProps({ bus: nextBus, logs: { fullscreen: nextFullscreen } }) {
+  componentDidUpdate({ bus: prevBus, logs: { fullscreen: prevFullscreen } }) {
     const {
       bus,
       logs: { fullscreen },
     } = this.props;
 
-    if (!bus && nextBus) {
+    if (!prevBus && bus) {
       this.openStreams();
     }
 
-    if (!fullscreen && nextFullscreen) {
+    if (!prevFullscreen && fullscreen) {
       window.scrollTo(0, 0);
       document.getElementsByTagName('body')[0].classList.add(style['no-overflow']);
     }
 
-    if (!nextFullscreen && !fullscreen) {
+    if (prevFullscreen && !fullscreen) {
       document.getElementsByTagName('body')[0].classList.remove(style['no-overflow']);
     }
   }

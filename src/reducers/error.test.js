@@ -23,7 +23,7 @@ test('should report to rollbar on error', t => {
     error: sinon.spy(),
   };
 
-  reducer(initialState, { type: 'SET_ERROR', error: 'invalid' })
+  reducer(initialState, { type: 'SET_ERROR', error: 'invalid' });
   t.is(global.Rollbar.error.calledWith('invalid'), true);
 
   delete global.Rollbar;

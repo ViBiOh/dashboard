@@ -19,8 +19,8 @@ export default class Graph extends Component {
    * React lifecycle.
    * Update chart at props update.
    */
-  componentWillReceiveProps(newProps) {
-    this.updateChart(newProps);
+  componentDidUpdate() {
+    this.updateChart(this.props);
   }
 
   /**
