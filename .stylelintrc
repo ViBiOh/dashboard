@@ -1,0 +1,8 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "declaration-colon-newline-after": null,
+    "indentation": null,
+    "selector-list-comma-newline-after": null
+  }
+}

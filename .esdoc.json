@@ -1,0 +1,36 @@
+{
+  "source": "./ui",
+  "includes": [".(js|jsx)$"],
+  "excludes": [".test\\.(js|jsx)$", "dist/.*$", "esdoc/.*$"],
+  "destination": "./esdoc",
+  "plugins": [
+    {
+      "name": "esdoc-ecmascript-proposal-plugin",
+      "option": {
+        "classProperties": true,
+        "objectRestSpread": true,
+        "decorators": true,
+        "doExpressions": true,
+        "functionBind": true,
+        "asyncGenerators": true,
+        "exportExtensions": true,
+        "dynamicImport": true
+      }
+    },
+    {
+      "name": "esdoc-jsx-plugin",
+      "option": {
+        "enable": true
+      }
+    },
+    {
+      "name": "esdoc-publish-html-plugin"
+    },
+    {
+      "name": "esdoc-coverage-plugin",
+      "option": {
+        "enable": true
+      }
+    }
+  ]
+}
