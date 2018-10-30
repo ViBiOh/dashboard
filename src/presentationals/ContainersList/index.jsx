@@ -37,14 +37,16 @@ export default function ContainersList({
         ? `${containers.length} / ${containersTotalCount}`
         : containers.length;
 
-    content = [
-      <ListTitle key="size" count={count} filter={filter} onFilterChange={onFilterChange} />,
-      <div key="containers" className={style.list}>
-        {containers.map(container => (
-          <ContainerCard key={container.Id} container={container} onClick={onSelect} />
-        ))}
-      </div>,
-    ];
+    content = (
+      <>
+        <ListTitle key="size" count={count} filter={filter} onFilterChange={onFilterChange} />
+        <div key="containers" className={style.list}>
+          {containers.map(container => (
+            <ContainerCard key={container.Id} container={container} onClick={onSelect} />
+          ))}
+        </div>
+      </>
+    );
   }
 
   return (

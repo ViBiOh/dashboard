@@ -17,7 +17,7 @@ test('should wait for close action', t => {
   t.deepEqual(iterator.next().value, take(actions.CLOSE_BUS));
 });
 
-test('should wait for close action', t => {
+test('should cancel on CLOSE', t => {
   const iterator = busSaga({});
   iterator.next();
 

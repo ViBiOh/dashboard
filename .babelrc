@@ -1,9 +1,8 @@
 {
-  "presets": ["env", "react"],
+  "presets": ["@babel/preset-env", "@babel/preset-react"],
   "plugins": [
-    "transform-object-rest-spread",
     [
-      "module-resolver",
+      "babel-plugin-module-resolver",
       {
         "root": ["./src"]
       }

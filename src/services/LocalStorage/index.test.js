@@ -1,7 +1,7 @@
 import test from 'ava';
 import { LocalStorage } from './index';
 
-test('should determine localStorage not available on error', t => {
+test('should determine localStorage not available on set error', t => {
   global.localStorage = {
     setItem: () => {
       throw new Error('Test');
@@ -11,7 +11,7 @@ test('should determine localStorage not available on error', t => {
   t.false(new LocalStorage().isEnabled());
 });
 
-test('should determine localStorage not available on error', t => {
+test('should determine localStorage not available on remove error', t => {
   global.localStorage = {
     setItem: () => null,
     removeItem: () => {

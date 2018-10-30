@@ -42,6 +42,6 @@ test('humanSize', t => t.is(humanSize(102400, 2), `0.09 ${BYTES_NAMES[2]}`));
 
 test('cpuPercentageMax', t => t.is(cpuPercentageMax(stat), 800));
 
-test('cpuPercentageMax', t => t.is(cpuPercentageMax(), 0));
+test('cpuPercentageEmpty', t => t.is(cpuPercentageMax(), 0));
 
 test('computeCpuPercentage', t => t.is(computeCpuPercentage(stat), 355.55));

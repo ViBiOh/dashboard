@@ -8,9 +8,3 @@ test('should render as canvas', t => {
 
   t.is(wrapper.type(), 'canvas');
 });
-
-test('should render as canvas', t => {
-  const wrapper = shallow(<Graph type="line" data={{}} options={{}} />);
-
-  t.is(wrapper.type(), 'canvas');
-});
