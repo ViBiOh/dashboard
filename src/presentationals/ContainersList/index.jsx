@@ -39,8 +39,8 @@ export default function ContainersList({
 
     content = (
       <>
-        <ListTitle key="size" count={count} filter={filter} onFilterChange={onFilterChange} />
-        <div key="containers" className={style.list}>
+        <ListTitle count={count} filter={filter} onFilterChange={onFilterChange} />
+        <div className={style.list}>
           {containers.map(container => (
             <ContainerCard key={container.Id} container={container} onClick={onSelect} />
           ))}

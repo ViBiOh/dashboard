@@ -30,37 +30,41 @@ const healthIndicators = {
 const Info = ({ container }) => {
   let labelContent = null;
   if (Object.keys(container.Config.Labels).length > 0) {
-    labelContent = [
-      <h3 key="labelsHeader">Labels</h3>,
-      <span key="labels" className={style.labels}>
-        {Object.keys(container.Config.Labels).map(label => (
-          <span key={label} className={style.item}>
-            {label}
-            {' | '}
-            {container.Config.Labels[label]}
-          </span>
-        ))}
-      </span>,
-    ];
+    labelContent = (
+      <>
+        <h3>Labels</h3>
+        <span className={style.labels}>
+          {Object.keys(container.Config.Labels).map(label => (
+            <span key={label} className={style.item}>
+              {label}
+              {' | '}
+              {container.Config.Labels[label]}
+            </span>
+          ))}
+        </span>
+      </>
+    );
   }
 
   let envContent = null;
   if (container.Config.Env.length > 0) {
-    envContent = [
-      <h3 key="envsHeader">Environment</h3>,
-      <span key="envs" className={style.labels}>
-        {container.Config.Env.filter(e => !!e)
-          .map(env => ENV_PARSER.exec(env))
-          .filter(parts => parts !== null && parts.length > 2)
-          .map(parts => (
-            <span key={parts[1]} className={style.item}>
-              {parts[1]}
-              {' | '}
-              {parts[2]}
-            </span>
-          ))}
-      </span>,
-    ];
+    envContent = (
+      <>
+        <h3>Environment</h3>
+        <span className={style.labels}>
+          {container.Config.Env.filter(e => !!e)
+            .map(env => ENV_PARSER.exec(env))
+            .filter(parts => parts !== null && parts.length > 2)
+            .map(parts => (
+              <span key={parts[1]} className={style.item}>
+                {parts[1]}
+                {' | '}
+                {parts[2]}
+              </span>
+            ))}
+        </span>
+      </>
+    );
   }
 
   let healthContent = null;
@@ -72,7 +76,6 @@ const Info = ({ container }) => {
     <span className={style.container}>
       <h2 className={style.title}>
         <span
-          key="status"
           className={`${style.pastille} ${container.State.Running ? style.green : style.red}`}
           data-container-name
         >
@@ -84,27 +87,27 @@ const Info = ({ container }) => {
           </span>
         )}
       </h2>
-      <h3 key="config">Config</h3>
-      <span key="id" className={style.info}>
+      <h3>Config</h3>
+      <span className={style.info}>
         <span className={style.label}>Id</span>
         <span>{String(container.Id).substring(0, 12)}</span>
       </span>
-      <span key="created" className={style.info}>
+      <span className={style.info}>
         <span className={style.label}>Created</span>
         <span>{moment(container.Created).fromNow()}</span>
       </span>
-      <span key="image" className={style.info}>
+      <span className={style.info}>
         <span className={style.label}>Image</span>
         <span>{container.Config.Image}</span>
       </span>
-      <span key="command" className={style.info}>
+      <span className={style.info}>
         <span className={style.label}>Command</span>
         <pre className={style.code}>{`${container.Path} ${container.Args.join(' ')}`}</pre>
       </span>
-      <h3 key="hostConfig">HostConfig</h3>
-      <span key="hostLabels" className={style.labels}>
+      <h3>HostConfig</h3>
+      <span className={style.labels}>
         {container.HostConfig.RestartPolicy && (
-          <span key="restart" className={style.item}>
+          <span className={style.item}>
             Restart
             {' | '}
             {container.HostConfig.RestartPolicy.Name}
@@ -113,20 +116,16 @@ const Info = ({ container }) => {
               : ''}
           </span>
         )}
-        {container.HostConfig.ReadonlyRootfs && (
-          <span key="read-only" className={style.item}>
-            read-only
-          </span>
-        )}
+        {container.HostConfig.ReadonlyRootfs && <span className={style.item}>read-only</span>}
         {container.HostConfig.CpuShares > 0 && (
-          <span key="cpu" className={style.item}>
+          <span className={style.item}>
             CPU Shares
             {' | '}
             {container.HostConfig.CpuShares}
           </span>
         )}
         {container.HostConfig.Memory > 0 && (
-          <span key="memory" className={style.item}>
+          <span className={style.item}>
             Memory limit
             {' | '}
             {humanSize(container.HostConfig.Memory)}
@@ -134,7 +133,7 @@ const Info = ({ container }) => {
         )}
         {container.HostConfig.SecurityOpt &&
           container.HostConfig.SecurityOpt.length > 0 && (
-            <span key="security" className={style.item}>
+            <span className={style.item}>
               Security
               {' | '}
               {container.HostConfig.SecurityOpt.join(', ')}

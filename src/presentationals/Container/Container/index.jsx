@@ -42,18 +42,19 @@ export default function Container(props) {
   if (pending || !container) {
     content = <Throbber label="Loading informations" />;
   } else {
-    content = [
-      <Info key="info" container={container} />,
-      <Network key="network" container={container} />,
-      <Volumes key="volumes" container={container} />,
-      <Stats key="stats" stats={stats} />,
-      <Logs
-        key="logs"
-        logs={logs}
-        isFullScreen={fullScreenLogs}
-        toggleFullScreenLogs={toggleFullScreenLogs}
-      />,
-    ];
+    content = (
+      <>
+        <Info container={container} />
+        <Network container={container} />
+        <Volumes container={container} />
+        <Stats stats={stats} />
+        <Logs
+          logs={logs}
+          isFullScreen={fullScreenLogs}
+          toggleFullScreenLogs={toggleFullScreenLogs}
+        />
+      </>
+    );
 
     if (container.State.Running) {
       buttons.push(
