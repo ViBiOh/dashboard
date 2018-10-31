@@ -84,7 +84,7 @@ build-api:
 ## doc: Build doc
 .PHONY: doc
 doc:
-	docker run -it --rm -v `pwd`/doc:/doc bukalapak/snowboard html -o api.html api.apib
+	docker run -it --rm -v `pwd`/doc:/doc quay.io/bukalapak/snowboard html -o api.html api.apib
 
 ## build-ui: Build bundle
 .PHONY: build-ui
