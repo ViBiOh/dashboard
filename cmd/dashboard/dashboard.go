@@ -76,8 +76,8 @@ func main() {
 	owaspApp := owasp.NewApp(owaspConfig)
 	corsApp := cors.NewApp(corsConfig)
 
-	authApp := auth.NewApp(authConfig, nil)
-	dockerApp, err := docker.NewApp(dockerConfig, authApp)
+	authApp := auth.NewApp(authConfig)
+	dockerApp, err := docker.NewApp(dockerConfig)
 	if err != nil {
 		logger.Fatal(`%+v`, err)
 	}
@@ -88,10 +88,10 @@ func main() {
 	}
 
 	mailerApp := client.NewApp(mailerConfig)
-	deployApp := deploy.NewApp(deployConfig, authApp, dockerApp, mailerApp)
-	apiApp := api.NewApp(authApp, dockerApp, deployApp)
+	deployApp := deploy.NewApp(deployConfig, dockerApp, mailerApp)
+	apiApp := api.NewApp(dockerApp, deployApp)
 
-	restHandler := server.ChainMiddlewares(apiApp.Handler(), prometheusApp, opentracingApp, rollbarApp, gzipApp, owaspApp, corsApp)
+	restHandler := server.ChainMiddlewares(apiApp.Handler(), prometheusApp, opentracingApp, rollbarApp, gzipApp, owaspApp, corsApp, authApp)
 	websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

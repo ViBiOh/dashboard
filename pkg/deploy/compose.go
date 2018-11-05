@@ -43,7 +43,6 @@ const (
 type App struct {
 	tasks         sync.Map
 	dockerApp     *docker.App
-	authApp       *auth.App
 	network       string
 	tag           string
 	containerUser string
@@ -53,11 +52,10 @@ type App struct {
 }
 
 // NewApp creates new App from Flags' config
-func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App, mailerApp *client.App) *App {
+func NewApp(config map[string]*string, dockerApp *docker.App, mailerApp *client.App) *App {
 	return &App{
 		tasks:         sync.Map{},
 		dockerApp:     dockerApp,
-		authApp:       authApp,
 		mailerApp:     mailerApp,
 		network:       strings.TrimSpace(*config[`network`]),
 		tag:           strings.TrimSpace(*config[`tag`]),
@@ -320,60 +318,64 @@ func (a *App) parseCompose(ctx context.Context, user *model.User, appName string
 	return newServices, nil
 }
 
-func (a *App) composeHandler(w http.ResponseWriter, r *http.Request, user *model.User) {
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
-	appName, composeFile, err := checkParams(r, user)
-	if err != nil {
-		httperror.BadRequest(w, err)
-		return
-	}
-
-	ctx := r.Context()
-
-	oldContainers, err := a.checkRights(ctx, user, appName)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusForbidden)
-		return
-	}
-
-	newServices, err := a.parseCompose(ctx, user, appName, composeFile)
-	if err != nil {
-		httperror.InternalServerError(w, err)
-		return
-	}
-
-	if err = a.checkTasks(user, appName); err != nil {
-		httperror.InternalServerError(w, err)
-		return
-	}
-
-	if err == nil {
-		err = a.startServices(ctx, newServices)
-	}
-
-	ctx = context.Background()
-	if span := opentracing.SpanFromContext(r.Context()); span != nil {
-		parentSpanContext := span.Context()
-		_, ctx = opentracing.StartSpanFromContext(ctx, `Deploy`, opentracing.FollowsFrom(parentSpanContext))
-	}
-
-	go a.finishDeploy(ctx, user, appName, newServices, oldContainers, r.URL.Query())
-
-	if err != nil {
-		httperror.InternalServerError(w, err)
-		return
-	}
-
-	if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r)); err != nil {
-		httperror.InternalServerError(w, err)
-	}
-}
-
 // Handler for request. Should be use with net/http
 func (a *App) Handler() http.Handler {
-	return a.authApp.Handler(a.composeHandler)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
+		user := auth.UserFromContext(r.Context())
+		if user == nil {
+			httperror.BadRequest(w, errors.New(`user not provided`))
+			return
+		}
+
+		appName, composeFile, err := checkParams(r, user)
+		if err != nil {
+			httperror.BadRequest(w, err)
+			return
+		}
+
+		ctx := r.Context()
+
+		oldContainers, err := a.checkRights(ctx, user, appName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusForbidden)
+			return
+		}
+
+		newServices, err := a.parseCompose(ctx, user, appName, composeFile)
+		if err != nil {
+			httperror.InternalServerError(w, err)
+			return
+		}
+
+		if err = a.checkTasks(user, appName); err != nil {
+			httperror.InternalServerError(w, err)
+			return
+		}
+
+		if err == nil {
+			err = a.startServices(ctx, newServices)
+		}
+
+		ctx = context.Background()
+		if span := opentracing.SpanFromContext(r.Context()); span != nil {
+			parentSpanContext := span.Context()
+			_, ctx = opentracing.StartSpanFromContext(ctx, `Deploy`, opentracing.FollowsFrom(parentSpanContext))
+		}
+
+		go a.finishDeploy(ctx, user, appName, newServices, oldContainers, r.URL.Query())
+
+		if err != nil {
+			httperror.InternalServerError(w, err)
+			return
+		}
+
+		if err := httpjson.ResponseArrayJSON(w, http.StatusOK, newServices, httpjson.IsPretty(r)); err != nil {
+			httperror.InternalServerError(w, err)
+		}
+	})
 }

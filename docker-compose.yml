@@ -64,12 +64,6 @@ services:
     - -corsCredentials
     - -tracingName
     - dashboard_api
-    - -rollbarToken
-    - ${ROLLBAR_TOKEN}
-    - -rollbarServerRoot
-    - github.com/ViBiOh/dashboard
-    - -rollbarEnv
-    - prod
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard-api.vibioh.fr'
@@ -107,12 +101,6 @@ services:
     - X-UA-Compatible:ie=edge
     - -tracingName
     - dashboard_ui
-    - -rollbarToken
-    - ${ROLLBAR_TOKEN}
-    - -rollbarServerRoot
-    - github.com/ViBiOh/viws
-    - -rollbarEnv
-    - prod
     labels:
       traefik.frontend.passHostHeader: 'true'
       traefik.frontend.rule: 'Host: dashboard.vibioh.fr'

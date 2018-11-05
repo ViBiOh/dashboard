@@ -8,7 +8,6 @@ import (
 	"regexp"
 
 	"github.com/ViBiOh/auth/pkg/auth"
-	"github.com/ViBiOh/auth/pkg/model"
 	"github.com/ViBiOh/dashboard/pkg/commons"
 	"github.com/ViBiOh/httputils/pkg/errors"
 	"github.com/ViBiOh/httputils/pkg/httperror"
@@ -25,20 +24,18 @@ var (
 // App stores informations
 type App struct {
 	Docker     client.APIClient
-	authApp    *auth.App
 	wsUpgrader websocket.Upgrader
 }
 
 // NewApp creates new App from Flags' config
-func NewApp(config map[string]*string, authApp *auth.App) (*App, error) {
+func NewApp(config map[string]*string) (*App, error) {
 	client, err := client.NewClient(*config[`host`], *config[`version`], nil, nil)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
 	return &App{
-		Docker:  client,
-		authApp: authApp,
+		Docker: client,
 	}, nil
 }
 
@@ -61,28 +58,32 @@ func (a *App) Healthcheck() bool {
 	return true
 }
 
-func (a *App) containerHandler(w http.ResponseWriter, r *http.Request, user *model.User) {
-	if r.Method == http.MethodGet && (r.URL.Path == `/` || r.URL.Path == ``) {
-		a.ListContainersHandler(w, r, user)
-	} else if containerRequest.MatchString(r.URL.Path) {
-		containerID := containerRequest.FindStringSubmatch(r.URL.Path)[1]
-
-		if r.Method == http.MethodGet {
-			a.basicActionHandler(w, r, user, containerID, getAction)
-		} else if r.Method == http.MethodDelete {
-			a.basicActionHandler(w, r, user, containerID, deleteAction)
-		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-		}
-	} else if containerActionRequest.MatchString(r.URL.Path) && r.Method == http.MethodPost {
-		matches := containerActionRequest.FindStringSubmatch(r.URL.Path)
-		a.basicActionHandler(w, r, user, matches[1], matches[2])
-	} else {
-		httperror.NotFound(w)
-	}
-}
-
 // Handler for request. Should be use with net/http
 func (a *App) Handler() http.Handler {
-	return a.authApp.Handler(a.containerHandler)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		user := auth.UserFromContext(r.Context())
+		if user == nil {
+			httperror.BadRequest(w, errors.New(`user not provided`))
+			return
+		}
+
+		if r.Method == http.MethodGet && (r.URL.Path == `/` || r.URL.Path == ``) {
+			a.ListContainersHandler(w, r, user)
+		} else if containerRequest.MatchString(r.URL.Path) {
+			containerID := containerRequest.FindStringSubmatch(r.URL.Path)[1]
+
+			if r.Method == http.MethodGet {
+				a.basicActionHandler(w, r, user, containerID, getAction)
+			} else if r.Method == http.MethodDelete {
+				a.basicActionHandler(w, r, user, containerID, deleteAction)
+			} else {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+			}
+		} else if containerActionRequest.MatchString(r.URL.Path) && r.Method == http.MethodPost {
+			matches := containerActionRequest.FindStringSubmatch(r.URL.Path)
+			a.basicActionHandler(w, r, user, matches[1], matches[2])
+		} else {
+			httperror.NotFound(w)
+		}
+	})
 }

@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ViBiOh/auth/pkg/auth"
 	"github.com/ViBiOh/dashboard/pkg/deploy"
 	"github.com/ViBiOh/dashboard/pkg/docker"
 	"github.com/ViBiOh/httputils/pkg/httperror"
@@ -17,15 +16,13 @@ const (
 
 // App stores informations
 type App struct {
-	authApp   *auth.App
 	dockerApp *docker.App
 	deployApp *deploy.App
 }
 
 // NewApp creates new App from dependencies
-func NewApp(authApp *auth.App, dockerApp *docker.App, deployApp *deploy.App) *App {
+func NewApp(dockerApp *docker.App, deployApp *deploy.App) *App {
 	return &App{
-		authApp:   authApp,
 		dockerApp: dockerApp,
 		deployApp: deployApp,
 	}

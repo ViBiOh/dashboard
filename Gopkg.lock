@@ -19,20 +19,20 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3d7bcd1a70ff03e90156c481d8f01268f78b1d9406bce632f5956429c5490f66"
+  digest = "1:ca9779802e99befd417aede74f28e67329c681369ed80346472dc3013bb297a9"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
     "pkg/cookie",
+    "pkg/ident",
     "pkg/model",
-    "pkg/provider",
   ]
   pruneopts = "UT"
-  revision = "818d3c7980e252f10a14d6ca5fcd2ba9876e6e7f"
+  revision = "91a3eb7f7c82a805f1a7e75c79c857a15aa9b26a"
 
 [[projects]]
   branch = "master"
-  digest = "1:95efe2e4ff6c8b32365f6f92c4db16fdd198de99dabb2cccaa0d693e40178c7f"
+  digest = "1:364407a60e761b092bd30de5fd5ff9d9ba4b0448b67fc3c73f330c7b315b5f96"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -56,15 +56,15 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "a147310fb9a8c422292a2d6f7fe4781eda74919d"
+  revision = "08cb8f858a20d8b33b15504d05bff2b97b35883f"
 
 [[projects]]
   branch = "master"
-  digest = "1:6ffa1a0de728f99e462e4470cfb4fb7991815599423afa87d231c86a33570317"
+  digest = "1:61a78ba9948565396d59bfafec2d62c91e50b63be9e8de1349c12697cb0f6a22"
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "04403e08266322376a63cff865d2195017089c3b"
+  revision = "de2be65c93d34e39991845da780352c07a882d99"
 
 [[projects]]
   branch = "master"
@@ -91,11 +91,11 @@
     "reference",
   ]
   pruneopts = "UT"
-  revision = "1cb4180b1a5b9c029b2f2beaeb38f0b5cf64e12e"
+  revision = "93e082742a009850ac46962150b2f652a822c5ff"
 
 [[projects]]
   branch = "master"
-  digest = "1:1043c56f457f247092fb9fd1c11fb6c38172f50f907af508af06f78b287c5848"
+  digest = "1:5b3b4a49ed2493f130a10120d2aa57d56c746cb83873d6f6e3752395128b8bb8"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -118,7 +118,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "f7e5154f37a45dc2e576abbef404f3032e9823bf"
+  revision = "22d3946d6c54ff58715a6e8e2f9b1dce2f82bb4d"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -193,11 +193,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:264f2848854a41b03a6525ea6c1e858762caa34964a63dde898dc4bba339e50f"
+  digest = "1:51fb21c0dd1b64d5ae74c34f544e312ee73edd2a258db6347369014b5949f44a"
   name = "github.com/opentracing-contrib/go-stdlib"
   packages = ["nethttp"]
   pruneopts = "UT"
-  revision = "07a764486eb10927e8cf38337918a40d430524ee"
+  revision = "c9628a4f0148d7e441a4af66dc0b1653cd941c20"
 
 [[projects]]
   digest = "1:450b7623b185031f3a456801155c8320209f75d0d4c4e633c6b1e59d44d6e392"
@@ -240,7 +240,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:1261069fb38fbe59aba55117ee39c59814f211c027d66d59ed1c60e5c11b377c"
+  digest = "1:db712fde5d12d6cdbdf14b777f0c230f4ff5ab0be8e35b239fc319953ed577a4"
   name = "github.com/prometheus/common"
   packages = [
     "expfmt",
@@ -248,7 +248,7 @@
     "model",
   ]
   pruneopts = "UT"
-  revision = "16b4535ad14a9ef20a9d9fd8055143c5faa15224"
+  revision = "7e9e6cabbd393fc208072eedef99188d0ce788b6"
 
 [[projects]]
   branch = "master"
@@ -264,12 +264,12 @@
   revision = "185b4288413d2a0dd0806f78c90dde719829e5ae"
 
 [[projects]]
-  digest = "1:8b6db3b490230af0836cd57f2da94e092ac0c2837fe24e762458006531749b53"
+  digest = "1:03a89169777b38862145711ef2317a36e19e1cdf717ab622e196f6a851b71ad9"
   name = "github.com/rollbar/rollbar-go"
   packages = ["."]
   pruneopts = "UT"
-  revision = "5f41889d7c6a59e4add07998cf776b1d335d287f"
-  version = "v1.0.1"
+  revision = "d450a931d7a085523b60f0f7c98487333a8ce5fa"
+  version = "v1.0.2"
 
 [[projects]]
   digest = "1:ac6f26e917fd2fb3194a7ebe2baf6fb32de2f2fbfed130c18aac0e758a6e1d22"
@@ -315,7 +315,7 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "04a2e542c03f1d053ab3e4d6e5abcd4b66e2be8e"
+  revision = "c10e9556a7bc0e7c942242b606f0acf024ad5d6a"
 
 [[projects]]
   branch = "master"
@@ -323,7 +323,7 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "8e24a49d80f82323e1c4db1b5da3e0f31171a151"
+  revision = "9b800f95dbbc54abff0acf7ee32d88ba4e328c89"
 
 [[projects]]
   branch = "v2"

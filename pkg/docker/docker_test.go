@@ -47,22 +47,22 @@ func Test_LabelFilters(t *testing.T) {
 		want []string
 	}{
 		{
-			model.NewUser(0, `admin`, ``, `admin`),
+			model.NewUser(`0`, `admin`, ``, `admin`),
 			``,
 			nil,
 		},
 		{
-			model.NewUser(0, `guest`, ``, `guest`),
+			model.NewUser(`0`, `guest`, ``, `guest`),
 			``,
 			[]string{`owner=guest`},
 		},
 		{
-			model.NewUser(0, `admin`, ``, `admin`),
+			model.NewUser(`0`, `admin`, ``, `admin`),
 			`test`,
 			[]string{`app=test`},
 		},
 		{
-			model.NewUser(0, `guest`, ``, `guest`),
+			model.NewUser(`0`, `guest`, ``, `guest`),
 			`test`,
 			[]string{`owner=guest`},
 		},

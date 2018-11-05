@@ -16,11 +16,11 @@ func TestIsAdmin(t *testing.T) {
 			false,
 		},
 		{
-			model.NewUser(0, `guest`, ``, `guest,multi`),
+			model.NewUser(`0`, `guest`, ``, `guest,multi`),
 			false,
 		},
 		{
-			model.NewUser(0, `admin`, ``, `admin`),
+			model.NewUser(`0`, `admin`, ``, `admin`),
 			true,
 		},
 	}
@@ -42,11 +42,11 @@ func TestIsMultiApp(t *testing.T) {
 			false,
 		},
 		{
-			model.NewUser(0, `guest`, ``, `guest,multi`),
+			model.NewUser(`0`, `guest`, ``, `guest,multi`),
 			true,
 		},
 		{
-			model.NewUser(0, `admin`, ``, `admin`),
+			model.NewUser(`0`, `admin`, ``, `admin`),
 			true,
 		},
 	}

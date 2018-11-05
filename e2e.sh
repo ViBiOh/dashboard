@@ -14,6 +14,7 @@ go run cmd/compose/compose.go \
   -selenium=true \
   -tls=false \
   -tracing=false \
+  -rollbar=false \
   -traefik=false \
   -version=`git log --pretty=format:'%h' -n 1` \
   > docker-compose.yml
