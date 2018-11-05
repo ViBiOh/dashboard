@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:44f0c28ac9df9693d10e1ee271f88d3f6f56bafa0b635a57c759815563ec953a"
+  digest = "1:fcda6cec1ea6b4c74d5818d75da4f968edf31f513f1d51829c173abe0c8d76c9"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,7 +28,7 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "d30ecd348a9dde8623d103e148b5da330d45a9a5"
+  revision = "3afc7498e8cfe2d4397206a2b07ba1b24d9b171e"
 
 [[projects]]
   branch = "master"
@@ -118,7 +118,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "22d3946d6c54ff58715a6e8e2f9b1dce2f82bb4d"
+  revision = "12bba16306dd618883fe2e85ef1730efc572294f"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
