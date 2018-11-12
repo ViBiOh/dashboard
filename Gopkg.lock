@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:fcda6cec1ea6b4c74d5818d75da4f968edf31f513f1d51829c173abe0c8d76c9"
+  digest = "1:c7135fb50adc7730c02a3c86147e5cadbd124d00fd3e4098d380a874d49a1e2e"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,11 +28,11 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "3afc7498e8cfe2d4397206a2b07ba1b24d9b171e"
+  revision = "495f69b1bcdb4c4b2531cdba6ffb8107e2c57db3"
 
 [[projects]]
   branch = "master"
-  digest = "1:364407a60e761b092bd30de5fd5ff9d9ba4b0448b67fc3c73f330c7b315b5f96"
+  digest = "1:540a716470be3cda7a476869f103f4c4237143222001e55d03c38b21c04cb35f"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -56,7 +56,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "08cb8f858a20d8b33b15504d05bff2b97b35883f"
+  revision = "9ff165f27876dc806981d470f4c31c68e1b035c5"
 
 [[projects]]
   branch = "master"
@@ -64,7 +64,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "de2be65c93d34e39991845da780352c07a882d99"
+  revision = "462cba7caa1647dd83898a27b8b836c5cecd13c3"
 
 [[projects]]
   branch = "master"
@@ -95,7 +95,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5b3b4a49ed2493f130a10120d2aa57d56c746cb83873d6f6e3752395128b8bb8"
+  digest = "1:6a0176ca9f0cca4c623d7e9344c1bbc869bce9513f48fb6323f2085fa762fad8"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -118,7 +118,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "12bba16306dd618883fe2e85ef1730efc572294f"
+  revision = "a5e2dd2bb141be0205ad6287eecc8db31f789fdb"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -248,7 +248,7 @@
     "model",
   ]
   pruneopts = "UT"
-  revision = "7e9e6cabbd393fc208072eedef99188d0ce788b6"
+  revision = "0b1957f9d949dfa3084171a6ec5642b38055276a"
 
 [[projects]]
   branch = "master"
@@ -315,7 +315,7 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "c10e9556a7bc0e7c942242b606f0acf024ad5d6a"
+  revision = "03003ca0c849e57b6ea29a4bab8d3cb6e4d568fe"
 
 [[projects]]
   branch = "master"
@@ -323,7 +323,7 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "9b800f95dbbc54abff0acf7ee32d88ba4e328c89"
+  revision = "66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399"
 
 [[projects]]
   branch = "v2"
