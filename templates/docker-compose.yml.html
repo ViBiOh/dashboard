@@ -15,7 +15,7 @@ services:
     - Authorization
     - -corsCredentials
     - -corsOrigin
-    - {{ if .Traefik }}dashboard{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1080{{ else }}front:1080{{ end }}{{ end }}
+    - http{{ if .TLS }}s{{ end }}://{{ if .Traefik }}dashboard{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1080{{ else }}front:1080{{ end }}{{ end }}
   {{- if .Github }}
     - -githubClientId
     - ${GITHUB_OAUTH_CLIENT_ID}
@@ -84,7 +84,7 @@ services:
     - GET,POST,DELETE
     - -corsCredentials
     - -corsOrigin
-    - {{ if .Traefik }}dashboard{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1080{{ else }}front:1080{{ end }}{{ end }}
+    - http{{ if .TLS }}s{{ end }}://{{ if .Traefik }}dashboard{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1080{{ else }}front:1080{{ end }}{{ end }}
   {{- if .Tracing }}
     - -tracingName
     - dashboard_api

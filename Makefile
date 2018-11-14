@@ -106,7 +106,8 @@ start-auth:
 		-basicUsers "1:admin:`bcrypt admin`" \
 		-corsHeaders Content-Type,Authorization \
 		-port 1081 \
-		-corsCredentials
+		-corsCredentials \
+		-corsOrigin http://localhost:1080
 
 ## start-front: Start frontend server
 .PHONY: start-front
@@ -136,5 +137,6 @@ start:
 		-corsHeaders Content-Type,Authorization \
 		-corsMethods GET,POST,DELETE \
 		-corsCredentials \
+		-corsOrigin http://localhost:1080 \
 		-csp "default-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com cdnjs.cloudflare.com; style-src 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src data: fonts.gstatic.com cdnjs.cloudflare.com; img-src data:" \
 		-port 1082
