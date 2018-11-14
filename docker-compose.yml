@@ -7,6 +7,8 @@ services:
     - -corsHeaders
     - Authorization
     - -corsCredentials
+    - -corsOrigin
+    - dashboard.vibioh.fr
     - -githubClientId
     - ${GITHUB_OAUTH_CLIENT_ID}
     - -githubClientSecret
@@ -62,6 +64,8 @@ services:
     - -corsMethods
     - GET,POST,DELETE
     - -corsCredentials
+    - -corsOrigin
+    - dashboard.vibioh.fr
     - -tracingName
     - dashboard_api
     labels:
