@@ -47,12 +47,15 @@
 
 .primary {
   background-color: var(--primary);
+  color: white;
 }
 
 .success {
   background-color: var(--success);
+  color: white;
 }
 
 .danger {
   background-color: var(--danger);
+  color: white;
 }

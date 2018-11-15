@@ -12,10 +12,12 @@
 
 .green {
   background-color: var(--success);
+  color: white;
 }
 
 .red {
   background-color: var(--danger);
+  color: white;
 }
 
 .column {
