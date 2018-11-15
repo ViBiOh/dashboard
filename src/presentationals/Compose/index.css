@@ -20,8 +20,6 @@
 
 .content input[type='text'],
 .content textarea {
-  border: 0.1rem solid var(--grey);
-  border-radius: 0.2rem;
   display: block;
   margin: 0 auto 0.5rem;
   padding: 2rem;

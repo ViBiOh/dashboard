@@ -12,6 +12,8 @@ html {
 
 body {
   -webkit-overflow-scrolling: touch;
+  background-color: var(--dark);
+  color: var(--white);
   margin: 0;
 }
 
@@ -26,10 +28,17 @@ input {
 }
 
 header {
-  background-color: #3a3a3a;
-  color: #f8f8f8;
+  background-color: var(--grey);
   text-align: center;
   width: 100%;
+}
+
+input,
+textarea {
+  background-color: var(--grey);
+  border-radius: 0.2rem;
+  border: 0.1rem solid var(--white);
+  color: var(--white);
 }
 
 header a,

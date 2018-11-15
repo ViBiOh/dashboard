@@ -1,6 +1,5 @@
 .pastille {
   border-radius: 0.2rem;
-  color: var(--white);
   display: inline-block;
   max-width: calc(100vw - 1rem);
   overflow: hidden;
@@ -66,9 +65,8 @@
 }
 
 .code {
-  background: var(--dark);
+  background-color: var(--grey);
   border-radius: 0.2rem;
-  color: var(--grey);
   flex: 1 1;
   font-size: 1.2rem;
   margin: 0;

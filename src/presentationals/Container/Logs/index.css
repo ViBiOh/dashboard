@@ -15,8 +15,7 @@
 }
 
 .code {
-  background: var(--dark);
-  color: var(--grey);
+  background-color: var(--grey);
   font-size: 1.2rem;
   padding: 0.4rem;
   position: relative;

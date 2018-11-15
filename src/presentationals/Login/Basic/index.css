@@ -11,8 +11,6 @@
 
 .container input[type='text'],
 .container input[type='password'] {
-  border: 0.1rem solid var(--grey);
-  border-radius: 0.2rem;
   margin: 0.4rem;
   padding: 2rem;
   text-align: center;

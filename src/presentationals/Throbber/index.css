@@ -24,7 +24,7 @@
 
 .throbber > div {
   animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-  background-color: var(--dark);
+  background-color: var(--white);
   border-radius: 100%;
   display: inline-block;
   height: 1.2rem;

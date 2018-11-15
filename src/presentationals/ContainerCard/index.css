@@ -6,8 +6,7 @@
 }
 
 .card {
-  background-color: transparent;
-  border: 0.1rem solid var(--card-border);
+  background-color: var(--grey);
   padding: 0.4rem;
 }
 
@@ -50,5 +49,5 @@
 }
 
 .external svg {
-  color: var(--dark);
+  color: var(--white);
 }
