@@ -1,6 +1,7 @@
 APP_NAME ?= dashboard
 VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
 AUTHOR ?= $(shell git log --pretty=format:'%an' -n 1)
+PACKAGES ?= ./...
 
 GOBIN=bin
 BINARY_PATH=$(GOBIN)/$(APP_NAME)
@@ -60,9 +61,9 @@ format:
 ## lint: Lint code
 .PHONY: lint
 lint:
-	golint `go list ./... | grep -v vendor`
-	errcheck -ignoretests `go list ./... | grep -v vendor`
-	go vet ./...
+	golint `go list $(PACKAGES) | grep -v vendor`
+	errcheck -ignoretests `go list $(PACKAGES) | grep -v vendor`
+	go vet $(PACKAGES)
 
 ## tst: Test code with coverage
 .PHONY: tst
@@ -72,7 +73,7 @@ tst:
 ## bench: Benchmark code
 .PHONY: bench
 bench:
-	go test ./... -bench . -benchmem -run Benchmark.*
+	go test $(PACKAGES) -bench . -benchmem -run Benchmark.*
 
 ## build-api: Build binary
 .PHONY: build-api
