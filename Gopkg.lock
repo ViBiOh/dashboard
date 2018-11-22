@@ -28,11 +28,11 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "495f69b1bcdb4c4b2531cdba6ffb8107e2c57db3"
+  revision = "fa75a3534d12bbec5e0e8b13032638bbe546e7a2"
 
 [[projects]]
   branch = "master"
-  digest = "1:540a716470be3cda7a476869f103f4c4237143222001e55d03c38b21c04cb35f"
+  digest = "1:05d1149acd5db28470ac562c51e7a7a2670f6637cb778f4fd57097e930f44892"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -56,7 +56,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "9ff165f27876dc806981d470f4c31c68e1b035c5"
+  revision = "56a96ad8671ec77441ad5cd779ca9ec7364a0ea9"
 
 [[projects]]
   branch = "master"
@@ -64,7 +64,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "462cba7caa1647dd83898a27b8b836c5cecd13c3"
+  revision = "f16e11ac79d450d16606c7994bb1fa80d8bdbe81"
 
 [[projects]]
   branch = "master"
@@ -95,7 +95,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6a0176ca9f0cca4c623d7e9344c1bbc869bce9513f48fb6323f2085fa762fad8"
+  digest = "1:62afb9792bf57b982384ca26ef3e28ff2670ef51edcc405041423780d2253500"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -118,7 +118,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "a5e2dd2bb141be0205ad6287eecc8db31f789fdb"
+  revision = "74baf62f4b0356361af7ef0156e4a82118409a65"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -248,7 +248,7 @@
     "model",
   ]
   pruneopts = "UT"
-  revision = "0b1957f9d949dfa3084171a6ec5642b38055276a"
+  revision = "aeab699e26f4d4089dba5e522e5d9babd2adbaf7"
 
 [[projects]]
   branch = "master"
@@ -315,7 +315,7 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "03003ca0c849e57b6ea29a4bab8d3cb6e4d568fe"
+  revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
 
 [[projects]]
   branch = "master"
@@ -323,15 +323,15 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399"
+  revision = "62eef0e2fa9b2c385f7b2778e763486da6880d37"
 
 [[projects]]
   branch = "v2"
-  digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
+  digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = "UT"
-  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
 
 [solve-meta]
   analyzer-name = "dep"
