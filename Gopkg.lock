@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c7135fb50adc7730c02a3c86147e5cadbd124d00fd3e4098d380a874d49a1e2e"
+  digest = "1:9bb0e59fba1aca591d8fbd6c50d2dcbe50674cf29be50d6a7ee7536d73a9eb33"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,17 +28,18 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "fa75a3534d12bbec5e0e8b13032638bbe546e7a2"
+  revision = "585f28c8ed546d6f7b1bc6eb21b55124783f2bf2"
 
 [[projects]]
   branch = "master"
-  digest = "1:05d1149acd5db28470ac562c51e7a7a2670f6637cb778f4fd57097e930f44892"
+  digest = "1:8215af21458c85b4528a6491829d66258d5ab1c2080712a576699e61757adea6"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
     "pkg/alcotest",
     "pkg/cert",
     "pkg/cors",
+    "pkg/crud",
     "pkg/errors",
     "pkg/gzip",
     "pkg/healthcheck",
@@ -48,6 +49,7 @@
     "pkg/model",
     "pkg/opentracing",
     "pkg/owasp",
+    "pkg/pagination",
     "pkg/prometheus",
     "pkg/query",
     "pkg/request",
@@ -64,7 +66,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "f16e11ac79d450d16606c7994bb1fa80d8bdbe81"
+  revision = "8ae7f8a880b82751c82623840d552299526098f7"
 
 [[projects]]
   branch = "master"
@@ -95,7 +97,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:62afb9792bf57b982384ca26ef3e28ff2670ef51edcc405041423780d2253500"
+  digest = "1:2ee9933f74b72a0e72f99c0a10980f0f7cffecb2fa091c72a3599adc897abed0"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -118,7 +120,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "74baf62f4b0356361af7ef0156e4a82118409a65"
+  revision = "2555344858b9a464dda7bec6ca5b0ca2c3534adf"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -248,7 +250,7 @@
     "model",
   ]
   pruneopts = "UT"
-  revision = "aeab699e26f4d4089dba5e522e5d9babd2adbaf7"
+  revision = "4724e9255275ce38f7179b2478abeae4e28c904f"
 
 [[projects]]
   branch = "master"
@@ -261,7 +263,7 @@
     "xfs",
   ]
   pruneopts = "UT"
-  revision = "185b4288413d2a0dd0806f78c90dde719829e5ae"
+  revision = "619930b0b4713cc1280189bf0a4c54b3fb506f60"
 
 [[projects]]
   digest = "1:03a89169777b38862145711ef2317a36e19e1cdf717ab622e196f6a851b71ad9"
