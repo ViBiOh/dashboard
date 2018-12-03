@@ -28,7 +28,7 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "585f28c8ed546d6f7b1bc6eb21b55124783f2bf2"
+  revision = "df3cc5d50b3ebd6710745cfa887c2e58818ab6c9"
 
 [[projects]]
   branch = "master"
@@ -58,7 +58,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "56a96ad8671ec77441ad5cd779ca9ec7364a0ea9"
+  revision = "63354573662b9507636ac5ad9a68281f58525804"
 
 [[projects]]
   branch = "master"
@@ -66,7 +66,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "8ae7f8a880b82751c82623840d552299526098f7"
+  revision = "2d70cf6657680d9c60b397c3dd2b0b632c97287b"
 
 [[projects]]
   branch = "master"
@@ -93,11 +93,11 @@
     "reference",
   ]
   pruneopts = "UT"
-  revision = "93e082742a009850ac46962150b2f652a822c5ff"
+  revision = "d9e12182359e0893efd7546d4b764f6c24e3118c"
 
 [[projects]]
   branch = "master"
-  digest = "1:2ee9933f74b72a0e72f99c0a10980f0f7cffecb2fa091c72a3599adc897abed0"
+  digest = "1:9e1391339c14532ec72ca55849dcb1b7d87e6dd810ed8b21ecdaa8ee7a6a53ad"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -120,7 +120,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "2555344858b9a464dda7bec6ca5b0ca2c3534adf"
+  revision = "65d9a5dde589f96f4728782fd0fa7de7bb6b3146"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -254,7 +254,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ef74914912f99c79434d9c09658274678bc85080ebe3ab32bec3940ebce5e1fc"
+  digest = "1:9ea97158ea06d60b1f324aa384f6a4cbd596a81b3cae994e17108b195f398d01"
   name = "github.com/prometheus/procfs"
   packages = [
     ".",
@@ -263,7 +263,7 @@
     "xfs",
   ]
   pruneopts = "UT"
-  revision = "619930b0b4713cc1280189bf0a4c54b3fb506f60"
+  revision = "aa55a523dc0a8297edf51bb75e8eec13eb3be45d"
 
 [[projects]]
   digest = "1:03a89169777b38862145711ef2317a36e19e1cdf717ab622e196f6a851b71ad9"
@@ -317,7 +317,7 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
+  revision = "351d144fa1fc0bd934e2408202be0c29f25e35a0"
 
 [[projects]]
   branch = "master"
@@ -325,7 +325,7 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "62eef0e2fa9b2c385f7b2778e763486da6880d37"
+  revision = "4ed8d59d0b35e1e29334a206d1b3f38b1e5dfb31"
 
 [[projects]]
   branch = "v2"
