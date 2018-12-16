@@ -51,27 +51,24 @@ export default function Network({ container }) {
 
   return (
     <span className={style.container}>
-      {networkContent &&
-        networkContent.length > 0 && (
-          <>
-            <h3>Networks</h3>
-            <span className={style.labels}>{networkContent}</span>
-          </>
-        )}
-      {portContent &&
-        portContent.length > 0 && (
-          <>
-            <h3>Ports</h3>
-            <span className={style.labels}>{portContent}</span>
-          </>
-        )}
-      {linkContent &&
-        linkContent.length > 0 && (
-          <>
-            <h3>Links</h3>
-            <span className={style.labels}>{linkContent}</span>
-          </>
-        )}
+      {networkContent && networkContent.length > 0 && (
+        <>
+          <h3>Networks</h3>
+          <span className={style.labels}>{networkContent}</span>
+        </>
+      )}
+      {portContent && portContent.length > 0 && (
+        <>
+          <h3>Ports</h3>
+          <span className={style.labels}>{portContent}</span>
+        </>
+      )}
+      {linkContent && linkContent.length > 0 && (
+        <>
+          <h3>Links</h3>
+          <span className={style.labels}>{linkContent}</span>
+        </>
+      )}
     </span>
   );
 }

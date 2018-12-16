@@ -12,7 +12,7 @@ import (
 	"github.com/ViBiOh/dashboard/pkg/deploy"
 	"github.com/ViBiOh/dashboard/pkg/docker"
 	"github.com/ViBiOh/dashboard/pkg/stream"
-	"github.com/ViBiOh/httputils/pkg"
+	httputils "github.com/ViBiOh/httputils/pkg"
 	"github.com/ViBiOh/httputils/pkg/alcotest"
 	"github.com/ViBiOh/httputils/pkg/cors"
 	"github.com/ViBiOh/httputils/pkg/gzip"

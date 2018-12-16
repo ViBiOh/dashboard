@@ -131,14 +131,13 @@ const Info = ({ container }) => {
             {humanSize(container.HostConfig.Memory)}
           </span>
         )}
-        {container.HostConfig.SecurityOpt &&
-          container.HostConfig.SecurityOpt.length > 0 && (
-            <span className={style.item}>
-              Security
-              {' | '}
-              {container.HostConfig.SecurityOpt.join(', ')}
-            </span>
-          )}
+        {container.HostConfig.SecurityOpt && container.HostConfig.SecurityOpt.length > 0 && (
+          <span className={style.item}>
+            Security
+            {' | '}
+            {container.HostConfig.SecurityOpt.join(', ')}
+          </span>
+        )}
       </span>
       {labelContent}
       {envContent}
