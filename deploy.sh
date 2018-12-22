@@ -47,8 +47,11 @@ function docker-compose-deploy() {
   fi
 
   echo Renaming containers
-  for service in `docker-compose -p "${PROJECT_FULLNAME}" ps -q`; do
-    docker rename "${service}" "${PROJECT_NAME}_${service}"
+
+  local serviceNum=1
+  for container in `docker-compose -p "${PROJECT_FULLNAME}" ps -q`; do
+      docker rename "${container}" "${PROJECT_NAME}_`docker-compose -p "${PROJECT_FULLNAME}" ps --services | sed '${serviceNum}q;d'`"
+      ((serviceNum++))
   done
 
   echo Deploy succeed!
