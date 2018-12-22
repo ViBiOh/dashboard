@@ -50,7 +50,8 @@ function docker-compose-deploy() {
 
   local serviceNum=1
   for container in `docker-compose -p "${PROJECT_FULLNAME}" ps -q`; do
-      docker rename "${container}" "${PROJECT_NAME}_`docker-compose -p "${PROJECT_FULLNAME}" ps --services | sed '${serviceNum}q;d'`"
+      local serviceName=`docker-compose -p "${PROJECT_FULLNAME}" ps --services | sed "${serviceNum}q;d"`
+      docker rename "${container}" "${PROJECT_NAME}_${serviceName}"
       ((serviceNum++))
   done
 
