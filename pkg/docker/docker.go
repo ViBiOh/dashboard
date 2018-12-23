@@ -21,15 +21,29 @@ var (
 	containerActionRequest = regexp.MustCompile(`^/([^/]+)/([^/]+)`)
 )
 
-// App stores informations
+// Config of package
+type Config struct {
+	host    *string
+	version *string
+}
+
+// App of package
 type App struct {
 	Docker     client.APIClient
 	wsUpgrader websocket.Upgrader
 }
 
-// NewApp creates new App from Flags' config
-func NewApp(config map[string]*string) (*App, error) {
-	client, err := client.NewClient(*config[`host`], *config[`version`], nil, nil)
+// Flags adds flags for configuring package
+func Flags(fs *flag.FlagSet, prefix string) Config {
+	return Config{
+		host:    fs.String(tools.ToCamel(fmt.Sprintf(`%sHost`, prefix)), `unix:///var/run/docker.sock`, `[docker] Host`),
+		version: fs.String(tools.ToCamel(fmt.Sprintf(`%sVersion`, prefix)), ``, `[docker] API Version`),
+	}
+}
+
+// New creates new App from Config
+func New(config Config) (*App, error) {
+	client, err := client.NewClient(*config.host, *config.version, nil, nil)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -37,14 +51,6 @@ func NewApp(config map[string]*string) (*App, error) {
 	return &App{
 		Docker: client,
 	}, nil
-}
-
-// Flags adds flags for given prefix
-func Flags(prefix string) map[string]*string {
-	return map[string]*string{
-		`host`:    flag.String(tools.ToCamel(fmt.Sprintf(`%sHost`, prefix)), `unix:///var/run/docker.sock`, `[docker] Host`),
-		`version`: flag.String(tools.ToCamel(fmt.Sprintf(`%sVersion`, prefix)), ``, `[docker] API Version`),
-	}
 }
 
 // Healthcheck check health of app

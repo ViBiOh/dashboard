@@ -41,16 +41,28 @@ var (
 	statsPrefix  = []byte(`stats `)
 )
 
-// App stores informations
+// Config of package
+type Config struct {
+	websocketOrigin *string
+}
+
+// App of package
 type App struct {
 	authApp    *auth.App
 	dockerApp  *docker.App
 	wsUpgrader websocket.Upgrader
 }
 
-// NewApp creates new App from Flags' config
-func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App) (*App, error) {
-	hostCheck, err := regexp.Compile(*config[`websocketOrigin`])
+// Flags adds flags for configuring package
+func Flags(fs *flag.FlagSet, prefix string) Config {
+	return Config{
+		websocketOrigin: fs.String(tools.ToCamel(fmt.Sprintf(`%sWs`, prefix)), `^dashboard`, `[stream] Allowed WebSocket Origin pattern`),
+	}
+}
+
+// New creates new App from Config
+func New(config Config, authApp *auth.App, dockerApp *docker.App) (*App, error) {
+	hostCheck, err := regexp.Compile(*config.websocketOrigin)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -66,13 +78,6 @@ func NewApp(config map[string]*string, authApp *auth.App, dockerApp *docker.App)
 			},
 		},
 	}, nil
-}
-
-// Flags adds flags for given prefix
-func Flags(prefix string) map[string]*string {
-	return map[string]*string{
-		`websocketOrigin`: flag.String(tools.ToCamel(fmt.Sprintf(`%sWs`, prefix)), `^dashboard`, `[stream] Allowed WebSocket Origin pattern`),
-	}
 }
 
 func (a *App) upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websocket.Conn, user *model.User, err error) {

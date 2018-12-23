@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:9bb0e59fba1aca591d8fbd6c50d2dcbe50674cf29be50d6a7ee7536d73a9eb33"
+  digest = "1:324ce192d60b4fbdd0e19703b2823f26e170d05c48dc59fe85e1bfe561ecfcba"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,11 +28,11 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "df3cc5d50b3ebd6710745cfa887c2e58818ab6c9"
+  revision = "48d443fc36552b7af562cff26d6d42477b5438d6"
 
 [[projects]]
   branch = "master"
-  digest = "1:8215af21458c85b4528a6491829d66258d5ab1c2080712a576699e61757adea6"
+  digest = "1:04efbdebaf0ef9e013208302f2912ae46f3cfa61b3ef602cd955f43c2e2acfb7"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -58,15 +58,15 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "63354573662b9507636ac5ad9a68281f58525804"
+  revision = "2fff2dd86693cb2230add917d8660d112cb7294a"
 
 [[projects]]
   branch = "master"
-  digest = "1:61a78ba9948565396d59bfafec2d62c91e50b63be9e8de1349c12697cb0f6a22"
+  digest = "1:d9933b03e6dc48b53b7b31b1a61cc8d459f0c2bf7ec79b5969884e98cfb47f09"
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "2d70cf6657680d9c60b397c3dd2b0b632c97287b"
+  revision = "b38a72b318e20464b7c22a56020741c5dda609de"
 
 [[projects]]
   branch = "master"
@@ -120,7 +120,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "efba5f856506e3334c59fd94ff6f549f266136fc"
+  revision = "d147fe0582f44c0fc22ec8bdffff44939dd54d52"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -195,11 +195,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5d7236b6cedaadd901d2f1533113f11c955bb676df646b676c94d13c43dfedbe"
+  digest = "1:bfc0c5e306ac24c94aaa10bcd8f22ef1436005582da9241c0742a1a26fd93174"
   name = "github.com/opentracing-contrib/go-stdlib"
   packages = ["nethttp"]
   pruneopts = "UT"
-  revision = "09659152d0aa5b83bb7683a9c33c79f8ee57038c"
+  revision = "77df8e8e70b403c6b13c0fffaa4867c9044ff4e9"
 
 [[projects]]
   digest = "1:450b7623b185031f3a456801155c8320209f75d0d4c4e633c6b1e59d44d6e392"
@@ -242,7 +242,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:db712fde5d12d6cdbdf14b777f0c230f4ff5ab0be8e35b239fc319953ed577a4"
+  digest = "1:33c81bf709f084827a560e14415b1d7001a6d1d6fa4bec2cc2e60b84ecbc0e0a"
   name = "github.com/prometheus/common"
   packages = [
     "expfmt",
@@ -250,7 +250,7 @@
     "model",
   ]
   pruneopts = "UT"
-  revision = "4724e9255275ce38f7179b2478abeae4e28c904f"
+  revision = "67670fe90761d7ff18ec1d640135e53b9198328f"
 
 [[projects]]
   branch = "master"
@@ -317,7 +317,7 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "891ebc4b82d6e74f468c533b06f983c7be918a96"
+  revision = "927f97764cc334a6575f4b7a1584a147864d5723"
 
 [[projects]]
   branch = "master"
@@ -325,7 +325,7 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "4d1cda033e0619309c606fc686de3adcf599539e"
+  revision = "b4a75ba826a64a70990f11a225237acd6ef35c9f"
 
 [[projects]]
   branch = "v2"

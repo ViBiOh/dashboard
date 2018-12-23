@@ -39,40 +39,49 @@ const (
 	deploySuffix     = `_deploy`
 )
 
-// App stores informations
+// Config of package
+type Config struct {
+	network       *string
+	tag           *string
+	containerUser *string
+	appURL        *string
+	notification  *string
+}
+
+// App of package
 type App struct {
 	tasks         sync.Map
 	dockerApp     *docker.App
+	mailerApp     *client.App
 	network       string
 	tag           string
 	containerUser string
 	appURL        string
 	notification  string
-	mailerApp     *client.App
 }
 
-// NewApp creates new App from Flags' config
-func NewApp(config map[string]*string, dockerApp *docker.App, mailerApp *client.App) *App {
+// Flags adds flags for configuring package
+func Flags(fs *flag.FlagSet, prefix string) Config {
+	return Config{
+		network:       fs.String(tools.ToCamel(fmt.Sprintf(`%sNetwork`, prefix)), `traefik`, `[deploy] Default Network`),
+		tag:           fs.String(tools.ToCamel(fmt.Sprintf(`%sTag`, prefix)), `latest`, `[deploy] Default image tag)`),
+		containerUser: fs.String(tools.ToCamel(fmt.Sprintf(`%sContainerUser`, prefix)), `1000`, `[deploy] Default container user`),
+		appURL:        fs.String(tools.ToCamel(fmt.Sprintf(`%sAppURL`, prefix)), `https://dashboard.vibioh.fr`, `[deploy] Application web URL`),
+		notification:  fs.String(tools.ToCamel(fmt.Sprintf(`%sNotification`, prefix)), `onError`, `[deploy] Send email notification when deploy ends (possibles values ares "never", "onError", "all")`),
+	}
+}
+
+// New creates new App from Config
+func New(config Config, dockerApp *docker.App, mailerApp *client.App) *App {
 	return &App{
 		tasks:         sync.Map{},
 		dockerApp:     dockerApp,
 		mailerApp:     mailerApp,
-		network:       strings.TrimSpace(*config[`network`]),
-		tag:           strings.TrimSpace(*config[`tag`]),
-		containerUser: strings.TrimSpace(*config[`containerUser`]),
-		appURL:        strings.TrimSpace(*config[`appURL`]),
-		notification:  strings.TrimSpace(*config[`notification`]),
-	}
-}
-
-// Flags adds flags for given prefix
-func Flags(prefix string) map[string]*string {
-	return map[string]*string{
-		`network`:       flag.String(tools.ToCamel(fmt.Sprintf(`%sNetwork`, prefix)), `traefik`, `[deploy] Default Network`),
-		`tag`:           flag.String(tools.ToCamel(fmt.Sprintf(`%sTag`, prefix)), `latest`, `[deploy] Default image tag)`),
-		`containerUser`: flag.String(tools.ToCamel(fmt.Sprintf(`%sContainerUser`, prefix)), `1000`, `[deploy] Default container user`),
-		`appURL`:        flag.String(tools.ToCamel(fmt.Sprintf(`%sAppURL`, prefix)), `https://dashboard.vibioh.fr`, `[deploy] Application web URL`),
-		`notification`:  flag.String(tools.ToCamel(fmt.Sprintf(`%sNotification`, prefix)), `onError`, `[deploy] Send email notification when deploy ends (possibles values ares "never", "onError", "all")`),
+		network:       *config.network,
+		tag:           *config.tag,
+		containerUser: *config.containerUser,
+		appURL:        *config.appURL,
+		notification:  *config.notification,
 	}
 }
 

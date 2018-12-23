@@ -14,14 +14,14 @@ const (
 	deployPrefix     = `/deploy`
 )
 
-// App stores informations
+// App of package
 type App struct {
 	dockerApp *docker.App
 	deployApp *deploy.App
 }
 
-// NewApp creates new App from dependencies
-func NewApp(dockerApp *docker.App, deployApp *deploy.App) *App {
+// New creates new App
+func New(dockerApp *docker.App, deployApp *deploy.App) *App {
 	return &App{
 		dockerApp: dockerApp,
 		deployApp: deployApp,

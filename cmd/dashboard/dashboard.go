@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -49,47 +50,51 @@ func handleGracefulClose(deployApp *deploy.App) error {
 }
 
 func main() {
-	serverConfig := httputils.Flags(``)
-	alcotestConfig := alcotest.Flags(``)
-	prometheusConfig := prometheus.Flags(`prometheus`)
-	opentracingConfig := opentracing.Flags(`tracing`)
-	rollbarConfig := rollbar.Flags(`rollbar`)
-	owaspConfig := owasp.Flags(``)
-	corsConfig := cors.Flags(`cors`)
+	fs := flag.NewFlagSet(`dashboard`, flag.ExitOnError)
 
-	authConfig := auth.Flags(`auth`)
-	dockerConfig := docker.Flags(`docker`)
-	deployConfig := deploy.Flags(`docker`)
-	streamConfig := stream.Flags(`docker`)
-	mailerConfig := client.Flags(`mailer`)
+	serverConfig := httputils.Flags(fs, ``)
+	alcotestConfig := alcotest.Flags(fs, ``)
+	prometheusConfig := prometheus.Flags(fs, `prometheus`)
+	opentracingConfig := opentracing.Flags(fs, `tracing`)
+	rollbarConfig := rollbar.Flags(fs, `rollbar`)
+	owaspConfig := owasp.Flags(fs, ``)
+	corsConfig := cors.Flags(fs, `cors`)
 
-	flag.Parse()
+	authConfig := auth.Flags(fs, `auth`)
+	dockerConfig := docker.Flags(fs, `docker`)
+	deployConfig := deploy.Flags(fs, `docker`)
+	streamConfig := stream.Flags(fs, `docker`)
+	mailerConfig := client.Flags(fs, `mailer`)
+
+	if err := fs.Parse(os.Args[1:]); err != nil {
+		logger.Fatal(`%+v`, err)
+	}
 
 	alcotest.DoAndExit(alcotestConfig)
 
-	serverApp := httputils.NewApp(serverConfig)
-	healthcheckApp := healthcheck.NewApp()
-	prometheusApp := prometheus.NewApp(prometheusConfig)
-	opentracingApp := opentracing.NewApp(opentracingConfig)
-	rollbarApp := rollbar.NewApp(rollbarConfig)
-	gzipApp := gzip.NewApp()
-	owaspApp := owasp.NewApp(owaspConfig)
-	corsApp := cors.NewApp(corsConfig)
+	serverApp := httputils.New(serverConfig)
+	healthcheckApp := healthcheck.New()
+	prometheusApp := prometheus.New(prometheusConfig)
+	opentracingApp := opentracing.New(opentracingConfig)
+	rollbarApp := rollbar.New(rollbarConfig)
+	gzipApp := gzip.New()
+	owaspApp := owasp.New(owaspConfig)
+	corsApp := cors.New(corsConfig)
 
-	authApp := auth.NewApp(authConfig)
-	dockerApp, err := docker.NewApp(dockerConfig)
+	authApp := auth.New(authConfig)
+	dockerApp, err := docker.New(dockerConfig)
 	if err != nil {
 		logger.Fatal(`%+v`, err)
 	}
 
-	streamApp, err := stream.NewApp(streamConfig, authApp, dockerApp)
+	streamApp, err := stream.New(streamConfig, authApp, dockerApp)
 	if err != nil {
 		logger.Fatal(`%+v`, err)
 	}
 
-	mailerApp := client.NewApp(mailerConfig)
-	deployApp := deploy.NewApp(deployConfig, dockerApp, mailerApp)
-	apiApp := api.NewApp(dockerApp, deployApp)
+	mailerApp := client.New(mailerConfig)
+	deployApp := deploy.New(deployConfig, dockerApp, mailerApp)
+	apiApp := api.New(dockerApp, deployApp)
 
 	restHandler := server.ChainMiddlewares(apiApp.Handler(), prometheusApp, opentracingApp, rollbarApp, gzipApp, owaspApp, corsApp, authApp)
 	websocketHandler := http.StripPrefix(websocketPrefix, streamApp.WebsocketHandler())
