@@ -3,6 +3,17 @@
 set -e
 set -u
 
+export PROJECT_NAME='dashboard'
+
+function renameComposeContainer() {
+  local serviceNum=1
+  for container in `docker-compose -p "${PROJECT_NAME}" -f docker-compose.yml ps -q`; do
+      local serviceName=`docker-compose -p "${PROJECT_NAME}" -f docker-compose.yml ps --services | sed "${serviceNum}q;d"`
+      docker rename "${container}" "${PROJECT_NAME}_${serviceName}"
+      ((serviceNum++))
+  done
+}
+
 echo Starting Dashboard with local configuration
 
 go run cmd/compose/compose.go \
@@ -21,7 +32,9 @@ go run cmd/compose/compose.go \
 
 go get github.com/ViBiOh/auth/cmd/bcrypt
 export ADMIN_PASSWORD=`bcrypt admin`
-docker-compose -p dashboard -f docker-compose.yml up -d
+
+docker-compose -p "${PROJECT_NAME}" -f docker-compose.yml up -d
+renameComposeContainer
 
 set +e
 
@@ -30,8 +43,8 @@ echo Running e2e tests
 docker run \
   -it \
   --rm \
-  --network dashboard_default \
-  --link dashboard_selenium_1:selenium \
+  --network "${PROJECT_NAME}_default" \
+  --link "${PROJECT_NAME}_selenium":selenium \
   -v `pwd`/e2e:/tests codeception/codeceptjs \
   codeceptjs run-multiple --all
 result=$?
@@ -40,11 +53,11 @@ set -e
 
 if [ "${result}" != "0" ]; then
     echo Checking logs on failure
-    docker-compose -p dashboard -f docker-compose.yml logs
+    docker-compose -p "${PROJECT_NAME}" -f docker-compose.yml logs
 fi
 
 echo Stopping started containers
-docker-compose -p dashboard -f docker-compose.yml stop
-docker-compose -p dashboard -f docker-compose.yml rm -f -v
+docker-compose -p "${PROJECT_NAME}" -f docker-compose.yml stop
+docker-compose -p "${PROJECT_NAME}" -f docker-compose.yml rm -f -v
 
 exit $result

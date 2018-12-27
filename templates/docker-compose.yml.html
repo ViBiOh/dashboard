@@ -175,12 +175,11 @@ services:
   {{- template "systemConfig" merge . "MemLimit:67108864" }}
 {{ if .Selenium }}
   selenium:
-    image: selenium/standalone-chrome-debug
-    ports:
-    - 5900:5900/tcp
-    - 4444:4444/tcp
+    image: selenium/standalone-chrome
     volumes:
     - /dev/shm:/dev/shm
+    dns: 1.1.1.1
+    shm_size: '2gb'
 {{- end }}
 {{- if .Traefik }}
 networks:

@@ -4,14 +4,9 @@
     "WebDriver": {
       "protocol": "http",
       "host": "selenium",
-      "port": "4444",
+      "port": 4444,
       "url": "http://front:1080",
-      "browser": "chrome",
-      "desiredCapabilities": {
-        "javascriptEnabled": true,
-        "webStorageEnabled": true,
-        "acceptSslCerts": true
-      }
+      "browser": "chrome"
     }
   },
   "include": {
