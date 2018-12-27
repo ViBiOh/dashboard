@@ -22,6 +22,7 @@ type dockerComposeService struct {
 	Volumes       []string
 	DNS           []string
 	CapAdd        []string `yaml:"cap_add"`
+	SecurityOpt   []string `yaml:"security_opt"`
 	Hostname      string
 	User          string
 	Healthcheck   *dockerComposeHealthcheck

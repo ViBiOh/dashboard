@@ -136,6 +136,10 @@ func (a *App) getHostConfig(service *dockerComposeService, user *model.User) *co
 		if len(service.CapAdd) > 0 {
 			hostConfig.CapAdd = service.CapAdd
 		}
+
+		if len(service.SecurityOpt) > 0 {
+			hostConfig.SecurityOpt = service.SecurityOpt
+		}
 	}
 
 	return &hostConfig
