@@ -1,7 +1,7 @@
 {
   "output": "./output",
   "helpers": {
-    "WebDriverIO": {
+    "WebDriver": {
       "protocol": "http",
       "host": "selenium",
       "port": "4444",
