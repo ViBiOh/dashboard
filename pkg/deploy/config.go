@@ -128,8 +128,14 @@ func (a *App) getHostConfig(service *dockerComposeService, user *model.User) *co
 		}
 	}
 
-	if docker.IsAdmin(user) && len(service.Volumes) > 0 {
-		getVolumesConfig(&hostConfig, service.Volumes)
+	if docker.IsAdmin(user) {
+		if len(service.Volumes) > 0 {
+			getVolumesConfig(&hostConfig, service.Volumes)
+		}
+
+		if len(service.CapAdd) > 0 {
+			hostConfig.CapAdd = service.CapAdd
+		}
 	}
 
 	return &hostConfig
