@@ -25,6 +25,7 @@ type dockerComposeService struct {
 	SecurityOpt   []string `yaml:"security_opt"`
 	Hostname      string
 	User          string
+	GroupAdd      []string `yaml:"group_add"`
 	Healthcheck   *dockerComposeHealthcheck
 	ReadOnly      bool  `yaml:"read_only"`
 	CPUShares     int64 `yaml:"cpu_shares"`
