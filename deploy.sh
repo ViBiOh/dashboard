@@ -18,9 +18,9 @@ function docker-compose-deploy() {
   local oldServices=`docker ps -f name="${PROJECT_NAME}*" -q`
   local PROJECT_FULLNAME=${PROJECT_NAME}`git rev-parse --short HEAD`
 
-  docker-compose -p ${PROJECT_FULLNAME} config -q
-  docker-compose -p ${PROJECT_FULLNAME} pull
-  docker-compose -p ${PROJECT_FULLNAME} up -d
+  docker-compose -p "${PROJECT_FULLNAME}" config -q
+  docker-compose -p "${PROJECT_FULLNAME}" pull
+  docker-compose -p "${PROJECT_FULLNAME}" up -d
   local servicesCount=`docker-compose -p "${PROJECT_FULLNAME}" ps -q | wc -l`
 
   echo "Waiting 45 seconds for containers to start..."
@@ -48,11 +48,9 @@ function docker-compose-deploy() {
 
   echo Renaming containers
 
-  local serviceNum=1
-  for container in `docker-compose -p "${PROJECT_FULLNAME}" ps -q`; do
-      local serviceName=`docker-compose -p "${PROJECT_FULLNAME}" ps --services | sed "${serviceNum}q;d"`
-      docker rename "${container}" "${PROJECT_NAME}_${serviceName}"
-      ((serviceNum++))
+  for service in `docker-compose -p "${PROJECT_FULLNAME}" ps --services`; do
+      local containerID=`docker ps -q --filter name="${PROJECT_FULLNAME}_${service}"`
+      docker rename "${containerID}" "${PROJECT_NAME}_${serviceName}"
   done
 
   echo Deploy succeed!
