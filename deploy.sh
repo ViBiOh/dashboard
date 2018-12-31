@@ -50,7 +50,7 @@ function docker-compose-deploy() {
 
   for service in `docker-compose -p "${PROJECT_FULLNAME}" ps --services`; do
       local containerID=`docker ps -q --filter name="${PROJECT_FULLNAME}_${service}"`
-      docker rename "${containerID}" "${PROJECT_NAME}_${serviceName}"
+      docker rename "${containerID}" "${PROJECT_NAME}_${service}"
   done
 
   echo Deploy succeed!
