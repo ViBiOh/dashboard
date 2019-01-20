@@ -1,6 +1,6 @@
 import test from 'ava';
 import { cancel, fork, take } from 'redux-saga/effects';
-import { createMockTask } from 'redux-saga/utils';
+import { createMockTask } from '@redux-saga/testing-utils';
 import actions from 'actions';
 import { busSaga, readBusSaga } from './index';
 

@@ -28,7 +28,7 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "6c064506cc129f3ad8b4a3df261515f194b3922d"
+  revision = "0f7bf7a3e9c1d6f28a9d0622d0c45a31aed3430a"
 
 [[projects]]
   branch = "master"
@@ -58,7 +58,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "3f0cae087df3b059952133aa2654747ab94382d0"
+  revision = "f34a4b0c6f552c687db14b15c1a88111f8c40419"
 
 [[projects]]
   branch = "master"
@@ -66,7 +66,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "4917ce26aa283833781a3e13142936813e04a523"
+  revision = "dd11cb47bfc282770cb06f6b9e400869febd24d8"
 
 [[projects]]
   branch = "master"
@@ -317,7 +317,7 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "915654e7eabcea33ae277abbecf52f0d8b7a9fdc"
+  revision = "ed066c81e75eba56dd9bd2139ade88125b855585"
 
 [[projects]]
   branch = "master"

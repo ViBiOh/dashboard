@@ -44,6 +44,7 @@
     "@babel/preset-env": "7.2.3",
     "@babel/preset-react": "7.0.0",
     "@babel/register": "7.0.0",
+    "@redux-saga/testing-utils": "1.0.0",
     "ava": "1.1.0",
     "babel-eslint": "10.0.1",
     "babel-plugin-module-resolver": "3.1.2",
@@ -56,7 +57,7 @@
     "esdoc-publish-html-plugin": "1.1.2",
     "eslint": "5.12.1",
     "eslint-config-airbnb": "17.1.0",
-    "eslint-config-prettier": "3.5.0",
+    "eslint-config-prettier": "3.6.0",
     "eslint-import-resolver-babel-module": "5.0.0-beta.1",
     "eslint-plugin-import": "2.14.0",
     "eslint-plugin-jsx-a11y": "6.1.2",
@@ -67,11 +68,11 @@
     "nyc": "13.1.0",
     "parcel-bundler": "1.11.0",
     "postcss-modules": "1.4.1",
-    "prettier": "1.15.3",
+    "prettier": "1.16.0",
     "react-addons-test-utils": "15.6.2",
     "react-test-renderer": "16.7.0",
-    "sinon": "7.2.2",
-    "stylelint": "9.10.0",
+    "sinon": "7.2.3",
+    "stylelint": "9.10.1",
     "stylelint-config-standard": "18.2.0"
   },
   "dependencies": {
@@ -92,7 +93,7 @@
     "react-router-dom": "4.3.1",
     "react-router-redux": "4.0.8",
     "redux": "4.0.1",
-    "redux-saga": "0.16.2"
+    "redux-saga": "1.0.0"
   },
   "ava": {
     "files": [

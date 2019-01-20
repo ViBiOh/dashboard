@@ -1,7 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
 import { put, all, fork, cancel } from 'redux-saga/effects';
-import { createMockTask } from 'redux-saga/utils';
+import { createMockTask } from '@redux-saga/testing-utils';
 import Docker from 'services/Docker';
 import actions from 'actions';
 import { readBusSaga, writeBusSaga } from './index';
@@ -29,7 +29,7 @@ test('should wait for event from channel', t => {
   iterator.next();
   Docker.streamBus.restore();
 
-  t.truthy(iterator.next(createMockTask()).value.TAKE.channel);
+  t.truthy(iterator.next(createMockTask()).value.payload.channel);
 });
 
 test('should put bus opened event', t => {
@@ -110,7 +110,7 @@ test('should do nothing if unknown', t => {
   iterator.next('ready');
   iterator.next();
 
-  t.truthy(iterator.next('unknown start').value.TAKE.channel);
+  t.truthy(iterator.next('unknown start').value.payload.channel);
 });
 
 test('should graceful close fork and say stream ended', t => {
