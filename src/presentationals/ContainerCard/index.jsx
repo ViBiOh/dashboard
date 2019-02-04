@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { FaCloud } from 'react-icons/fa';
+import { fromNow } from 'utils/Date';
 import Button from '../Button';
 import style from './index.css';
 
@@ -32,7 +32,7 @@ export default function ContainerCard({ container, onClick }) {
         <strong>{name}</strong>
       </span>
       <span>
-        {moment.unix(container.Created).fromNow()}
+        {fromNow(container.Created)}
         {container.Labels && container.Labels.owner ? (
           <div className={style.owner}>
             by&nbsp;

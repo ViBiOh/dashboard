@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { FaThumbsDown, FaThumbsUp, FaEllipsisH } from 'react-icons/fa';
 import { humanSize } from 'utils/statHelper';
+import { fromNow } from 'utils/Date';
 import style from './index.css';
 
 /**
@@ -94,7 +94,7 @@ const Info = ({ container }) => {
       </span>
       <span className={style.info}>
         <span className={style.label}>Created</span>
-        <span>{moment(container.Created).fromNow()}</span>
+        <span>{fromNow(container.Created)}</span>
       </span>
       <span className={style.info}>
         <span className={style.label}>Image</span>
