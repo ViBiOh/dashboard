@@ -32,7 +32,7 @@ export default function ContainerCard({ container, onClick }) {
         <strong>{name}</strong>
       </span>
       <span>
-        {fromNow(container.Created)}
+        {fromNow(container.Created * 1000)}
         {container.Labels && container.Labels.owner ? (
           <div className={style.owner}>
             by&nbsp;
