@@ -25,6 +25,8 @@ services:
     - user:email
   {{- end }}
   {{- if .Tracing }}
+    - -tracingAgent
+    - monitoring_jaeger:6831
     - -tracingName
     - dashboard_auth
   {{- end }}
@@ -86,7 +88,9 @@ services:
     - -corsOrigin
     - http{{ if .TLS }}s{{ end }}://{{ if .Traefik }}dashboard{{ .Domain }}{{ else }}{{ if .Expose }}localhost:1080{{ else }}front:1080{{ end }}{{ end }}
   {{- if .Tracing }}
-    - -tracingName
+    - -tracingAgent
+  - monitoring_jaeger:6831
+  - -tracingName
     - dashboard_api
   {{- end }}
   {{- if .Rollbar }}
@@ -123,7 +127,9 @@ services:
     - -headers
     - X-UA-Compatible:ie=edge
   {{- if .Tracing }}
-    - -tracingName
+    - -tracingAgent
+  - monitoring_jaeger:6831
+  - -tracingName
     - dashboard_ui
   {{- end }}
   {{- if .Rollbar }}
