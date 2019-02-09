@@ -28,7 +28,7 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "5cdbf6df2fce35330ba10a6faaeaa5fc7361a1ba"
+  revision = "45a2910b507a3806dc6fc90ea831dd402745df20"
 
 [[projects]]
   branch = "master"
@@ -58,7 +58,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "44a35421da3fef11fef81a0d1b19640c1cafb21e"
+  revision = "7f11176ba376626586783547b622aa2be1dbe724"
 
 [[projects]]
   branch = "master"
@@ -66,7 +66,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "2bd9d37e126f8b9ecac9b846c18f1af45debe72c"
+  revision = "382518e8eeb5078eb192e92fdfc74e07bec3476c"
 
 [[projects]]
   branch = "master"
@@ -326,7 +326,7 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "41f3e6584952bb034a481797859f6ab34b6803bd"
+  revision = "3b5209105503162ded1863c307ac66fec31120dd"
 
 [[projects]]
   branch = "v2"
