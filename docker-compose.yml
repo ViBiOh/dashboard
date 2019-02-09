@@ -69,8 +69,8 @@ services:
     - -corsOrigin
     - https://dashboard.vibioh.fr
     - -tracingAgent
-  - monitoring_jaeger:6831
-  - -tracingName
+    - monitoring_jaeger:6831
+    - -tracingName
     - dashboard_api
     labels:
       traefik.frontend.passHostHeader: 'true'
@@ -108,8 +108,8 @@ services:
     - -headers
     - X-UA-Compatible:ie=edge
     - -tracingAgent
-  - monitoring_jaeger:6831
-  - -tracingName
+    - monitoring_jaeger:6831
+    - -tracingName
     - dashboard_ui
     labels:
       traefik.frontend.passHostHeader: 'true'
