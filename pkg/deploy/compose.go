@@ -307,7 +307,7 @@ func (a *App) createContainer(ctx context.Context, user *model.User, appName str
 	}, nil
 }
 
-func (a *App) parseCompose(ctx context.Context, user *model.User, appName string, composeFile []byte) (map[string]*deployedService, error) {
+func (a *App) parseCompose(ctx context.Context, user *model.User, appName string, composeFile []byte) (newServices map[string]*deployedService, err error) {
 	composeFile = bytes.Replace(composeFile, []byte(`$$`), []byte(`$`), -1)
 
 	compose := dockerCompose{}
@@ -315,16 +315,28 @@ func (a *App) parseCompose(ctx context.Context, user *model.User, appName string
 		return nil, errors.New(`user=%s, app=%s %v`, user.Username, appName, err)
 	}
 
-	newServices := make(map[string]*deployedService)
-	for serviceName, service := range compose.Services {
-		if deployedService, err := a.createContainer(ctx, user, appName, serviceName, &service); err != nil {
-			break
-		} else {
-			newServices[serviceName] = deployedService
+	defer func() {
+		if err != nil {
+			for _, service := range newServices {
+				if _, rmErr := a.dockerApp.RmContainerAndImages(ctx, service.ContainerID, nil); rmErr != nil {
+					logger.Error(`%+v`, rmErr)
+				}
+			}
 		}
+	}()
+
+	newServices = make(map[string]*deployedService)
+	for serviceName, service := range compose.Services {
+		deployedService, createErr := a.createContainer(ctx, user, appName, serviceName, &service)
+		if createErr != nil {
+			err = createErr
+			return
+		}
+
+		newServices[serviceName] = deployedService
 	}
 
-	return newServices, nil
+	return
 }
 
 // Handler for request. Should be use with net/http
