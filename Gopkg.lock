@@ -10,12 +10,12 @@
   version = "v0.4.11"
 
 [[projects]]
-  digest = "1:0803645e1f57fb5271a6edc7570b9ea59bac2e5de67957075a43f3d74c8dbd97"
+  digest = "1:8e53ab383e902619948eecae0c5e328057905a9a7abbe34ea178fe0a9157a918"
   name = "github.com/NYTimes/gziphandler"
   packages = ["."]
   pruneopts = "UT"
-  revision = "2600fb119af974220d3916a5916d6e31176aac1b"
-  version = "v1.0.1"
+  revision = "b8a1976e622c1b8052c79219930d64a340ac5fcd"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
@@ -28,7 +28,7 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "45a2910b507a3806dc6fc90ea831dd402745df20"
+  revision = "720522c181137c76e72f71f68d50cf8ebee821ba"
 
 [[projects]]
   branch = "master"
@@ -58,7 +58,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "7f11176ba376626586783547b622aa2be1dbe724"
+  revision = "8db5456bcd622608cae6d1ccd1081460ed31ccc9"
 
 [[projects]]
   branch = "master"
@@ -66,7 +66,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "382518e8eeb5078eb192e92fdfc74e07bec3476c"
+  revision = "6c18b6373ab3ea0353019252ace5313b1a29f448"
 
 [[projects]]
   branch = "master"
@@ -120,7 +120,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "832ce62cb26d3508ebe1b665a3680949249691dc"
+  revision = "c093c1e08b605a6e4c763962c52e3c82ec0e934f"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -318,7 +318,7 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "65e2d4e15006aab9813ff8769e768bbf4bb667a0"
+  revision = "3a22650c66bd7f4fb6d1e8072ffd7b75c8a27898"
 
 [[projects]]
   branch = "master"
@@ -326,7 +326,7 @@
   name = "golang.org/x/sys"
   packages = ["windows"]
   pruneopts = "UT"
-  revision = "3b5209105503162ded1863c307ac66fec31120dd"
+  revision = "d0b11bdaac8adb652bff00e49bcacf992835621a"
 
 [[projects]]
   branch = "v2"
