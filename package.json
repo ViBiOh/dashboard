@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/ViBiOh/dashboard",
   "devDependencies": {
-    "@babel/core": "7.3.3",
+    "@babel/core": "7.2.2",
     "@babel/preset-env": "7.3.1",
     "@babel/preset-react": "7.0.0",
     "@babel/register": "7.0.0",
