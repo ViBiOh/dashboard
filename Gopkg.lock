@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c6e4c979c78e09d041a5e82d5a58d6039fe689af51508dd7635ece1c44a73052"
+  digest = "1:67480d4cbc9ffef23c00bf09d09025919bf4dd5f10375ad0ab5268bbc376a52c"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,11 +28,11 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "00a6f96c17e99bb62d86e395830fbae0b3456c2c"
+  revision = "ab085b9af3c4c4d3675795a9e956f2de69920285"
 
 [[projects]]
   branch = "master"
-  digest = "1:bf1ce699d5c0feb135eb679439eaa6432cba3fb6556c464c09ff5d8d7aff7fe5"
+  digest = "1:1d3810b7dba32aeb0855c32f9d1161be77f0eee00eae0789aa30cf2add37465b"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -58,7 +58,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "9dfd599fe510ee361516657fe3579ba2533d4e69"
+  revision = "681668c2fc64c26b2fcebf26e45ab6639774dbb7"
 
 [[projects]]
   branch = "master"
@@ -97,7 +97,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:e20941f8d1a844fc971cf2fef6a573ee0edf285f4ed66d90a8b5bf001a3e7d10"
+  digest = "1:addb92077376d2e7d7c16302ff33fe22a4cab0fc19700abb71ebea108712a339"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -120,7 +120,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "cbb885b07af59225eef12a8159e70d1485616d57"
+  revision = "dd945557876ba90c1b2c2eb6af17daf1dcdc83e3"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
