@@ -31,7 +31,7 @@ export default function ContainerCard({ container, onClick }) {
         <em className={style.image}>{container.Image}</em>
         <strong>{name}</strong>
       </span>
-      <span>
+      <span className={style.right}>
         {fromNow(container.Created * 1000)}
         {container.Labels && container.Labels.owner ? (
           <div className={style.owner}>

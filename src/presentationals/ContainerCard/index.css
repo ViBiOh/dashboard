@@ -53,3 +53,7 @@
 .external svg {
   color: var(--white);
 }
+
+.right {
+  text-align: right;
+}
