@@ -25,8 +25,8 @@ docker-compose-deploy() {
   docker-compose -p "${PROJECT_FULLNAME}" up -d
   local servicesCount=$(docker-compose -p "${PROJECT_FULLNAME}" ps -q | wc -l)
 
-  echo "Waiting 45 seconds for containers to start..."
-  timeout=$(date --date="45 seconds" +%s)
+  echo "Waiting 35 seconds for containers to start..."
+  timeout=$(date --date="35 seconds" +%s)
   local healthyCount=$(docker events --until "${timeout}" -f event="health_status: healthy" -f name="${PROJECT_FULLNAME}" | wc -l)
 
   if [[ "${servicesCount}" -gt "${healthyCount}" ]]; then
@@ -48,14 +48,14 @@ docker-compose-deploy() {
     docker rm -f -v ${oldServices}
   fi
 
-  echo Renaming containers
+  echo "Renaming containers"
 
   for service in $(docker-compose -p "${PROJECT_FULLNAME}" ps --services); do
       local containerID=$(docker ps -q --filter name="${PROJECT_FULLNAME}_${service}")
       docker rename "${containerID}" "${PROJECT_NAME}_${service}"
   done
 
-  echo Deploy succeed!
+  echo "Deploy succeed!"
 
   docker system prune -f || true
 }
@@ -70,22 +70,24 @@ main() {
   readVariableIfRequired "PROJECT_URL"
 
   if [[ ! -d "${PROJECT_NAME}" ]]; then
-    git clone ${PROJECT_URL} ${PROJECT_NAME}
+    git clone "${PROJECT_URL}" "${PROJECT_NAME}"
   fi
 
-  cd ${PROJECT_NAME}
+  pushd "${PROJECT_NAME}"
   git pull
 
   echo "Deploying ${PROJECT_NAME}"
-  docker-compose-deploy ${PROJECT_NAME}
+  docker-compose-deploy "${PROJECT_NAME}"
 
   if [[ -n "${ROLLBAR_TOKEN}" ]]; then
     curl https://api.rollbar.com/api/1/deploy/ \
-      -F access_token=${ROLLBAR_TOKEN} \
-      -F environment=prod \
-      -F revision=$(make version) \
-      -F local_username=$(make author)
+      -F "access_token=${ROLLBAR_TOKEN}" \
+      -F "environment=prod" \
+      -F "revision=$(make version)" \
+      -F "local_username=$(make author)"
   fi
+
+  popd
 }
 
 main "${@}"
