@@ -7,14 +7,14 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 read_variable_if_required() {
   if [[ -z "${!1}" ]]; then
-    read -p "${1}=" $1
+    read -p "${1}=" ${1}
   else
     echo "${1}="${!1}
   fi
 }
 
 start_services() {
-  local PROJECT_FULLNAME=${1}
+  local PROJECT_FULLNAME=${1:-}
   read_variable_if_required "PROJECT_FULLNAME"
 
   docker-compose -p "${PROJECT_FULLNAME}" config -q
@@ -23,7 +23,7 @@ start_services() {
 }
 
 count_healthy_services() {
-  local PROJECT_FULLNAME=${1}
+  local PROJECT_FULLNAME=${1:-}
   read_variable_if_required "PROJECT_FULLNAME"
 
   local counter=0
@@ -40,7 +40,7 @@ count_healthy_services() {
 }
 
 revert_services() {
-  local PROJECT_FULLNAME=${2}
+  local PROJECT_FULLNAME=${1:-}
   read_variable_if_required "PROJECT_FULLNAME"
 
   echo "Containers didn't start, reverting..."
@@ -65,9 +65,9 @@ clean_old_services() {
 }
 
 rename_services() {
-  local PROJECT_NAME=${1}
+  local PROJECT_NAME=${1:-}
   read_variable_if_required "PROJECT_NAME"
-  local PROJECT_FULLNAME=${2}
+  local PROJECT_FULLNAME=${2:-}
   read_variable_if_required "PROJECT_FULLNAME"
 
   echo "Renaming containers from ${PROJECT_FULLNAME} to ${PROJECT_NAME}"
@@ -79,7 +79,7 @@ rename_services() {
 }
 
 deploy_services() {
-  local PROJECT_NAME="${1}"
+  local PROJECT_NAME="${1:-}"
   read_variable_if_required "PROJECT_NAME"
 
   local oldServices=$(docker ps -f name="${PROJECT_NAME}*" -q)
@@ -110,10 +110,10 @@ deploy_services() {
 main() {
   export PATH=${PATH}:/opt/bin
 
-  local PROJECT_NAME=${1}
+  local PROJECT_NAME=${1:-}
   read_variable_if_required "PROJECT_NAME"
 
-  local PROJECT_URL=${2}
+  local PROJECT_URL=${2:-}
   read_variable_if_required "PROJECT_URL"
 
   if [[ ! -d "${PROJECT_NAME}" ]]; then
