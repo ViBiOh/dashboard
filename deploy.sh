@@ -93,6 +93,8 @@ deploy_services() {
   local healthcheckCount=$(count_healthy_services "${PROJECT_FULLNAME}")
   local healthyCount=$(docker events --until "${timeout}" -f event="health_status: healthy" -f name="${PROJECT_FULLNAME}" | wc -l)
 
+  echo "Expecting ${healthcheckCount} services to send health, got ${healthyCount}"
+
   if [[ "${healthcheckCount}" != "${healthyCount}" ]]; then
     revert_services "${PROJECT_FULLNAME}"
     return 1
