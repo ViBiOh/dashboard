@@ -10,6 +10,12 @@ APP_PACKAGES = $(shell go list -e $(PACKAGES) | grep -v vendor | grep -v node_mo
 GOBIN=bin
 BINARY_PATH=$(GOBIN)/$(APP_NAME)
 
+SERVER_SOURCE = cmd/dashboard/dashboard.go
+SERVER_RUNNER = go run $(SERVER_SOURCE)
+ifeq ($(DEBUG), true)
+	SERVER_RUNNER = dlv debug $(SERVER_SOURCE) --
+endif
+
 ## help: Display list of commands
 .PHONY: help
 help: Makefile
@@ -133,7 +139,7 @@ start-front:
 ## start: Start app
 .PHONY: start
 start:
-	go run -race cmd/dashboard/dashboard.go \
+	$(SERVER_RUNNER) \
 		-tls=false \
 		-dockerWs ".*" \
 		-dockerVersion '1.32' \
