@@ -11,21 +11,28 @@ start_services() {
     return 1
   fi
 
-  docker-compose -p "${1}" config -q
-  docker-compose -p "${1}" pull
-  docker-compose -p "${1}" up -d
+  local PROJECT_FULLNAME="${1}"
+
+  echo "Deploying ${PROJECT_NAME}"
+  echo
+
+  docker-compose -p "${PROJECT_FULLNAME}" config -q
+  docker-compose -p "${PROJECT_FULLNAME}" pull
+  docker-compose -p "${PROJECT_FULLNAME}" up -d
 }
 
-count_healthy_services() {
+count_services_with_health() {
   if [[ "${#}" -ne 1 ]]; then
-    echo "Usage: count_healthy_services [PROJECT_FULLNAME]"
+    echo "Usage: count_services_with_health [PROJECT_FULLNAME]"
     return 1
   fi
 
+  local PROJECT_FULLNAME="${1}"
+
   local counter=0
 
-  for service in $(docker-compose -p "${1}" ps --services); do
-    local containerID=$(docker ps -q --filter name="${1}_${service}")
+  for service in $(docker-compose -p "${PROJECT_FULLNAME}" ps --services); do
+    local containerID=$(docker ps -q --filter name="${PROJECT_FULLNAME}_${service}")
 
     if [[ $(docker inspect --format '{{ .State.Health }}' "${containerID}") != '<nil>' ]]; then
       counter=$((counter+1))
@@ -35,29 +42,52 @@ count_healthy_services() {
   echo "${counter}"
 }
 
+are_services_healthy() {
+  if [[ "${#}" -ne 1 ]]; then
+    echo "Usage: are_services_healthy [PROJECT_FULLNAME]"
+    return 1
+  fi
+
+  local PROJECT_FULLNAME="${1}"
+  local WAIT_TIMEOUT="35"
+
+  echo "Waiting ${WAIT_TIMEOUT} seconds for containers to start..."
+  echo
+  timeout=$(date --date="${WAIT_TIMEOUT} seconds" +%s)
+
+  local healthcheckCount=$(count_services_with_health "${PROJECT_FULLNAME}")
+  local healthyCount=$(docker events --until "${timeout}" -f event="health_status: healthy" -f name="${PROJECT_FULLNAME}" | wc -l)
+
+  [[ "${healthcheckCount}" == "${healthyCount}" ]] && echo "true" || echo "false"
+}
+
 revert_services() {
   if [[ "${#}" -ne 1 ]]; then
     echo "Usage: revert_services [PROJECT_FULLNAME]"
     return 1
   fi
 
+  local PROJECT_FULLNAME="${1}"
+
   echo "Containers didn't start, reverting..."
+  echo
 
-  docker-compose -p "${1}" logs || true
+  docker-compose -p "${PROJECT_FULLNAME}" logs || true
 
-  for service in $(docker-compose -p "${1}" ps --services); do
-    local containerID=$(docker ps -q --filter name="${1}_${service}")
+  for service in $(docker-compose -p "${PROJECT_FULLNAME}" ps --services); do
+    local containerID=$(docker ps -q --filter name="${PROJECT_FULLNAME}_${service}")
 
     if [[ $(docker inspect --format '{{ .State.Health }}' "${containerID}") != '<nil>' ]]; then
       docker inspect --format='{{ .Name }}{{ "\n" }}{{range .State.Health.Log }}code={{ .ExitCode }}, log={{ .Output }}{{ end }}' "${containerID}"
     fi
   done
 
-  docker-compose -p "${1}" rm --force --stop -v
+  docker-compose -p "${PROJECT_FULLNAME}" rm --force --stop -v
 }
 
 clean_old_services() {
   echo "Stopping and removing old containers ${@}"
+  echo
 
   docker stop --time=180 "${@}"
   docker rm -f -v "${@}"
@@ -69,11 +99,15 @@ rename_services() {
     return 1
   fi
 
-  echo "Renaming containers from ${1} to ${2}"
+  local PROJECT_FULLNAME="${1}"
+  local PROJECT_NAME="${2}"
 
-  for service in $(docker-compose -p "${1}" ps --services); do
-    local containerID=$(docker ps -q --filter name="${1}_${service}")
-    docker rename "${containerID}" "${2}_${service}"
+  echo "Renaming containers from ${PROJECT_FULLNAME} to ${PROJECT_NAME}"
+  echo
+
+  for service in $(docker-compose -p "${PROJECT_FULLNAME}" ps --services); do
+    local containerID=$(docker ps -q --filter name="${PROJECT_FULLNAME}_${service}")
+    docker rename "${containerID}" "${PROJECT_NAME}_${service}"
   done
 }
 
@@ -83,20 +117,13 @@ deploy_services() {
     return 1
   fi
 
-  local oldServices=$(docker ps -f name="${1}*" -q)
-  local PROJECT_FULLNAME="${1}$(git rev-parse --short HEAD)"
+  local PROJECT_NAME="${1}"
+  local oldServices=$(docker ps -f name="${PROJECT_NAME}*" -q)
+  local PROJECT_FULLNAME="${PROJECT_NAME}$(git rev-parse --short HEAD)"
 
   start_services "${PROJECT_FULLNAME}"
 
-  echo "Waiting 35 seconds for containers to start..."
-  timeout=$(date --date="35 seconds" +%s)
-
-  local healthcheckCount=$(count_healthy_services "${PROJECT_FULLNAME}")
-  local healthyCount=$(docker events --until "${timeout}" -f event="health_status: healthy" -f name="${PROJECT_FULLNAME}" | wc -l)
-
-  echo "Expecting ${healthcheckCount} services to send health, got ${healthyCount}"
-
-  if [[ "${healthcheckCount}" != "${healthyCount}" ]]; then
+  if [[ $(are_services_healthy "${PROJECT_FULLNAME}") == "false" ]]; then
     revert_services "${PROJECT_FULLNAME}"
     return 1
   fi
@@ -105,9 +132,10 @@ deploy_services() {
     clean_old_services ${oldServices}
   fi
 
-  rename_services "${PROJECT_FULLNAME}" "${1}"
+  rename_services "${PROJECT_FULLNAME}" "${PROJECT_NAME}"
 
   echo "Deploy successful!"
+  echo
 }
 
 main() {
@@ -118,16 +146,18 @@ main() {
     return 1
   fi
 
-  if [[ ! -d "${1}" ]]; then
-    git clone "${2}" "${1}"
+  local PROJECT_NAME="${1}"
+  local PROJECT_URL="${2}"
+
+  if [[ ! -d "${PROJECT_NAME}" ]]; then
+    git clone "${PROJECT_URL}" "${PROJECT_NAME}"
   fi
 
-  pushd "${1}"
+  pushd "${PROJECT_NAME}"
 
   git pull
 
-  echo "Deploying ${1}"
-  deploy_services "${1}"
+  deploy_services "${PROJECT_NAME}"
   docker system prune -f || true
 
   popd
