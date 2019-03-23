@@ -13,7 +13,7 @@ read_variable_if_required() {
   fi
 }
 
-start_services() {
+start_services() {
   local PROJECT_FULLNAME=${1}
   read_variable_if_required "PROJECT_FULLNAME"
 
