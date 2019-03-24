@@ -102,23 +102,18 @@ remove_old_services() {
   local projectServices=$(docker ps -f name="${PROJECT_NAME}*" -q)
   local composeServices=$(docker-compose -p "${PROJECT_FULLNAME}" ps -q)
 
-  echo "projectServices=${projectServices[@]}"
-  echo "composeServices=${composeServices[@]}"
-
   local containersToRemove=()
 
   for projectService in "${projectServices[@]}"; do
     for composeService in "${composeServices[@]}"; do
-      if [[ "${projectService}" != "${composeService}" ]]; then
+      if [[ "${projectService}" != "${composeService:0:12}" ]]; then
         containersToRemove+=("${projectService}")
       fi
     done
   done
 
-  echo "containersToRemove=${containersToRemove[@]}"
-
-  docker stop --time=180 "${containersToRemove[@]}"
-  docker rm -f -v "${containersToRemove[@]}"
+  docker stop --time=180 "$(echo ${containersToRemove[@]})"
+  docker rm -f -v "$(echo ${containersToRemove[@]})"
 }
 
 rename_new_services() {
