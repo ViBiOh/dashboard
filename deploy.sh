@@ -3,7 +3,6 @@
 set -o errexit
 set -o nounset
 set -o pipefail
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 start_services() {
   if [[ "${#}" -ne 1 ]]; then
