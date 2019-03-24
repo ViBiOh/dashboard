@@ -105,7 +105,11 @@ remove_old_services() {
   local containersToRemove=()
 
   for projectService in "${projectServices[@]}"; do
+    echo "projectService: ${projectService}"
+  
     for composeService in "${composeServices[@]}"; do
+      echo "composeService: ${composeService:0:12}"
+    
       if [[ "${projectService}" != "${composeService:0:12}" ]]; then
         containersToRemove+=("${projectService}")
       fi
