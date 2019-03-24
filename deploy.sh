@@ -99,8 +99,8 @@ remove_old_services() {
   echo "Removing old containers from ${PROJECT_NAME}"
   echo
 
-  local projectServices=$(docker ps -f name="${PROJECT_NAME}*" -q)
-  local composeServices=$(docker-compose -p "${PROJECT_FULLNAME}" ps -q)
+  local projectServices=($(docker ps -f name="${PROJECT_NAME}*" -q))
+  local composeServices=($(docker-compose -p "${PROJECT_FULLNAME}" ps -q))
 
   local containersToRemove=()
 
