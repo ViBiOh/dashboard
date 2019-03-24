@@ -13,7 +13,7 @@ main() {
 
   curl -o docker-compose-dashboard.yml https://raw.githubusercontent.com/ViBiOh/dashboard/master/docker-compose.yml
 
-  ./deploy.sh "dashboard" $(git rev-parse --short HEAD) docker-compose-dashboard.yml
+  ./deploy.sh "dashboard" "${1:-SHA1}" docker-compose-dashboard.yml
 
   set +e
   docker system prune -f
