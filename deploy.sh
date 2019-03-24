@@ -30,10 +30,8 @@ count_services_with_health() {
 
   local counter=0
 
-  for service in $(docker-compose -p "${PROJECT_FULLNAME}" ps --services); do
-    local containerID=$(docker ps -q --filter name="${PROJECT_FULLNAME}_${service}")
-
-    if [[ $(docker inspect --format '{{ .State.Health }}' "${containerID}") != '<nil>' ]]; then
+  for service in $(docker-compose -p "${PROJECT_FULLNAME}" ps -q); do
+    if [[ $(docker inspect --format '{{ .State.Health }}' "${service}") != '<nil>' ]]; then
       counter=$((counter+1))
     fi
   done
@@ -73,28 +71,47 @@ revert_services() {
 
   docker-compose -p "${PROJECT_FULLNAME}" logs || true
 
-  for service in $(docker-compose -p "${PROJECT_FULLNAME}" ps --services); do
-    local containerID=$(docker ps -q --filter name="${PROJECT_FULLNAME}_${service}")
-
-    if [[ $(docker inspect --format '{{ .State.Health }}' "${containerID}") != '<nil>' ]]; then
-      docker inspect --format='{{ .Name }}{{ "\n" }}{{range .State.Health.Log }}code={{ .ExitCode }}, log={{ .Output }}{{ end }}' "${containerID}"
+  for service in $(docker-compose -p "${PROJECT_FULLNAME}" ps -q); do
+    if [[ $(docker inspect --format '{{ .State.Health }}' "${service}") != '<nil>' ]]; then
+      docker inspect --format='{{ .Name }}{{ "\n" }}{{range .State.Health.Log }}code={{ .ExitCode }}, log={{ .Output }}{{ end }}' "${service}"
     fi
   done
 
   docker-compose -p "${PROJECT_FULLNAME}" rm --force --stop -v
 }
 
-clean_old_services() {
-  echo "Stopping and removing old containers ${@}"
+remove_old_services() {
+  if [[ "${#}" -ne 2 ]]; then
+    echo "Usage: remove_old_services [PROJECT_FULLNAME] [PROJECT_NAME]"
+    return 1
+  fi
+
+  local PROJECT_FULLNAME="${1}"
+  local PROJECT_NAME="${2}"
+
+  echo "Removing old containers from ${PROJECT_NAME}"
   echo
 
-  docker stop --time=180 "${@}"
-  docker rm -f -v "${@}"
+  local projectServices=$(docker ps -f name="${PROJECT_NAME}*" -q)
+  local composeServices=$(docker-compose -p "${PROJECT_FULLNAME}" ps -q)
+
+  local containersToRemove=()
+
+  for projectService in "${projectServices[@]}"; do
+    for composeService in "${composeServices[@]}"; do
+      if [[ "${projectService}" != "${composeService}" ]]; then
+        containersToRemove+=("${projectService}")
+      fi
+    done
+  done
+
+  docker stop --time=180 "${containersToRemove[@]}"
+  docker rm -f -v "${containersToRemove[@]}"
 }
 
-rename_services() {
+rename_new_services() {
   if [[ "${#}" -ne 2 ]]; then
-    echo "Usage: rename_services [PROJECT_FULLNAME] [PROJECT_NAME]"
+    echo "Usage: rename_new_services [PROJECT_FULLNAME] [PROJECT_NAME]"
     return 1
   fi
 
@@ -117,7 +134,6 @@ deploy_services() {
   fi
 
   local PROJECT_NAME="${1}"
-  local oldServices=$(docker ps -f name="${PROJECT_NAME}*" -q)
   local PROJECT_FULLNAME="${PROJECT_NAME}$(git rev-parse --short HEAD)"
 
   start_services "${PROJECT_FULLNAME}"
@@ -127,11 +143,8 @@ deploy_services() {
     return 1
   fi
 
-  if [[ ! -z "${oldServices}" ]]; then
-    clean_old_services ${oldServices}
-  fi
-
-  rename_services "${PROJECT_FULLNAME}" "${PROJECT_NAME}"
+  remove_old_services "${PROJECT_FULLNAME}" "${PROJECT_NAME}"
+  rename_new_services "${PROJECT_FULLNAME}" "${PROJECT_NAME}"
 
   echo "Deploy successful!"
   echo
