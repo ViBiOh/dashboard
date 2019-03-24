@@ -28,7 +28,7 @@ jobs:
     sudo: required
     services:
     - docker
-    go: '1.11'
+    go: '1.12'
     env:
     - DOCKER_COMPOSE_VERSION=1.23.2
     before_install:
