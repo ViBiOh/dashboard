@@ -5,12 +5,13 @@ set -o nounset
 set -o pipefail
 
 start_services() {
-  if [[ "${#}" -ne 1 ]]; then
-    echo "Usage: start_services [PROJECT_FULLNAME]"
+  if [[ "${#}" -ne 2 ]]; then
+    echo "Usage: start_services [PROJECT_FULLNAME] [PROJECT_NAME]"
     return 1
   fi
 
   local PROJECT_FULLNAME="${1}"
+  local PROJECT_NAME="${2}"
 
   echo "Deploying ${PROJECT_NAME}"
   echo
@@ -46,6 +47,7 @@ are_services_healthy() {
   fi
 
   local PROJECT_FULLNAME="${1}"
+
   local WAIT_TIMEOUT="35"
 
   echo "Waiting ${WAIT_TIMEOUT} seconds for containers to start..."
@@ -69,7 +71,10 @@ revert_services() {
   echo "Containers didn't start, reverting..."
   echo
 
-  docker-compose -p "${PROJECT_FULLNAME}" logs || true
+  # Force continuation in case of errors for keeping a clean state
+  set +e
+
+  docker-compose -p "${PROJECT_FULLNAME}" logs
 
   for service in $(docker-compose -p "${PROJECT_FULLNAME}" ps -q); do
     if [[ $(docker inspect --format '{{ .State.Health }}' "${service}") != '<nil>' ]]; then
@@ -78,6 +83,8 @@ revert_services() {
   done
 
   docker-compose -p "${PROJECT_FULLNAME}" rm --force --stop -v
+
+  set -e
 }
 
 remove_old_services() {
@@ -95,6 +102,9 @@ remove_old_services() {
   local projectServices=$(docker ps -f name="${PROJECT_NAME}*" -q)
   local composeServices=$(docker-compose -p "${PROJECT_FULLNAME}" ps -q)
 
+  echo "projectServices=${projectServices[@]}"
+  echo "composeServices=${composeServices[@]}"
+
   local containersToRemove=()
 
   for projectService in "${projectServices[@]}"; do
@@ -104,6 +114,8 @@ remove_old_services() {
       fi
     done
   done
+
+  echo "containersToRemove=${containersToRemove[@]}"
 
   docker stop --time=180 "${containersToRemove[@]}"
   docker rm -f -v "${containersToRemove[@]}"
@@ -136,7 +148,7 @@ deploy_services() {
   local PROJECT_NAME="${1}"
   local PROJECT_FULLNAME="${PROJECT_NAME}$(git rev-parse --short HEAD)"
 
-  start_services "${PROJECT_FULLNAME}"
+  start_services "${PROJECT_FULLNAME}" "${PROJECT_NAME}"
 
   if [[ $(are_services_healthy "${PROJECT_FULLNAME}") == "false" ]]; then
     revert_services "${PROJECT_FULLNAME}"
@@ -163,16 +175,19 @@ main() {
 
   if [[ ! -d "${PROJECT_NAME}" ]]; then
     git clone "${PROJECT_URL}" "${PROJECT_NAME}"
+    pushd "${PROJECT_NAME}"
+  else
+    pushd "${PROJECT_NAME}"
+    git pull
   fi
 
-  pushd "${PROJECT_NAME}"
-
-  git pull
-
   deploy_services "${PROJECT_NAME}"
-  docker system prune -f || true
 
   popd
+
+  set +e
+  docker system prune -f
+  set -e
 }
 
 main "${@}"
