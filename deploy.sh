@@ -108,6 +108,7 @@ remove_old_services() {
     for composeService in "${composeServices[@]}"; do
       if [[ "${projectService:0:10}" != "${composeService:0:10}" ]]; then
         containersToRemove+=("${projectService}")
+        break
       fi
     done
   done
