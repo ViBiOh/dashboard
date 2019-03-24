@@ -119,8 +119,10 @@ remove_old_services() {
     fi
   done
 
-  docker stop --time=180 ${containersToRemove[@]}
-  docker rm -f -v ${containersToRemove[@]}
+  if [[ "${#containersToRemove[@]}" -gt 0 ]]; then
+    docker stop --time=180 ${containersToRemove[@]}
+    docker rm -f -v ${containersToRemove[@]}
+  fi
 }
 
 rename_new_services() {
