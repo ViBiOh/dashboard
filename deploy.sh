@@ -105,12 +105,18 @@ remove_old_services() {
   local containersToRemove=()
 
   for projectService in "${projectServices[@]}"; do
+    local found=0
+
     for composeService in "${composeServices[@]}"; do
-      if [[ "${projectService:0:10}" != "${composeService:0:10}" ]]; then
-        containersToRemove+=("${projectService}")
+      if [[ "${projectService:0:12}" == "${composeService:0:12}" ]]; then
+        found=1
         break
       fi
     done
+
+    if [[ "${found}" -eq 0 ]]; then
+      containersToRemove+=("${projectService}")
+    fi
   done
 
   docker stop --time=180 ${containersToRemove[@]}
