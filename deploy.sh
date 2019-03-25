@@ -6,8 +6,6 @@ set -o pipefail
 
 
 main() {
-  export PATH="${PATH}:/opt/bin"
-
   curl -O https://raw.githubusercontent.com/ViBiOh/docker-compose-deploy/master/deploy.sh
   chmod +x deploy.sh
 
@@ -16,10 +14,7 @@ main() {
 
   ./deploy.sh "dashboard" "${1:-SHA1}" "${COMPOSE_FILE}"
 
-  set +e
-  rm -rf deploy.sh "${COMPOSE_FILE}"
-  docker system prune -f
-  set -e
+  rm -rf "${COMPOSE_FILE}"
 }
 
 main "${@}"
