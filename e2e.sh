@@ -30,7 +30,7 @@ main() {
     -tracing=false \
     -rollbar=false \
     -traefik=false \
-    -version=$(git log --pretty=format:'%h' -n 1) \
+    -version=$(git rev-parse --short HEAD) \
     > docker-compose.yml
 
   go get github.com/ViBiOh/auth/cmd/bcrypt

@@ -1,7 +1,7 @@
 SHELL = /bin/sh
 
 APP_NAME ?= dashboard
-VERSION ?= $(shell git log --pretty=format:'%h' -n 1)
+VERSION ?= $(shell git rev-parse --short HEAD)
 AUTHOR ?= $(shell git log --pretty=format:'%an' -n 1)
 PACKAGES ?= ./...
 
