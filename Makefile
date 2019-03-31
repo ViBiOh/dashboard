@@ -95,7 +95,7 @@ build-api:
 ## doc: Build doc
 .PHONY: doc
 doc:
-	docker run -it --rm -v `pwd`/doc:/doc quay.io/bukalapak/snowboard html -o api.html api.apib
+	docker run -it --rm -v $(pwd)/doc:/doc quay.io/bukalapak/snowboard html -o api.html api.apib
 
 ## build-ui: Build bundle
 .PHONY: build-ui
@@ -115,7 +115,7 @@ start-deps:
 start-auth:
 	auth \
 		-tls=false \
-		-basicUsers "1:admin:`bcrypt admin`" \
+		-basicUsers "1:admin:$(bcrypt admin)" \
 		-corsHeaders Content-Type,Authorization \
 		-port 1081 \
 		-corsCredentials \
@@ -135,7 +135,7 @@ start-front:
 		-spa \
 		-env API_URL,WS_URL,AUTH_URL,BASIC_AUTH_ENABLED,GITHUB_AUTH_ENABLED,ENVIRONMENT,ROLLBAR_TOKEN \
 		-csp "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com/ajax/libs/rollbar.js/; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: localhost:1081 localhost:1082 api.rollbar.com" \
-		-directory `pwd`/dist
+		-directory $(pwd)/dist
 
 ## start: Start app
 .PHONY: start
