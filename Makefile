@@ -3,8 +3,9 @@ SHELL = /bin/sh
 APP_NAME ?= dashboard
 VERSION ?= $(shell git rev-parse --short HEAD)
 AUTHOR ?= $(shell git log --pretty=format:'%an' -n 1)
-PACKAGES ?= ./...
 
+
+PACKAGES ?= ./...
 APP_PACKAGES = $(shell go list -e $(PACKAGES) | grep -v vendor | grep -v node_modules)
 
 GOBIN=bin
