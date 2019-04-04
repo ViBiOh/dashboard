@@ -4,7 +4,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-
 main() {
   curl -O https://raw.githubusercontent.com/ViBiOh/docker-compose-deploy/master/deploy.sh
   chmod +x deploy.sh
