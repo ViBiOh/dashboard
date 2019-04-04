@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-set -o errexit
-set -o nounset
-set -o pipefail
+set -o nounset -o pipefail -o errexit
 
 main() {
   curl -O https://raw.githubusercontent.com/ViBiOh/docker-compose-deploy/master/deploy.sh
