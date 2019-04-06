@@ -28,7 +28,7 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "8d7efb214704f277978fcd835868dc216e02a163"
+  revision = "ae0ebb5f76fe8e3325c1271cad5bc85e2eb19dd7"
 
 [[projects]]
   branch = "master"
@@ -58,7 +58,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "a3654c130b1e16698c9c2ebb5d22796d9dd6ddaf"
+  revision = "864a7148bc82cda83652d30ce21a8c48909b5927"
 
 [[projects]]
   branch = "master"
@@ -66,7 +66,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "d223839fb953ad958735b5c4929fbf50d094dee7"
+  revision = "690b66caf9f0814c074b73d172d18de323470b30"
 
 [[projects]]
   branch = "master"
@@ -90,7 +90,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:9060600100575be31ce350a98efcfc401ee640eaa850465ffd9a5719bc2f3b82"
+  digest = "1:ff4575801ceb68b48852aeea40f777951e6928d11e79043b7f4bd66176fbfec8"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -113,7 +113,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "d7ab8ad145fad4c63112f34721663021e5b02707"
+  revision = "0ac8cbf74765ca32e1b82df343bdf52ebb0fb6e2"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -266,7 +266,7 @@
   name = "github.com/prometheus/procfs"
   packages = ["."]
   pruneopts = "UT"
-  revision = "af7bedc223fba51343f25a6fa7aba84355d0357a"
+  revision = "ea9eea63887261e4d8ed8315f4078e88d540c725"
 
 [[projects]]
   digest = "1:03a89169777b38862145711ef2317a36e19e1cdf717ab622e196f6a851b71ad9"
@@ -277,12 +277,12 @@
   version = "v1.0.2"
 
 [[projects]]
-  digest = "1:e4c72127d910a96daf869a44f3dd563b86dbe6931a172863a0e99c5ff04b59e4"
+  digest = "1:fd61cf4ae1953d55df708acb6b91492d538f49c305b364a014049914495db426"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   pruneopts = "UT"
-  revision = "dae0fa8d5b0c810a8ab733fbd5510c7cae84eca4"
-  version = "v1.4.0"
+  revision = "8bdbc7bcc01dcbb8ec23dc8a28e332258d25251f"
+  version = "v1.4.1"
 
 [[projects]]
   digest = "1:3b0ac1ac6f703e6d43f4e29c97da2c9e34465c66e2e19f9828e9841d1c9279a4"
@@ -320,14 +320,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:bbe51412d9915d64ffaa96b51d409e070665efc5194fcf145c4a27d4133107a4"
-  name = "golang.org/x/crypto"
-  packages = ["ssh/terminal"]
-  pruneopts = "UT"
-  revision = "a5d413f7728c81fb97d96a2b722368945f651e78"
-
-[[projects]]
-  branch = "master"
   digest = "1:0a004b4ff5794b399b3556e68f0c436a57d5f7e437e740bb16c0b521ceb23fd7"
   name = "golang.org/x/net"
   packages = [
@@ -335,18 +327,18 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "74de082e2cca95839e88aa0aeee5aadf6ce7710f"
+  revision = "eb5bcb51f2a31c7d5141d810b70815c05d9c9146"
 
 [[projects]]
   branch = "master"
-  digest = "1:f6321364014431568a59b49b449d6ae60c017f3afa3f4ab787a5636853b16b1e"
+  digest = "1:503f66aac79cb9135d73679c7fa3e95a6fad82a3da399c505ea282b50ff03723"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "9eb1bfa1ce65ae8a6ff3114b0aaf9a41a6cf3560"
+  revision = "4b34438f7a67ee5f45cc6132e2bad873a20324e9"
 
 [[projects]]
   branch = "master"
@@ -354,7 +346,7 @@
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "UT"
-  revision = "d831d65fe17df2e52bcc4316d4a9f7a418701f43"
+  revision = "64821d5d210748c883cd2b809589555ae4654203"
 
 [[projects]]
   digest = "1:4a251721b698c0e6285aec21d4ba3f79ddeccd903690144461b360ea7f948106"
