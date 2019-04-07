@@ -55,26 +55,10 @@ jobs:
       curl -s -X POST https://goreportcard.com/checks?repo=github.com/ViBiOh/dashboard
       curl -X POST --data-urlencode "gitUrl=git@github.com:ViBiOh/dashboard.git" https://doc.esdoc.org/api/create
 
-  - stage: Deploy
-
-    script: skip
-    before_install:
-    - openssl aes-256-cbc -K $encrypted_f5ecd030baf5_key -iv $encrypted_f5ecd030baf5_iv -in deploy_key.enc -out deploy_key -d
-    before_deploy:
-    - eval "$(ssh-agent -s)"
-    - chmod 600 ${TRAVIS_BUILD_DIR}/deploy_key
-    - ssh-add ${TRAVIS_BUILD_DIR}/deploy_key
-    deploy:
-      provider: script
-      skip_cleanup: true
-      script: ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} "GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID} GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET} CONTAINER_USER=${CONTAINER_USER} MAILER_URL=${MAILER_URL} MAILER_USER=${MAILER_USER} MAILER_PASS=${MAILER_PASS} ROLLBAR_TOKEN=${ROLLBAR_TOKEN} ROLLBAR_CLIENT_TOKEN=${ROLLBAR_CLIENT_TOKEN} DOCKER_GROUP=${DOCKER_GROUP} bash -s" -- < ./deploy.sh $(make version)
-
 stages:
   - Build
   - Test
   - name: Publish
-    if: branch = master
-  - name: Deploy
     if: branch = master
 
 notifications:
