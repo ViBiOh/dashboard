@@ -28,7 +28,7 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "ae0ebb5f76fe8e3325c1271cad5bc85e2eb19dd7"
+  revision = "7e9caa63d2bb1fdf936c8d303ea22d9f86c8a524"
 
 [[projects]]
   branch = "master"
@@ -58,7 +58,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "864a7148bc82cda83652d30ce21a8c48909b5927"
+  revision = "002301d92a6a400d3dd251d112d42a496c54bbea"
 
 [[projects]]
   branch = "master"
@@ -66,7 +66,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "690b66caf9f0814c074b73d172d18de323470b30"
+  revision = "a514b28fc857db7c3004f08ca0351a0fe78ae4c8"
 
 [[projects]]
   branch = "master"
@@ -90,7 +90,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ff4575801ceb68b48852aeea40f777951e6928d11e79043b7f4bd66176fbfec8"
+  digest = "1:73cf5c3ba140be2f411c89554ec6fb2e17ef064431eec4ba00bb87d13c18b910"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -113,7 +113,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "0ac8cbf74765ca32e1b82df343bdf52ebb0fb6e2"
+  revision = "6d18c6a0629581ba35286fc04d6a8462ad20883a"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -257,8 +257,8 @@
     "model",
   ]
   pruneopts = "UT"
-  revision = "cfeb6f9992ffa54aaa4f2170ade4067ee478b250"
-  version = "v0.2.0"
+  revision = "a82f4c12f983cc2649298185f296632953e50d3e"
+  version = "v0.3.0"
 
 [[projects]]
   branch = "master"
@@ -331,14 +331,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:503f66aac79cb9135d73679c7fa3e95a6fad82a3da399c505ea282b50ff03723"
+  digest = "1:740c2dd3093cec9b88652f0232b4773bb2c269c70c71408bbaa49ea6bfcf3fac"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "4b34438f7a67ee5f45cc6132e2bad873a20324e9"
+  revision = "cc4d4f50624c67f0af3a3fa307f4be9ab9030144"
 
 [[projects]]
   branch = "master"
@@ -356,8 +356,8 @@
     "status",
   ]
   pruneopts = "UT"
-  revision = "3507fb8e1a5ad030303c106fef3a47c9fdad16ad"
-  version = "v1.19.1"
+  revision = "236199dd5f8031d698fb64091194aecd1c3895b2"
+  version = "v1.20.0"
 
 [[projects]]
   branch = "v2"
