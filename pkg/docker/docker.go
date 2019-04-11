@@ -17,8 +17,8 @@ import (
 )
 
 var (
-	containerRequest       = regexp.MustCompile(`^/([^/]+)/?$`)
-	containerActionRequest = regexp.MustCompile(`^/([^/]+)/([^/]+)`)
+	containerRequest       = regexp.MustCompile("^/([^/]+)/?$")
+	containerActionRequest = regexp.MustCompile("^/([^/]+)/([^/]+)")
 )
 
 // Config of package
@@ -36,8 +36,8 @@ type App struct {
 // Flags adds flags for configuring package
 func Flags(fs *flag.FlagSet, prefix string) Config {
 	return Config{
-		host:    fs.String(tools.ToCamel(fmt.Sprintf(`%sHost`, prefix)), `unix:///var/run/docker.sock`, `[docker] Host`),
-		version: fs.String(tools.ToCamel(fmt.Sprintf(`%sVersion`, prefix)), ``, `[docker] API Version`),
+		host:    fs.String(tools.ToCamel(fmt.Sprintf("%sHost", prefix)), "unix:///var/run/docker.sock", "[docker] Host"),
+		version: fs.String(tools.ToCamel(fmt.Sprintf("%sVersion", prefix)), "", "[docker] API Version"),
 	}
 }
 
@@ -69,11 +69,11 @@ func (a *App) Handler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := auth.UserFromContext(r.Context())
 		if user == nil {
-			httperror.BadRequest(w, errors.New(`user not provided`))
+			httperror.BadRequest(w, errors.New("user not provided"))
 			return
 		}
 
-		if r.Method == http.MethodGet && (r.URL.Path == `/` || r.URL.Path == ``) {
+		if r.Method == http.MethodGet && (r.URL.Path == "/" || r.URL.Path == "") {
 			a.ListContainersHandler(w, r, user)
 		} else if containerRequest.MatchString(r.URL.Path) {
 			containerID := containerRequest.FindStringSubmatch(r.URL.Path)[1]

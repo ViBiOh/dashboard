@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	adminUser    = `admin`
-	multiAppUser = `multi`
+	adminUser    = "admin"
+	multiAppUser = "multi"
 )
 
 // IsAdmin check if given user is admin

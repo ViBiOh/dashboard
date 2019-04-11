@@ -13,8 +13,8 @@ func Test_EventFilters(t *testing.T) {
 		want      []string
 	}{
 		{
-			`should add all events`,
-			[]string{`create`, `start`, `stop`, `restart`, `rename`, `update`, `destroy`, `die`, `kill`},
+			"should add all events",
+			[]string{"create", "start", "stop", "restart", "rename", "update", "destroy", "die", "kill"},
 		},
 	}
 
@@ -23,10 +23,10 @@ func Test_EventFilters(t *testing.T) {
 	for _, testCase := range cases {
 		filters := filters.NewArgs()
 		EventFilters(&filters)
-		rawResult := filters.Get(`event`)
+		rawResult := filters.Get("event")
 
 		failed = false
-		result := strings.Join(rawResult, `,`)
+		result := strings.Join(rawResult, ",")
 		for _, filter := range testCase.want {
 			if !strings.Contains(result, filter) {
 				failed = true

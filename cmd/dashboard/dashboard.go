@@ -27,7 +27,7 @@ import (
 	"github.com/ViBiOh/mailer/pkg/client"
 )
 
-const websocketPrefix = `/ws`
+const websocketPrefix = "/ws"
 
 func handleGracefulClose(deployApp *deploy.App) error {
 	if deployApp.CanBeGracefullyClosed() {
@@ -44,30 +44,30 @@ func handleGracefulClose(deployApp *deploy.App) error {
 				return nil
 			}
 		case <-timeout:
-			return errors.New(`timeout exceeded for graceful close`)
+			return errors.New("timeout exceeded for graceful close")
 		}
 	}
 }
 
 func main() {
-	fs := flag.NewFlagSet(`dashboard`, flag.ExitOnError)
+	fs := flag.NewFlagSet("dashboard", flag.ExitOnError)
 
-	serverConfig := httputils.Flags(fs, ``)
-	alcotestConfig := alcotest.Flags(fs, ``)
-	prometheusConfig := prometheus.Flags(fs, `prometheus`)
-	opentracingConfig := opentracing.Flags(fs, `tracing`)
-	rollbarConfig := rollbar.Flags(fs, `rollbar`)
-	owaspConfig := owasp.Flags(fs, ``)
-	corsConfig := cors.Flags(fs, `cors`)
+	serverConfig := httputils.Flags(fs, "")
+	alcotestConfig := alcotest.Flags(fs, "")
+	prometheusConfig := prometheus.Flags(fs, "prometheus")
+	opentracingConfig := opentracing.Flags(fs, "tracing")
+	rollbarConfig := rollbar.Flags(fs, "rollbar")
+	owaspConfig := owasp.Flags(fs, "")
+	corsConfig := cors.Flags(fs, "cors")
 
-	authConfig := auth.Flags(fs, `auth`)
-	dockerConfig := docker.Flags(fs, `docker`)
-	deployConfig := deploy.Flags(fs, `docker`)
-	streamConfig := stream.Flags(fs, `docker`)
-	mailerConfig := client.Flags(fs, `mailer`)
+	authConfig := auth.Flags(fs, "auth")
+	dockerConfig := docker.Flags(fs, "docker")
+	deployConfig := deploy.Flags(fs, "docker")
+	streamConfig := stream.Flags(fs, "docker")
+	mailerConfig := client.Flags(fs, "mailer")
 
 	if err := fs.Parse(os.Args[1:]); err != nil {
-		logger.Fatal(`%+v`, err)
+		logger.Fatal("%+v", err)
 	}
 
 	alcotest.DoAndExit(alcotestConfig)
@@ -84,12 +84,12 @@ func main() {
 	authApp := auth.New(authConfig)
 	dockerApp, err := docker.New(dockerConfig)
 	if err != nil {
-		logger.Fatal(`%+v`, err)
+		logger.Fatal("%+v", err)
 	}
 
 	streamApp, err := stream.New(streamConfig, authApp, dockerApp)
 	if err != nil {
-		logger.Fatal(`%+v`, err)
+		logger.Fatal("%+v", err)
 	}
 
 	mailerApp := client.New(mailerConfig)

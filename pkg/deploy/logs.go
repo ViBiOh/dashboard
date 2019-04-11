@@ -18,7 +18,7 @@ func (a *App) serviceOutput(ctx context.Context, user *model.User, appName strin
 		defer func() {
 			if closeErr := logs.Close(); closeErr != nil {
 				if err != nil {
-					err = errors.New(`%s and also %v`, err, closeErr)
+					err = errors.New("%s and also %v", err, closeErr)
 				} else {
 					err = errors.WithStack(err)
 				}
@@ -51,7 +51,7 @@ func (a *App) serviceHealthOutput(user *model.User, appName string, service *dep
 
 	healthOutput := make([]string, 0)
 	for _, log := range infos.State.Health.Log {
-		healthOutput = append(healthOutput, fmt.Sprintf(`code=%d, log=%s`, log.ExitCode, log.Output))
+		healthOutput = append(healthOutput, fmt.Sprintf("code=%d, log=%s", log.ExitCode, log.Output))
 	}
 
 	return healthOutput
@@ -61,7 +61,7 @@ func (a *App) captureServicesHealth(ctx context.Context, user *model.User, appNa
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			logger.Error(`user=%s app=%s service=%s %+v`, user.Username, appName, service.Name, err)
+			logger.Error("user=%s app=%s service=%s %+v", user.Username, appName, service.Name, err)
 			continue
 		}
 
@@ -73,7 +73,7 @@ func (a *App) captureServicesOutput(ctx context.Context, user *model.User, appNa
 	for _, service := range services {
 		logs, err := a.serviceOutput(ctx, user, appName, service)
 		if err != nil {
-			logger.Error(`user=%s app=%s service=%s %+v`, user.Username, appName, service.Name, err)
+			logger.Error("user=%s app=%s service=%s %+v", user.Username, appName, service.Name, err)
 		}
 
 		service.Logs = logs

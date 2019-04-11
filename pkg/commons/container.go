@@ -31,13 +31,13 @@ func GetContainersIDs(containers []*types.ContainerJSON) []string {
 
 // EventFilters add filter for wanted events
 func EventFilters(filtersArgs *filters.Args) {
-	filtersArgs.Add(`event`, `create`)
-	filtersArgs.Add(`event`, `start`)
-	filtersArgs.Add(`event`, `stop`)
-	filtersArgs.Add(`event`, `restart`)
-	filtersArgs.Add(`event`, `rename`)
-	filtersArgs.Add(`event`, `update`)
-	filtersArgs.Add(`event`, `destroy`)
-	filtersArgs.Add(`event`, `die`)
-	filtersArgs.Add(`event`, `kill`)
+	filtersArgs.Add("event", "create")
+	filtersArgs.Add("event", "start")
+	filtersArgs.Add("event", "stop")
+	filtersArgs.Add("event", "restart")
+	filtersArgs.Add("event", "rename")
+	filtersArgs.Add("event", "update")
+	filtersArgs.Add("event", "destroy")
+	filtersArgs.Add("event", "die")
+	filtersArgs.Add("event", "kill")
 }

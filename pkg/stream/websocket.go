@@ -23,10 +23,10 @@ import (
 )
 
 const (
-	tailSize  = `100`
-	start     = `start`
-	stop      = `stop`
-	busPrefix = `/bus`
+	tailSize  = "100"
+	start     = "start"
+	stop      = "stop"
+	busPrefix = "/bus"
 )
 
 var (
@@ -36,9 +36,9 @@ var (
 )
 
 var (
-	eventsPrefix = []byte(`events `)
-	logsPrefix   = []byte(`logs `)
-	statsPrefix  = []byte(`stats `)
+	eventsPrefix = []byte("events ")
+	logsPrefix   = []byte("logs ")
+	statsPrefix  = []byte("stats ")
 )
 
 // Config of package
@@ -56,7 +56,7 @@ type App struct {
 // Flags adds flags for configuring package
 func Flags(fs *flag.FlagSet, prefix string) Config {
 	return Config{
-		websocketOrigin: fs.String(tools.ToCamel(fmt.Sprintf(`%sWs`, prefix)), `^dashboard`, `[stream] Allowed WebSocket Origin pattern`),
+		websocketOrigin: fs.String(tools.ToCamel(fmt.Sprintf("%sWs", prefix)), "^dashboard", "[stream] Allowed WebSocket Origin pattern"),
 	}
 }
 
@@ -86,7 +86,7 @@ func (a *App) upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websoc
 	defer func() {
 		if err != nil && ws != nil {
 			if closeErr := ws.Close(); closeErr != nil && websocket.IsUnexpectedCloseError(closeErr, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
-				err = errors.New(`%v and also %v`, err, closeErr)
+				err = errors.New("%v and also %v", err, closeErr)
 			}
 		}
 	}()
@@ -108,7 +108,7 @@ func (a *App) upgradeAndAuth(w http.ResponseWriter, r *http.Request) (ws *websoc
 	user, err = a.authApp.IsAuthenticatedByAuth(ctx, string(basicAuth))
 	if err != nil {
 		if writeErr := ws.WriteMessage(websocket.TextMessage, []byte(err.Error())); writeErr != nil {
-			err = errors.New(`%v and also %v`, err, writeErr)
+			err = errors.New("%v and also %v", err, writeErr)
 		}
 		return
 	}
@@ -127,7 +127,7 @@ func readContent(user *model.User, ws *websocket.Conn, name string, done chan<- 
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
-				logger.Error(`%+v`, errors.WithStack(err))
+				logger.Error("%+v", errors.WithStack(err))
 			}
 
 			close(done)
@@ -142,7 +142,7 @@ func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user 
 	defer cancel()
 
 	filtersArgs := filters.NewArgs()
-	docker.LabelFilters(user, &filtersArgs, ``)
+	docker.LabelFilters(user, &filtersArgs, "")
 	commons.EventFilters(&filtersArgs)
 
 	messages, errs := a.dockerApp.Docker.Events(ctx, types.EventsOptions{Filters: filtersArgs})
@@ -155,7 +155,7 @@ func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user 
 		case message := <-messages:
 			messageJSON, err := json.Marshal(message)
 			if err != nil {
-				logger.Error(`%+v`, errors.WithStack(err))
+				logger.Error("%+v", errors.WithStack(err))
 				cancel()
 			} else {
 				output <- append(eventsPrefix, messageJSON...)
@@ -163,7 +163,7 @@ func (a *App) streamEvents(ctx context.Context, cancel context.CancelFunc, user 
 
 		case err := <-errs:
 			if err != nil {
-				logger.Error(`%+v`, errors.WithStack(err))
+				logger.Error("%+v", errors.WithStack(err))
 			}
 			cancel()
 		}
@@ -177,13 +177,13 @@ func (a *App) streamLogs(ctx context.Context, cancel context.CancelFunc, user *m
 	if logs != nil {
 		defer func() {
 			if err := logs.Close(); err != nil {
-				logger.Error(`%+v`, errors.WithStack(err))
+				logger.Error("%+v", errors.WithStack(err))
 			}
 		}()
 	}
 
 	if err != nil {
-		logger.Error(`%+v`, errors.WithStack(err))
+		logger.Error("%+v", errors.WithStack(err))
 		return
 	}
 
@@ -201,13 +201,13 @@ func (a *App) streamStats(ctx context.Context, cancel context.CancelFunc, user *
 	defer cancel()
 
 	if err != nil {
-		logger.Error(`%+v`, errors.WithStack(err))
+		logger.Error("%+v", errors.WithStack(err))
 		return
 	}
 
 	defer func() {
 		if err := stats.Body.Close(); err != nil {
-			logger.Error(`%+v`, errors.WithStack(err))
+			logger.Error("%+v", errors.WithStack(err))
 		}
 	}()
 
@@ -220,12 +220,12 @@ func (a *App) streamStats(ctx context.Context, cancel context.CancelFunc, user *
 func handleBusDemand(user *model.User, name string, input []byte, demand *regexp.Regexp, cancel context.CancelFunc, output chan<- []byte, streamFn func(context.Context, context.CancelFunc, *model.User, string, chan<- []byte)) context.CancelFunc {
 	demandGroups := demand.FindSubmatch(input)
 	if len(demandGroups) < 2 {
-		logger.Error(`unable to parse bus demand %s for %s`, input, name)
+		logger.Error("unable to parse bus demand %s for %s", input, name)
 	}
 
 	action := string(demandGroups[1])
 
-	containerID := ``
+	containerID := ""
 	if len(demandGroups) > 2 {
 		containerID = string(demandGroups[2])
 	}
@@ -249,12 +249,12 @@ func handleBusDemand(user *model.User, name string, input []byte, demand *regexp
 func (a *App) busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	ws, user, err := a.upgradeAndAuth(w, r)
 	if err != nil {
-		logger.Error(`%+v`, err)
+		logger.Error("%+v", err)
 		return
 	}
 	defer func() {
 		if err := ws.Close(); err != nil && websocket.IsUnexpectedCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
-			logger.Error(`%+v`, errors.WithStack(err))
+			logger.Error("%+v", errors.WithStack(err))
 		}
 	}()
 
@@ -266,14 +266,14 @@ func (a *App) busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	input := make(chan []byte)
 	defer close(input)
 
-	go readContent(user, ws, `streaming`, done, input)
+	go readContent(user, ws, "streaming", done, input)
 
 	var eventsCancelFunc context.CancelFunc
 	var logsCancelFunc context.CancelFunc
 	var statsCancelFunc context.CancelFunc
 
-	if err = ws.WriteMessage(websocket.TextMessage, []byte(`ready`)); err != nil {
-		logger.Error(`%+v`, errors.WithStack(err))
+	if err = ws.WriteMessage(websocket.TextMessage, []byte("ready")); err != nil {
+		logger.Error("%+v", errors.WithStack(err))
 	}
 
 	for {
@@ -283,17 +283,17 @@ func (a *App) busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 		case inputBytes := <-input:
 			if eventsDemand.Match(inputBytes) {
-				eventsCancelFunc = handleBusDemand(user, `events`, inputBytes, eventsDemand, eventsCancelFunc, output, a.streamEvents)
+				eventsCancelFunc = handleBusDemand(user, "events", inputBytes, eventsDemand, eventsCancelFunc, output, a.streamEvents)
 				if eventsCancelFunc != nil {
 					defer eventsCancelFunc()
 				}
 			} else if logsDemand.Match(inputBytes) {
-				logsCancelFunc = handleBusDemand(user, `logs`, inputBytes, logsDemand, logsCancelFunc, output, a.streamLogs)
+				logsCancelFunc = handleBusDemand(user, "logs", inputBytes, logsDemand, logsCancelFunc, output, a.streamLogs)
 				if logsCancelFunc != nil {
 					defer logsCancelFunc()
 				}
 			} else if statsDemand.Match(inputBytes) {
-				statsCancelFunc = handleBusDemand(user, `stats`, inputBytes, statsDemand, statsCancelFunc, output, a.streamStats)
+				statsCancelFunc = handleBusDemand(user, "stats", inputBytes, statsDemand, statsCancelFunc, output, a.streamStats)
 				if statsCancelFunc != nil {
 					defer statsCancelFunc()
 				}
@@ -301,7 +301,7 @@ func (a *App) busWebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 		case outputBytes := <-output:
 			if err = ws.WriteMessage(websocket.TextMessage, outputBytes); err != nil {
-				logger.Error(`%+v`, errors.WithStack(err))
+				logger.Error("%+v", errors.WithStack(err))
 				close(done)
 			}
 		}

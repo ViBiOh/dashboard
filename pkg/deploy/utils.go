@@ -15,10 +15,10 @@ import (
 )
 
 func healthyStatusFilters(filtersArgs *filters.Args, containersIds []string) {
-	filtersArgs.Add(`event`, `health_status: healthy`)
+	filtersArgs.Add("event", "health_status: healthy")
 
 	for _, container := range containersIds {
-		filtersArgs.Add(`container`, container)
+		filtersArgs.Add("container", container)
 	}
 }
 
@@ -27,7 +27,7 @@ func hasHealthcheck(container *types.ContainerJSON) bool {
 }
 
 func checkParams(r *http.Request, user *model.User) (string, []byte, error) {
-	appName := strings.Trim(r.URL.Path, `/`)
+	appName := strings.Trim(r.URL.Path, "/")
 
 	if user == nil {
 		return appName, nil, commons.ErrUserRequired
@@ -39,7 +39,7 @@ func checkParams(r *http.Request, user *model.User) (string, []byte, error) {
 	}
 
 	if len(appName) == 0 || len(composeFile) == 0 {
-		return appName, nil, errors.New(`app name and compose file are required`)
+		return appName, nil, errors.New("app name and compose file are required")
 	}
 
 	return appName, composeFile, nil
@@ -52,7 +52,7 @@ func (a *App) checkRights(ctx context.Context, user *model.User, appName string)
 	}
 
 	if len(oldContainers) > 0 && oldContainers[0].Labels[commons.OwnerLabel] != user.Username {
-		return nil, errors.New(`user=%s app=%s application is not yours`, user.Username, appName)
+		return nil, errors.New("user=%s app=%s application is not yours", user.Username, appName)
 	}
 
 	return oldContainers, nil
@@ -60,7 +60,7 @@ func (a *App) checkRights(ctx context.Context, user *model.User, appName string)
 
 func (a *App) checkTasks(user *model.User, appName string) error {
 	if _, ok := a.tasks.Load(appName); ok {
-		return errors.New(`user=%s app=%s deploy already running`, user.Username, appName)
+		return errors.New("user=%s app=%s deploy already running", user.Username, appName)
 	}
 	a.tasks.Store(appName, true)
 
@@ -68,7 +68,7 @@ func (a *App) checkTasks(user *model.User, appName string) error {
 }
 
 func getServiceFullName(app string, service string) string {
-	return fmt.Sprintf(`%s_%s%s`, app, service, deploySuffix)
+	return fmt.Sprintf("%s_%s%s", app, service, deploySuffix)
 }
 
 func getFinalName(serviceFullName string) string {

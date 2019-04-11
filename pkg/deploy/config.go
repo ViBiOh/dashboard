@@ -20,7 +20,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 		Retries: healthcheck.Retries,
 	}
 
-	if strings.TrimSpace(healthcheck.Interval) != `` {
+	if strings.TrimSpace(healthcheck.Interval) != "" {
 		interval, err := time.ParseDuration(healthcheck.Interval)
 		if err != nil {
 			return nil, errors.WithStack(err)
@@ -29,7 +29,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 		healthconfig.Interval = interval
 	}
 
-	if strings.TrimSpace(healthcheck.Timeout) != `` {
+	if strings.TrimSpace(healthcheck.Timeout) != "" {
 		timeout, err := time.ParseDuration(healthcheck.Timeout)
 		if err != nil {
 			return nil, errors.WithStack(err)
@@ -44,7 +44,7 @@ func getHealthcheckConfig(healthcheck *dockerComposeHealthcheck) (*container.Hea
 func (a *App) getConfig(service *dockerComposeService, user *model.User, appName string) (*container.Config, error) {
 	environments := make([]string, 0, len(service.Environment))
 	for key, value := range service.Environment {
-		environments = append(environments, fmt.Sprintf(`%s=%s`, key, value))
+		environments = append(environments, fmt.Sprintf("%s=%s", key, value))
 	}
 
 	if service.Labels == nil {
@@ -62,7 +62,7 @@ func (a *App) getConfig(service *dockerComposeService, user *model.User, appName
 		User:     service.User,
 	}
 
-	if config.User == `` {
+	if config.User == "" {
 		config.User = a.containerUser
 	}
 
@@ -86,9 +86,9 @@ func getVolumesConfig(hostConfig *container.HostConfig, volumes []string) {
 	for _, rawVolume := range volumes {
 		parts := strings.Split(rawVolume, colonSeparator)
 
-		if len(parts) > 1 && parts[0] != `/` {
+		if len(parts) > 1 && parts[0] != "/" {
 			volume := mount.Mount{Type: mount.TypeBind, BindOptions: &mount.BindOptions{Propagation: mount.PropagationRPrivate}, Source: parts[0], Target: parts[1]}
-			if len(parts) > 2 && parts[2] == `ro` {
+			if len(parts) > 2 && parts[2] == "ro" {
 				volume.ReadOnly = true
 			}
 
@@ -99,16 +99,16 @@ func getVolumesConfig(hostConfig *container.HostConfig, volumes []string) {
 
 func (a *App) getHostConfig(service *dockerComposeService, user *model.User) *container.HostConfig {
 	hostConfig := container.HostConfig{
-		LogConfig: container.LogConfig{Type: `json-file`, Config: map[string]string{
-			`max-size`: `10m`,
+		LogConfig: container.LogConfig{Type: "json-file", Config: map[string]string{
+			"max-size": "10m",
 		}},
 		NetworkMode:   container.NetworkMode(a.network),
-		RestartPolicy: container.RestartPolicy{Name: `on-failure`, MaximumRetryCount: 5},
+		RestartPolicy: container.RestartPolicy{Name: "on-failure", MaximumRetryCount: 5},
 		Resources: container.Resources{
 			CPUShares: defaultCPUShares,
 			Memory:    minMemory,
 		},
-		SecurityOpt: []string{`no-new-privileges`},
+		SecurityOpt: []string{"no-new-privileges"},
 		DNS:         service.DNS,
 	}
 
@@ -159,7 +159,7 @@ func addLinks(settings *network.EndpointSettings, links []string) {
 			alias = linkParts[1]
 		}
 
-		settings.Links = append(settings.Links, fmt.Sprintf(`%s%s%s`, target, colonSeparator, alias))
+		settings.Links = append(settings.Links, fmt.Sprintf("%s%s%s", target, colonSeparator, alias))
 	}
 }
 

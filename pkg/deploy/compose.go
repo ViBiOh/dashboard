@@ -35,8 +35,8 @@ const (
 	defaultCPUShares = 128
 	minMemory        = 16777216
 	maxMemory        = 805306368
-	colonSeparator   = `:`
-	deploySuffix     = `_deploy`
+	colonSeparator   = ":"
+	deploySuffix     = "_deploy"
 )
 
 // Config of package
@@ -63,11 +63,11 @@ type App struct {
 // Flags adds flags for configuring package
 func Flags(fs *flag.FlagSet, prefix string) Config {
 	return Config{
-		network:       fs.String(tools.ToCamel(fmt.Sprintf(`%sNetwork`, prefix)), `traefik`, `[deploy] Default Network`),
-		tag:           fs.String(tools.ToCamel(fmt.Sprintf(`%sTag`, prefix)), `latest`, `[deploy] Default image tag)`),
-		containerUser: fs.String(tools.ToCamel(fmt.Sprintf(`%sContainerUser`, prefix)), `1000`, `[deploy] Default container user`),
-		appURL:        fs.String(tools.ToCamel(fmt.Sprintf(`%sAppURL`, prefix)), `https://dashboard.vibioh.fr`, `[deploy] Application web URL`),
-		notification:  fs.String(tools.ToCamel(fmt.Sprintf(`%sNotification`, prefix)), `onError`, `[deploy] Send email notification when deploy ends (possibles values ares "never", "onError", "all")`),
+		network:       fs.String(tools.ToCamel(fmt.Sprintf("%sNetwork", prefix)), "traefik", "[deploy] Default Network"),
+		tag:           fs.String(tools.ToCamel(fmt.Sprintf("%sTag", prefix)), "latest", "[deploy] Default image tag)"),
+		containerUser: fs.String(tools.ToCamel(fmt.Sprintf("%sContainerUser", prefix)), "1000", "[deploy] Default container user"),
+		appURL:        fs.String(tools.ToCamel(fmt.Sprintf("%sAppURL", prefix)), "https://dashboard.vibioh.fr", "[deploy] Application web URL"),
+		notification:  fs.String(tools.ToCamel(fmt.Sprintf("%sNotification", prefix)), "onError", "[deploy] Send email notification when deploy ends (possibles values ares 'never', 'onError', 'all')"),
 	}
 }
 
@@ -99,7 +99,7 @@ func (a *App) CanBeGracefullyClosed() (canBe bool) {
 
 func (a *App) pullImage(ctx context.Context, image string) error {
 	if !strings.Contains(image, colonSeparator) {
-		image = fmt.Sprintf(`%s%slatest`, image, colonSeparator)
+		image = fmt.Sprintf("%s%slatest", image, colonSeparator)
 	}
 
 	pull, err := a.dockerApp.Docker.ImagePull(ctx, image, types.ImagePullOptions{})
@@ -114,7 +114,7 @@ func (a *App) pullImage(ctx context.Context, image string) error {
 func (a *App) cleanContainers(ctx context.Context, containers []types.Container) error {
 	for _, container := range containers {
 		if _, err := a.dockerApp.GracefulStopContainer(ctx, container.ID, time.Minute); err != nil {
-			logger.Error(`cannot stop container %s: %+v`, container.Names, err)
+			logger.Error("cannot stop container %s: %+v", container.Names, err)
 		}
 	}
 
@@ -130,7 +130,7 @@ func (a *App) cleanContainers(ctx context.Context, containers []types.Container)
 func (a *App) renameDeployedContainers(ctx context.Context, services map[string]*deployedService) error {
 	for _, service := range services {
 		if err := a.dockerApp.Docker.ContainerRename(ctx, service.ContainerID, getFinalName(service.FullName)); err != nil {
-			return errors.New(`cannot rename container %s: %v`, service.Name, err)
+			return errors.New("cannot rename container %s: %v", service.Name, err)
 		}
 	}
 
@@ -141,14 +141,14 @@ func (a *App) deleteServices(ctx context.Context, appName string, services map[s
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			logger.Error(`user=%s, app=%s, service=%s %+v`, user.Username, appName, service.Name, err)
+			logger.Error("user=%s, app=%s, service=%s %+v", user.Username, appName, service.Name, err)
 		} else {
 			if _, err := a.dockerApp.StopContainer(ctx, service.ContainerID, infos); err != nil {
-				logger.Error(`user=%s, app=%s service=%s %+v`, user.Username, appName, service.Name, err)
+				logger.Error("user=%s, app=%s service=%s %+v", user.Username, appName, service.Name, err)
 			}
 
 			if _, err := a.dockerApp.RmContainer(ctx, service.ContainerID, infos, true); err != nil {
-				logger.Error(`user=%s, app=%s service=%s %+v`, user.Username, appName, service.Name, err)
+				logger.Error("user=%s, app=%s service=%s %+v", user.Username, appName, service.Name, err)
 			}
 		}
 	}
@@ -170,7 +170,7 @@ func (a *App) inspectServices(ctx context.Context, services map[string]*deployed
 	for _, service := range services {
 		infos, err := a.dockerApp.InspectContainer(ctx, service.ContainerID)
 		if err != nil {
-			logger.Error(`user=%s, app=%s service=%s %+v`, user.Username, appName, service.Name, err)
+			logger.Error("user=%s, app=%s service=%s %+v", user.Username, appName, service.Name, err)
 		} else {
 			containers = append(containers, infos)
 		}
@@ -189,7 +189,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 
 	for _, id := range containersIdsWithHealthcheck {
 		if service := findServiceByContainerID(services, id); service != nil {
-			service.State = `unhealthy`
+			service.State = "unhealthy"
 		}
 	}
 
@@ -208,7 +208,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 			return false
 		case message := <-messages:
 			if service := findServiceByContainerID(services, message.ID); service != nil {
-				service.State = `healthy`
+				service.State = "healthy"
 			}
 
 			healthyContainers[message.ID] = true
@@ -216,7 +216,7 @@ func (a *App) areContainersHealthy(ctx context.Context, user *model.User, appNam
 				return true
 			}
 		case err := <-errs:
-			logger.Error(`user=%s, app=%s %+v`, user.Username, appName, errors.WithStack(err))
+			logger.Error("user=%s, app=%s %+v", user.Username, appName, errors.WithStack(err))
 			return false
 		}
 	}
@@ -228,8 +228,8 @@ func (a *App) finishDeploy(ctx context.Context, user *model.User, appName string
 	}()
 
 	if span := opentracing.SpanFromContext(ctx); span != nil {
-		span.SetTag(`app`, appName)
-		span.SetTag(`services_count`, len(services))
+		span.SetTag("app", appName)
+		span.SetTag("services_count", len(services))
 		defer func() {
 			defer span.Finish()
 		}()
@@ -239,17 +239,17 @@ func (a *App) finishDeploy(ctx context.Context, user *model.User, appName string
 	a.captureServicesOutput(ctx, user, appName, services)
 
 	if success {
-		logger.Info(`user=%s, app=%s Successful deploy`, user.Username, appName)
+		logger.Info("user=%s, app=%s Successful deploy", user.Username, appName)
 
 		if err := a.cleanContainers(ctx, oldContainers); err != nil {
-			logger.Error(`user=%s, app=%s %+v`, user.Username, appName, err)
+			logger.Error("user=%s, app=%s %+v", user.Username, appName, err)
 		}
 
 		if err := a.renameDeployedContainers(ctx, services); err != nil {
-			logger.Error(`user=%s, app=%s %+v`, user.Username, appName, err)
+			logger.Error("user=%s, app=%s %+v", user.Username, appName, err)
 		}
 	} else {
-		logger.Warn(`user=%s, app=%s %v`, user.Username, appName, errHealthCheckFailed)
+		logger.Warn("user=%s, app=%s %v", user.Username, appName, errHealthCheckFailed)
 		a.captureServicesHealth(ctx, user, appName, services)
 		a.deleteServices(ctx, appName, services, user)
 	}
@@ -262,19 +262,19 @@ func (a *App) finishDeploy(ctx context.Context, user *model.User, appName string
 	}
 
 	if err := a.sendEmailNotification(ctx, user, appName, services, success); err != nil {
-		logger.Error(`user=%s, app=%s %+v`, user.Username, appName, err)
+		logger.Error("user=%s, app=%s %+v", user.Username, appName, err)
 	}
 
 	if err := a.sendRollbarNotification(ctx, user, requestParams); err != nil {
-		logger.Error(`user=%s, app=%s %+v`, user.Username, appName, err)
+		logger.Error("user=%s, app=%s %+v", user.Username, appName, err)
 	}
 }
 
 func (a *App) createContainer(ctx context.Context, user *model.User, appName string, serviceName string, service *dockerComposeService) (*deployedService, error) {
 	imagePulled := false
 
-	if a.tag != `` {
-		imageOverride := fmt.Sprintf(`%s%s%s`, service.Image, colonSeparator, a.tag)
+	if a.tag != "" {
+		imageOverride := fmt.Sprintf("%s%s%s", service.Image, colonSeparator, a.tag)
 		if err := a.pullImage(ctx, imageOverride); err == nil {
 			service.Image = imageOverride
 			imagePulled = true
@@ -296,7 +296,7 @@ func (a *App) createContainer(ctx context.Context, user *model.User, appName str
 
 	createdContainer, err := a.dockerApp.Docker.ContainerCreate(ctx, config, a.getHostConfig(service, user), a.getNetworkConfig(serviceName, service), serviceFullName)
 	if err != nil {
-		return nil, errors.New(`user=%s, app=%s service=%s %v`, user.Username, appName, serviceName, err)
+		return nil, errors.New("user=%s, app=%s service=%s %v", user.Username, appName, serviceName, err)
 	}
 
 	return &deployedService{
@@ -308,18 +308,18 @@ func (a *App) createContainer(ctx context.Context, user *model.User, appName str
 }
 
 func (a *App) parseCompose(ctx context.Context, user *model.User, appName string, composeFile []byte) (newServices map[string]*deployedService, err error) {
-	composeFile = bytes.Replace(composeFile, []byte(`$$`), []byte(`$`), -1)
+	composeFile = bytes.Replace(composeFile, []byte("$$"), []byte("$"), -1)
 
 	compose := dockerCompose{}
 	if err := yaml.Unmarshal(composeFile, &compose); err != nil {
-		return nil, errors.New(`user=%s, app=%s %v`, user.Username, appName, err)
+		return nil, errors.New("user=%s, app=%s %v", user.Username, appName, err)
 	}
 
 	defer func() {
 		if err != nil {
 			for _, service := range newServices {
 				if _, rmErr := a.dockerApp.RmContainerAndImages(ctx, service.ContainerID, nil); rmErr != nil {
-					logger.Error(`%+v`, rmErr)
+					logger.Error("%+v", rmErr)
 				}
 			}
 		}
@@ -349,7 +349,7 @@ func (a *App) Handler() http.Handler {
 
 		user := auth.UserFromContext(r.Context())
 		if user == nil {
-			httperror.BadRequest(w, errors.New(`user not provided`))
+			httperror.BadRequest(w, errors.New("user not provided"))
 			return
 		}
 
@@ -385,7 +385,7 @@ func (a *App) Handler() http.Handler {
 		ctx = context.Background()
 		if span := opentracing.SpanFromContext(r.Context()); span != nil {
 			parentSpanContext := span.Context()
-			_, ctx = opentracing.StartSpanFromContext(ctx, `Deploy`, opentracing.FollowsFrom(parentSpanContext))
+			_, ctx = opentracing.StartSpanFromContext(ctx, "Deploy", opentracing.FollowsFrom(parentSpanContext))
 		}
 
 		go a.finishDeploy(ctx, user, appName, newServices, oldContainers, r.URL.Query())

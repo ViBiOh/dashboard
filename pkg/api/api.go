@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	containersPrefix = `/containers`
-	deployPrefix     = `/deploy`
+	containersPrefix = "/containers"
+	deployPrefix     = "/deploy"
 )
 
 // App of package

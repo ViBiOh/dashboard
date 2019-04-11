@@ -2,7 +2,7 @@ package deploy
 
 import "errors"
 
-var errHealthCheckFailed = errors.New(`health check failed`)
+var errHealthCheckFailed = errors.New("health check failed")
 
 type dockerComposeHealthcheck struct {
 	Test     []string

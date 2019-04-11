@@ -18,19 +18,19 @@ import (
 )
 
 const (
-	getAction     = `get`
-	startAction   = `start`
-	stopAction    = `stop`
-	restartAction = `restart`
-	deleteAction  = `delete`
+	getAction     = "get"
+	startAction   = "start"
+	stopAction    = "stop"
+	restartAction = "restart"
+	deleteAction  = "delete"
 )
 
 // ListContainers list containers for user and app if provided
 func (a *App) ListContainers(ctx context.Context, user *model.User, appName string) ([]types.Container, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker list`)
+	span, ctx := opentracing.StartSpanFromContext(ctx, "Docker list")
 	defer span.Finish()
-	span.SetTag(`user`, user.Username)
-	span.SetTag(`app`, appName)
+	span.SetTag("user", user.Username)
+	span.SetTag("app", appName)
 
 	options := types.ContainerListOptions{All: true}
 
@@ -43,9 +43,9 @@ func (a *App) ListContainers(ctx context.Context, user *model.User, appName stri
 
 // InspectContainer get detailed information of a container
 func (a *App) InspectContainer(ctx context.Context, containerID string) (*types.ContainerJSON, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker inspect`)
+	span, ctx := opentracing.StartSpanFromContext(ctx, "Docker inspect")
 	defer span.Finish()
-	span.SetTag(`id`, containerID)
+	span.SetTag("id", containerID)
 
 	container, err := a.Docker.ContainerInspect(ctx, containerID)
 	return &container, errors.WithStack(err)
@@ -57,9 +57,9 @@ func getContainer(_ context.Context, containerID string, container *types.Contai
 
 // StartContainer start a container
 func (a *App) StartContainer(ctx context.Context, containerID string, _ *types.ContainerJSON) (interface{}, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker start`)
+	span, ctx := opentracing.StartSpanFromContext(ctx, "Docker start")
 	defer span.Finish()
-	span.SetTag(`id`, containerID)
+	span.SetTag("id", containerID)
 
 	return nil, errors.WithStack(a.Docker.ContainerStart(ctx, containerID, types.ContainerStartOptions{}))
 }
@@ -71,9 +71,9 @@ func (a *App) StopContainer(ctx context.Context, containerID string, _ *types.Co
 
 // GracefulStopContainer stop a container
 func (a *App) GracefulStopContainer(ctx context.Context, containerID string, gracefulTimeout time.Duration) (interface{}, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker stop`)
+	span, ctx := opentracing.StartSpanFromContext(ctx, "Docker stop")
 	defer span.Finish()
-	span.SetTag(`id`, containerID)
+	span.SetTag("id", containerID)
 
 	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout+(5*time.Second))
 	defer cancel()
@@ -88,9 +88,9 @@ func (a *App) RestartContainer(ctx context.Context, containerID string, _ *types
 
 // GracefulRestartContainer stop a container
 func (a *App) GracefulRestartContainer(ctx context.Context, containerID string, gracefulTimeout time.Duration) (interface{}, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker restart`)
+	span, ctx := opentracing.StartSpanFromContext(ctx, "Docker restart")
 	defer span.Finish()
-	span.SetTag(`id`, containerID)
+	span.SetTag("id", containerID)
 
 	timeoutCtx, cancel := context.WithTimeout(ctx, gracefulTimeout)
 	defer cancel()
@@ -105,9 +105,9 @@ func (a *App) RmContainerAndImages(ctx context.Context, containerID string, cont
 
 // RmContainer remove a container
 func (a *App) RmContainer(ctx context.Context, containerID string, container *types.ContainerJSON, failOnImageFail bool) (interface{}, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker rm`)
+	span, ctx := opentracing.StartSpanFromContext(ctx, "Docker rm")
 	defer span.Finish()
-	span.SetTag(`id`, containerID)
+	span.SetTag("id", containerID)
 
 	var err error
 
@@ -125,7 +125,7 @@ func (a *App) RmContainer(ctx context.Context, containerID string, container *ty
 		if failOnImageFail {
 			return nil, err
 		}
-		logger.Error(`%+v`, err)
+		logger.Error("%+v", err)
 	}
 
 	return nil, nil
@@ -133,16 +133,16 @@ func (a *App) RmContainer(ctx context.Context, containerID string, container *ty
 
 // RmImage remove image
 func (a *App) RmImage(ctx context.Context, imageID string) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, `Docker rmi`)
+	span, ctx := opentracing.StartSpanFromContext(ctx, "Docker rmi")
 	defer span.Finish()
-	span.SetTag(`id`, imageID)
+	span.SetTag("id", imageID)
 
 	_, err := a.Docker.ImageRemove(ctx, imageID, types.ImageRemoveOptions{})
 	return errors.WithStack(err)
 }
 
 func invalidAction(_ context.Context, action string, _ *types.ContainerJSON) (interface{}, error) {
-	return nil, errors.New(`unknown action %s`, action)
+	return nil, errors.New("unknown action %s", action)
 }
 
 func (a *App) doAction(action string) func(context.Context, string, *types.ContainerJSON) (interface{}, error) {
@@ -194,7 +194,7 @@ func (a *App) ListContainersHandler(w http.ResponseWriter, r *http.Request, user
 	ctx, cancel := commons.GetCtx(r.Context())
 	defer cancel()
 
-	containers, err := a.ListContainers(ctx, user, ``)
+	containers, err := a.ListContainers(ctx, user, "")
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
@@ -208,9 +208,9 @@ func (a *App) ListContainersHandler(w http.ResponseWriter, r *http.Request, user
 
 // LabelFilters add filter for given user
 func LabelFilters(user *model.User, filtersArgs *filters.Args, appName string) {
-	if appName != `` && isMultiApp(user) {
-		filtersArgs.Add(`label`, fmt.Sprintf(`%s=%s`, commons.AppLabel, appName))
+	if appName != "" && isMultiApp(user) {
+		filtersArgs.Add("label", fmt.Sprintf("%s=%s", commons.AppLabel, appName))
 	} else if !IsAdmin(user) {
-		filtersArgs.Add(`label`, fmt.Sprintf(`%s=%s`, commons.OwnerLabel, user.Username))
+		filtersArgs.Add("label", fmt.Sprintf("%s=%s", commons.OwnerLabel, user.Username))
 	}
 }

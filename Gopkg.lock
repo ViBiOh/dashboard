@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:67480d4cbc9ffef23c00bf09d09025919bf4dd5f10375ad0ab5268bbc376a52c"
+  digest = "1:9078b2aec078816584b37e382c7149be6fa6c6e8531c0a77beb53cff16a9d82f"
   name = "github.com/ViBiOh/auth"
   packages = [
     "pkg/auth",
@@ -28,11 +28,11 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "7e9caa63d2bb1fdf936c8d303ea22d9f86c8a524"
+  revision = "be9b930ba77255972183d1ce8369914e0a9e250c"
 
 [[projects]]
   branch = "master"
-  digest = "1:40137037daa74ff8fcb5cec5dc40b490b12aa5a614fed5ca834a42cedf89ce1f"
+  digest = "1:ab30597f3e40d8b1d0d8dfb19cbba9802368968fc787289d64637c4319ffa434"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -58,15 +58,15 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "002301d92a6a400d3dd251d112d42a496c54bbea"
+  revision = "c191236038f12c99cd630821c708457637cba3ce"
 
 [[projects]]
   branch = "master"
-  digest = "1:d2fc922625e630dcc16edcf7a7e7fe0b31143189d5ad065041e2aa08dbd1ce2b"
+  digest = "1:cf0eb350802628e395255101dfbf80d2c9d95ef80f22e3aa623f42816bed9529"
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "a514b28fc857db7c3004f08ca0351a0fe78ae4c8"
+  revision = "6eefa494405133083e031169ca82bc31458391d3"
 
 [[projects]]
   branch = "master"
@@ -113,7 +113,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "6d18c6a0629581ba35286fc04d6a8462ad20883a"
+  revision = "bfe6a05d5c99b18d3de47932f9893dd390089cdc"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -331,14 +331,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:740c2dd3093cec9b88652f0232b4773bb2c269c70c71408bbaa49ea6bfcf3fac"
+  digest = "1:c0b0b67bb6323f4f603950892199a243ee78bbb943605085b6f2dc72daa93bd1"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "cc4d4f50624c67f0af3a3fa307f4be9ab9030144"
+  revision = "0ad05ae3009d6413d3363aa09b350b2ec37daf09"
 
 [[projects]]
   branch = "master"

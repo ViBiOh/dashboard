@@ -15,24 +15,24 @@ func Test_LabelFilters(t *testing.T) {
 		want []string
 	}{
 		{
-			model.NewUser(`0`, `admin`, ``, `admin`),
-			``,
+			model.NewUser("0", "admin", "", "admin"),
+			"",
 			nil,
 		},
 		{
-			model.NewUser(`0`, `guest`, ``, `guest`),
-			``,
-			[]string{`owner=guest`},
+			model.NewUser("0", "guest", "", "guest"),
+			"",
+			[]string{"owner=guest"},
 		},
 		{
-			model.NewUser(`0`, `admin`, ``, `admin`),
-			`test`,
-			[]string{`app=test`},
+			model.NewUser("0", "admin", "", "admin"),
+			"test",
+			[]string{"app=test"},
 		},
 		{
-			model.NewUser(`0`, `guest`, ``, `guest`),
-			`test`,
-			[]string{`owner=guest`},
+			model.NewUser("0", "guest", "", "guest"),
+			"test",
+			[]string{"owner=guest"},
 		},
 	}
 
@@ -41,10 +41,10 @@ func Test_LabelFilters(t *testing.T) {
 	for _, testCase := range cases {
 		filters := filters.NewArgs()
 		LabelFilters(testCase.user, &filters, testCase.app)
-		rawResult := filters.Get(`label`)
+		rawResult := filters.Get("label")
 
 		failed = false
-		result := strings.Join(rawResult, `,`)
+		result := strings.Join(rawResult, ",")
 		for _, filter := range testCase.want {
 			if !strings.Contains(result, filter) {
 				failed = true
@@ -52,7 +52,7 @@ func Test_LabelFilters(t *testing.T) {
 		}
 
 		if len(rawResult) != len(testCase.want) || failed {
-			t.Errorf(`LabelFilters(%v, %v) = %v, want %v`, testCase.user, testCase.app, result, testCase.want)
+			t.Errorf("LabelFilters(%v, %v) = %v, want %v", testCase.user, testCase.app, result, testCase.want)
 		}
 	}
 }

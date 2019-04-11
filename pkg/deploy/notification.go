@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	never   = `never`
-	onError = `onError`
-	all     = `all`
+	never   = "never"
+	onError = "onError"
+	all     = "all"
 )
 
 func (a *App) sendEmailNotification(ctx context.Context, user *model.User, appName string, services map[string]*deployedService, success bool) error {
@@ -31,7 +31,7 @@ func (a *App) sendEmailNotification(ctx context.Context, user *model.User, appNa
 
 	recipients := []string{user.Email}
 
-	if err := a.mailerApp.SendEmail(ctx, `dashboard`, `dashboard@vibioh.fr`, `Dashboard`, fmt.Sprintf(`[dashboard] Deploy of %s`, appName), recipients, notificationContent); err != nil {
+	if err := a.mailerApp.SendEmail(ctx, "dashboard", "dashboard@vibioh.fr", "Dashboard", fmt.Sprintf("[dashboard] Deploy of %s", appName), recipients, notificationContent); err != nil {
 		return err
 	}
 

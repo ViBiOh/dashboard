@@ -16,7 +16,7 @@ func TestGetContainer(t *testing.T) {
 		wantErr     error
 	}{
 		{
-			`test`,
+			"test",
 			&types.ContainerJSON{},
 			&types.ContainerJSON{},
 			nil,
@@ -41,7 +41,7 @@ func TestGetContainer(t *testing.T) {
 		}
 
 		if failed {
-			t.Errorf(`getContainer(%v, %v) = (%v, %v), want (%v, %v)`, testCase.containerID, testCase.container, result, err, testCase.want, testCase.wantErr)
+			t.Errorf("getContainer(%v, %v) = (%v, %v), want (%v, %v)", testCase.containerID, testCase.container, result, err, testCase.want, testCase.wantErr)
 		}
 	}
 }
