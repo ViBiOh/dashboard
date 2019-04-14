@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/ViBiOh/auth/pkg/model"
-	"github.com/ViBiOh/httputils/pkg/rollbar"
+	"github.com/ViBiOh/dashboard/pkg/rollbar"
 )
 
 func (a *App) sendRollbarNotification(ctx context.Context, user *model.User, requestParams url.Values) error {

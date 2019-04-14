@@ -28,11 +28,11 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "be9b930ba77255972183d1ce8369914e0a9e250c"
+  revision = "7235e104b5d6a79550d0d7f67ca08cc3a7d4e67b"
 
 [[projects]]
   branch = "master"
-  digest = "1:ab30597f3e40d8b1d0d8dfb19cbba9802368968fc787289d64637c4319ffa434"
+  digest = "1:080b9390d3a0ee6f0a244ef73613620dfc6b05fffd9b8ef6704e03b7a79ca473"
   name = "github.com/ViBiOh/httputils"
   packages = [
     "pkg",
@@ -53,12 +53,11 @@
     "pkg/prometheus",
     "pkg/query",
     "pkg/request",
-    "pkg/rollbar",
     "pkg/server",
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "c191236038f12c99cd630821c708457637cba3ce"
+  revision = "62297f2e814369e4226a4ebd7a7b524275888e9d"
 
 [[projects]]
   branch = "master"
@@ -66,7 +65,7 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "6eefa494405133083e031169ca82bc31458391d3"
+  revision = "2f4dbb2f4def4dec4ef39bbea243d6338a63acb1"
 
 [[projects]]
   branch = "master"
@@ -74,7 +73,7 @@
   name = "github.com/beorn7/perks"
   packages = ["quantile"]
   pruneopts = "UT"
-  revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
+  revision = "234731a4f01687625231ac651d6b2776e3f3142e"
 
 [[projects]]
   branch = "master"
@@ -113,7 +112,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "bfe6a05d5c99b18d3de47932f9893dd390089cdc"
+  revision = "9b2eaa8a5d66b7f50f051b1145bbcf55d47695d3"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -262,11 +261,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f806b417865e83457c3659232926203f5b0d39aa741b71d9e3e4c0c774e71a5c"
+  digest = "1:5e412e2a03bd0cfdb102db97212be2e625df74fa8b2d4a8a51f107b1456e256b"
   name = "github.com/prometheus/procfs"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ea9eea63887261e4d8ed8315f4078e88d540c725"
+  revision = "e22ddced71425e65e388b17b7d0289c5ea77d06e"
 
 [[projects]]
   digest = "1:03a89169777b38862145711ef2317a36e19e1cdf717ab622e196f6a851b71ad9"
@@ -331,14 +330,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c0b0b67bb6323f4f603950892199a243ee78bbb943605085b6f2dc72daa93bd1"
+  digest = "1:1057f217b8dc6524b1c44809fface8db9efdd7ed87f65c26c0b9ba21c50a54b8"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "0ad05ae3009d6413d3363aa09b350b2ec37daf09"
+  revision = "97732733099d6a942a73b889770774366de963ed"
 
 [[projects]]
   branch = "master"
@@ -382,11 +381,11 @@
     "github.com/ViBiOh/httputils/pkg/httperror",
     "github.com/ViBiOh/httputils/pkg/httpjson",
     "github.com/ViBiOh/httputils/pkg/logger",
+    "github.com/ViBiOh/httputils/pkg/model",
     "github.com/ViBiOh/httputils/pkg/opentracing",
     "github.com/ViBiOh/httputils/pkg/owasp",
     "github.com/ViBiOh/httputils/pkg/prometheus",
     "github.com/ViBiOh/httputils/pkg/request",
-    "github.com/ViBiOh/httputils/pkg/rollbar",
     "github.com/ViBiOh/httputils/pkg/server",
     "github.com/ViBiOh/httputils/pkg/tools",
     "github.com/ViBiOh/mailer/pkg/client",
@@ -398,6 +397,7 @@
     "github.com/docker/docker/client",
     "github.com/gorilla/websocket",
     "github.com/opentracing/opentracing-go",
+    "github.com/rollbar/rollbar-go",
     "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"

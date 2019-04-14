@@ -12,6 +12,7 @@ import (
 	"github.com/ViBiOh/dashboard/pkg/api"
 	"github.com/ViBiOh/dashboard/pkg/deploy"
 	"github.com/ViBiOh/dashboard/pkg/docker"
+	"github.com/ViBiOh/dashboard/pkg/rollbar"
 	"github.com/ViBiOh/dashboard/pkg/stream"
 	httputils "github.com/ViBiOh/httputils/pkg"
 	"github.com/ViBiOh/httputils/pkg/alcotest"
@@ -22,7 +23,6 @@ import (
 	"github.com/ViBiOh/httputils/pkg/opentracing"
 	"github.com/ViBiOh/httputils/pkg/owasp"
 	"github.com/ViBiOh/httputils/pkg/prometheus"
-	"github.com/ViBiOh/httputils/pkg/rollbar"
 	"github.com/ViBiOh/httputils/pkg/server"
 	"github.com/ViBiOh/mailer/pkg/client"
 )
