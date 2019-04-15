@@ -8,7 +8,7 @@
 
 # ⚠️ Deprecation ⚠️
 
-> I no longer maintain this repository, I've switched to [deploy](https://github.com/ViBiOh/deploy) which provide a **true** support of all `docker-compose` features, with a [Portainer](https://portainer.io) for monitoring.
+> I no longer maintain this repository, I've switched to [deploy](https://github.com/ViBiOh/deploy) which provide a **true** support of all `docker-compose` features, with [Portainer](https://portainer.io) as monitoring GUI.
 
 Docker infrastructure management with security and simplicity as goals. It allows to list all containers on a `daemon`, start / stop / restart / monitor each one and deploy `docker-compose` app [**with limited volumes**](#why-with-limited-volumes-). Every action is available from Mobile-ready UI or API.
 
