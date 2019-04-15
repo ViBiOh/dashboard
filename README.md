@@ -6,8 +6,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/ViBiOh/dashboard)](https://goreportcard.com/report/github.com/ViBiOh/dashboard)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FViBiOh%2Fdashboard.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FViBiOh%2Fdashboard?ref=badge_shield)
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FViBiOh%2Fdashboard.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FViBiOh%2Fdashboard?ref=badge_large)
-
 # ⚠️ Deprecation ⚠️
 
 > I no longer maintain this repository, I've switched to [deploy](https://github.com/ViBiOh/deploy) which provide a **true** support of all `docker-compose` features, with a [Portainer](https://portainer.io) for monitoring.
