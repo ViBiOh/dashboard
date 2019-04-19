@@ -28,7 +28,7 @@
     "pkg/model",
   ]
   pruneopts = "UT"
-  revision = "7235e104b5d6a79550d0d7f67ca08cc3a7d4e67b"
+  revision = "de806f1e09f6e6d047588baed0b7d98961b265e8"
 
 [[projects]]
   branch = "master"
@@ -57,7 +57,7 @@
     "pkg/tools",
   ]
   pruneopts = "UT"
-  revision = "62297f2e814369e4226a4ebd7a7b524275888e9d"
+  revision = "751b4f2862d35d785f73bef12e38733e610e3b56"
 
 [[projects]]
   branch = "master"
@@ -65,15 +65,15 @@
   name = "github.com/ViBiOh/mailer"
   packages = ["pkg/client"]
   pruneopts = "UT"
-  revision = "2f4dbb2f4def4dec4ef39bbea243d6338a63acb1"
+  revision = "9e933b970295233f28e5cfd36f7810d78ea2dcc0"
 
 [[projects]]
-  branch = "master"
   digest = "1:d6afaeed1502aa28e80a4ed0981d570ad91b2579193404256ce672ed0a609e0d"
   name = "github.com/beorn7/perks"
   packages = ["quantile"]
   pruneopts = "UT"
-  revision = "234731a4f01687625231ac651d6b2776e3f3142e"
+  revision = "4b2b341e8d7715fae06375aa633dbb6e91b3fb46"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -85,11 +85,11 @@
     "registry/api/errcode",
   ]
   pruneopts = "UT"
-  revision = "6d62eb1d4a3515399431b713fde3ce5a9b40e8d5"
+  revision = "3226863cbcba6dbc2f6c83a37b28126c934af3f8"
 
 [[projects]]
   branch = "master"
-  digest = "1:73cf5c3ba140be2f411c89554ec6fb2e17ef064431eec4ba00bb87d13c18b910"
+  digest = "1:2a4bf8cc0e075bd76e873e600887c5823fa18085ccef8c256ac73bdf8c65406c"
   name = "github.com/docker/docker"
   packages = [
     "api",
@@ -112,7 +112,7 @@
     "errdefs",
   ]
   pruneopts = "UT"
-  revision = "9b2eaa8a5d66b7f50f051b1145bbcf55d47695d3"
+  revision = "94e228b227353a5d1a6a1b1119f546b74e8712c1"
 
 [[projects]]
   digest = "1:811c86996b1ca46729bad2724d4499014c4b9effd05ef8c71b852aad90deb0ce"
@@ -261,11 +261,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5e412e2a03bd0cfdb102db97212be2e625df74fa8b2d4a8a51f107b1456e256b"
+  digest = "1:49b09905e781d7775c086604cc00083e1832d0783f1f421b79f42657c457d029"
   name = "github.com/prometheus/procfs"
   packages = ["."]
   pruneopts = "UT"
-  revision = "e22ddced71425e65e388b17b7d0289c5ea77d06e"
+  revision = "8368d24ba045f26503eb745b624d930cbe214c79"
 
 [[projects]]
   digest = "1:03a89169777b38862145711ef2317a36e19e1cdf717ab622e196f6a851b71ad9"
@@ -326,18 +326,18 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "eb5bcb51f2a31c7d5141d810b70815c05d9c9146"
+  revision = "1f3472d942ba824034fb77cab6a6cfc1bc8a2c3c"
 
 [[projects]]
   branch = "master"
-  digest = "1:1057f217b8dc6524b1c44809fface8db9efdd7ed87f65c26c0b9ba21c50a54b8"
+  digest = "1:a29b488ff122fd8033d43c7cfcc5a0f5b2b1faf5256e8b3bd1568c451f8c6b64"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "97732733099d6a942a73b889770774366de963ed"
+  revision = "e8e3143a4f4a00f1fafef0dd82ba78223281b01b"
 
 [[projects]]
   branch = "master"
@@ -345,7 +345,7 @@
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "UT"
-  revision = "64821d5d210748c883cd2b809589555ae4654203"
+  revision = "e7d98fc518a78c9f8b5ee77be7b0b317475d89e1"
 
 [[projects]]
   digest = "1:4a251721b698c0e6285aec21d4ba3f79ddeccd903690144461b360ea7f948106"
@@ -355,8 +355,8 @@
     "status",
   ]
   pruneopts = "UT"
-  revision = "236199dd5f8031d698fb64091194aecd1c3895b2"
-  version = "v1.20.0"
+  revision = "25c4f928eaa6d96443009bd842389fb4fa48664e"
+  version = "v1.20.1"
 
 [[projects]]
   branch = "v2"
